@@ -1850,6 +1850,54 @@ export default function AllDefinitionsPage() {
             {/* Item 30: LLM */}
             {item.id === 'llm' && (
               <div className="space-y-8 text-xs sm:text-sm text-zinc-300">
+                {/* LLM Architecture & Pipeline */}
+                {item.llmArchitecture && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl">
+                    <div className="space-y-2 border-b border-zinc-800 pb-3">
+                      <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-[10px] font-mono uppercase font-bold tracking-wider">
+                        <Sparkles className="w-3 h-3 text-cyan-400" />
+                        <span>Core Neural Architecture</span>
+                      </div>
+                      <h4 className="text-sm sm:text-base font-bold text-white tracking-tight">
+                        {item.llmArchitecture.title}
+                      </h4>
+                      <p className="text-xs sm:text-sm text-cyan-200/90 font-mono leading-relaxed bg-cyan-950/20 p-3 rounded-xl border border-cyan-800/30">
+                        <strong className="text-cyan-400 uppercase font-sans font-bold">Definition: </strong>
+                        {item.llmArchitecture.definition}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h5 className="text-xs font-bold text-zinc-200 uppercase tracking-wider font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>6-Stage Language Model Forward Pass & Generation Pipeline</span>
+                      </h5>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {item.llmArchitecture.pipelineSteps.map((st, sIdx) => (
+                          <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between hover:border-zinc-700 transition">
+                            <div className="flex items-center gap-2">
+                              <span className="w-6 h-6 rounded-md bg-cyan-950/80 border border-cyan-800/80 text-cyan-300 font-mono text-xs flex items-center justify-center font-bold shrink-0">
+                                0{st.step}
+                              </span>
+                              <span className="text-xs font-bold text-white font-mono text-cyan-300">
+                                {st.name}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-zinc-400 leading-relaxed font-sans pt-1">
+                              {st.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/95 leading-relaxed font-mono">
+                      <strong className="text-amber-400 uppercase font-sans font-bold">Architecture Taxonomy: </strong>
+                      {item.llmArchitecture.familyArchitectureNote}
+                    </div>
+                  </div>
+                )}
+
                 {/* 3 Core Architecture Questions */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                   {item.qaItems.map((qa, qIdx) => (

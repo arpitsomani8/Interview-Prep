@@ -1328,6 +1328,19 @@ predictions = loaded_model.predict(X_test)`,
     title: "LLM (Large Language Model)",
     badge: "Language Models & Generative AI",
     summary: "Large Language Models are deep neural networks trained on massive text corpora to perform probabilistic next-token generation, contextual reasoning, and language understanding.",
+    llmArchitecture: {
+      title: "LLM Architecture & Pipeline",
+      definition: "An LLM is a large language model trained on data to predict and generate sequences of tokens.",
+      pipelineSteps: [
+        { step: 1, name: "Tokenization", desc: "Breaks raw input text into subword tokens and integer token IDs based on a fixed vocabulary (e.g. Byte-Pair Encoding / tiktoken)." },
+        { step: 2, name: "Token Embeddings & Positional Information", desc: "Converts discrete token IDs into dense vector representations and adds positional embeddings (e.g. RoPE) to encode sequential word order." },
+        { step: 3, name: "Repeated Transformer Layers", desc: "Processes embeddings through stacked blocks of Multi-Head Self-Attention, feed-forward networks (FFN), and LayerNorm/RMSNorm to compute rich contextual representations." },
+        { step: 4, name: "Output Projection to Vocabulary Logits", desc: "Projects final hidden states through a linear unembedding layer to produce unnormalized score vectors (logits) across the entire vocabulary." },
+        { step: 5, name: "Token Selection or Sampling", desc: "Applies softmax with temperature, top-k, or top-p (nucleus sampling) to select the next predicted token." },
+        { step: 6, name: "Repetition Until Complete", desc: "Appends the generated token to the prompt context and autoregressively repeats the forward pass until an end-of-sequence (<EOS>) token is generated or max output length is reached." }
+      ],
+      familyArchitectureNote: "Different LLM families can use different architectures. GPT-style language models commonly use a decoder-only Transformer."
+    },
     qaItems: [
       {
         question: "Why not let the LLM calculate everything?",
