@@ -4,13 +4,13 @@ import IntroPage from './pages/IntroPage';
 import FashionPage from './pages/FashionPage';
 import HybridPage from './pages/HybridPage';
 import YoloPage from './pages/YoloPage';
-import DefinitionsPage from './pages/DefinitionsPage';
 import AllDefinitionsPage from './pages/AllDefinitionsPage';
 
-const VALID_TABS = ['intro', 'fashion', 'hybrid', 'yolo', 'definitions', 'all-definitions'];
+const VALID_TABS = ['intro', 'fashion', 'hybrid', 'yolo', 'all-definitions'];
 
 function getTabFromHash() {
   const raw = window.location.hash.replace(/^#\/?/, '').trim().split('?')[0];
+  if (raw === 'definitions') return 'all-definitions';
   return VALID_TABS.includes(raw) ? raw : 'intro';
 }
 
@@ -19,7 +19,6 @@ const PAGE_TITLES = {
   fashion: 'Fashion AI Copilot | Multimodal AI Search Blueprint',
   hybrid: 'Hybrid AI Engine | Dynamic Schema ML & RAG',
   yolo: 'YOLO + DeepSparse | Real-Time Edge Computer Vision',
-  definitions: 'Technical Concept Vault | AI/ML Definitions',
   'all-definitions': 'Master Interview Vault | Complete Reference Guide',
 };
 
@@ -54,7 +53,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full bg-black text-zinc-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
-      {/* Top Header with 6 Navigation Options */}
+      {/* Top Header with 5 Navigation Options */}
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content Area */}
@@ -63,7 +62,6 @@ export default function App() {
         {activeTab === 'fashion' && <FashionPage />}
         {activeTab === 'hybrid' && <HybridPage />}
         {activeTab === 'yolo' && <YoloPage />}
-        {activeTab === 'definitions' && <DefinitionsPage />}
         {activeTab === 'all-definitions' && <AllDefinitionsPage />}
       </main>
     </div>
