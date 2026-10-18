@@ -5073,6 +5073,122 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 60: Python Tuple */}
+            {item.id === 'tuple' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase font-sans font-bold">What is a Tuple? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {/* Critical Nuance Alert */}
+                <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs sm:text-sm text-amber-200/95 leading-relaxed font-mono flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <strong className="text-amber-400 uppercase font-sans font-bold block mb-1">
+                      Critical Interview Nuance:
+                    </strong>
+                    <span>{item.criticalNuance}</span>
+                  </div>
+                </div>
+
+                {/* Python Code Example */}
+                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                  <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                    <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>tuple_examples.py (Immutability & Nested References)</span>
+                    </div>
+                    <button
+                      onClick={() => handleCopyCode('code-tuple', item.codeExample)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                    >
+                      {copiedId === 'code-tuple' ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy Code</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                    {item.codeExample}
+                  </pre>
+                </div>
+
+                {/* Tuple vs List Comparison Table */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Tuple vs. List: Core Architectural Differences</span>
+                  </h4>
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                            <th className="p-3 w-1/4">Feature</th>
+                            <th className="p-3 w-3/8 text-cyan-400">Tuple</th>
+                            <th className="p-3 w-3/8 text-amber-400">List</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.tupleVsList.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                {row.feature}
+                              </td>
+                              <td className="p-3 text-cyan-200/90 text-[11px] leading-relaxed">
+                                {row.tuple}
+                              </td>
+                              <td className="p-3 text-amber-200/90 text-[11px] leading-relaxed">
+                                {row.list}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                {/* AI & Engineering Use Cases */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono flex items-center gap-2">
+                    <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Key Applications in AI & Data Pipelines</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {item.aiUseCases.map((uc, uIdx) => (
+                      <div key={uIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition">
+                        <h5 className="text-xs font-bold text-white font-mono flex items-center gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>{uc.title}</span>
+                        </h5>
+                        <p className="text-xs text-zinc-400 leading-relaxed font-sans pl-5.5">
+                          {uc.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Python Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

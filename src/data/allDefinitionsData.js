@@ -56,7 +56,8 @@ export const definitionBookmarks = [
   { id: "debugging", label: "Debugging" },
   { id: "prompt-engineering", label: "Prompt Engineering" },
   { id: "ranking-reranking", label: "Ranking / Reranking" },
-  { id: "auth-authorization", label: "Authentication & Authorization" }
+  { id: "auth-authorization", label: "Authentication & Authorization" },
+  { id: "tuple", label: "Tuple" }
 ];
 
 export const definitionsData = [
@@ -3401,5 +3402,73 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
       }
     ],
     takeaway: "Securing an AI system requires defense in depth: protecting the identity perimeter with IAM/OAuth2, isolating inference from training data updates, enforcing tenant boundaries in vector search, and never trusting client-side validations."
+  },
+  {
+    id: "tuple",
+    title: "Python Tuple (Immutable Sequences)",
+    badge: "Python Fundamentals & Data Structures",
+    summary: "An ordered, immutable collection in Python used to group fixed collections of heterogeneous data that should never be altered after creation.",
+    coreDefinition: "A tuple is an ordered collection of elements that cannot be changed after creation. This is called immutable. A tuple is an ordered, immutable collection in Python. I use it for fixed groups of values that should not be modified.",
+    criticalNuance: "Remember: a tuple containing a mutable object, such as a list, can still have that inner object's contents changed. The tuple itself only guarantees that its object references remain immutable.",
+    codeExample: `# 1. Tuple Creation & Immutability
+product_dims = (224, 224, 3)  # Height, Width, Channels
+print(product_dims[0])        # 224
+
+# product_dims[0] = 512       # TypeError: 'tuple' object does not support item assignment
+
+# 2. Critical Nuance: Mutable Object Inside an Immutable Tuple
+t = (1, 2, ["red", "floral"])
+t[2].append("summer")         # Valid! Mutating the inner list
+print(t)                      # Output: (1, 2, ['red', 'floral', 'summer'])
+
+# t[2] = ["blue"]             # TypeError: Cannot reassign the reference!
+
+# 3. Tuple Unpacking & Multiple Returns
+def get_model_specs():
+    return "CLIP-ViT-B/32", 512, True
+
+model_name, emb_dim, is_normalized = get_model_specs()`,
+    tupleVsList: [
+      {
+        feature: "Mutability",
+        tuple: "Immutable (cannot add, delete, or replace items)",
+        list: "Mutable (elements can be modified freely in-place)"
+      },
+      {
+        feature: "Syntax",
+        tuple: "Parentheses (1, 2, 3) or comma-separated",
+        list: "Square brackets [1, 2, 3]"
+      },
+      {
+        feature: "Memory & Speed",
+        tuple: "Lower memory footprint; faster allocation and iteration",
+        list: "Higher memory overhead due to dynamic resizing capacity"
+      },
+      {
+        feature: "Hashability (Dictionary Key)",
+        tuple: "Hashable (can be a dict key or set item if elements are immutable)",
+        list: "Unhashable (TypeError: unhashable type: 'list')"
+      },
+      {
+        feature: "Typical Use Case",
+        tuple: "Heterogeneous records, coordinate pairs, fixed configs, tensor shapes",
+        list: "Homogeneous collections with dynamic resizing requirements"
+      }
+    ],
+    aiUseCases: [
+      {
+        title: "Tensor Shapes & Image Dimensions",
+        desc: "PyTorch & TensorFlow represent tensor shapes as tuples: `torch.Size([32, 3, 224, 224])` to prevent accidental dimension tampering."
+      },
+      {
+        title: "Dictionary Keys for Caching",
+        desc: "Because tuples are immutable and hashable, `(model_name, temperature, max_tokens)` can be used as a cache key in Redis or Python `lru_cache`."
+      },
+      {
+        title: "Database Row Records",
+        desc: "Cursor fetch operations (`cursor.fetchone()`) return database rows as tuples representing fixed heterogeneous columns `(product_id, title, price)`."
+      }
+    ],
+    takeaway: "Use tuples when grouping fixed records where immutability provides safety, cacheability, and memory efficiency. Be vigilant with nested mutable structures—immutability applies to the tuple's object references, not deep contents."
   }
 ];
