@@ -12,7 +12,8 @@ import {
   CheckCircle2, 
   Terminal,
   Globe,
-  Bug 
+  Bug,
+  ShieldCheck 
 } from 'lucide-react';
 
 export default function AllDefinitionsPage() {
@@ -4949,6 +4950,125 @@ export default function AllDefinitionsPage() {
                 {/* Final Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">System Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 59: Authentication & Authorization */}
+            {item.id === 'auth-authorization' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Principles Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                    <span>Core Authentication & Authorization Architecture</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {item.corePrinciples.map((prin, pIdx) => (
+                      <div key={pIdx} className="p-3 rounded-xl bg-black border border-zinc-800/80 flex items-start gap-2.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                        <span className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {prin}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Major GenAI Risks & Mitigations */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-rose-400" />
+                    <span>5 Major GenAI Production Risks & Engineering Mitigations</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {item.securityRisks.map((risk) => (
+                      <div key={risk.id} className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 flex flex-col justify-between hover:border-zinc-700 transition">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <h5 className="text-sm font-bold text-white font-mono flex items-center gap-1.5">
+                              <span className="text-rose-400">0{risk.id}.</span>
+                              <span>{risk.risk}</span>
+                            </h5>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-rose-300 border border-zinc-800">
+                              Threat
+                            </span>
+                          </div>
+                          <div className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-800/30 text-[11px] text-rose-200/90 font-sans">
+                            <strong className="text-rose-400 font-mono uppercase text-[10px] block mb-0.5">Vector:</strong>
+                            {risk.threat}
+                          </div>
+                          <div className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-800/30 text-[11px] text-emerald-200/90 font-sans">
+                            <strong className="text-emerald-400 font-mono uppercase text-[10px] block mb-0.5">Mitigation:</strong>
+                            {risk.mitigation}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Data Poisoning & Inference Weight Isolation */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 space-y-2">
+                    <h5 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-1.5">
+                      <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Data Poisoning Prevention</span>
+                    </h5>
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                      {item.dataPoisoningAndWeights.dataPoisoning}
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 space-y-2">
+                    <h5 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Inference Weight Isolation</span>
+                    </h5>
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                      {item.dataPoisoningAndWeights.inferenceWeightIsolation}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Cloud Security Matrix (AWS / Azure) */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono flex items-center gap-2">
+                    <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>How to Secure the Application on AWS or Azure (Layered Defense)</span>
+                  </h4>
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                            <th className="p-3 w-1/4">Cloud Security Layer</th>
+                            <th className="p-3 w-3/4 text-cyan-400">Controls (AWS & Azure Reference Implementations)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.cloudSecurityLayers.map((csl, cIdx) => (
+                            <tr key={cIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-cyan-300">
+                                  {csl.layer}
+                                </span>
+                              </td>
+                              <td className="p-3 text-zinc-300 text-[11px] leading-relaxed font-mono">
+                                {csl.controls}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Security Takeaway: </strong>
                   {item.takeaway}
                 </div>
               </div>

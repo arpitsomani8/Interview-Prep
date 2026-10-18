@@ -55,7 +55,8 @@ export const definitionBookmarks = [
   { id: "edge-cases", label: "Edge Cases" },
   { id: "debugging", label: "Debugging" },
   { id: "prompt-engineering", label: "Prompt Engineering" },
-  { id: "ranking-reranking", label: "Ranking / Reranking" }
+  { id: "ranking-reranking", label: "Ranking / Reranking" },
+  { id: "auth-authorization", label: "Authentication & Authorization" }
 ];
 
 export const definitionsData = [
@@ -3320,5 +3321,85 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
       }
     ],
     takeaway: "A production search system splits the workload: fast vector search (FAISS) fetches high-recall candidates, deterministic metadata filters eliminate violations, and multi-signal reranking ensures the most relevant, profitable items appear at the very top."
+  },
+  {
+    id: "auth-authorization",
+    title: "Authentication & Authorization in AI Systems",
+    badge: "Cloud Security, AI Safety & Access Control",
+    summary: "Comprehensive defense-in-depth security architecture for protecting AI APIs, model inference endpoints, vector databases, and multi-tenant catalog data across enterprise cloud environments.",
+    corePrinciples: [
+      "Require authentication for all protected endpoints.",
+      "Enforce authorization on the backend for every request.",
+      "Use role-based access control (RBAC) or attribute-based policies (ABAC) where appropriate.",
+      "Apply tenant-level data isolation in a multi-tenant application.",
+      "Avoid relying on frontend checks alone—client-side validation is purely for UX, never security."
+    ],
+    securityRisks: [
+      {
+        id: 1,
+        risk: "Prompt Injection",
+        threat: "Malicious user input attempts to override system instructions, bypass safety guardrails, or exfiltrate private internal logic.",
+        mitigation: "Strict separation of system prompts and user inputs (delimited XML tags), defensive guardrail models (Llama Guard), and input sanitization."
+      },
+      {
+        id: 2,
+        risk: "Sensitive Data Leakage",
+        threat: "PII, proprietary system data, or other users' confidential catalog records leaked in model completions or RAG vector embeddings.",
+        mitigation: "Strict PII redaction (Presidio), role-scoped metadata filtering at vector retrieval time, and egress output scanning."
+      },
+      {
+        id: 3,
+        risk: "Unauthorized Tool Calls",
+        threat: "An autonomous agent invokes sensitive backend APIs or executes database changes without proper permissions.",
+        mitigation: "Least-privilege tool scopes, server-side parameter validation, signed user JWT propagation, and human-in-the-loop approvals for destructive operations."
+      },
+      {
+        id: 4,
+        risk: "Model or API Abuse",
+        threat: "DDoS, scraping, denial-of-wallet attacks, or unbounded token consumption exhausting GPU resources.",
+        mitigation: "API keys, OAuth2 token validation, tiered rate limiting (e.g. 60 req/min), max token limits, and anomaly detection."
+      },
+      {
+        id: 5,
+        risk: "Malicious Model Files or Dependencies",
+        threat: "Arbitrary code execution via weaponized pickle checkpoints (.pt/.pkl) or compromised supply chain packages.",
+        mitigation: "Use safe serialization formats like Hugging Face safetensors, verify cryptographic hashes (SHA-256), and run CI/CD container/dependency vulnerability scanning."
+      }
+    ],
+    dataPoisoningAndWeights: {
+      dataPoisoning: "Validate data sources during ingestion and continuously monitor for malicious or abnormal examples that could corrupt training or retrieval quality.",
+      inferenceWeightIsolation: "Inference does not normally update the model's learned weights. A user's prompt is not automatically added to training data simply because the model processed it. Whether a provider retains API inputs or uses them for training depends on the service, configuration, and applicable policy."
+    },
+    cloudSecurityLayers: [
+      {
+        layer: "Identity",
+        controls: "IAM roles on AWS or managed identities on Azure"
+      },
+      {
+        layer: "Secrets",
+        controls: "AWS Secrets Manager or Azure Key Vault"
+      },
+      {
+        layer: "Network",
+        controls: "Private networking, security groups, firewalls, and restricted outbound access where appropriate"
+      },
+      {
+        layer: "Storage",
+        controls: "Encryption, access policies, and least-privilege permissions"
+      },
+      {
+        layer: "API",
+        controls: "Authentication, authorization, request validation, and rate limiting"
+      },
+      {
+        layer: "Monitoring",
+        controls: "Cloud logs, audit events, alerts, and anomaly detection"
+      },
+      {
+        layer: "Deployment",
+        controls: "Dependency scanning, protected secrets in CI/CD, vulnerability management, and controlled releases"
+      }
+    ],
+    takeaway: "Securing an AI system requires defense in depth: protecting the identity perimeter with IAM/OAuth2, isolating inference from training data updates, enforcing tenant boundaries in vector search, and never trusting client-side validations."
   }
 ];
