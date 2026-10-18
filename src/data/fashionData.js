@@ -17,6 +17,7 @@ On the AI/ML and retrieval architecture:
   - fabric (e.g., 220gsm Combed Cotton, Melton Wool)
   - description (A rich 1–2 sentence description like: "Stylish pink T-shirt for men in XL size, featuring an attractive design and a trendy look. Comfortable to wear and perfect for casual outings...")
 • Crucial Connection to Embeddings: During data ingestion, this rich 'description' from PostgreSQL is fed directly into Azure AI Vision's text vectorizer to generate 1024-dimensional text embeddings. Simultaneously, the corresponding garment photo (referenced by 'image_filename') is retrieved from Azure Blob Storage and passed to Azure AI Vision's visual vectorizer to generate 1024-dimensional image embeddings in the exact same shared metric space. Both normalized vectors are indexed into ChromaDB linked directly to that product_id.
+• L2 Normalization & Fast Dot Product: We strictly normalize every 1024-dimensional vector to unit Euclidean length (||v||₂ = 1.0). When vectors have a length of 1.0, calculating Cosine Similarity is mathematically identical to a fast, hardware-accelerated Dot Product (multiplying and summing numbers without costly square-root magnitude divisions). This allows our ChromaDB vector database to scan through 10,000+ vectors in less than 10 milliseconds.
 • Late Vector Fusion: To support hybrid queries (a reference photo with text modifiers like 'same cut in forest green linen'), we fuse vectors at runtime: e_hybrid = 0.65 * e_text + 0.35 * e_image.
 • Zero Chunking Strategy: Catalog descriptions are atomic 50–80 word summaries. Chunking was deliberately avoided because splitting would decouple critical entity relationships like color, fabric, and silhouette.
 • Top-K Vector Search: Pre-computed 1024-dimensional L2-normalized vectors are indexed in ChromaDB using an HNSW graph. At query time, our similarity engine performs Top-K vector retrieval across the 10,000+ catalog to fetch the closest candidate product_ids in under 10ms.
@@ -61,9 +62,10 @@ Future & In-Progress R&D Pipeline:
       tier: "3. ChromaDB (Vector Database)",
       badge: "Semantic Vector Store",
       points: [
-        "1024-dimensional L2-normalized float embeddings generated via Azure AI Vision",
+        "1024-dimensional float embeddings generated via Azure AI Vision",
+        "Strict L2 Normalization (||v||₂ = 1.0): turns Cosine Similarity into a fast, hardware-accelerated Dot Product",
         "Stores both visual embeddings (from Blob images) and text embeddings (from PostgreSQL descriptions)",
-        "HNSW indexing graph for sub-10ms Approximate Nearest Neighbor (ANN) search",
+        "HNSW indexing graph for sub-10ms Approximate Nearest Neighbor (ANN) search across 10,000+ designs",
         "Cosine similarity matching linked directly to PostgreSQL product_id for instant SQL hydration"
       ]
     }
@@ -72,9 +74,9 @@ Future & In-Progress R&D Pipeline:
   pipelineFlow: [
     {
       step: "01",
-      title: "1024-d Multimodal Embedding Generation",
+      title: "1024-d Multimodal Embedding & L2 Normalization",
       tag: "Azure AI Vision + PostgreSQL",
-      desc: "During ingestion, the rich 'description' column from PostgreSQL (e.g. 'Stylish pink T-shirt for men in XL size...') is converted into a 1024-d text embedding. Simultaneously, the garment photo from Azure Blob Storage (referenced by 'image_filename') is vectorized into a 1024-d visual embedding in the same shared metric space."
+      desc: "During ingestion, the rich 'description' column from PostgreSQL is converted into a 1024-d text embedding, while the garment photo from Azure Blob Storage is vectorized into a 1024-d image embedding. Every vector is strictly L2-normalized (length = 1.0), meaning Cosine Similarity becomes a pure, ultra-fast Dot Product."
     },
     {
       step: "02",
