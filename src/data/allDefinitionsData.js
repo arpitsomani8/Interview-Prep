@@ -47,7 +47,8 @@ export const definitionBookmarks = [
   { id: "mcp", label: "MCP" },
   { id: "blockchain", label: "Blockchain" },
   { id: "ocr", label: "OCR" },
-  { id: "faiss", label: "FAISS" }
+  { id: "faiss", label: "FAISS" },
+  { id: "update-deployed-model", label: "Update a Deployed Model" }
 ];
 
 export const definitionsData = [
@@ -2621,5 +2622,81 @@ for rank, (idx, score) in enumerate(zip(indices[0], distances[0]), 1):
       }
     ],
     takeaway: "FAISS is the high-performance computation standard for vector similarity search. In modern GenAI architectures, it powers dense retrieval for RAG, visual recommendation, and cross-modal search with microsecond latency."
+  },
+  {
+    id: "update-deployed-model",
+    title: "How to Update a Deployed Model & Vector Index",
+    badge: "MLOps & Zero-Downtime Index Upgrades",
+    summary: "How do you update a deployed model? Imagine that the fashion catalog grows from 10,000 to 15,000 designs. You don't necessarily need to retrain the foundation model. You embed the new images, build an updated index, validate search quality, and deploy with zero downtime and rollback safety.",
+    scenario: "Fashion Catalog Scaling: Expanding from 10,000 to 15,000 Designs",
+    corePrinciple: "You don't necessarily need to retrain CLIP just because new designs arrive. You generally need to embed the new images and update the index. If you change the embedding model, you normally need to regenerate the catalog embeddings with that model to keep the vectors compatible.",
+    updatePipeline: [
+      {
+        step: "1. Process the new catalog images",
+        desc: "Ingest, validate image dimensions, normalize color space, and verify integrity of the 5,000 incoming fashion designs."
+      },
+      {
+        step: "2. Generate CLIP embeddings",
+        desc: "Run image embeddings using the strictly identical model version to maintain mathematical alignment in vector space."
+      },
+      {
+        step: "3. Build updated vector index",
+        desc: "Add the new vectors and corresponding metadata (IDs, prices, category tags) into an updated staging index."
+      },
+      {
+        step: "4. Validate & run search-quality tests",
+        desc: "Benchmark retrieval recall (Recall@K, NDCG) and latency against golden test suites to ensure no regressions."
+      },
+      {
+        step: "5. Deploy in a controlled manner",
+        desc: "Perform an atomic index swap or Blue/Green deployment so active inference requests experience zero downtime."
+      },
+      {
+        step: "6. Monitor latency & retrieval quality",
+        desc: "Track p50/p95 latency, error rates, cache hit ratios, and click-through relevance in CloudWatch/Prometheus."
+      },
+      {
+        step: "7. Roll back if problems occur",
+        desc: "Keep the previous validated index artifact intact in S3 for instant single-click or automated rollback."
+      }
+    ],
+    rulesOfThumb: [
+      {
+        title: "Retraining vs. Re-indexing",
+        rule: "New catalog items require generating new embeddings and updating the vector index—not retraining the deep neural network (e.g. CLIP). Pretrained foundation models generalize zero-shot."
+      },
+      {
+        title: "Model Version Compatibility",
+        rule: "If you change or fine-tune the embedding model, you must re-embed all 15,000 catalog items. Vectors produced by different models or embedding checkpoints inhabit different vector spaces and cannot be compared."
+      },
+      {
+        title: "Zero-Downtime Pointer Swap",
+        rule: "Never mutate an index in-place during live query traffic. Load the new index into background memory, verify warm-up, and atomically switch the pointer in your API service."
+      }
+    ],
+    handsOnScript: {
+      title: "Index Update & Incremental Ingestion Demo (Python)",
+      filename: "update_catalog_index.py",
+      code: `import faiss
+import numpy as np
+
+# Step 1 & 2: Load existing catalog index (10,000 designs, 512 dimensions)
+existing_index = faiss.read_index("catalog_v1.index")
+print(f"Current catalog size: {existing_index.ntotal} vectors")
+
+# Step 3: 5,000 new designs arrive; embed them using identical CLIP model
+new_vectors = np.random.random((5000, 512)).astype("float32")
+faiss.normalize_L2(new_vectors)  # Keep unit norm for Cosine Similarity
+
+# Step 4: Add new vectors to the index
+existing_index.add(new_vectors)
+print(f"Updated catalog size: {existing_index.ntotal} vectors")
+
+# Step 5: Save as versioned artifact for controlled deployment
+faiss.write_index(existing_index, "catalog_v2.index")
+print("Saved catalog_v2.index for Blue/Green staging validation")`,
+      explanation: "This workflow keeps catalog index artifacts immutable and version-controlled, enabling seamless canary rollouts and instant rollbacks."
+    },
+    takeaway: "In enterprise GenAI systems, catalog expansion is an MLOps indexing lifecycle challenge, not a model retraining task. Decoupling embedding generation from index swapping guarantees 99.99% search availability."
   }
 ];
