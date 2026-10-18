@@ -108,6 +108,76 @@ Future & In-Progress R&D Pipeline:
       tag: "Generative AI + OCR",
       desc: "Custom design requests route to Stable Diffusion XL + ControlNet (Canny edge) & SAM for sketch-to-garment rendering. Ongoing integration with Azure AI Vision OCR extracts typography and slogans from graphic garments into PostgreSQL."
     }
+  ],
+
+  bookmarkedConcepts: [
+    {
+      id: "late-vector-fusion",
+      title: "Late Vector Fusion",
+      badge: "Mathematical Vector Algebra",
+      summary: "Runtime weighted combination of normalized multimodal vectors: e_hybrid = 0.65 * e_text + 0.35 * e_image.",
+      details: [
+        "Late vs. Early Fusion: Early fusion fuses raw pixels and text tokens inside a heavy cross-attention transformer, requiring massive compute per query. Late fusion operates directly on pre-computed 1024-d unit vectors, computing combinations in sub-millisecond runtime.",
+        "Weighting Ratio (0.65 / 0.35): When a retailer uploads a garment photo with text like 'same silhouette in maroon corduroy', 0.65 gives text the steering power over color, fabric GSM, and texture, while 0.35 locks the garment neckline, cut, and sleeve silhouette.",
+        "Re-Normalization: After weighted linear combination, the resulting vector is strictly L2-normalized (v / ||v||_2 = 1.0) so it projects back onto the unit hypersphere for instant dot-product similarity search in ChromaDB."
+      ]
+    },
+    {
+      id: "lazy-loading",
+      title: "Lazy Loading",
+      badge: "Frontend DOM & Network Optimization",
+      summary: "Paginated 25-item batch rendering with IntersectionObserver to maintain 60fps UI performance.",
+      details: [
+        "The DOM Bottleneck: Injecting hundreds of high-resolution garment preview images into the DOM simultaneously creates huge memory bloat, high layout thrashing, and freezes the browser main thread.",
+        "25-Item Initial Payload: ChromaDB retrieves Top-K candidates, and PostgreSQL hydrates the first 25 items immediately for an ultra-fast First Contentful Paint (<100ms).",
+        "IntersectionObserver Sentinel: As the retailer scrolls within 200px of the page bottom, an invisible sentinel element triggers lazy loading of the next batch of 25 items without jarring layout shifts or frame drops."
+      ]
+    },
+    {
+      id: "top-k-vector-search",
+      title: "Top-K Vector Search",
+      badge: "ChromaDB + HNSW Graph",
+      summary: "Sub-10ms Approximate Nearest Neighbor (ANN) search across 10,000+ 1024-dimensional vectors.",
+      details: [
+        "HNSW Indexing: Hierarchical Navigable Small World graphs provide logarithmic O(log N) search complexity instead of an exhaustive linear O(N) scan across 10,000 items.",
+        "L2 Dot-Product Acceleration: Because all vectors are pre-normalized to length 1.0, Cosine Similarity simplifies to a pure hardware-accelerated Dot Product (AVX-512 SIMD instructions), completely avoiding square roots.",
+        "In-Memory Footprint: For 10,000 vectors with 1024 dimensions, the entire HNSW index fits in ~40MB of RAM, executing Top-K retrieval in 3 to 7 milliseconds."
+      ]
+    },
+    {
+      id: "multimodal-rag",
+      title: "Multimodal RAG",
+      badge: "PostgreSQL + ChromaDB + GPT-4o",
+      summary: "Retrieval-Augmented Generation connecting real-time relational stock with multimodal vector embeddings.",
+      details: [
+        "Why No Fine-Tuning: Garment stock, pricing, and available sizes fluctuate continuously. Fine-tuning model weights causes stale data, hallucinated prices, and high retraining GPU costs. RAG decouples knowledge retrieval from reasoning, guaranteeing zero hallucinations.",
+        "PostgreSQL Hydration: ChromaDB Top-K candidate product_ids query PostgreSQL to pull live sizes (S/M/L/XL/XXL), fabric GSM, wholesale price, and SAS image URLs.",
+        "Prompt Context Injection: Structured JSON specs and authenticated image URLs are injected directly into the GPT-4o context window for grounded styling evaluations and buyer advice."
+      ]
+    },
+    {
+      id: "azure-ai-vision",
+      title: "Azure AI Vision",
+      badge: "Dual-Encoder Shared Hypersphere",
+      summary: "Multi-tenant dual-encoder neural architecture projecting image pixels and text descriptions into an identical 1024-d unit vector space.",
+      details: [
+        "Dual-Encoder Architecture: Uses two separate neural towers—a Vision Transformer (ViT) for garment images and a Transformer for text descriptions—projecting into a common 1024-d vector coordinate space.",
+        "Contrastive Alignment: Contrastively trained on massive fashion datasets so that visual concepts (e.g. puff sleeves, ribbed knit, camp collar) align directly with natural text descriptors.",
+        "Dual API Endpoints: Out-of-the-box support for vectorizeImage (using garment photos) and vectorizeText (using PostgreSQL rich descriptions) with zero GPU maintenance overhead."
+      ]
+    },
+    {
+      id: "azure-openai",
+      title: "Azure OpenAI",
+      badge: "GPT-4o Multimodal Reasoning Engine",
+      summary: "Enterprise multimodal LLM providing grounded design critiques, trend comparisons, and wholesale order advisory.",
+      details: [
+        "Architectural Decoupling: GPT-4o is never used to scan or search the 10,000 images—that would be cost-prohibitive ($$$) and slow (10+ seconds). ChromaDB filters the catalog to the Top-K candidates first.",
+        "Grounded Reasoning: GPT-4o receives the retailer's query, the Top-K hydrated PostgreSQL specs (fabric GSM, sizes, price), and SAS image URLs to compare silhouettes, explain fabric qualities, and recommend complementary styles.",
+        "Zero Stale Knowledge: Relies strictly on the injected PostgreSQL ground-truth payload, eliminating hallucinated stock numbers or inaccurate wholesale prices."
+      ]
+    }
   ]
 };
+
 

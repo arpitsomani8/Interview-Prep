@@ -1,8 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { fashionData } from '../data/fashionData';
-import { ShieldCheck, MessageSquareQuote, Layers, Database, Cpu } from 'lucide-react';
+import { ShieldCheck, MessageSquareQuote, Layers, Database, Cpu, Bookmark, ArrowUp } from 'lucide-react';
 
 export default function FashionPage() {
+  const [activeBookmark, setActiveBookmark] = useState(null);
+
+  const scrollToId = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveBookmark(id);
+    }
+  };
+
+  const scrollToBookmarks = () => {
+    const el = document.getElementById('bookmarks-bar');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
@@ -42,6 +58,83 @@ export default function FashionPage() {
         <blockquote className="text-sm sm:text-base text-zinc-200 leading-relaxed italic border-l-4 border-indigo-500 pl-4 py-1 whitespace-pre-line">
           {fashionData.executiveScript}
         </blockquote>
+      </div>
+
+      {/* Bookmarked Technical Concepts & Interview Defense */}
+      <div id="bookmarks-bar" className="space-y-6 pt-2">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-400">
+            <Bookmark className="w-4 h-4 text-cyan-400" />
+            <span>Bookmarked Technical Concepts & Interview Defense</span>
+          </div>
+          <p className="text-sm text-zinc-400">
+            Click any concept bookmark below to jump directly to its technical breakdown and interview defense rationale:
+          </p>
+
+          {/* Clickable Bookmark Badges */}
+          <div className="flex flex-wrap gap-2.5 pt-1">
+            {fashionData.bookmarkedConcepts.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToId(item.id)}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 border cursor-pointer ${
+                  activeBookmark === item.id
+                    ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/10'
+                    : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:border-cyan-500/50 hover:bg-zinc-800 hover:text-white'
+                }`}
+              >
+                <Bookmark className={`w-3.5 h-3.5 ${activeBookmark === item.id ? 'text-cyan-400 fill-cyan-400' : 'text-cyan-400'}`} />
+                <span>{item.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Detailed Concept Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {fashionData.bookmarkedConcepts.map((item) => (
+            <div
+              key={item.id}
+              id={item.id}
+              className={`scroll-mt-24 rounded-2xl bg-[#0a0a0c] p-6 sm:p-7 space-y-4 shadow-xl transition flex flex-col justify-between border ${
+                activeBookmark === item.id
+                  ? 'border-cyan-500 shadow-cyan-500/10'
+                  : 'border-zinc-800 hover:border-zinc-700'
+              }`}
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] uppercase font-mono px-2.5 py-1 rounded-md bg-zinc-900 text-cyan-300 border border-zinc-800 font-semibold">
+                    {item.badge}
+                  </span>
+                  <button
+                    onClick={scrollToBookmarks}
+                    className="text-xs font-mono text-zinc-500 hover:text-cyan-400 transition flex items-center gap-1 cursor-pointer"
+                    title="Back to Bookmarks"
+                  >
+                    <span>Top</span>
+                    <ArrowUp className="w-3 h-3" />
+                  </button>
+                </div>
+                <h3 className="text-xl font-bold text-white tracking-tight">
+                  {item.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-cyan-400/90 font-medium italic bg-cyan-950/20 border border-cyan-900/40 rounded-lg p-2.5">
+                  {item.summary}
+                </p>
+              </div>
+
+              <ul className="space-y-2.5 pt-3 border-t border-zinc-800/80">
+                {item.details.map((detail, dIdx) => (
+                  <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
+                    <span className="text-cyan-400 font-bold mt-0.5">•</span>
+                    <span>{detail}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* 3-Tier Production Storage Architecture (Cleanly Aligned Grid) */}
