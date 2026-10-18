@@ -1048,7 +1048,14 @@ print(scores[0])`,
     id: "joblib",
     title: "Joblib",
     badge: "Model Serialization & Persistence",
-    summary: "joblib is a Python library commonly used to save and load trained scikit-learn models and large in-memory objects efficiently.",
+    summary: "joblib is a Python library commonly used to save and load trained machine-learning models and other Python objects.",
+    coreSnippet: `import joblib
+
+# Save a trained model
+joblib.dump(model, "parcel_model.joblib")
+
+# Load it later
+model = joblib.load("parcel_model.joblib")`,
     code: `import joblib
 from sklearn.ensemble import RandomForestClassifier
 

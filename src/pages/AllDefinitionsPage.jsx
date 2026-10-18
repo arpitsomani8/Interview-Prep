@@ -1418,6 +1418,43 @@ export default function AllDefinitionsPage() {
             {/* Item 22: Joblib */}
             {item.id === 'joblib' && (
               <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* Definition Callout */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase font-sans font-bold">What is Joblib? </strong>
+                  {item.summary}
+                </div>
+
+                {/* Core Save & Load Snippet */}
+                {item.coreSnippet && (
+                  <div className="rounded-xl overflow-hidden border border-emerald-800/50 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-emerald-400">
+                        <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>quick_model_persistence.py (joblib.dump & joblib.load)</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-joblib-quick', item.coreSnippet)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-joblib-quick' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                      {item.coreSnippet}
+                    </pre>
+                  </div>
+                )}
+
                 {/* Code Block */}
                 <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                   <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
