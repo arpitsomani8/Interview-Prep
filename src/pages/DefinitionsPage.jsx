@@ -55,7 +55,7 @@ export default function DefinitionsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-8">
       {/* Header */}
       <div className="space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-semibold uppercase tracking-wider">
@@ -67,19 +67,19 @@ export default function DefinitionsPage() {
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
               Other Definitions & Master Concepts Vault
             </h1>
-            <p className="text-sm sm:text-base text-slate-300 mt-1 max-w-3xl">
+            <p className="text-sm sm:text-base text-zinc-300 mt-1 max-w-3xl">
               100% of your personal study guide content preserved word-for-word in its original language. Organized by tags with instant filtering, live search, and full text export.
             </p>
           </div>
 
           {/* View Mode Toggle */}
-          <div className="flex items-center gap-2 bg-slate-900 border border-slate-700/80 p-1 rounded-xl self-start sm:self-auto">
+          <div className="flex items-center gap-2 bg-zinc-950 border border-zinc-800 p-1 rounded-xl self-start sm:self-auto">
             <button
               onClick={() => setViewMode('cards')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                 viewMode === 'cards'
-                  ? 'bg-cyan-500 text-slate-950 shadow'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-cyan-500 text-black shadow'
+                  : 'text-zinc-400 hover:text-white'
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" />
@@ -89,8 +89,8 @@ export default function DefinitionsPage() {
               onClick={() => setViewMode('continuous')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                 viewMode === 'continuous'
-                  ? 'bg-cyan-500 text-slate-950 shadow'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-cyan-500 text-black shadow'
+                  : 'text-zinc-400 hover:text-white'
               }`}
             >
               <FileText className="w-3.5 h-3.5" />
@@ -101,10 +101,10 @@ export default function DefinitionsPage() {
       </div>
 
       {/* Sticky Fast-Filter & Search Bar */}
-      <div className="sticky top-20 z-40 bg-slate-900/95 backdrop-blur-md rounded-2xl border border-slate-700/80 p-5 space-y-4 shadow-xl">
+      <div className="sticky top-20 z-40 bg-black/95 backdrop-blur-md rounded-2xl border border-zinc-800 p-5 space-y-4 shadow-2xl">
         {/* Category Filter Tags */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-bold text-slate-400 flex items-center gap-1.5 mr-2">
+          <span className="text-xs font-bold text-zinc-400 flex items-center gap-1.5 mr-2">
             <Tag className="w-3.5 h-3.5 text-cyan-400" />
             <span>Fast Filter:</span>
           </span>
@@ -114,8 +114,8 @@ export default function DefinitionsPage() {
               onClick={() => setSelectedCategory(cat)}
               className={`text-xs px-3.5 py-1.5 rounded-lg border font-medium transition cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold border-cyan-400 shadow-sm shadow-cyan-500/30'
-                  : 'bg-slate-800/90 text-slate-300 border-slate-700/80 hover:bg-slate-700 hover:text-white'
+                  ? 'bg-cyan-500 text-black font-bold border-cyan-400 shadow-sm shadow-cyan-500/30'
+                  : 'bg-zinc-900/90 text-zinc-300 border-zinc-800 hover:bg-zinc-800 hover:text-white'
               }`}
             >
               {cat}
@@ -126,13 +126,13 @@ export default function DefinitionsPage() {
         {/* Live Search & Actions */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Live search across all 3,000+ lines (e.g., YOLO, RAG, FastAPI, Cosine, Precision, LLaMA)..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700/80 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black border border-zinc-800 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-400 transition"
             />
           </div>
 
@@ -141,13 +141,13 @@ export default function DefinitionsPage() {
               <>
                 <button
                   onClick={expandAll}
-                  className="px-3 py-2 rounded-lg bg-slate-800 text-xs text-slate-300 hover:text-white border border-slate-700 transition cursor-pointer"
+                  className="px-3 py-2 rounded-lg bg-zinc-900 text-xs text-zinc-300 hover:text-white border border-zinc-800 transition cursor-pointer"
                 >
                   Expand All
                 </button>
                 <button
                   onClick={collapseAll}
-                  className="px-3 py-2 rounded-lg bg-slate-800 text-xs text-slate-300 hover:text-white border border-slate-700 transition cursor-pointer"
+                  className="px-3 py-2 rounded-lg bg-zinc-900 text-xs text-zinc-300 hover:text-white border border-zinc-800 transition cursor-pointer"
                 >
                   Collapse All
                 </button>
@@ -155,7 +155,7 @@ export default function DefinitionsPage() {
             )}
             <button
               onClick={scrollToTop}
-              className="flex items-center gap-1 px-3 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-cyan-400 hover:text-cyan-300 border border-slate-700 transition cursor-pointer"
+              className="flex items-center gap-1 px-3 py-2 rounded-lg bg-zinc-900 text-xs font-semibold text-cyan-400 hover:text-cyan-300 border border-zinc-800 transition cursor-pointer"
             >
               <ArrowUp className="w-3.5 h-3.5" />
               <span>Top</span>
@@ -164,7 +164,7 @@ export default function DefinitionsPage() {
         </div>
 
         {/* Count Counter */}
-        <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
+        <div className="flex items-center justify-between text-xs text-zinc-400 pt-1">
           <span>
             Showing <strong className="text-cyan-400">{filteredTopics.length}</strong> topics in category <strong className="text-white">"{selectedCategory}"</strong>
           </span>
@@ -188,12 +188,12 @@ export default function DefinitionsPage() {
               <div
                 key={item.id}
                 id={item.id}
-                className="rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 p-6 sm:p-8 space-y-4 shadow-lg transition"
+                className="rounded-2xl bg-[#0a0a0c] border border-zinc-800 hover:border-zinc-700 p-6 sm:p-8 space-y-4 shadow-xl transition"
               >
                 {/* Topic Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-3">
                   <div className="flex items-center gap-3 flex-wrap">
-                    <span className="text-xs font-mono px-2.5 py-0.5 rounded-md bg-slate-800 text-cyan-400 border border-slate-700">
+                    <span className="text-xs font-mono px-2.5 py-0.5 rounded-md bg-zinc-900 text-cyan-400 border border-zinc-800">
                       {item.category}
                     </span>
                     <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
@@ -205,7 +205,7 @@ export default function DefinitionsPage() {
                     <button
                       onClick={() => copyTopicContent(item)}
                       title="Copy complete topic text"
-                      className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-800 text-xs text-slate-300 hover:text-cyan-300 border border-slate-700 transition cursor-pointer"
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-zinc-900 text-xs text-zinc-300 hover:text-cyan-300 border border-zinc-800 transition cursor-pointer"
                     >
                       {copiedId === item.id ? (
                         <>
@@ -222,7 +222,7 @@ export default function DefinitionsPage() {
 
                     <button
                       onClick={() => toggleExpand(item.id)}
-                      className="flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300 hover:bg-slate-700 transition cursor-pointer"
+                      className="flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 text-xs font-semibold text-zinc-300 hover:bg-zinc-800 transition cursor-pointer"
                     >
                       <span>{isExpanded ? 'Collapse' : 'Expand'}</span>
                       {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -232,7 +232,7 @@ export default function DefinitionsPage() {
 
                 {/* Verbatim Topic Content */}
                 {isExpanded && (
-                  <div className="text-sm sm:text-base text-slate-200 leading-relaxed font-sans whitespace-pre-line bg-slate-950/40 p-4 rounded-xl border border-slate-800/60 font-mono text-xs sm:text-sm overflow-x-auto">
+                  <div className="text-sm sm:text-base text-zinc-200 leading-relaxed font-sans whitespace-pre-line bg-black p-4 sm:p-6 rounded-xl border border-zinc-800/80 font-mono text-xs sm:text-sm overflow-x-auto">
                     {item.content}
                   </div>
                 )}
@@ -241,9 +241,9 @@ export default function DefinitionsPage() {
           })}
 
           {filteredTopics.length === 0 && (
-            <div className="text-center py-16 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-3">
-              <p className="text-lg font-semibold text-slate-300">No topics found matching your criteria</p>
-              <p className="text-xs text-slate-500">Try adjusting your search query or selecting "All" categories.</p>
+            <div className="text-center py-16 rounded-2xl bg-[#0a0a0c] border border-zinc-800 space-y-3">
+              <p className="text-lg font-semibold text-zinc-300">No topics found matching your criteria</p>
+              <p className="text-xs text-zinc-500">Try adjusting your search query or selecting "All" categories.</p>
               <button
                 onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }}
                 className="px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-bold cursor-pointer"
@@ -255,19 +255,19 @@ export default function DefinitionsPage() {
         </div>
       ) : (
         /* Continuous Unbroken Raw File View */
-        <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 space-y-4 shadow-xl">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div className="rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 sm:p-8 space-y-4 shadow-2xl">
+          <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
             <div>
               <h2 className="text-lg font-bold text-white">Full Continuous Text File (All 7,145 Lines)</h2>
-              <p className="text-xs text-slate-400">Complete, uninterrupted master text file exactly as you wrote it</p>
+              <p className="text-xs text-zinc-400">Complete, uninterrupted master text file exactly as you wrote it</p>
             </div>
             <button
               onClick={copyFullDocument}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-xs shadow transition cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500 text-black font-semibold text-xs shadow transition cursor-pointer"
             >
               {copiedId === 'full-doc' ? (
                 <>
-                  <Check className="w-4 h-4 text-emerald-300" />
+                  <Check className="w-4 h-4 text-emerald-400" />
                   <span>Copied Entire Document!</span>
                 </>
               ) : (
@@ -279,7 +279,7 @@ export default function DefinitionsPage() {
             </button>
           </div>
 
-          <div className="bg-slate-950 rounded-xl p-6 border border-slate-800/80 font-mono text-xs sm:text-sm text-slate-200 leading-relaxed overflow-x-auto whitespace-pre-wrap max-h-[75vh] overflow-y-auto">
+          <div className="bg-black rounded-xl p-6 border border-zinc-800/80 font-mono text-xs sm:text-sm text-zinc-200 leading-relaxed overflow-x-auto whitespace-pre-wrap max-h-[75vh] overflow-y-auto">
             {fullRawText}
           </div>
         </div>
