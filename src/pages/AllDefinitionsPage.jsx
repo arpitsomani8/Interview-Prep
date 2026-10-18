@@ -1742,7 +1742,8 @@ export default function AllDefinitionsPage() {
 
             {/* Item 30: LLM */}
             {item.id === 'llm' && (
-              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
+              <div className="space-y-8 text-xs sm:text-sm text-zinc-300">
+                {/* 3 Core Architecture Questions */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                   {item.qaItems.map((qa, qIdx) => (
                     <div key={qIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
@@ -1755,6 +1756,289 @@ export default function AllDefinitionsPage() {
                     </div>
                   ))}
                 </div>
+
+                {/* Section 1: Hands-On Program 1 - Simple LLM Client */}
+                {item.simpleLlmProgram && (
+                  <div className="space-y-5 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800/90 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+                      <div className="space-y-1">
+                        <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-[10px] font-mono uppercase font-bold tracking-wider">
+                          <Terminal className="w-3 h-3" />
+                          <span>simple_llm/</span>
+                        </div>
+                        <h4 className="text-sm sm:text-base font-bold text-white tracking-tight">
+                          {item.simpleLlmProgram.title}
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-2 font-mono text-[11px] text-zinc-400 bg-black/60 px-3 py-1.5 rounded-lg border border-zinc-800">
+                        <span>Folder:</span>
+                        <span className="text-cyan-400 font-bold">{item.simpleLlmProgram.folder}</span>
+                      </div>
+                    </div>
+
+                    {/* Step-by-Step Environment Setup */}
+                    <div className="space-y-2.5">
+                      <h5 className="text-xs font-bold text-zinc-200 uppercase tracking-wider font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Environment Setup & Installation</span>
+                      </h5>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                        {item.simpleLlmProgram.setupSteps.map((step, sIdx) => (
+                          <div key={sIdx} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                            <span className="text-[10px] font-bold text-cyan-400 font-mono uppercase tracking-wide">
+                              {step.label}
+                            </span>
+                            <div className="text-[11px] font-mono text-zinc-200 bg-zinc-900/80 px-2 py-1 rounded border border-zinc-800 break-all">
+                              {step.cmd}
+                            </div>
+                            <span className="text-[10px] text-zinc-400">{step.desc}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* API Key Configuration & Warning */}
+                    <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <div className="text-xs font-bold text-amber-300 font-mono flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                          <span>API Key Configuration & Security Best Practice</span>
+                        </div>
+                        <span className="text-[10px] text-amber-400/90 font-mono font-bold uppercase bg-amber-950/50 px-2 py-0.5 rounded border border-amber-800/60">
+                          {item.simpleLlmProgram.apiKeyConfig.scope}
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-300 leading-relaxed">
+                        {item.simpleLlmProgram.apiKeyConfig.note}
+                      </p>
+                      <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-black/80 border border-amber-900/50 font-mono text-xs text-amber-200">
+                        <span className="break-all">{item.simpleLlmProgram.apiKeyConfig.envCmd}</span>
+                        <button
+                          onClick={() => handleCopyCode('env-key', item.simpleLlmProgram.apiKeyConfig.envCmd)}
+                          className="flex items-center gap-1 px-2 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-[10px] text-zinc-300 border border-zinc-700 transition cursor-pointer shrink-0"
+                        >
+                          {copiedId === 'env-key' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <p className="text-[11px] text-rose-300/90 font-mono font-bold flex items-center gap-1.5">
+                        <span>⚠</span>
+                        <span>{item.simpleLlmProgram.apiKeyConfig.warning}</span>
+                      </p>
+                    </div>
+
+                    {/* Code Container: simple_llm/main.py */}
+                    <div className="space-y-2">
+                      <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                        <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                          <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                            <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>simple_llm/{item.simpleLlmProgram.codeFilename}</span>
+                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/50">Python 3</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopyCode('code-simple-llm', item.simpleLlmProgram.code)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                          >
+                            {copiedId === 'code-simple-llm' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-400" />
+                                <span>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                <span>Copy Code</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                          {item.simpleLlmProgram.code}
+                        </pre>
+                      </div>
+                      <p className="text-[11px] text-zinc-400 font-mono italic">
+                        * {item.simpleLlmProgram.modelNote}
+                      </p>
+                    </div>
+
+                    {/* Execution & What Actually Happened */}
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap items-center gap-3 p-3 rounded-xl bg-black border border-zinc-800 text-xs font-mono">
+                        <span className="text-zinc-400">Run:</span>
+                        <span className="text-emerald-400 font-bold bg-zinc-900 px-2 py-0.5 rounded border border-zinc-700">{item.simpleLlmProgram.runCmd}</span>
+                        <span className="text-zinc-500">|</span>
+                        <span className="text-zinc-400">Example input:</span>
+                        <span className="text-zinc-200 italic">"{item.simpleLlmProgram.exampleInput}"</span>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                          What actually happened?
+                        </h5>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                          {item.simpleLlmProgram.executionSteps.map((step, esIdx) => (
+                            <div key={esIdx} className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                              <span className="text-xs font-bold text-cyan-300 font-mono">{step.step}</span>
+                              <p className="text-[11px] text-zinc-400 leading-relaxed">{step.desc}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Provider Takeaway Banner */}
+                    <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                      <strong className="text-cyan-400 uppercase">Core Architectural Takeaway: </strong>
+                      {item.simpleLlmProgram.coreTakeaway}
+                    </div>
+                  </div>
+                )}
+
+                {/* Section 2: Hands-On Program 2 - Simple RAG System */}
+                {item.simpleRagProgram && (
+                  <div className="space-y-5 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800/90 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+                      <div className="space-y-1">
+                        <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-mono uppercase font-bold tracking-wider">
+                          <Terminal className="w-3 h-3" />
+                          <span>simple_rag/</span>
+                        </div>
+                        <h4 className="text-sm sm:text-base font-bold text-white tracking-tight">
+                          {item.simpleRagProgram.title}
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-2 font-mono text-[11px] text-zinc-400 bg-black/60 px-3 py-1.5 rounded-lg border border-zinc-800">
+                        <span>Architecture:</span>
+                        <span className="text-emerald-400 font-bold">Dense Embeddings + NumPy Dot Product</span>
+                      </div>
+                    </div>
+
+                    {/* Objective Banner */}
+                    <div className="p-3.5 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
+                      <strong className="text-emerald-400 font-mono uppercase">Primary Objective: </strong>
+                      {item.simpleRagProgram.objective}
+                    </div>
+
+                    {/* Folder Structure & Dependencies Matrix */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {/* Folder Architecture */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                        <div className="text-xs font-bold text-zinc-200 uppercase tracking-wider font-mono flex items-center gap-2">
+                          <FileCode className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>Folder Structure ({item.simpleRagProgram.folder})</span>
+                        </div>
+                        <div className="space-y-1.5 font-mono text-xs">
+                          {item.simpleRagProgram.files.map((file, fIdx) => (
+                            <div key={fIdx} className="p-2 rounded bg-zinc-950 border border-zinc-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                              <span className="text-cyan-300 font-bold">{file.name}</span>
+                              <span className="text-[11px] text-zinc-400 font-sans">{file.desc}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Package Dependencies & Purpose */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <div className="text-xs font-bold text-zinc-200 uppercase tracking-wider font-mono flex items-center gap-2">
+                            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>What Are The Packages For?</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopyCode('pip-rag', item.simpleRagProgram.installCmd)}
+                            className="flex items-center gap-1 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-[10px] text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                          >
+                            {copiedId === 'pip-rag' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-400" />
+                                <span>Copied</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                <span>Copy pip</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <div className="text-[11px] font-mono text-emerald-300 bg-zinc-900/80 px-2.5 py-1 rounded border border-zinc-800">
+                          {item.simpleRagProgram.installCmd}
+                        </div>
+                        <div className="space-y-1.5">
+                          {item.simpleRagProgram.packages.map((pkg, pIdx) => (
+                            <div key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2">
+                              <span className="font-mono text-emerald-400 font-bold shrink-0">• {pkg.name}:</span>
+                              <span className="text-zinc-400 text-[11px] leading-relaxed">{pkg.purpose}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Knowledge Source Note */}
+                    <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 flex items-start gap-2">
+                      <span className="text-amber-400 font-mono font-bold mt-0.5">ℹ</span>
+                      <span>{item.simpleRagProgram.knowledgeSource}</span>
+                    </div>
+
+                    {/* Code Container: simple_rag/main.py */}
+                    <div className="space-y-2">
+                      <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                        <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                          <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                            <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>simple_rag/{item.simpleRagProgram.codeFilename} (Vector RAG Pipeline)</span>
+                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-800/50">all-MiniLM-L6-v2</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopyCode('code-simple-rag', item.simpleRagProgram.code)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                          >
+                            {copiedId === 'code-simple-rag' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-400" />
+                                <span>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                <span>Copy Code</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <pre className="p-4 text-xs font-mono text-emerald-200 overflow-x-auto leading-relaxed">
+                          {item.simpleRagProgram.code}
+                        </pre>
+                      </div>
+                    </div>
+
+                    {/* Execution & Query Walkthrough */}
+                    <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                      <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
+                        <span className="text-zinc-400">Run:</span>
+                        <span className="text-emerald-400 font-bold bg-zinc-900 px-2 py-0.5 rounded border border-zinc-700">{item.simpleRagProgram.runCmd}</span>
+                        <span className="text-zinc-500">|</span>
+                        <span className="text-zinc-400">Input:</span>
+                        <span className="text-zinc-200 font-semibold">{item.simpleRagProgram.exampleInput}</span>
+                      </div>
+                      <div className="p-3 rounded-lg bg-emerald-950/20 border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                        <strong className="text-emerald-400 uppercase">Under the Hood: </strong>
+                        {item.simpleRagProgram.executionSummary}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
