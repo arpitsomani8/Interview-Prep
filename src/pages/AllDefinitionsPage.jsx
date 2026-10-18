@@ -306,6 +306,26 @@ export default function AllDefinitionsPage() {
                     <p className="text-xs text-zinc-300 leading-relaxed">
                       {item.gptOverview.desc}
                     </p>
+                    {item.gptOverview.architecture && (
+                      <div className="p-3 rounded-lg bg-black border border-zinc-800 space-y-1.5">
+                        <div className="flex items-center justify-between flex-wrap gap-1">
+                          <span className="text-[11px] font-bold text-cyan-300 font-mono">
+                            {item.gptOverview.architecture.title}
+                          </span>
+                          <span className="text-[10px] text-zinc-400 font-mono">
+                            {item.gptOverview.architecture.meaning}
+                          </span>
+                        </div>
+                        <ul className="space-y-1 pt-1 border-t border-zinc-800/80">
+                          {item.gptOverview.architecture.traits.map((tr, tIdx) => (
+                            <li key={tIdx} className="text-[11px] text-zinc-300 flex items-start gap-1.5 font-sans">
+                              <span className="text-cyan-400 font-mono">›</span>
+                              <span>{tr}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                     <ul className="space-y-1.5 pt-2 border-t border-zinc-800">
                       {item.gptOverview.points.map((pt, pIdx) => (
                         <li key={pIdx} className="text-xs text-zinc-400 flex items-start gap-2">

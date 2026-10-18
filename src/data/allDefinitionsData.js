@@ -146,6 +146,16 @@ export const definitionsData = [
       name: "GPT (Generative Pre-trained Transformer)",
       developer: "OpenAI",
       desc: "A family of AI language models developed by OpenAI that can understand and generate text, answer questions, summarize documents, write code, and perform complex reasoning tasks.",
+      architecture: {
+        title: "GPT Architecture",
+        meaning: "GPT means Generative Pre-trained Transformer.",
+        traits: [
+          "Uses a decoder-only Transformer.",
+          "Predicts the next token based on previous tokens.",
+          "Repeats that prediction process to generate text.",
+          "May be further instruction-tuned and aligned for conversational use."
+        ]
+      },
       points: [
         "Commonly accessed through hosted cloud APIs (e.g. gpt-4o, gpt-5-mini) or ChatGPT.",
         "Zero infrastructure maintenance: OpenAI handles GPU orchestration, scaling, and low-level optimizations.",
