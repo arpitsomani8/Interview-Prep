@@ -64,7 +64,8 @@ export const definitionBookmarks = [
   { id: "uvicorn", label: "Uvicorn" },
   { id: "async-sync", label: "Async vs. Sync" },
   { id: "load-balancing", label: "Load Balancing" },
-  { id: "docker", label: "Docker" }
+  { id: "docker", label: "Docker" },
+  { id: "cicd", label: "CI/CD" }
 ];
 
 export const definitionsData = [
@@ -4201,5 +4202,85 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`,
       }
     ],
     takeaway: "Docker guarantees production consistency by packaging the Python runtime, dependencies, API code, and ML model weights into an immutable image. Caching pip layers prior to copying code speeds up CI/CD build cycles."
+  },
+  {
+    id: "cicd",
+    title: "CI/CD, Health Checks, Monitoring & Rollback Strategy",
+    badge: "MLOps, DevOps & Production Reliability",
+    summary: "CI/CD automates the path from code changes to a tested deployment, pairing automated validation with proactive system/model monitoring and safe rollback protocols.",
+    coreConcept: "CI/CD automates the path from code changes to a tested deployment.",
+    pipelineStages: [
+      { step: 1, name: "Push to Git", desc: "Developer pushes code changes to Git repository." },
+      { step: 2, name: "Automated CI", desc: "CI runs unit tests, linting, and API/model checks." },
+      { step: 3, name: "Build Image", desc: "The system builds a versioned Docker container image." },
+      { step: 4, name: "Deploy to Staging", desc: "The image is deployed to an isolated staging environment." },
+      { step: 5, name: "Smoke Tests", desc: "Integration and smoke tests run to verify live service health." },
+      { step: 6, name: "Approve or Auto-Deploy", desc: "The release is approved or automatically deployed, depending on policy." },
+      { step: 7, name: "Production Monitoring", desc: "Production monitoring checks the new release for errors and drift." }
+    ],
+    ciCdDefinitions: [
+      {
+        term: "Continuous Integration (CI)",
+        tag: "Validation",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/40",
+        definition: "Continuous Integration validates changes."
+      },
+      {
+        term: "Continuous Delivery (CD)",
+        tag: "Deploy-Ready",
+        accent: "text-amber-400",
+        border: "border-amber-800/40",
+        definition: "Continuous Delivery keeps a release ready to deploy, often with approval."
+      },
+      {
+        term: "Continuous Deployment (CD)",
+        tag: "Auto-Deploy",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/40",
+        definition: "Continuous Deployment automatically deploys changes that pass the required checks."
+      }
+    ],
+    healthEndpoint: {
+      title: "Health Endpoint",
+      endpoint: "GET /healthz",
+      desc: "A health endpoint lets the platform check whether the service is responding.",
+      codeSnippet: `@app.get("/healthz")
+def health_check():
+    # Returns 200 OK when service and loaded model are ready
+    return {"status": "ok", "service": "parcel-api"}`
+    },
+    monitoringStreams: [
+      {
+        category: "System Monitoring",
+        badge: "Infrastructure",
+        accent: "text-cyan-400",
+        metrics: "latency, error rates, memory, CPU/GPU utilization, request volume, timeouts."
+      },
+      {
+        category: "Model Monitoring",
+        badge: "Statistical & Quality",
+        accent: "text-amber-400",
+        metrics: "prediction distributions, confidence patterns, data drift, and actual quality when ground-truth labels become available."
+      },
+      {
+        category: "RAG-Specific Monitoring",
+        badge: "Generative AI",
+        accent: "text-emerald-400",
+        metrics: "retrieval quality, empty-context rates, answer faithfulness, citation accuracy, and LLM token usage."
+      }
+    ],
+    rollbackStrategy: {
+      definition: "Rollback means returning to a previous known-good release when a deployment causes problems.",
+      steps: [
+        { num: "1", title: "Deploy Version", text: "Deploy model version v2." },
+        { num: "2", title: "Detect Anomaly", text: "Observe a rise in error rates or a drop in validated prediction quality." },
+        { num: "3", title: "Route Back", text: "Route traffic back to version v1." },
+        { num: "4", title: "Preserve Logs", text: "Preserve logs and the failing model/version details." },
+        { num: "5", title: "Fix & Re-attempt", text: "Investigate and fix the problem before attempting deployment again." }
+      ],
+      goldenRule: "Use versioned model artifacts and deployments so the previous model can actually be restored."
+    },
+    takeaway: "CI/CD automates quality gates from commit to production. A responsive health endpoint enables orchestrator traffic routing, multi-tier monitoring tracks both infrastructure and ML/RAG drift, and versioned artifacts guarantee instantaneous rollback when issues arise."
   }
 ];

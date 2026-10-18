@@ -6541,6 +6541,198 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 68: CI/CD */}
+            {item.id === 'cicd' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Concept & 3-way CI/CD Matrix */}
+                <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-3 gap-2">
+                    <div className="flex items-center gap-2">
+                      <Terminal className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                        {item.coreConcept}
+                      </h4>
+                    </div>
+                    <span className="text-[10px] font-mono text-cyan-300 uppercase bg-cyan-950/40 px-2.5 py-0.5 rounded border border-cyan-800/40 shrink-0 self-start sm:self-auto">
+                      Automated Release Gates
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.ciCdDefinitions.map((def, dIdx) => (
+                      <div
+                        key={dIdx}
+                        className={`p-4 rounded-xl bg-black border space-y-2 flex flex-col justify-between ${def.border}`}
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <h5 className={`text-xs font-bold font-mono uppercase ${def.accent}`}>
+                              {def.term}
+                            </h5>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {def.tag}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans pt-1">
+                            {def.definition}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 7-Stage Typical Pipeline Flow */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>A Typical 7-Stage CI/CD Pipeline</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2.5">
+                    {item.pipelineStages.map((stg) => (
+                      <div
+                        key={stg.step}
+                        className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between hover:border-zinc-700 transition"
+                      >
+                        <div>
+                          <span className="w-5 h-5 rounded bg-cyan-950 border border-cyan-800 text-cyan-400 font-mono text-[10px] flex items-center justify-center font-bold mb-1.5">
+                            {stg.step}
+                          </span>
+                          <h6 className="text-[11px] font-bold text-white font-mono leading-tight">
+                            {stg.name}
+                          </h6>
+                        </div>
+                        <p className="text-[10px] text-zinc-400 font-sans leading-relaxed pt-1">
+                          {stg.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Health Endpoint Card */}
+                {item.healthEndpoint && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="font-bold text-white">{item.healthEndpoint.title}</span>
+                        <code className="text-emerald-400 text-[11px]">{item.healthEndpoint.endpoint}</code>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-health', item.healthEndpoint.codeSnippet)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-health' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                      <div className="lg:col-span-7">
+                        <pre className="p-3 rounded-lg bg-zinc-950 border border-zinc-800/80 font-mono text-xs text-cyan-200 overflow-x-auto leading-relaxed">
+                          {item.healthEndpoint.codeSnippet}
+                        </pre>
+                      </div>
+                      <div className="lg:col-span-5 text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.healthEndpoint.desc}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Monitoring: System vs. Model vs. RAG */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                    <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Dual-Track Observability: Track Both System & Model Behavior</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.monitoringStreams.map((mon, mIdx) => (
+                      <div
+                        key={mIdx}
+                        className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-2 flex flex-col justify-between"
+                      >
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <h5 className={`text-xs font-bold font-mono uppercase ${mon.accent}`}>
+                              {mon.category}
+                            </h5>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                              {mon.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans pt-1">
+                            {mon.metrics}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Rollback Strategy Protocol */}
+                {item.rollbackStrategy && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-rose-900/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-rose-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          Rollback Strategy Protocol
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-rose-300 uppercase bg-rose-950/40 px-2.5 py-0.5 rounded border border-rose-800/40 shrink-0 self-start sm:self-auto">
+                        Failure Recovery
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 font-sans leading-relaxed font-medium">
+                      {item.rollbackStrategy.definition}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-1">
+                      {item.rollbackStrategy.steps.map((st) => (
+                        <div
+                          key={st.num}
+                          className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="w-5 h-5 rounded bg-rose-950 border border-rose-800 text-rose-400 font-mono text-[10px] flex items-center justify-center font-bold shrink-0">
+                              {st.num}
+                            </span>
+                            <span className="text-[11px] font-bold text-white font-mono">{st.title}</span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-1">
+                            {st.text}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Artifact Versioning Mandate */}
+                    <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-800/30 text-[11px] text-amber-200/90 leading-relaxed font-mono">
+                      <strong className="text-amber-400 uppercase font-sans font-bold block mb-0.5">Crucial Mandate:</strong>
+                      {item.rollbackStrategy.goldenRule}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Production Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
