@@ -4467,6 +4467,12 @@ export default function AllDefinitionsPage() {
                       <h4 className="text-sm sm:text-base font-bold text-white tracking-tight pt-0.5">
                         Cost of Inference & 6 Optimization Levers
                       </h4>
+                      {item.costOptimization.definition && (
+                        <div className="p-3 rounded-xl bg-emerald-950/20 border border-emerald-800/40 text-xs text-emerald-200/95 leading-relaxed font-mono">
+                          <strong className="text-emerald-400 uppercase font-sans font-bold">What is Inference Cost? </strong>
+                          {item.costOptimization.definition}
+                        </div>
+                      )}
                       <p className="text-xs text-zinc-400 font-sans leading-relaxed">
                         {item.costOptimization.overview}
                       </p>

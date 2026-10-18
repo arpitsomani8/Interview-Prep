@@ -2989,6 +2989,7 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
       ]
     },
     costOptimization: {
+      definition: "Inference cost is the cost of running a trained model to make predictions. It is separate from the cost of training the model.",
       overview: "Hosted model providers charge per input token, output token, or image; self-hosted inference requires dedicated compute, GPU VRAM, and cluster operational cost.",
       levers: [
         { lever: "Avoid unnecessary LLM calls", desc: "Use classical rules, SQL queries, or embeddings for deterministic tasks." },
