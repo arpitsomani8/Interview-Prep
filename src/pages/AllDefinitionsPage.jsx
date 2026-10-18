@@ -7273,6 +7273,127 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 73: ONNX - Open Neural Network Exchange & Runtime */}
+            {item.id === 'onnx' && (
+              <div className="space-y-6">
+                {/* Core Format vs Runtime Callout */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Model Representation & Open Standard</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-800">
+                      Open Standard
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-black border border-cyan-900/50 space-y-3">
+                    <p className="text-xs sm:text-sm text-cyan-200 font-sans leading-relaxed">
+                      {item.definition}
+                    </p>
+                    <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-300">
+                      <strong className="text-amber-400">Key Distinction: </strong>
+                      {item.formatVsRuntime}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Why is ONNX useful? Real-world YOLO Inspection Context */}
+                {item.yoloExample && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.yoloExample.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        YOLO Logistics Case Study
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 italic">
+                      💡 {item.yoloExample.scenario}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                      {item.yoloExample.reasons.map((r, rIdx) => (
+                        <div
+                          key={rIdx}
+                          className="p-4 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition space-y-2 flex flex-col justify-between"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="text-[10px] font-mono font-bold text-zinc-500">
+                                0{rIdx + 1}
+                              </span>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                                {r.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-sm font-bold font-mono ${r.accent}`}>
+                              {r.title}
+                            </h5>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans pt-1">
+                              {r.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Operational Caveat */}
+                    <div className="p-3.5 rounded-xl bg-amber-950/30 border border-amber-900/50 flex items-start gap-3">
+                      <span className="text-amber-400 font-bold text-base mt-0.5 shrink-0">⚠️</span>
+                      <p className="text-xs text-amber-200/90 font-sans leading-relaxed">
+                        {item.caveat}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Related Concepts: Model Pruning & DeepSparse */}
+                {item.relatedConcepts && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Sliders className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Related Optimization Technologies (Pruning & Sparse Inference)</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.relatedConcepts.map((concept, cIdx) => (
+                        <div
+                          key={cIdx}
+                          className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-2.5"
+                        >
+                          <div className="flex items-center justify-between">
+                            <h5 className={`text-sm font-bold font-mono ${concept.accent}`}>
+                              {concept.name}
+                            </h5>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black text-zinc-300 border border-zinc-800">
+                              {concept.badge}
+                            </span>
+                          </div>
+                          <div className="p-2.5 rounded-lg bg-black border border-zinc-800 text-xs font-semibold text-zinc-200">
+                            {concept.definition}
+                          </div>
+                          <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
+                            {concept.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

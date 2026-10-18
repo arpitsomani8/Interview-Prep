@@ -69,7 +69,8 @@ export const definitionBookmarks = [
   { id: "model-choice", label: "Model Choice" },
   { id: "production-check", label: "Production Check" },
   { id: "caching", label: "Caching" },
-  { id: "backend-architecture", label: "Backend Architecture" }
+  { id: "backend-architecture", label: "Backend Architecture" },
+  { id: "onnx", label: "ONNX" }
 ];
 
 export const definitionsData = [
@@ -4548,5 +4549,61 @@ def health_check():
       }
     ],
     takeaway: "No single backend architecture fits every system. Choose Modular Monolith for simplicity, Microservices for organizational scale, Event-driven for decoupled async throughput, and CQRS when read and write workloads diverge."
+  },
+  {
+    id: "onnx",
+    title: "ONNX — Open Neural Network Exchange & Runtime",
+    badge: "Model Interoperability & High-Performance Inference",
+    summary: "ONNX stands for Open Neural Network Exchange. It is an open format that allows you to save a trained machine learning or deep learning model in a standardized form so that different tools and runtimes can work with it.",
+    definition: "ONNX stands for Open Neural Network Exchange. It is an open format that allows you to save a trained machine learning or deep learning model in a standardized form so that different tools and runtimes can work with it.",
+    formatVsRuntime: "ONNX is not itself a model-training algorithm. It is a model format. ONNX Runtime is one of the tools that executes models in that format.",
+    yoloExample: {
+      title: "Why is ONNX useful?",
+      scenario: "Imagine your parcel-inspection system uses a YOLO model to detect crushed boxes, torn packaging, or other defects.",
+      reasons: [
+        {
+          title: "Portability",
+          desc: "Move supported models between frameworks and deployment environments.",
+          accent: "text-emerald-400",
+          badge: "Framework Agnostic"
+        },
+        {
+          title: "Performance",
+          desc: "ONNX Runtime can optimize model execution and may improve inference speed.",
+          accent: "text-cyan-400",
+          badge: "Execution Optimization"
+        },
+        {
+          title: "Hardware options",
+          desc: "Run on supported CPUs and GPUs, depending on the model and available execution provider.",
+          accent: "text-amber-400",
+          badge: "Execution Providers"
+        },
+        {
+          title: "Deployment flexibility",
+          desc: "Separate model training from the technology used to serve predictions.",
+          accent: "text-purple-400",
+          badge: "Decoupled Serving"
+        }
+      ]
+    },
+    caveat: "ONNX does not guarantee that every model will run everywhere or that inference will always be faster. You need to check operator support and benchmark the actual model on your target hardware.",
+    relatedConcepts: [
+      {
+        name: "Model pruning",
+        definition: "Removes less useful model weights or structures",
+        accent: "text-rose-400",
+        badge: "Model Compression",
+        detail: "Eliminates redundant neurons, channels, or weight tensors that contribute negligibly to prediction accuracy, reducing memory footprint and compute complexity."
+      },
+      {
+        name: "DeepSparse",
+        definition: "An inference engine historically associated with running sparse ONNX models efficiently on CPUs",
+        accent: "text-blue-400",
+        badge: "Sparse CPU Acceleration",
+        detail: "Developed by Neural Magic to exploit weight sparsity in pruned neural networks, achieving GPU-class throughput directly on standard x86 and ARM CPUs."
+      }
+    ],
+    takeaway: "ONNX standardizes trained models into an open computational graph format. Paired with ONNX Runtime, execution providers, and techniques like model pruning and DeepSparse, it decouples offline training from optimized production inference."
   }
 ];
