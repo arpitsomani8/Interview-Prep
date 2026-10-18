@@ -33,7 +33,7 @@ export default function FashionPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm uppercase tracking-wider">
             <MessageSquareQuote className="w-5 h-5" />
-            <span>Executive 90-Second Interview Defense Script (Model-First Flow)</span>
+            <span>Executive 90-Second Interview Defense Script (End-to-End Architecture Flow)</span>
           </div>
           <span className="text-xs px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
             Timing: 90s
