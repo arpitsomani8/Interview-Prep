@@ -2,19 +2,27 @@ export const hybridData = {
   title: "Hybrid AI Engine | Multi-Tenant Hybrid ML & RAG Solution",
   resumeBullet: "Architected a multi-tenant enterprise platform with dedicated per-tenant PostgreSQL databases, automated tabular ML training (LightGBM + Optuna), and cold-start fallback to RAG (LLaMA + Pinecone) accessing locally stored institutional policy files.",
 
-  executiveScript: `We built the Hybrid AI Engine—a multi-tenant dynamic ML and RAG platform designed for enterprise applications.
+  executiveScript: `We built the Hybrid AI Engine—a general multi-tenant AI decision platform designed for enterprise client organizations.
 
-The core business challenge was that different enterprise clients have completely different data schemas and operational rules. For example, a fintech client checks fraud using transaction velocity and failed logins, while an e-commerce client predicts customer churn. More importantly, when a new client signs up on Day 1, they have zero historical records (under 100 rows). Standard machine learning models cannot train or validate on so few rows without severe overfitting, yet the enterprise client still needs automated decision support on Day 1 based on their official rulebooks and compliance manuals.
+To understand what data we store: Our platform serves different enterprise client companies (our "tenants"). For example, one tenant is a digital bank (fintech_corp), another is an online retailer (ecommerce_inc), and another is a healthcare group. Inside each client's dedicated database, we store their domain-specific business data—such as bank customers' transaction logs (transaction amounts, 24-hour velocity, failed logins, fraud labels) or e-commerce customer churn records.
+
+The core challenge was two-fold:
+1. Different clients need completely different predictive models and business rules.
+2. When a new enterprise client joins on Day 1, they have zero historical records (< 100 rows). Supervised machine learning cannot train reliably on 20 rows without massive overfitting, yet the client still needs immediate, automated decision support based on their official compliance rulebooks and operational manuals.
 
 Here is how our architecture works in simple terms:
 
-First, for data storage and tenant isolation, we use PostgreSQL as our core relational database. To keep tenant isolation clean and completely foolproof, we maintain a dedicated database for each tenant (for example, db_fintech_corp and db_ecommerce_inc). This stores the tenant's incoming records, historical data, trained model metadata, and audit logs with zero chance of data leaking between clients. We don't need complex runtime dynamic schema generation—instead, each tenant has their own clean relational tables, while Pydantic v2 is used within FastAPI purely for fast, bulletproof request validation (checking data types, required fields, and boundary constraints before anything touches the database or models).
+First, for data storage and tenant isolation, we use PostgreSQL as our core relational database. We give each enterprise client their own dedicated database (such as db_fintech_corp and db_ecommerce_inc). This physically separates their business transaction records, historical logs, and trained models with zero risk of cross-client data leakage. We use Pydantic v2 within FastAPI purely for fast incoming request validation (verifying types, required fields, and numerical bounds before anything touches the database or models).
 
-Second, each tenant's compliance guidelines and policy manuals are kept on secure local storage. Their exact file paths (like /policies/fintech_corp/fraud_v1.pdf) and version details are registered directly in the tenant's PostgreSQL database. For vector search, we use Pinecone Serverless, where text embeddings of these policies are strictly partitioned by tenant namespace (namespace=tenant_id).
+Second, for Offline Policy Ingestion: When a tenant uploads their compliance manuals or operational rulebooks (e.g. anti-money laundering policies):
+• 1. The original PDF/document is saved on secure local storage, and its file path (e.g. /policies/fintech_corp/aml_v1.pdf) is registered in the tenant's PostgreSQL database.
+• 2. A background pipeline extracts the text and splits it into semantic chunks (250–300 words each with 50-word overlap).
+• 3. Each chunk is converted into a 384-dimensional vector embedding.
+• 4. These vectors are pre-loaded and stored into Pinecone Serverless under that specific client's isolated namespace (namespace=tenant_id).
 
 Third, our Intelligent Hybrid Router directs incoming requests across three clear paths:
 • 1. Classical ML Route: When a tenant accumulates 100 or more records in their PostgreSQL database, our automated pipeline runs Optuna Bayesian optimization to tune a LightGBM model. This delivers instant prediction scores in under 5 milliseconds on standard CPUs.
-• 2. Cold-Start RAG Fallback: When a tenant is brand new with fewer than 100 records, the router looks up the tenant's policy file location from PostgreSQL, searches Pinecone for the closest matching policy clauses, and passes them to self-hosted LLaMA. LLaMA returns an audit-ready, policy-backed recommendation in ~250 milliseconds with zero hallucinations.
+• 2. Cold-Start RAG Fallback: When a tenant is brand new with fewer than 100 records, the router looks up the tenant's policy file location from PostgreSQL, searches Pinecone for the closest matching pre-embedded policy clauses, and passes them to self-hosted LLaMA. LLaMA returns an audit-ready, policy-backed recommendation in ~250 milliseconds with zero hallucinations.
 • 3. Unstructured Question Route: If a risk analyst types a free-form natural language question (like "What is our policy for accounts with velocity over $5,000?"), it queries Pinecone and LLaMA directly for an answer with exact document citations.
 
 Finally, during real-time inference, our validator calculates Z-scores (|x - μ| / σ) against the baseline distribution stored in PostgreSQL. If live incoming numbers drift by more than 3 standard deviations, a drift alert is flagged in under 1 millisecond so the team knows when automated re-training is needed.`,
@@ -138,7 +146,8 @@ Finally, during real-time inference, our validator calculates Z-scores (|x - μ|
       summary: "Serverless vector database storing high-dimensional document embeddings partitioned strictly by tenant namespaces.",
       details: [
         "Strict Namespace Partitioning: A single index is strictly segregated by namespace=tenant_id, ensuring client A can never retrieve client B's vector data.",
-        "Links to Local Files: Vector search matches semantic queries against document chunks, linking back directly to the local policy file referenced in PostgreSQL.",
+        "Offline Chunking & Embeddings: A background ingestion pipeline extracts uploaded PDFs, chunks them into 250–300 words with 50-word overlap, generates 384-d vectors, and pre-saves them into Pinecone.",
+        "Links to Local Files: Vector search matches semantic queries against pre-embedded chunks, linking back directly to the local policy file referenced in PostgreSQL.",
         "True Serverless Economics: Scales down to $0/month when idle and instantly scales up to handle query surges without manual cluster management."
       ]
     },
