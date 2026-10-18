@@ -14,6 +14,8 @@ Second, for model selection and edge optimization: We chose single-stage YOLO ov
 
 Third, for 100% offline reliability: The sorting facility cannot stop if the internet lags. We kept our dedicated PostgreSQL database entirely on-premises over the local LAN. When a parcel passes, bounding boxes and defect classifications are logged in under 1 millisecond. Simultaneously, the system fires a Modbus PLC signal in 4 milliseconds to extend the pneumatic arm and divert the defective carton.
 
+Fourth, for our Docker deployment flow: We containerized the vision pipeline using multi-stage Docker builds. Each conveyor line's ruggedized Industrial PC (IPC) runs a lightweight Docker container (< 280MB) that locks all C++ runtimes and AVX-512 drivers. Using Docker host networking and device passthrough, the container communicates directly with the Basler GigE camera and the serial Modbus PLC diverter with sub-millisecond local latency, enabling zero-downtime rolling container updates across 20+ sorting lines.
+
 Finally, for automated claims and SOP triage: Once a damaged carton is diverted to the rework siding, our multimodal pipeline extracts the defect image crop, matches it against chunked warehouse Standard Operating Procedures (SOPs), and passes it to a Vision LLM (GPT-4o or local LLaMA Vision) to produce an instant damage incident ticket and automated carrier claim draft.`,
 
   userExample: {
@@ -36,8 +38,8 @@ Finally, for automated claims and SOP triage: Once a damaged carton is diverted 
       {
         step: "03",
         stage: "DeepSparse Sparse CPU Inference",
-        system: "DeepSparse Engine (8-core CPU)",
-        text: "DeepSparse executes the pruned, quantized YOLO model using AVX-512 vector instructions on commodity CPU, completing forward pass in 14.2ms with zero GPU."
+        system: "Dockerized DeepSparse (8-core CPU)",
+        text: "Running inside an optimized Docker edge container, DeepSparse executes the pruned, quantized YOLO model via AVX-512 vector instructions on commodity CPU in 14.2ms with zero GPU."
       },
       {
         step: "04",
@@ -90,9 +92,10 @@ Finally, for automated claims and SOP triage: Once a damaged carton is diverted 
       badge: "Edge Containerization",
       summary: "Lightweight container packaging for the complete vision pipeline, ensuring identical execution on ruggedized industrial warehouse IPCs.",
       details: [
-        "Multi-Stage Builds: Strips heavy build tools, OpenCV compilation caches, and tests, keeping the final edge container image under 300MB.",
-        "Hardware Device Passthrough: Seamlessly binds industrial camera USB/GigE network adapters and serial PLC Modbus controllers into the isolated container.",
-        "Offline Resiliency: The container runs completely self-contained on the local warehouse network without requiring external internet access."
+        "Edge Deployment Flow: Docker Compose orchestrates the GigE camera capture daemon, the DeepSparse YOLO inference server, and the on-premises PostgreSQL container on each conveyor line's Industrial PC (IPC).",
+        "Hardware Device Passthrough: Uses --net=host and --device mappings to give the container direct low-latency access to the Basler GigE Vision camera network card and serial Modbus PLC controllers.",
+        "Multi-Stage Builds: Multi-stage Dockerfile strips build tools, OpenCV compilation caches, and tests, keeping the final edge container image lean (< 280MB) for rapid updates across 20+ sorting lines.",
+        "Offline Resiliency & Auto-Restart: Containers use restart: always to boot automatically with conveyor startup, running 100% offline without requiring external internet access."
       ]
     },
     {
