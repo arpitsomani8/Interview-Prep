@@ -36,7 +36,8 @@ export const definitionBookmarks = [
   { id: "fashion-360-visualization", label: "360° Fashion Visualization" },
   { id: "diffusion-model", label: "Diffusion Model" },
   { id: "vision-foundation-model", label: "Vision Model" },
-  { id: "langchain-langgraph", label: "LangChain / LangGraph" }
+  { id: "langchain-langgraph", label: "LangChain / LangGraph" },
+  { id: "normalization-scaling", label: "Normalization / Scaling" }
 ];
 
 export const definitionsData = [
@@ -1466,5 +1467,53 @@ fashion_graph = graph_builder.compile()`,
         answer: "Measure retrieval and model latency separately, reduce unnecessary LLM calls, parallelize independent reads where safe, cache appropriate results, and evaluate smaller models for simpler tasks."
       }
     ]
+  },
+  {
+    id: "normalization-scaling",
+    title: "Normalization & Feature Scaling",
+    badge: "Data Preprocessing & Vector Geometry",
+    summary: "The word normalization has multiple meanings in AI/ML. Two fundamental ones are feature normalization/scaling (transforming numerical columns into comparable ranges) and embedding-vector normalization (scaling an individual vector to unit length 1.0).",
+    coreDistinction: "Feature scaling changes the scale of dataset columns; L2 normalization changes the length of an individual vector. They solve different problems.",
+    featureScaling: {
+      title: "Feature Scaling / Normalization",
+      desc: "Feature scaling transforms numerical columns into more comparable ranges so distance-based algorithms are not dominated by large magnitudes.",
+      methods: [
+        {
+          name: "Min-Max Scaling",
+          formula: "x' = (x - x_min) / (x_max - x_min)",
+          desc: "Maps values to a chosen range, commonly 0 to 1."
+        },
+        {
+          name: "Standardization (Z-Score Scaling)",
+          formula: "z = (x - μ) / σ",
+          desc: "Centers values around a mean of zero and scales by the standard deviation. A value equal to the mean becomes zero. Values above the mean are positive, and values below it are negative."
+        }
+      ],
+      code: `from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+weights = [[2], [5], [20]]
+
+minmax = MinMaxScaler()
+print(minmax.fit_transform(weights))
+
+standard = StandardScaler()
+print(standard.fit_transform(weights))`,
+      whenToScale: "Scaling is often useful for Logistic Regression, SVMs, KNN, and neural networks. Decision trees and tree-based boosting algorithms generally do not require feature scaling.",
+      dataLeakageRule: "Fit the scaler only on training data and reuse the same fitted scaler during inference. If you fit it using the entire dataset before splitting, information from the test set can leak into training."
+    },
+    vectorNormalization: {
+      title: "Normalizing an Embedding Vector",
+      desc: "Embedding normalization is different. Here, we often scale a vector so that its length becomes 1.",
+      formula: "v' = v / ||v||₂",
+      code: `import numpy as np
+
+vector = np.array([3.0, 4.0])
+
+normalized = vector / np.linalg.norm(vector)
+
+print(normalized)  # [0.6 0.8]
+print(np.linalg.norm(normalized))  # 1.0`,
+      takeaway: "When vectors are L2-normalized to unit length, cosine similarity simplifies directly to the dot product."
+    }
   }
 ];

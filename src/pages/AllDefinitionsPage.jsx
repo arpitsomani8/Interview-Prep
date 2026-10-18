@@ -2085,6 +2085,137 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 39: Normalization / Scaling */}
+            {item.id === 'normalization-scaling' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Distinction Callout */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Core Distinction: </strong>
+                  {item.coreDistinction}
+                </div>
+
+                {/* 1. Feature Scaling Section */}
+                <div className="space-y-4 p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                  <div className="space-y-1">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                      1. {item.featureScaling.title}
+                    </h4>
+                    <p className="text-xs text-zinc-400 leading-relaxed">
+                      {item.featureScaling.desc}
+                    </p>
+                  </div>
+
+                  {/* MinMax & Standardization Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    {item.featureScaling.methods.map((m, mIdx) => (
+                      <div key={mIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-white font-mono text-emerald-400">{m.name}</span>
+                          <span className="text-[11px] font-mono text-cyan-300 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
+                            {m.formula}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{m.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Scikit-Learn Scaling Code */}
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>feature_scaling.py (MinMaxScaler vs StandardScaler)</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-feat-scaling', item.featureScaling.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-feat-scaling' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                      {item.featureScaling.code}
+                    </pre>
+                  </div>
+
+                  {/* When to Scale */}
+                  <div className="p-3 rounded-lg bg-black border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
+                    <strong className="text-white font-mono">Algorithm Applicability: </strong>
+                    {item.featureScaling.whenToScale}
+                  </div>
+
+                  {/* Data Leakage Warning */}
+                  <div className="p-3.5 rounded-lg bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed">
+                    <strong className="text-amber-400 font-mono uppercase">Data Leakage Warning: </strong>
+                    {item.featureScaling.dataLeakageRule}
+                  </div>
+                </div>
+
+                {/* 2. Vector Normalization Section */}
+                <div className="space-y-4 p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="space-y-1">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                        2. {item.vectorNormalization.title}
+                      </h4>
+                      <p className="text-xs text-zinc-400 leading-relaxed">
+                        {item.vectorNormalization.desc}
+                      </p>
+                    </div>
+                    <span className="font-mono text-xs text-cyan-300 bg-black px-2.5 py-1 rounded border border-zinc-800 self-start sm:self-auto">
+                      {item.vectorNormalization.formula}
+                    </span>
+                  </div>
+
+                  {/* NumPy L2 Normalization Code */}
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>vector_normalization.py (NumPy L2 Unit Normalization)</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-vec-norm', item.vectorNormalization.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-vec-norm' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                      {item.vectorNormalization.code}
+                    </pre>
+                  </div>
+
+                  {/* Vector Normalization Takeaway */}
+                  <div className="p-3 rounded-lg bg-black border border-zinc-800 text-xs text-zinc-400 font-mono">
+                    <span className="text-emerald-400 font-bold">Dot Product Efficiency: </span>
+                    {item.vectorNormalization.takeaway}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
