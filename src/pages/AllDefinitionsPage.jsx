@@ -2290,7 +2290,36 @@ export default function AllDefinitionsPage() {
 
             {/* Item 34: Self-Attention */}
             {item.id === 'self-attention' && (
-              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 3 Core Architecture Concepts */}
+                {item.threeCoreConcepts && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Three Fundamental Concepts in Generative AI</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {item.threeCoreConcepts.map((c, cIdx) => (
+                        <div key={cIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-md bg-cyan-950/80 border border-cyan-800/80 text-cyan-300 font-mono text-[10px] flex items-center justify-center font-bold">
+                              {c.num}
+                            </span>
+                            <span className="text-xs font-bold text-white font-mono text-cyan-300">{c.title}</span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed pt-1">{c.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Mechanism Definition Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Core Mechanism: </strong>
+                  {item.mechanismDefinition || item.summary}
+                </div>
+
                 {/* QKV Vectors */}
                 <div className="space-y-2">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
@@ -2322,10 +2351,78 @@ export default function AllDefinitionsPage() {
                 </div>
 
                 {/* Multi-Head Attention */}
-                <div className="p-4 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
-                  <strong className="text-cyan-400 font-mono uppercase">Multi-Head Attention: </strong>
+                <div className="p-4 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Multi-Head Attention: </strong>
                   {item.multiHeadNote}
                 </div>
+
+                {/* PyTorch Scaled Dot-Product Attention Code */}
+                {item.pytorchExample && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.pytorchExample.title}</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 font-sans italic">{item.productionInsight}</p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/50">PyTorch Implementation</span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.pytorchExample.filename}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-attention', item.pytorchExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-attention' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                        {item.pytorchExample.code}
+                      </pre>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-black/60 border border-zinc-800/80 text-[11px] text-zinc-300 font-mono leading-relaxed">
+                      {item.pytorchExample.explanation}
+                    </div>
+                  </div>
+                )}
+
+                {/* Real-World Application in Fashion AI Copilot */}
+                {item.copilotApplication && (
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                    <h5 className="text-xs font-bold text-amber-300 font-mono uppercase tracking-wide">
+                      {item.copilotApplication.question}
+                    </h5>
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                      {item.copilotApplication.answer}
+                    </p>
+                  </div>
+                )}
+
+                {/* Model Mechanism vs Model Output Distinction */}
+                {item.mechanismVsOutputDistinction && (
+                  <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                    <strong className="text-cyan-400 uppercase">Mechanism vs. Output Distinction: </strong>
+                    {item.mechanismVsOutputDistinction}
+                  </div>
+                )}
               </div>
             )}
 
@@ -3170,6 +3267,103 @@ export default function AllDefinitionsPage() {
                 {/* Cross-Modal Takeaway */}
                 <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
                   <strong className="text-cyan-400 uppercase">Search Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 45: Denoising in Generative AI */}
+            {item.id === 'denoising' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Concept Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Core Principle: </strong>
+                  {item.coreConcept}
+                </div>
+
+                {/* Forward vs Reverse Process Grid */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>The Diffusion Process: Forward Noising vs. Reverse Denoising</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {item.forwardVsReverse.map((f, fIdx) => (
+                      <div key={fIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between">
+                        <div>
+                          <span className="text-xs font-bold text-white font-mono text-cyan-300">{f.stage}</span>
+                          <p className="text-xs text-zinc-400 leading-relaxed mt-1">{f.desc}</p>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800/80 font-mono text-[11px] text-emerald-300 break-all">
+                          {f.math}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 3 Use Cases in Fashion AI */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    Practical Applications in Fashion & Design Generation
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.useCases.map((uc, uIdx) => (
+                      <div key={uIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <div className="text-xs font-bold text-amber-300 font-mono">{uc.title}</div>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{uc.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* PyTorch Denoising Step Code */}
+                {item.pytorchExample && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.pytorchExample.title}</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 font-sans italic">{item.pytorchExample.explanation}</p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/50">PyTorch Math</span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.pytorchExample.filename}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-denoising', item.pytorchExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-denoising' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                        {item.pytorchExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Core Architectural Takeaway: </strong>
                   {item.takeaway}
                 </div>
               </div>

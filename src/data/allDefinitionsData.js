@@ -42,7 +42,8 @@ export const definitionBookmarks = [
   { id: "nlp-general-flow", label: "NLP General Flow" },
   { id: "aws-azure", label: "AWS / Azure in AI/ML" },
   { id: "testing", label: "Testing" },
-  { id: "text-image-search", label: "Text / Image Search" }
+  { id: "text-image-search", label: "Text / Image Search" },
+  { id: "denoising", label: "Denoising" }
 ];
 
 export const definitionsData = [
@@ -1509,18 +1510,65 @@ print("Model score:", round(result[0]["score"], 4))`,
     id: "self-attention",
     title: "Self-Attention Mechanism",
     badge: "Sequence Modeling & Contextual Weights",
-    summary: "Self-attention lets the model decide how much information to draw from other tokens when representing a token.",
+    summary: "Attention is a mechanism that lets a model weigh the relevance of different pieces of information when processing a particular piece of information. Self-attention lets the model decide how much information to draw from other tokens when representing a token.",
+    threeCoreConcepts: [
+      {
+        num: "1",
+        title: "Attention",
+        desc: "How a Transformer model decides which parts of its input are important to each other."
+      },
+      {
+        num: "2",
+        title: "Diffusion",
+        desc: "How an image-generation model can create or edit fashion designs."
+      },
+      {
+        num: "3",
+        title: "LLM vs. RAG",
+        desc: "How to decide whether you need just a language model or a model grounded in your own data."
+      }
+    ],
+    mechanismDefinition: "Attention is a mechanism that lets a model weigh the relevance of different pieces of information when processing a particular piece of information.",
     qkvVectors: [
-      { vector: "Query (Q)", desc: "What information is this token looking for?" },
-      { vector: "Key (K)", desc: "What information does each token offer?" },
-      { vector: "Value (V)", desc: "What information can each token contribute?" }
+      { vector: "Query (Q)", desc: "What this token is looking for." },
+      { vector: "Key (K)", desc: "What information this token offers." },
+      { vector: "Value (V)", desc: "The information that can contribute to the output." }
     ],
     intuitionSteps: [
       { step: "1. Compare queries with keys", desc: "Calculate pairwise relevance scores between tokens." },
       { step: "2. Apply softmax", desc: "Turn those raw scores into normalized attention weights summing to 1." },
       { step: "3. Combine value vectors", desc: "Use those weights to combine the value vectors into a context-aware representation of each token." }
     ],
-    multiHeadNote: "Multi-head attention repeats this process through multiple learned attention heads, allowing the model to capture different kinds of relationships simultaneously."
+    multiHeadNote: "Multi-head attention repeats this process through multiple learned attention heads, allowing the model to capture different kinds of relationships simultaneously.",
+    productionInsight: "In a real project, I would normally use a pretrained Transformer or vision-language model rather than write the attention mechanism from scratch.",
+    pytorchExample: {
+      title: "Scaled Dot-Product Attention in PyTorch",
+      filename: "scaled_dot_product_attention.py",
+      code: `import torch
+import torch.nn.functional as F
+
+# Simplified query, key and value tensors
+Q = torch.tensor([[[1.0, 0.0]]])
+K = torch.tensor([[[1.0, 0.0],
+                   [0.0, 1.0]]])
+V = torch.tensor([[[10.0, 0.0],
+                   [0.0, 20.0]]])
+
+scores = Q @ K.transpose(-2, -1)
+scores = scores / (Q.shape[-1] ** 0.5)
+
+weights = F.softmax(scores, dim=-1)
+output = weights @ V
+
+print("Attention weights:", weights)
+print("Output:", output)`,
+      explanation: "Here, the query is compared with two keys. Softmax converts the scores into weights, and those weights determine how much each value contributes to the output."
+    },
+    copilotApplication: {
+      question: "How would I use attention in the Fashion AI Copilot?",
+      answer: "I'd use a pretrained vision-language model such as CLIP for text-to-image and image-to-image retrieval. Its learned Transformer components use attention internally, depending on the selected model architecture. My application code would call the model to create embeddings. I would not need to manually calculate attention for every retailer search."
+    },
+    mechanismVsOutputDistinction: "Attention is a model mechanism; embeddings are model outputs we can use for search. They are related, but they are not the same thing. Attention helps a model process information."
   },
   {
     id: "fashion-360-visualization",
@@ -2064,5 +2112,63 @@ print("Image uploaded successfully")`,
       }
     ],
     takeaway: "Multimodal search pipelines allow separate text and visual embedding generation, flexible cross-modal reranking, and sub-second retrieval for rich enterprise catalogs."
+  },
+  {
+    id: "denoising",
+    title: "Denoising in Generative AI & Diffusion",
+    badge: "Diffusion Models & Reverse Sampling",
+    summary: "Denoising is the reverse process in generative diffusion models where a trained neural network iteratively predicts and removes noise from a noisy latent representation to generate or edit high-fidelity images.",
+    coreConcept: "Denoising is the iterative process of transforming random Gaussian noise into realistic images, guided by text conditioning or reference designs.",
+    forwardVsReverse: [
+      {
+        stage: "Forward Process (Noising)",
+        desc: "Progressively injects Gaussian noise into an image across T discrete steps until it becomes indistinguishable from pure isotropic noise.",
+        math: "q(x_t | x_{t-1}) = N(x_t; sqrt(1 - beta_t) * x_{t-1}, beta_t * I)"
+      },
+      {
+        stage: "Reverse Process (Denoising)",
+        desc: "A neural network (U-Net or Diffusion Transformer) predicts the noise added at timestep t, subtracting it step-by-step to recover the clean latent signal.",
+        math: "x_{t-1} = 1/sqrt(alpha_t) * (x_t - (1 - alpha_t)/sqrt(1 - bar_alpha_t) * epsilon_theta(x_t, t, c)) + sigma_t * z"
+      }
+    ],
+    useCases: [
+      {
+        title: "Text-to-Image Generation",
+        desc: "Starts from pure random noise and denoises it conditioned on text prompts (e.g., 'silk floral summer dress') to synthesize new garments."
+      },
+      {
+        title: "Inpainting & Design Editing",
+        desc: "Adds noise only to a masked sleeve or collar and denoises it to change patterns or cuts while preserving the rest of the model and pose."
+      },
+      {
+        title: "Sketch-to-Product (Img2Img)",
+        desc: "Adds partial noise to a designer's rough sketch and denoises it to produce a high-resolution photorealistic garment rendering."
+      }
+    ],
+    pytorchExample: {
+      title: "Single-Step Latent Denoising Intuition in PyTorch",
+      filename: "denoising_step.py",
+      code: `import torch
+
+# Clean latent vector (e.g. fashion texture representation)
+x_0 = torch.tensor([0.85, -0.42, 1.20])
+
+# Forward step: Add Gaussian noise at timestep t
+beta_t = 0.1
+noise = torch.randn_like(x_0)
+x_t = torch.sqrt(1 - torch.tensor(beta_t)) * x_0 + torch.sqrt(torch.tensor(beta_t)) * noise
+
+# The neural network predicts the noise added at timestep t
+predicted_noise = noise + 0.01 * torch.randn_like(noise)
+
+# Reverse step: Subtract predicted noise to recover clean latent
+denoised_x = (x_t - torch.sqrt(torch.tensor(beta_t)) * predicted_noise) / torch.sqrt(1 - torch.tensor(beta_t))
+
+print("Original x_0:     ", x_0)
+print("Noisy Latent x_t: ", torch.round(x_t, decimals=3))
+print("Denoised Output:  ", torch.round(denoised_x, decimals=3))`,
+      explanation: "In full diffusion models, this denoising step is repeated iteratively over 20–50 scheduler timesteps to produce crystal-clear images."
+    },
+    takeaway: "Denoising is not simple blurring or thresholding; it is learned statistical reverse-sampling that reconstructs structured data guided by cross-attention conditioning."
   }
 ];
