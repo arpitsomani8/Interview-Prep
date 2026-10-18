@@ -48,7 +48,8 @@ export const definitionBookmarks = [
   { id: "blockchain", label: "Blockchain" },
   { id: "ocr", label: "OCR" },
   { id: "faiss", label: "FAISS" },
-  { id: "update-deployed-model", label: "Update a Deployed Model" }
+  { id: "update-deployed-model", label: "Update a Deployed Model" },
+  { id: "ai-assisted-coding-tools", label: "AI-Assisted Coding Tools" }
 ];
 
 export const definitionsData = [
@@ -2698,5 +2699,95 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
       explanation: "This workflow keeps catalog index artifacts immutable and version-controlled, enabling seamless canary rollouts and instant rollbacks."
     },
     takeaway: "In enterprise GenAI systems, catalog expansion is an MLOps indexing lifecycle challenge, not a model retraining task. Decoupling embedding generation from index swapping guarantees 99.99% search availability."
+  },
+  {
+    id: "ai-assisted-coding-tools",
+    title: "AI-Assisted Coding Tools & Agentic Development",
+    badge: "Developer Tooling & Agentic Engineering",
+    summary: "What are AI-assisted coding tools? AI-assisted coding tools help developers write, understand, debug, test, and refactor code using AI models.",
+    coreDefinition: "AI-assisted coding tools integrate large language models, retrieval over codebase repositories, and autonomous tool-execution runtimes to accelerate software development, bug fixing, test creation, and architectural refactoring.",
+    tools: [
+      {
+        name: "GitHub Copilot",
+        vendor: "GitHub / Microsoft & OpenAI",
+        tag: "In-Editor Completion & Chat Assistant",
+        role: "Code completion, chat, explanations, test generation, and agentic coding workflows in supported development environments.",
+        features: [
+          "Real-time inline ghost-text code completion as you type",
+          "Sidebar conversational chat for explanations and refactoring",
+          "Automated unit test generation for highlighted methods",
+          "Copilot Workspace for PR-level multi-file agentic changes"
+        ]
+      },
+      {
+        name: "Cursor",
+        vendor: "Anysphere",
+        tag: "Full-Codebase AI Editor",
+        role: "AI-powered code editing, repository-aware assistance, and multi-file changes.",
+        features: [
+          "Complete local codebase embedding index (@codebase queries)",
+          "Composer mode for orchestrated multi-file architectural edits",
+          "Predictive cursor navigation and automatic bug fixing",
+          "Custom rules support through .cursorrules configuration"
+        ]
+      },
+      {
+        name: "Claude Code",
+        vendor: "Anthropic",
+        tag: "Autonomous CLI Coding Agent",
+        role: "A coding agent that can inspect a repository, edit files, and run commands in supported environments.",
+        features: [
+          "Terminal-native agentic execution with full filesystem access",
+          "Runs git, bash commands, tests, and linters autonomously",
+          "Large 200K token context window for full-repo reasoning",
+          "Autonomous tool loop: reads code, makes edits, runs tests, fixes errors"
+        ]
+      },
+      {
+        name: "OpenAI Codex",
+        vendor: "OpenAI",
+        tag: "Foundational Code Intelligence Engine",
+        role: "Helps with coding tasks such as implementing features, understanding code, and fixing bugs, depending on the environment and permissions.",
+        features: [
+          "Foundation neural model family specialized on source code & APIs",
+          "Powers early code-generation breakthroughs and IDE plugins",
+          "Translates natural language descriptions into executable syntax",
+          "Underpins modern coding evaluations, APIs, and execution sandboxes"
+        ]
+      }
+    ],
+    evolutionTiers: [
+      {
+        tier: "Tier 1: Inline Autocomplete",
+        desc: "Predicts the next line or block of syntax based on local file tokens (e.g., standard GitHub Copilot tab-completion)."
+      },
+      {
+        tier: "Tier 2: Conversational Chat & Refactoring",
+        desc: "Interactive Q&A in sidebar explaining stack traces, generating docstrings, and suggesting optimized algorithms."
+      },
+      {
+        tier: "Tier 3: Repository-Aware Assistance",
+        desc: "Semantic vector retrieval over entire workspace to find types, APIs, and patterns across multiple files (Cursor @codebase)."
+      },
+      {
+        tier: "Tier 4: Autonomous Agentic Execution",
+        desc: "Autonomous agent plans steps, edits multiple files, runs terminal tests, inspects failures, and iterates until passing (Claude Code, Antigravity)."
+      }
+    ],
+    engineeringBestPractices: [
+      {
+        title: "Rigorous Human Verification",
+        desc: "Treat AI outputs as junior-developer PR drafts. Always review logic, enforce automated unit tests, and check security boundaries (e.g. no hardcoded credentials or SQL injections)."
+      },
+      {
+        title: "High-Signal Context Delivery",
+        desc: "AI coding tools excel when given clean project guidelines, explicit interfaces, and strong type annotations (e.g. TypeScript, Pydantic, Docstrings, and project rules files)."
+      },
+      {
+        title: "Test-Driven Agentic Loops",
+        desc: "Combine AI coding agents with automated linters and test suites. When agents can run tests and inspect failure tracebacks, they self-heal bugs without human intervention."
+      }
+    ],
+    takeaway: "AI-assisted coding tools shift software engineering from manual syntax writing to high-level architectural specification, test-driven validation, and orchestrating autonomous agentic workflows."
   }
 ];

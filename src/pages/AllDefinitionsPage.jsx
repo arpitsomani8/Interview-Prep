@@ -4096,6 +4096,90 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 51: AI-Assisted Coding Tools & Agentic Development */}
+            {item.id === 'ai-assisted-coding-tools' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase font-sans font-bold">What Are AI-Assisted Coding Tools? </strong>
+                  {item.summary}
+                </div>
+
+                {/* The Big 4 Tool Matrix */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Industry Standard AI Coding Platforms</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {item.tools.map((tool, tIdx) => (
+                      <div key={tIdx} className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 flex flex-col justify-between hover:border-cyan-500/30 transition">
+                        <div className="space-y-2">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <h5 className="text-sm font-bold text-white font-mono">{tool.name}</h5>
+                              <span className="text-[10px] font-mono text-zinc-400">{tool.vendor}</span>
+                            </div>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-700">
+                              {tool.tag}
+                            </span>
+                          </div>
+                          <p className="text-xs text-cyan-200/90 leading-relaxed font-sans bg-cyan-950/20 p-2.5 rounded-lg border border-cyan-800/30">
+                            {tool.role}
+                          </p>
+                        </div>
+
+                        <div className="space-y-1.5 pt-1 border-t border-zinc-800/60">
+                          {tool.features.map((feat, fIdx) => (
+                            <div key={fIdx} className="text-[11px] text-zinc-400 flex items-start gap-2">
+                              <span className="text-cyan-400 font-mono">•</span>
+                              <span>{feat}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 4-Tier Evolution of AI-Assisted Coding */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    The 4 Tiers of AI-Assisted Software Development
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.evolutionTiers.map((tier, eIdx) => (
+                      <div key={eIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <span className="text-xs font-bold font-mono text-cyan-300">{tier.tier}</span>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{tier.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Best Practices for Developers */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Production Engineering Best Practices
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.engineeringBestPractices.map((bp, bIdx) => (
+                      <div key={bIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <h5 className="text-xs font-bold text-amber-300 font-mono uppercase">{bp.title}</h5>
+                        <p className="text-xs text-zinc-400 leading-relaxed font-sans">{bp.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Engineering Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
