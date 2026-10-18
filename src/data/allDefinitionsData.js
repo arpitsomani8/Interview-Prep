@@ -2968,6 +2968,17 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
         note: "Lower values (e.g. 0.0) yield predictable, deterministic outputs; higher values (e.g. 0.8) permit creative variability. Temperature does not guarantee factual correctness."
       }
     ],
+    torchInferenceMode: {
+      title: "PyTorch Inference Optimization Context Manager",
+      codeSnippet: "with torch.inference_mode():",
+      explanation: "This tells PyTorch not to track gradients for the operations inside the block. It reduces unnecessary inference overhead and memory usage. It does not train the model or change its learned weights.",
+      keyBenefits: [
+        "Completely disables PyTorch autograd graph creation",
+        "Reduces memory consumption and peak GPU VRAM allocation",
+        "Offers higher runtime speed than torch.no_grad() by disabling view tracking",
+        "Guarantees model weights remain strictly frozen during execution"
+      ]
+    },
     costOptimization: {
       overview: "Hosted model providers charge per input token, output token, or image; self-hosted inference requires dedicated compute, GPU VRAM, and cluster operational cost.",
       levers: [
