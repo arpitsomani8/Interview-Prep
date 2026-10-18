@@ -6126,6 +6126,152 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 65: Async vs. Sync */}
+            {item.id === 'async-sync' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Sync vs Async Dual Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {item.coreConcepts.map((c, cIdx) => (
+                    <div
+                      key={cIdx}
+                      className={`p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border space-y-2.5 shadow-xl ${
+                        cIdx === 0 ? 'border-rose-900/40' : 'border-emerald-900/40'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`w-2.5 h-2.5 rounded-full ${
+                              cIdx === 0 ? 'bg-rose-400' : 'bg-emerald-400'
+                            }`}
+                          ></span>
+                          <h4
+                            className={`text-xs sm:text-sm font-bold uppercase tracking-wider font-mono ${
+                              cIdx === 0 ? 'text-rose-300' : 'text-emerald-300'
+                            }`}
+                          >
+                            {c.type}
+                          </h4>
+                        </div>
+                        <span className="text-[10px] font-mono text-zinc-400 uppercase bg-black px-2 py-0.5 rounded border border-zinc-800">
+                          {cIdx === 0 ? 'Blocking I/O' : 'Yielding I/O'}
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-200 leading-relaxed font-sans">
+                        {c.behavior}
+                      </p>
+                      <p className="text-[11px] text-zinc-400 leading-relaxed font-sans pt-1 border-t border-zinc-900">
+                        {c.impact}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Database Querying: Vector vs PostgreSQL Relational */}
+                {item.dbQueryMechanics && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-3 gap-2">
+                      <div className="flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          {item.dbQueryMechanics.headline}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-amber-300 uppercase bg-amber-950/40 px-2.5 py-1 rounded border border-amber-800/40 shrink-0 self-start sm:self-auto">
+                        Vector vs. Relational Indexing
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Vector Query */}
+                      <div className="p-4 rounded-xl bg-black border border-cyan-800/40 space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-cyan-300 font-mono uppercase tracking-wide">
+                              {item.dbQueryMechanics.vectorQuery.title}
+                            </span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                              pgvector / ANN
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {item.dbQueryMechanics.vectorQuery.explanation}
+                          </p>
+                          <pre className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-[11px] text-cyan-300 overflow-x-auto leading-relaxed">
+                            {item.dbQueryMechanics.vectorQuery.sqlSnippet}
+                          </pre>
+                          <div className="text-[11px] font-mono text-zinc-400">
+                            Key Clause: <code className="text-amber-300">{item.dbQueryMechanics.vectorQuery.clause}</code>
+                          </div>
+                        </div>
+
+                        {/* Vector Index Card */}
+                        <div className="p-3 rounded-lg bg-zinc-950 border border-cyan-800/30 space-y-1 mt-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-mono text-cyan-400 uppercase font-bold">
+                              {item.dbQueryMechanics.vectorQuery.indexLabel}
+                            </span>
+                            <span className="text-[9px] font-mono text-zinc-500">ANN Graphs</span>
+                          </div>
+                          <div className="text-xs font-bold text-white font-mono">
+                            {item.dbQueryMechanics.vectorQuery.indexes}
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {item.dbQueryMechanics.vectorQuery.indexDetail}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* PostgreSQL Relational Query */}
+                      <div className="p-4 rounded-xl bg-black border border-purple-800/40 space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-purple-300 font-mono uppercase tracking-wide">
+                              {item.dbQueryMechanics.relationalQuery.title}
+                            </span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                              SQL Relational
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {item.dbQueryMechanics.relationalQuery.explanation}
+                          </p>
+                          <pre className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-[11px] text-purple-300 overflow-x-auto leading-relaxed">
+                            {item.dbQueryMechanics.relationalQuery.sqlSnippet}
+                          </pre>
+                          <div className="text-[11px] font-mono text-zinc-400">
+                            Key Clause: <code className="text-amber-300">{item.dbQueryMechanics.relationalQuery.clause}</code>
+                          </div>
+                        </div>
+
+                        {/* Relational Index Card */}
+                        <div className="p-3 rounded-lg bg-zinc-950 border border-purple-800/30 space-y-1 mt-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-mono text-purple-400 uppercase font-bold">
+                              {item.dbQueryMechanics.relationalQuery.indexLabel}
+                            </span>
+                            <span className="text-[9px] font-mono text-zinc-500">Scalar Trees</span>
+                          </div>
+                          <div className="text-xs font-bold text-white font-mono">
+                            {item.dbQueryMechanics.relationalQuery.indexes}
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {item.dbQueryMechanics.relationalQuery.indexDetail}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Architecture Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Core Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

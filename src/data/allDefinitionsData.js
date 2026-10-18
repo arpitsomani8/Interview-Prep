@@ -61,7 +61,8 @@ export const definitionBookmarks = [
   { id: "pandas", label: "Pandas" },
   { id: "python", label: "Python" },
   { id: "time-space-complexity", label: "Time/Space Complexity" },
-  { id: "uvicorn", label: "Uvicorn" }
+  { id: "uvicorn", label: "Uvicorn" },
+  { id: "async-sync", label: "Async vs. Sync" }
 ];
 
 export const definitionsData = [
@@ -4047,5 +4048,45 @@ tracemalloc.stop()`,
       ]
     },
     takeaway: "In the modern Python API stack: Uvicorn powers the asynchronous ASGI server runtime, [standard] equips C-speed event loops (uvloop) and HTTP parsing (httptools), FastAPI defines routes and handlers, and Pydantic guarantees strict runtime type validation."
+  },
+  {
+    id: "async-sync",
+    title: "Async vs. Sync Execution & Database Querying",
+    badge: "Concurrency & Database Querying",
+    summary: "Synchronous code executes sequentially and blocks while waiting for I/O, whereas Asynchronous code yields control to the event loop during I/O operations, unlocking massive request concurrency.",
+    coreConcepts: [
+      {
+        type: "Synchronous (Sync)",
+        behavior: "Synchronous code waits for an operation to finish before proceeding along that execution path.",
+        impact: "Blocks execution during I/O, preventing the server from handling other tasks on that worker until the operation completes."
+      },
+      {
+        type: "Asynchronous (Async)",
+        behavior: "Asynchronous code can yield control while waiting for supported I/O, allowing the server to work on other requests.",
+        impact: "Non-blocking event loop execution that enables high throughput for I/O-bound workloads like API calls and DB queries."
+      }
+    ],
+    dbQueryMechanics: {
+      headline: "How Query Vectors Make DB Queries vs. Standard SQL Queries",
+      vectorQuery: {
+        title: "Vector Similarity Query",
+        sqlSnippet: "SELECT id, content FROM documents\nORDER BY embedding <=> query_vector\nLIMIT 5;",
+        clause: "ORDER BY embedding <=> query_vector",
+        explanation: "This is how query vectors make DB queries: computes distance between the stored embedding and the query vector.",
+        indexLabel: "Vector Query Index",
+        indexes: "Can use vector indexes such as HNSW or IVFFlat",
+        indexDetail: "Approximate Nearest Neighbor (ANN) graphs and clustered posting lists designed for high-dimensional geometric search."
+      },
+      relationalQuery: {
+        title: "PostgreSQL Relational Query",
+        sqlSnippet: "SELECT id, content FROM documents\nWHERE department = 'warehouse'\nLIMIT 5;",
+        clause: "WHERE department = 'warehouse'",
+        explanation: "Traditional scalar relational filtering in SQL.",
+        indexLabel: "PostgreSQL Query Index",
+        indexes: "Uses standard indexes such as B-tree",
+        indexDetail: "Balanced tree structures optimized for exact equality matches, sorting scalar values, and numerical range scans."
+      }
+    },
+    takeaway: "Synchronous code waits sequentially, while asynchronous code yields control during I/O to handle concurrent requests. For database operations, vector queries order records geometrically with operators like `<=>` using HNSW/IVFFlat indexes, whereas standard relational queries filter columns with WHERE clauses using B-tree indexes."
   }
 ];
