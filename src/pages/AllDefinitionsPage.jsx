@@ -8834,6 +8834,133 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 82: LLM Coherence */}
+            {item.id === 'coherence' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>LLM Quality & Evaluation</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800">
+                      Coherence & Alignment
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-emerald-900/40 shadow-xl space-y-3">
+                    <p className="text-xs sm:text-sm text-emerald-200 font-sans leading-relaxed font-semibold">
+                      {item.coreDefinition}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 4 Types of Coherence */}
+                {item.typesOfCoherence && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.typesOfCoherenceIntro}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        4 Dimensions
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {item.typesOfCoherence.map((typeObj, tIdx) => (
+                        <div
+                          key={tIdx}
+                          className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition flex flex-col justify-between space-y-3"
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                                {typeObj.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${typeObj.accent}`}>
+                              {typeObj.type}
+                            </h5>
+                            <div className="p-2.5 rounded-lg bg-black border border-zinc-900">
+                              <p className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                                {typeObj.definition}
+                              </p>
+                            </div>
+                            <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                              {typeObj.details}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5 Proven Steps to Improve Coherence */}
+                {item.howToImproveSteps && (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.howToImproveIntro}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Engineering Best Practices
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.howToImproveSteps.map((step, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-cyan-900/40 transition flex items-start gap-2.5"
+                        >
+                          <span className="w-5 h-5 rounded bg-cyan-950 border border-cyan-800 text-cyan-300 font-mono text-[11px] flex items-center justify-center shrink-0 font-bold mt-0.5">
+                            0{sIdx + 1}
+                          </span>
+                          <span className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                            {step.replace(/^\d+\.\s*/, '')}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Evaluation Methods (LLM-as-a-judge, NLI) */}
+                {item.evaluationMethods && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Measuring & Evaluating Coherence</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {item.evaluationMethods.map((evalObj, eIdx) => (
+                        <div key={eIdx} className="p-4 rounded-xl bg-black border border-purple-900/40 space-y-1.5">
+                          <span className="text-xs font-bold text-purple-300 font-mono">
+                            {evalObj.method}
+                          </span>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {evalObj.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

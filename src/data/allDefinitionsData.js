@@ -78,7 +78,8 @@ export const definitionBookmarks = [
   { id: "data-model-drift", label: "Data / Model Drift" },
   { id: "throughput-latency", label: "Throughput / Latency" },
   { id: "paged-attention", label: "PagedAttention" },
-  { id: "multi-agent-orchestration", label: "Multi-Agent Orchestration" }
+  { id: "multi-agent-orchestration", label: "Multi-Agent Orchestration" },
+  { id: "coherence", label: "Coherence" }
 ];
 
 export const definitionsData = [
@@ -5261,5 +5262,57 @@ def health_check():
       { challenge: "Shared State Synchronization", desc: "Maintaining consistent, conflict-free state across asynchronous parallel workers." }
     ],
     takeaway: "Multi-agent orchestration elevates AI development from isolated prompt engineering into robust distributed systems engineering: breaking monolithic prompts into specialized agents governed by state machine graphs, deterministic routing, and recursion limits."
+  },
+  {
+    id: "coherence",
+    title: "LLM Coherence — Reasoning, Consistency & Structured Generation",
+    badge: "LLM Quality & Evaluation",
+    summary: "Coherence means how logically connected, consistent, and understandable an LLM's response is. Master the 4 core dimensions of coherence and the 5 proven techniques to ensure consistent, grounded outputs.",
+    coreDefinition: "Coherence means how logically connected, consistent, and understandable an LLM's response is.",
+    typesOfCoherenceIntro: "Types of coherence",
+    typesOfCoherence: [
+      {
+        type: "Logical coherence",
+        definition: "Ideas follow a sensible line of reasoning.",
+        accent: "text-emerald-400",
+        badge: "Sound Reasoning",
+        details: "Arguments transition step-by-step without logical fallacies, contradictory assertions, or non sequiturs."
+      },
+      {
+        type: "Contextual coherence",
+        definition: "The response stays relevant to the user's question and earlier conversation.",
+        accent: "text-cyan-400",
+        badge: "Intent & Retrieval Relevance",
+        details: "Directly addresses the prompt's constraints and incorporates relevant past conversational turn history without topic drift."
+      },
+      {
+        type: "Structural coherence",
+        definition: "The response is organized in a clear order.",
+        accent: "text-amber-400",
+        badge: "Clear Hierarchy",
+        details: "Follows a transparent information architecture (e.g. intro, key arguments, bullet points, caveats, summary) that is easily scannable."
+      },
+      {
+        type: "Conversational coherence",
+        definition: "The response fits naturally into the ongoing conversation.",
+        accent: "text-purple-400",
+        badge: "Dialogue Fluidity",
+        details: "Adopts appropriate tone, acknowledges previous user statements naturally, and avoids jarring stylistic resets."
+      }
+    ],
+    howToImproveIntro: "How do you improve coherence in an LLM?",
+    howToImproveSteps: [
+      "1. Provide clear instructions and sufficient context.",
+      "2. Use RAG to supply relevant information when the answer depends on documents.",
+      "3. Structure the response with an appropriate format or schema.",
+      "4. Break complex tasks into smaller steps when useful.",
+      "5. Evaluate responses for contradictions, relevance, and consistency."
+    ],
+    evaluationMethods: [
+      { method: "LLM-as-a-Judge (G-Eval / Ragas)", desc: "Use a strong judge model (e.g. GPT-4o) with explicit scoring rubrics assessing coherence, answer relevance, and faithfulness on a 1-5 scale." },
+      { method: "Self-Consistency Sampling", desc: "Sample multiple reasoning paths (e.g. Temperature = 0.7) and verify that intermediate conclusions converge consistently." },
+      { method: "Natural Language Inference (NLI)", desc: "Use cross-encoder entailment models to automatically detect premise-conclusion contradictions within the generated text." }
+    ],
+    takeaway: "Coherence transforms raw token probabilities into dependable intelligence. By grounding generations with RAG, enforcing structured schemas, breaking workflows into intermediate reasoning steps, and evaluating for contradictions, AI systems produce robust, trustworthy responses."
   }
 ];
