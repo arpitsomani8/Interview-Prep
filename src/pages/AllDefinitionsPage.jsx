@@ -8562,6 +8562,134 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 80: PagedAttention & vLLM */}
+            {item.id === 'paged-attention' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>LLM Serving Engine & KV Cache Optimization</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-800">
+                      vLLM • Virtual Memory Paging
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-900/40 shadow-xl space-y-3">
+                    <p className="text-xs sm:text-sm text-cyan-200 font-sans leading-relaxed font-semibold">
+                      {item.coreDefinition}
+                    </p>
+                  </div>
+                </div>
+
+                {/* High-Throughput Question & Answer Box */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-black border border-amber-800/40 space-y-2 shadow-lg">
+                  <div className="flex items-center gap-2">
+                    <span className="text-amber-400 text-base">💡</span>
+                    <h5 className="text-xs font-bold text-amber-300 font-mono uppercase tracking-wider">
+                      {item.highThroughputQuestion}
+                    </h5>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed pl-6">
+                    {item.highThroughputAnswer}
+                  </p>
+                </div>
+
+                {/* Traditional Serving vs PagedAttention Comparison */}
+                {item.traditionalVsPaged && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                      <Sliders className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Traditional KV Cache vs. PagedAttention</span>
+                    </h4>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead className="bg-black border-b border-zinc-800 font-mono text-[11px] text-zinc-400">
+                          <tr>
+                            <th className="p-3.5 w-1/4">Aspect</th>
+                            <th className="p-3.5 w-3/8 text-rose-300">Traditional Serving (Pre-Allocation)</th>
+                            <th className="p-3.5 w-3/8 text-emerald-300">PagedAttention (vLLM Engine)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900 text-zinc-300">
+                          {item.traditionalVsPaged.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3.5 font-bold font-mono text-zinc-300 text-[11px]">
+                                {row.aspect}
+                              </td>
+                              <td className="p-3.5 text-rose-200/90 leading-relaxed">
+                                {row.traditional}
+                              </td>
+                              <td className="p-3.5 text-emerald-200/90 leading-relaxed font-medium">
+                                {row.paged}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4-Step OS-Paging Architecture Mechanism */}
+                {item.architectureMechanism && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-purple-400" />
+                      <span>How PagedAttention Works Under the Hood</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.architectureMechanism.map((mech, mIdx) => (
+                        <div key={mIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                          <div>
+                            <span className="text-xs font-bold text-purple-300 font-mono block mb-1">
+                              {mech.step}
+                            </span>
+                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                              {mech.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Key Production Benefits */}
+                {item.keyBenefits && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Key Production Advantages</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.keyBenefits.map((b, bIdx) => (
+                        <div key={bIdx} className="p-3.5 rounded-xl bg-black border border-emerald-950/60 space-y-1">
+                          <span className="text-xs font-bold text-emerald-300 font-mono">
+                            {b.benefit}
+                          </span>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {b.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

@@ -76,7 +76,8 @@ export const definitionBookmarks = [
   { id: "automl", label: "AutoML" },
   { id: "redis", label: "Redis" },
   { id: "data-model-drift", label: "Data / Model Drift" },
-  { id: "throughput-latency", label: "Throughput / Latency" }
+  { id: "throughput-latency", label: "Throughput / Latency" },
+  { id: "paged-attention", label: "PagedAttention" }
 ];
 
 export const definitionsData = [
@@ -5135,5 +5136,61 @@ def health_check():
       }
     ],
     takeaway: "Throughput measures system volume; latency measures individual user waiting time. In generative AI, distinguishing TTFT (prefill latency) from inter-token latency (decode speed) is the cornerstone of designing responsive streaming interfaces and cost-effective batch serving architectures."
+  },
+  {
+    id: "paged-attention",
+    title: "PagedAttention & vLLM — High-Throughput GPU Memory Management",
+    badge: "LLM Serving Engine & KV Cache Optimization",
+    summary: "PagedAttention is a technique used in LLM serving to manage GPU memory more efficiently, especially when many users are generating responses at the same time. It was introduced with the vLLM serving system.",
+    coreDefinition: "PagedAttention is a technique used in LLM serving to manage GPU memory more efficiently, especially when many users are generating responses at the same time. It was introduced with the vLLM serving system.",
+    highThroughputQuestion: "How does PagedAttention help high throughput?",
+    highThroughputAnswer: "With PagedAttention, memory can be allocated in smaller blocks, potentially allowing more active sequences and more effective batching. This can increase aggregate tokens per second.",
+    traditionalVsPaged: [
+      {
+        aspect: "Memory Allocation",
+        traditional: "Pre-allocates large, contiguous memory for maximum possible sequence length (e.g. 2048 tokens).",
+        paged: "Allocates memory on-demand in small fixed-size physical blocks (e.g. 16 tokens/block) as tokens generate."
+      },
+      {
+        aspect: "Memory Fragmentation",
+        traditional: "Severe waste (60%–80% VRAM lost to internal & external fragmentation).",
+        paged: "Near-zero waste (<4% total memory waste, only on the final partial block)."
+      },
+      {
+        aspect: "Physical Memory Layout",
+        traditional: "Must be strictly contiguous in physical GPU VRAM, limiting batch sizes.",
+        paged: "Non-contiguous physical blocks mapped via a logical Block Table (analogous to OS virtual memory paging)."
+      },
+      {
+        aspect: "Memory Sharing (Parallel Sampling)",
+        traditional: "Must duplicate entire KV cache for branching requests or beam search.",
+        paged: "Shares common prompt blocks across multiple outputs via Copy-on-Write (CoW)."
+      }
+    ],
+    architectureMechanism: [
+      {
+        step: "1. Logical Token Representation",
+        desc: "A request's prompt and generated tokens are partitioned into logical blocks of fixed size (typically 16 or 32 tokens)."
+      },
+      {
+        step: "2. OS-Style Block Table Mapping",
+        desc: "The vLLM engine maintains a Block Table mapping logical blocks to non-contiguous physical memory blocks in GPU VRAM."
+      },
+      {
+        step: "3. On-Demand Allocation",
+        desc: "When a new token is generated, if the current physical block has free slots, it writes in place; if full, a new physical block is fetched."
+      },
+      {
+        step: "4. Shared Prompt Blocks",
+        desc: "System prompts and parallel outputs share identical physical blocks, with reference counts incremented until modifications occur."
+      }
+    ],
+    keyBenefits: [
+      { benefit: "2x–4x Higher Throughput", desc: "Drastically higher concurrent batch sizes on identical GPU hardware (A100/H100)." },
+      { benefit: "Negligible VRAM Waste", desc: "Cuts memory fragmentation from ~70% to under 4%." },
+      { benefit: "Fast Prefix & Prompt Caching", desc: "Enables instant reuse of shared system prompt KV caches across hundreds of user sessions." },
+      { benefit: "Continuous / Iteration-Level Batching", desc: "Requests can join or leave the serving batch at each token iteration rather than waiting for entire sequence completions." }
+    ],
+    takeaway: "PagedAttention brings virtual memory paging to LLM serving: by breaking the KV cache into non-contiguous blocks mapped via block tables, vLLM eliminates memory fragmentation, enables larger concurrent batches, and maximizes aggregate tokens-per-second."
   }
 ];
