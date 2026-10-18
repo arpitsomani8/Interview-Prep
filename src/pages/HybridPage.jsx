@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { hybridData } from '../data/hybridData';
-import { Cpu, Bookmark, ArrowUp, ShieldCheck, MessageSquareQuote } from 'lucide-react';
+import { Cpu, Bookmark, ArrowUp, ShieldCheck, MessageSquareQuote, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function HybridPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
@@ -13,29 +13,31 @@ export default function HybridPage() {
     }
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setActiveBookmark(null);
+  const scrollToBookmarks = () => {
+    const el = document.getElementById('bookmarks-bar');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-8">
+    <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
       {/* Title */}
-      <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-semibold uppercase tracking-wider">
-          <Cpu className="w-3.5 h-3.5" />
+      <div className="space-y-2">
+        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-[11px] font-semibold uppercase tracking-wider">
+          <Cpu className="w-3 h-3" />
           <span>Project 2 Master Blueprint</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
           {hybridData.title}
         </h1>
       </div>
 
       {/* Target Resume Bullet Point */}
-      <div className="rounded-2xl bg-[#0a0a0c] border border-blue-500/30 p-6 shadow-xl">
+      <div className="rounded-2xl bg-[#0a0a0c] border border-cyan-500/30 p-6 shadow-xl">
         <div className="text-xs uppercase tracking-wider text-cyan-400 font-bold mb-2 flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-cyan-400" />
-          <span>Target Resume Point to Defend</span>
+          <span>Target Resume Bullet Point to Defend</span>
         </div>
         <p className="text-base sm:text-lg text-zinc-100 font-medium italic">
           "{hybridData.resumeBullet}"
@@ -47,166 +49,167 @@ export default function HybridPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm uppercase tracking-wider">
             <MessageSquareQuote className="w-5 h-5" />
-            <span>Executive 90-Second Interview Defense Script (Word-for-Word)</span>
+            <span>Executive 90-Second Interview Defense Script (Multi-Tenant Architecture Flow)</span>
           </div>
           <span className="text-xs px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
             Timing: 90s
           </span>
         </div>
-        <blockquote className="text-sm sm:text-base text-zinc-300 leading-relaxed italic border-l-4 border-indigo-500 pl-4 py-1">
+        <blockquote className="text-sm sm:text-base text-zinc-200 leading-relaxed italic border-l-4 border-indigo-500 pl-4 py-1 whitespace-pre-line">
           {hybridData.executiveScript}
         </blockquote>
       </div>
 
-      {/* Bookmarks Bar */}
-      <div className="sticky top-20 z-40 bg-black/95 backdrop-blur-md rounded-2xl border border-zinc-800 p-4 shadow-xl">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-300">
-            <Bookmark className="w-4 h-4 text-cyan-400" />
-            <span>Page Bookmarks (On-Page Only)</span>
+      {/* Real-World User Example & High-Level Execution Flow */}
+      <div className="rounded-2xl bg-[#0a0a0c] border border-emerald-500/30 p-6 sm:p-8 space-y-6 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-semibold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Real-World Execution Trace</span>
+            </div>
+            <h2 className="text-base sm:text-lg font-bold text-white tracking-tight flex flex-wrap items-center gap-2">
+              <span>Example Request:</span>
+              <span className="text-emerald-400 font-mono text-xs sm:text-sm">{hybridData.userExample.query}</span>
+            </h2>
           </div>
-          <button
-            onClick={scrollToTop}
-            className="flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer"
-          >
-            <ArrowUp className="w-3.5 h-3.5" />
-            <span>Top</span>
-          </button>
+          <span className="text-xs font-mono text-zinc-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800 self-start sm:self-auto">
+            Latency: {hybridData.userExample.latency}
+          </span>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => scrollToId('business-problem')}
-            className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer ${
-              activeBookmark === 'business-problem'
-                ? 'bg-cyan-500 text-black font-bold border-cyan-400'
-                : 'bg-[#121214] text-zinc-300 border-zinc-800 hover:bg-zinc-800 hover:text-white'
-            }`}
-          >
-            1. Core Business Problem
-          </button>
-          {hybridData.architectureSteps.map((s, idx) => (
-            <button
-              key={idx}
-              onClick={() => scrollToId(`step-${s.step}`)}
-              className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer ${
-                activeBookmark === `step-${s.step}`
-                  ? 'bg-cyan-500 text-black font-bold border-cyan-400'
-                  : 'bg-[#121214] text-zinc-300 border-zinc-800 hover:bg-zinc-800 hover:text-white'
+
+        <p className="text-sm text-zinc-300 leading-relaxed">
+          {hybridData.userExample.description}
+        </p>
+
+        {/* Clean Line-by-Line Execution Flow */}
+        <div className="rounded-xl bg-zinc-950/80 border border-zinc-800 divide-y divide-zinc-800/80 overflow-hidden">
+          {hybridData.userExample.steps.map((st) => (
+            <div
+              key={st.step}
+              className="p-4 sm:p-5 flex flex-col md:flex-row md:items-start gap-3 md:gap-5 hover:bg-zinc-900/30 transition"
+            >
+              <div className="flex items-center gap-2.5 md:w-56 shrink-0">
+                <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                  Step {st.step}
+                </span>
+                <span className="text-sm font-bold text-white tracking-tight">
+                  {st.stage}
+                </span>
+              </div>
+              <div className="flex-1 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                {st.text}
+              </div>
+              <div className="text-[11px] font-mono text-zinc-400 bg-zinc-900 px-2.5 py-1 rounded border border-zinc-800 shrink-0 self-start">
+                {st.system}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Final Output & Audit Logging Showcase */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2">
+          {/* Decision Response */}
+          <div className="rounded-xl bg-zinc-950 border border-zinc-800 p-5 space-y-2.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <span>Real-Time Decision & Risk Assessment</span>
+            </div>
+            <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed bg-black/50 p-3.5 rounded-lg border border-zinc-800/80 italic">
+              "{hybridData.userExample.sampleOutput.decisionResponse}"
+            </p>
+          </div>
+
+          {/* PostgreSQL Audit Record */}
+          <div className="rounded-xl bg-zinc-950 border border-zinc-800 p-5 space-y-2.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span>Audit Record Inserted in PostgreSQL (tenant_audit_logs)</span>
+            </div>
+            <div className="text-xs font-mono bg-black/50 p-3.5 rounded-lg border border-zinc-800/80 space-y-1 text-zinc-300">
+              <div><span className="text-zinc-500">Audit ID:</span> <span className="text-white font-bold">{hybridData.userExample.sampleOutput.auditRecord.audit_id}</span></div>
+              <div><span className="text-zinc-500">Tenant ID:</span> {hybridData.userExample.sampleOutput.auditRecord.tenant_id}</div>
+              <div><span className="text-zinc-500">Route:</span> {hybridData.userExample.sampleOutput.auditRecord.route_selected}</div>
+              <div><span className="text-zinc-500">Features:</span> {hybridData.userExample.sampleOutput.auditRecord.features}</div>
+              <div><span className="text-zinc-500">Score & Latency:</span> <span className="text-emerald-400 font-bold">{hybridData.userExample.sampleOutput.auditRecord.score} in {hybridData.userExample.sampleOutput.auditRecord.latency}</span></div>
+              <div><span className="text-zinc-500">Status:</span> <span className="text-emerald-400 font-bold">{hybridData.userExample.sampleOutput.auditRecord.status}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bookmarked Technical Concepts & Interview Defense */}
+      <div id="bookmarks-bar" className="space-y-6 pt-2">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-400">
+            <Bookmark className="w-4 h-4 text-cyan-400" />
+            <span>Bookmarked Technical Concepts & Interview Defense</span>
+          </div>
+          <p className="text-sm text-zinc-400">
+            Click any concept bookmark below to jump directly to its technical breakdown and interview defense rationale:
+          </p>
+
+          {/* Clickable Bookmark Badges */}
+          <div className="flex flex-wrap gap-2.5 pt-1">
+            {hybridData.bookmarkedConcepts.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToId(item.id)}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 border cursor-pointer ${
+                  activeBookmark === item.id
+                    ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/10'
+                    : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:border-cyan-500/50 hover:bg-zinc-800 hover:text-white'
+                }`}
+              >
+                <Bookmark className={`w-3.5 h-3.5 ${activeBookmark === item.id ? 'text-cyan-400 fill-cyan-400' : 'text-cyan-400'}`} />
+                <span>{item.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Detailed Concept Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {hybridData.bookmarkedConcepts.map((item) => (
+            <div
+              key={item.id}
+              id={item.id}
+              className={`scroll-mt-24 rounded-2xl bg-[#0a0a0c] p-6 sm:p-7 space-y-4 shadow-xl transition flex flex-col justify-between border ${
+                activeBookmark === item.id
+                  ? 'border-cyan-500 shadow-cyan-500/10'
+                  : 'border-zinc-800 hover:border-zinc-700'
               }`}
             >
-              Step {s.step}: {s.title.split(':')[0]}
-            </button>
-          ))}
-          <button
-            onClick={() => scrollToId('database-reality')}
-            className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer ${
-              activeBookmark === 'database-reality'
-                ? 'bg-cyan-500 text-black font-bold border-cyan-400'
-                : 'bg-[#121214] text-zinc-300 border-zinc-800 hover:bg-zinc-800 hover:text-white'
-            }`}
-          >
-            4. Database Reality
-          </button>
-          <button
-            onClick={() => scrollToId('tradeoffs')}
-            className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer font-semibold ${
-              activeBookmark === 'tradeoffs'
-                ? 'bg-indigo-500 text-white font-bold border-indigo-400'
-                : 'bg-[#121214] text-indigo-300 border-zinc-800 hover:bg-zinc-800'
-            }`}
-          >
-            5. Trade-Offs (Why This vs That)
-          </button>
-          <button
-            onClick={() => scrollToId('edge-cases')}
-            className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer font-semibold ${
-              activeBookmark === 'edge-cases'
-                ? 'bg-indigo-500 text-white font-bold border-indigo-400'
-                : 'bg-[#121214] text-indigo-300 border-zinc-800 hover:bg-zinc-800'
-            }`}
-          >
-            6. Edge Cases & Defense
-          </button>
-        </div>
-      </div>
-
-      {/* 1. Business Problem */}
-      <div id="business-problem" className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 sm:p-8 space-y-6 shadow-lg">
-        <h3 className="text-xl font-bold text-white">{hybridData.businessProblem.title}</h3>
-        <p className="text-sm text-cyan-300 font-mono">{hybridData.businessProblem.subtitle}</p>
-        <p className="text-sm sm:text-base text-zinc-300">{hybridData.businessProblem.intro}</p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-          {hybridData.businessProblem.challenges.map((c, i) => (
-            <div key={i} className="rounded-xl bg-black p-5 border border-zinc-800 space-y-3">
-              <h4 className="text-sm font-bold text-indigo-300">{c.title}</h4>
-              <p className="text-xs text-rose-300/90 leading-relaxed"><strong className="text-rose-400">Problem: </strong>{c.problem}</p>
-              <p className="text-xs text-emerald-300/90 leading-relaxed"><strong className="text-emerald-400">Our Solution: </strong>{c.solution}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Steps */}
-      <div className="space-y-6">
-        <h3 className="text-2xl font-bold text-white">3. Step-by-Step Execution Flow</h3>
-        {hybridData.architectureSteps.map((s, idx) => (
-          <div key={idx} id={`step-${s.step}`} className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="text-lg font-bold text-white">Step {s.step}: {s.title}</h4>
-              <button onClick={scrollToTop} className="text-zinc-500 hover:text-cyan-400">Top</button>
-            </div>
-            <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-line">{s.desc}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Database Reality */}
-      <div id="database-reality" className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 space-y-3">
-        <h3 className="text-xl font-bold text-white">{hybridData.databaseReality.title}</h3>
-        <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-line">{hybridData.databaseReality.text}</p>
-      </div>
-
-      {/* Trade-Offs */}
-      <div id="tradeoffs" className="scroll-mt-36 space-y-6 pt-6 border-t border-zinc-800">
-        <div>
-          <h2 className="text-2xl font-bold text-white">5. Algorithmic Decisions & Trade-Offs</h2>
-          <p className="text-sm text-zinc-400">Why this technology vs industry alternatives</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {hybridData.algorithmicTradeoffs.map((item, idx) => (
-            <div key={idx} className="rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 space-y-4">
-              <h3 className="text-lg font-bold text-white">{item.component}</h3>
-              <div className="rounded-xl bg-emerald-950/20 border border-emerald-800/40 p-3 text-xs sm:text-sm text-emerald-200">
-                <strong className="text-emerald-400">Why Chosen: </strong>{item.whyChosen}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] uppercase font-mono px-2.5 py-1 rounded-md bg-zinc-900 text-cyan-300 border border-zinc-800 font-semibold">
+                    {item.badge}
+                  </span>
+                  <button
+                    onClick={scrollToBookmarks}
+                    className="text-xs font-mono text-zinc-500 hover:text-cyan-400 transition flex items-center gap-1 cursor-pointer"
+                    title="Back to Bookmarks"
+                  >
+                    <span>Top</span>
+                    <ArrowUp className="w-3 h-3" />
+                  </button>
+                </div>
+                <h3 className="text-xl font-bold text-white tracking-tight">
+                  {item.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-cyan-400/90 font-medium italic bg-cyan-950/20 border border-cyan-900/40 rounded-lg p-2.5">
+                  {item.summary}
+                </p>
               </div>
-              <div className="rounded-xl bg-rose-950/20 border border-rose-800/40 p-3 text-xs sm:text-sm text-rose-200">
-                <strong className="text-rose-400">Why NOT Alternatives: </strong>{item.whyNotOthers}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Edge Cases Table */}
-      <div id="edge-cases" className="scroll-mt-36 space-y-6 pt-6 border-t border-zinc-800">
-        <div>
-          <h2 className="text-2xl font-bold text-white">6. The "Ifs, Buts, and Edge Cases" Interview Defense</h2>
-          <p className="text-sm text-zinc-400">Word-for-word answers to tough interview challenges</p>
-        </div>
-
-        <div className="space-y-4">
-          {hybridData.edgeCasesTable.map((item, idx) => (
-            <div key={idx} className="rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 space-y-3">
-              <div className="text-sm font-bold text-cyan-300">
-                <span className="text-cyan-500 font-mono mr-2">Q:</span>
-                "{item.question}"
-              </div>
-              <div className="text-xs sm:text-sm text-zinc-200 pl-4 border-l-2 border-cyan-500/50 leading-relaxed">
-                <span className="font-semibold text-zinc-300">Answer: </span>
-                {item.answer}
-              </div>
+              <ul className="space-y-2.5 pt-3 border-t border-zinc-800/80">
+                {item.details.map((detail, dIdx) => (
+                  <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
+                    <span className="text-cyan-400 font-bold mt-0.5">•</span>
+                    <span>{detail}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
