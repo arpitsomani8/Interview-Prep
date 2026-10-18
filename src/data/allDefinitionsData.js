@@ -72,7 +72,8 @@ export const definitionBookmarks = [
   { id: "backend-architecture", label: "Backend Architecture" },
   { id: "onnx", label: "ONNX" },
   { id: "gpu-cuda", label: "GPU / CUDA" },
-  { id: "ai-fairness-auditing", label: "AI Fairness / Auditing" }
+  { id: "ai-fairness-auditing", label: "AI Fairness / Auditing" },
+  { id: "automl", label: "AutoML" }
 ];
 
 export const definitionsData = [
@@ -4833,5 +4834,41 @@ def health_check():
       }
     ],
     takeaway: "Deploying AI responsibly requires moving beyond technical accuracy: systematic AI auditing audits fairness parity, explainability, privacy boundaries, threat resistance, production reliability, and documented governance."
+  },
+  {
+    id: "automl",
+    title: "AutoML & ML Pipelines — Automated Machine Learning",
+    badge: "Hyperparameter Tuning & Pipeline Automation",
+    summary: "AutoML stands for Automated Machine Learning. It automates repetitive steps in ML development: preparing datasets, selecting algorithms, choosing hyperparameters, training models, and comparing evaluation metrics.",
+    coreDefinition: "AutoML stands for Automated Machine Learning. It automates some of the repetitive steps involved in developing a machine-learning model.",
+    manualStepsIntro: "Normally, a developer or data scientist may need to:",
+    manualSteps: [
+      "1. Prepare the dataset.",
+      "2. Select candidate algorithms.",
+      "3. Choose hyperparameters.",
+      "4. Train models.",
+      "5. Compare evaluation metrics.",
+      "6. Select a suitable model."
+    ],
+    automlCapability: "AutoML can automate many of these steps. An AutoML system might try Logistic Regression, Random Forest, and gradient-boosting models, tune their hyperparameters, and compare their validation results.",
+    whatItDoesNotGuaranteeIntro: "What AutoML does not guarantee",
+    whatItDoesNotGuarantee: [
+      "It does not guarantee the best possible model.",
+      "It cannot automatically fix every data-quality or fairness problem.",
+      "It does not eliminate the need for domain knowledge.",
+      "Its validation process must be designed carefully to avoid data leakage and overfitting."
+    ],
+    commonTools: [
+      { name: "Auto-sklearn", type: "Open Source / Python", desc: "Automated machine learning toolkit based on scikit-learn using Bayesian optimization." },
+      { name: "FLAML", type: "Fast & Lightweight", desc: "Microsoft library for cost-effective hyperparameter tuning and automated model selection." },
+      { name: "H2O AutoML", type: "Enterprise Scalable", desc: "Automates training and tuning of stacked ensembles, gradient boosting, and deep neural nets." },
+      { name: "Google Vertex AI AutoML", type: "Managed Cloud", desc: "Train models on tabular, image, text, or video data with zero-code cloud infrastructure." },
+      { name: "Azure Machine Learning automated ML", type: "Enterprise Cloud", desc: "Automates feature engineering, model selection, and hyperparameter sweeping on Azure." }
+    ],
+    mlPipelineDefinition: {
+      term: "ML Pipeline",
+      definition: "An organized sequence of steps used to prepare data, train or use a machine-learning model, and evaluate or deploy the results."
+    },
+    takeaway: "AutoML automates algorithm exploration, hyperparameter tuning, and metric comparisons, but human domain knowledge and leak-free validation designs remain essential to building reliable production ML pipelines."
   }
 ];

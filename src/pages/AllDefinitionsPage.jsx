@@ -7854,6 +7854,143 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 76: AutoML & ML Pipelines */}
+            {item.id === 'automl' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Automated Machine Learning</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-800">
+                      AutoML & Pipelines
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl space-y-3">
+                    <p className="text-xs sm:text-sm text-cyan-200 font-sans leading-relaxed font-semibold">
+                      {item.coreDefinition}
+                    </p>
+                    <div className="p-3.5 rounded-xl bg-black border border-cyan-900/50 flex items-start gap-3">
+                      <span className="text-cyan-400 font-bold text-base leading-none mt-0.5">🤖</span>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.automlCapability}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 6 Manual Developer Steps AutoML Automates */}
+                {item.manualSteps && (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.manualStepsIntro}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Typical Workflow
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.manualSteps.map((step, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition flex items-start gap-2.5"
+                        >
+                          <span className="w-5 h-5 rounded bg-amber-950 border border-amber-800 text-amber-300 font-mono text-[11px] flex items-center justify-center shrink-0 font-bold mt-0.5">
+                            0{sIdx + 1}
+                          </span>
+                          <span className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                            {step.replace(/^\d+\.\s*/, '')}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* What AutoML Does NOT Guarantee */}
+                {item.whatItDoesNotGuarantee && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
+                      <span>{item.whatItDoesNotGuaranteeIntro}</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {item.whatItDoesNotGuarantee.map((caveat, cIdx) => (
+                        <div
+                          key={cIdx}
+                          className="p-3.5 rounded-xl bg-rose-950/20 border border-rose-900/40 flex items-start gap-2.5"
+                        >
+                          <span className="text-rose-400 font-bold text-sm shrink-0 mt-0.5">⚠️</span>
+                          <span className="text-xs text-rose-200/90 font-sans leading-relaxed">
+                            {caveat}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Common AutoML Tools */}
+                {item.commonTools && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Common AutoML Tools & Platforms</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.commonTools.map((tool, tIdx) => (
+                        <div
+                          key={tIdx}
+                          className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-1.5"
+                        >
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="text-xs font-bold text-purple-300 font-mono">
+                              {tool.name}
+                            </span>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                              {tool.type}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                            {tool.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* ML Pipeline Definition Banner */}
+                {item.mlPipelineDefinition && (
+                  <div className="p-4 rounded-xl bg-black border border-blue-900/50 space-y-1.5">
+                    <div className="flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-blue-400" />
+                      <span className="text-xs font-bold text-blue-300 font-mono uppercase tracking-wider">
+                        {item.mlPipelineDefinition.term}
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                      {item.mlPipelineDefinition.definition}
+                    </p>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
