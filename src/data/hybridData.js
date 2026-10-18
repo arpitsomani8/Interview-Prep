@@ -76,6 +76,17 @@ Finally, during real-time inference, our validator calculates Z-scores (|x - μ|
 
   bookmarkedConcepts: [
     {
+      id: "fastapi",
+      title: "FastAPI",
+      badge: "Async Web Framework",
+      summary: "Modern, high-performance asynchronous Python web framework providing sub-millisecond request routing and native schema documentation.",
+      details: [
+        "Asynchronous Concurrency: Built on Starlette and uvloop, enabling high-throughput non-blocking I/O when routing between PostgreSQL, Pinecone, and ML models.",
+        "Header Interception: Dependency injection intercepts every request to validate mandatory X-Tenant-ID headers before downstream database logic executes.",
+        "Automatic OpenAPI Docs: Automatically produces interactive Swagger documentation from Python type signatures, streamlining enterprise client onboarding."
+      ]
+    },
+    {
       id: "lightgbm",
       title: "LightGBM",
       badge: "Tabular Machine Learning",
@@ -129,6 +140,17 @@ Finally, during real-time inference, our validator calculates Z-scores (|x - μ|
         "Strict Namespace Partitioning: A single index is strictly segregated by namespace=tenant_id, ensuring client A can never retrieve client B's vector data.",
         "Links to Local Files: Vector search matches semantic queries against document chunks, linking back directly to the local policy file referenced in PostgreSQL.",
         "True Serverless Economics: Scales down to $0/month when idle and instantly scales up to handle query surges without manual cluster management."
+      ]
+    },
+    {
+      id: "pydantic",
+      title: "Pydantic",
+      badge: "Request Validation & Type Safety",
+      summary: "Fast, Rust-powered data validation library enforcing strict input types, value ranges, and schema integrity.",
+      details: [
+        "Rust-Powered Speed: Pydantic v2 core is written in Rust, validating incoming payloads in under 1 millisecond with minimal CPU overhead.",
+        "Strict Boundary Checks: Automatically checks value bounds (e.g. amount > 0, non-negative numbers) and rejects malformed fields before reaching databases or ML boosters.",
+        "Structured 400 Errors: Returns clear, actionable validation error responses on invalid inputs, keeping backend services robust and predictable."
       ]
     },
     {
