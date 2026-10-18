@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function IntroPage({ setActiveTab }) {
+export default function IntroPage() {
   return (
     <div className="w-full px-4 sm:px-8 lg:px-12 py-8">
       {/* Minimal Speech Card */}
@@ -22,11 +22,11 @@ export default function IntroPage({ setActiveTab }) {
         </p>
 
         <p>
-          One of the key projects I’m working on is <span className="text-cyan-400 font-semibold cursor-pointer hover:underline" onClick={() => setActiveTab('fashion')}>Fashion AI Copilot</span>, a multimodal AI platform designed to help fashion teams search for designs using text and images, analyze fashion trends, and explore AI-powered garment design and editing. The solution involves technologies such as <span className="text-indigo-300 font-medium">Azure AI Vision, Azure OpenAI, embeddings, vector search, and generative AI models</span>.
+          One of the key projects I’m working on is <a href="#/fashion" className="text-cyan-400 font-semibold cursor-pointer hover:underline">Fashion AI Copilot</a>, a multimodal AI platform designed to help fashion teams search for designs using text and images, analyze fashion trends, and explore AI-powered garment design and editing. The solution involves technologies such as <span className="text-indigo-300 font-medium">Azure AI Vision, Azure OpenAI, embeddings, vector search, and generative AI models</span>.
         </p>
 
         <p>
-          Apart from that, I have worked on a <span className="text-cyan-400 font-semibold cursor-pointer hover:underline" onClick={() => setActiveTab('hybrid')}>Hybrid AI Engine</span>, which combines traditional machine learning with RAG-based approaches to support different business use cases, as well as a computer vision pipeline for anomaly detection using <span className="text-cyan-400 font-semibold cursor-pointer hover:underline" onClick={() => setActiveTab('yolo')}>YOLO and DeepSparse</span>.
+          Apart from that, I have worked on a <a href="#/hybrid" className="text-cyan-400 font-semibold cursor-pointer hover:underline">Hybrid AI Engine</a>, which combines traditional machine learning with RAG-based approaches to support different business use cases, as well as a computer vision pipeline for anomaly detection using <a href="#/yolo" className="text-cyan-400 font-semibold cursor-pointer hover:underline">YOLO and DeepSparse</a>.
         </p>
 
         <p>

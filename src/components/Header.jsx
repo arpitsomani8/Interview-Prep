@@ -46,9 +46,13 @@ export default function Header({ activeTab, setActiveTab }) {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
-                <button
+                <a
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  href={`#/${tab.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveTab(tab.id);
+                  }}
                   className={`flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap border ${
                     isActive
                       ? 'bg-zinc-900 text-cyan-400 border-cyan-500/50 shadow-sm shadow-cyan-500/20'
@@ -57,7 +61,7 @@ export default function Header({ activeTab, setActiveTab }) {
                 >
                   <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-cyan-400' : 'text-zinc-500'}`} />
                   <span>{tab.label}</span>
-                </button>
+                </a>
               );
             })}
           </nav>
