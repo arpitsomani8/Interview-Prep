@@ -58,7 +58,8 @@ export const definitionBookmarks = [
   { id: "ranking-reranking", label: "Ranking / Reranking" },
   { id: "auth-authorization", label: "Authentication & Authorization" },
   { id: "tuple", label: "Tuple" },
-  { id: "pandas", label: "Pandas" }
+  { id: "pandas", label: "Pandas" },
+  { id: "python", label: "Python" }
 ];
 
 export const definitionsData = [
@@ -3548,5 +3549,94 @@ print(category_stats)`,
       }
     ],
     takeaway: "In production AI pipelines, raw data is never clean. Pandas serves as the primary ETL and exploratory data analysis (EDA) tool to sanitize, normalize, and inspect tabular features before feeding them into embedding generators or model trainers."
+  },
+  {
+    id: "python",
+    title: "Python Core Concepts & Idioms",
+    badge: "Python Fundamentals & Syntax",
+    summary: "Essential language mechanics and idioms frequently tested in technical interviews: sequence slicing, string splitting with limits, list/dict comprehensions, generator expressions vs tuples, and anonymous lambda functions.",
+    topics: [
+      {
+        id: "slicing",
+        title: "1. Sequence Slicing",
+        syntax: "sequence[start:stop:step]",
+        definition: "Slicing means extracting a portion of a sequence, such as a string, list, or tuple.",
+        breakdown: [
+          { param: "start", role: "Index to begin at (included)." },
+          { param: "stop", role: "Index to stop at (excluded)." },
+          { param: "step", role: "Interval between selected elements." }
+        ],
+        code: `text = "PythonAI"
+print(text[0:6])       # 'Python' (start=0, stop=6 excluded)
+print(text[::2])       # 'PtoA' (every 2nd element)
+print(text[::-1])      # 'IAnohtyP' (reverse sequence)
+
+numbers = [10, 20, 30, 40, 50]
+print(numbers[1:4])    # [20, 30, 40]`
+      },
+      {
+        id: "splitting",
+        title: "2. String Splitting with maxsplit",
+        syntax: 'string.split(separator, maxsplit)',
+        definition: "Splitting means breaking a string into smaller parts using a separator. Python's string split() method returns a list.",
+        note: "You can limit the number of splits using the maxsplit parameter.",
+        code: `text = "a-b-c-d"
+print(text.split("-", 2))
+# Output: ['a', 'b', 'c-d']
+
+# Useful for URL or path parsing:
+endpoint = "v1/models/clip-vit-b32/predict"
+print(endpoint.split("/", 2))
+# Output: ['v1', 'models', 'clip-vit-b32/predict']`
+      },
+      {
+        id: "comprehensions",
+        title: "3. List & Dictionary Comprehensions",
+        definition: "List comprehension is a concise way to create a new list from an iterable, optionally applying a condition.",
+        code: `# List comprehension
+squares = [n * n for n in range(1, 6)]
+print(squares)
+# [1, 4, 9, 16, 25]
+
+# With condition
+even_squares = [n * n for n in range(1, 10) if n % 2 == 0]
+print(even_squares)
+# [4, 16, 36, 64]
+
+# Dictionary comprehension
+c = {x: x * x for x in range(3)}
+print(c)
+# {0: 0, 1: 1, 2: 4}`
+      },
+      {
+        id: "generator-tuple",
+        title: "4. The Tuple Comprehension Myth (Generator Expressions)",
+        definition: "Python has no tuple-comprehension syntax. Using parentheses around a comprehension creates a generator expression, not a tuple.",
+        interviewGotcha: "Python has no tuple-comprehension syntax. Writing (x for x in iterable) produces a generator expression. To create an actual tuple, pass the generator expression into the tuple() constructor.",
+        code: `# This produces a generator expression, NOT a tuple:
+gen = (n * n for n in range(5))
+print(gen)
+# <generator object <genexpr> at 0x...>
+
+# To create a tuple, wrap with tuple():
+numbers = tuple(n * n for n in range(5))
+print(numbers)
+# (0, 1, 4, 9, 16)`
+      },
+      {
+        id: "lambda",
+        title: "5. Lambda Functions (Anonymous Functions)",
+        syntax: "lambda arguments: expression",
+        definition: "A lambda function is a small anonymous function defined using the lambda keyword. It contains a single expression evaluated and returned automatically.",
+        code: `square = lambda n: n * n
+print(square(5))  # 25
+
+# Practical usage in sorting and mapping:
+items = [{"id": 1, "score": 0.88}, {"id": 2, "score": 0.95}, {"id": 3, "score": 0.72}]
+sorted_items = sorted(items, key=lambda x: x["score"], reverse=True)
+print([i["id"] for i in sorted_items])  # [2, 1, 3]`
+      }
+    ],
+    takeaway: "Mastering Python's fundamental mechanics—slicing interval semantics, string splitting with maxsplit, comprehensions, generator laziness, and concise lambdas—ensures clean, idiomatic code during live coding and systems design interviews."
   }
 ];
