@@ -3368,6 +3368,156 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 46: MCP (Model Context Protocol) */}
+            {item.id === 'mcp' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core MCP Rule */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Standardized Protocol Rule: </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {/* How MCP Works (Lifecycle Steps) */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>How MCP Works (End-to-End Execution Flow)</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    {item.howItWorksSteps.map((stg, sIdx) => (
+                      <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <span className="text-xs font-bold text-white font-mono text-cyan-300">{stg.step}</span>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{stg.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Three Main Capabilities */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    Three Capabilities Exposed by MCP Servers
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.threeCapabilities.map((cap, cIdx) => (
+                      <div key={cIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <div className="text-xs font-bold text-amber-300 font-mono uppercase">{cap.capability}</div>
+                        <p className="text-xs text-zinc-400 leading-relaxed">{cap.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Hands-On Python MCP Server Code */}
+                {item.handsOnServer && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+                      <div className="space-y-1">
+                        <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-[10px] font-mono uppercase font-bold tracking-wider">
+                          <Terminal className="w-3 h-3" />
+                          <span>mcp[cli] Python SDK</span>
+                        </div>
+                        <h4 className="text-sm sm:text-base font-bold text-white tracking-tight">
+                          {item.handsOnServer.title}
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="p-2 rounded-lg bg-black border border-zinc-800 text-[11px] font-mono text-cyan-300 flex items-center gap-2">
+                          <span>{item.handsOnServer.installCmd}</span>
+                          <button
+                            onClick={() => handleCopyCode('pip-mcp', item.handsOnServer.installCmd)}
+                            className="text-zinc-500 hover:text-zinc-300 cursor-pointer"
+                          >
+                            {copiedId === 'pip-mcp' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 leading-relaxed">
+                      {item.handsOnServer.scenario}
+                    </p>
+
+                    {/* Server Code Container */}
+                    <div className="space-y-2">
+                      <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                        <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                          <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                            <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>{item.handsOnServer.filename} (MCPServer Definition)</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopyCode('code-mcp', item.handsOnServer.code)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                          >
+                            {copiedId === 'code-mcp' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-400" />
+                                <span>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                <span>Copy Code</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                          {item.handsOnServer.code}
+                        </pre>
+                      </div>
+                      <div className="p-3 rounded-lg bg-black/60 border border-zinc-800/80 text-[11px] text-zinc-400 leading-relaxed font-sans">
+                        <strong className="text-cyan-400 font-mono">@mcp.tool() Mechanism: </strong>
+                        {item.handsOnServer.decoratorNote}
+                      </div>
+                    </div>
+
+                    {/* MCP Inspector Testing */}
+                    <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                      <div className="flex items-center gap-2 text-xs font-mono">
+                        <span className="text-zinc-400">Run Development Inspector:</span>
+                        <span className="text-emerald-400 font-bold bg-zinc-900 px-2.5 py-0.5 rounded border border-zinc-700">{item.handsOnServer.runCmd}</span>
+                      </div>
+                      <div className="space-y-1 pt-1">
+                        {item.handsOnServer.inspectorSteps.map((ins, iIdx) => (
+                          <div key={iIdx} className="text-xs text-zinc-300 flex items-start gap-2">
+                            <span className="text-cyan-400 font-mono">•</span>
+                            <span className="text-[11px] text-zinc-300">{ins}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Architectural Boundaries */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {item.architecturalBoundaries.map((b, bIdx) => (
+                    <div key={bIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                      <h5 className="text-xs font-bold text-amber-300 font-mono uppercase">{b.title}</h5>
+                      <p className="text-xs text-zinc-400 leading-relaxed font-sans">{b.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* FAQ Cards */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Frequently Asked MCP Architecture Questions
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.faqs.map((faq, fIdx) => (
+                      <div key={fIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <h5 className="text-xs font-bold text-cyan-300 font-mono">{faq.q}</h5>
+                        <p className="text-xs text-zinc-400 leading-relaxed">{faq.a}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

@@ -43,7 +43,8 @@ export const definitionBookmarks = [
   { id: "aws-azure", label: "AWS / Azure in AI/ML" },
   { id: "testing", label: "Testing" },
   { id: "text-image-search", label: "Text / Image Search" },
-  { id: "denoising", label: "Denoising" }
+  { id: "denoising", label: "Denoising" },
+  { id: "mcp", label: "MCP" }
 ];
 
 export const definitionsData = [
@@ -2170,5 +2171,103 @@ print("Denoised Output:  ", torch.round(denoised_x, decimals=3))`,
       explanation: "In full diffusion models, this denoising step is repeated iteratively over 20–50 scheduler timesteps to produce crystal-clear images."
     },
     takeaway: "Denoising is not simple blurring or thresholding; it is learned statistical reverse-sampling that reconstructs structured data guided by cross-attention conditioning."
+  },
+  {
+    id: "mcp",
+    title: "MCP (Model Context Protocol)",
+    badge: "Open Protocol & Agent Tool Interoperability",
+    summary: "MCP (Model Context Protocol) is an open standard that enables AI applications and agents to connect an LLM to external tools, data sources, and enterprise services without writing brittle custom integrations for every client.",
+    coreDefinition: "MCP standardizes the connection between the AI application and tools. The LLM typically decides when to use a tool, while the MCP client executes the protocol interaction with the MCP server.",
+    howItWorksSteps: [
+      { step: "1. User", desc: "User asks: “What's the status of order 1024?”" },
+      { step: "2. AI App + LLM", desc: "Understands the request and decides whether to call a tool." },
+      { step: "3. MCP Client", desc: "Communicates with an MCP server using the standardized protocol." },
+      { step: "4. MCP Server", desc: "Exposes a tool such as get_order_status with typed schemas." },
+      { step: "5. Database / API", desc: "Returns order status, which the LLM explains back to the user." }
+    ],
+    threeCapabilities: [
+      {
+        capability: "Tools",
+        desc: "Actions such as querying an order, searching designs, or creating a ticket that LLMs can invoke."
+      },
+      {
+        capability: "Resources",
+        desc: "Data that an application can read, such as documents, file contents, or catalog information."
+      },
+      {
+        capability: "Prompts",
+        desc: "Reusable prompt templates and parameterized workflows that a client can offer to users."
+      }
+    ],
+    handsOnServer: {
+      title: "Build a Real MCP Server in Python (Order Status Assistant)",
+      scenario: "Imagine your company has an order-management database. Instead of letting the LLM query the database directly, you expose a controlled Python function through MCP.",
+      installCmd: 'pip install "mcp[cli]"',
+      installNote: "Official Python MCP SDK with CLI and developer tools",
+      filename: "server.py",
+      code: `from mcp.server import MCPServer
+
+mcp = MCPServer("Order Management Server")
+
+# This Python function becomes an MCP tool.
+@mcp.tool()
+def get_order_status(order_id: str) -> dict:
+    """Get the current status of an order by its ID."""
+
+    # Demo data; in a real system, query your database/API.
+    orders = {
+        "1024": {
+            "status": "Shipped",
+            "estimated_delivery": "2026-10-15"
+        },
+        "1025": {
+            "status": "Processing",
+            "estimated_delivery": "2026-10-18"
+        }
+    }
+
+    order = orders.get(order_id)
+
+    if order is None:
+        return {"error": f"Order {order_id} was not found"}
+
+    return {
+        "order_id": order_id,
+        **order
+    }`,
+      decoratorNote: "@mcp.tool() registers get_order_status as a tool that an MCP client can discover and call. The SDK uses the function's name, docstring, and type hints to describe the tool and its input schema. You don't have to manually implement the MCP protocol.",
+      runCmd: "uv run mcp dev server.py",
+      inspectorSteps: [
+        "1. The development command opens the MCP Inspector, an interface for exploring and testing your server's tools.",
+        "2. Open the Tools section.",
+        "3. Find get_order_status.",
+        "4. Supply order_id as 1024.",
+        "5. Call the tool and inspect the returned JSON response."
+      ]
+    },
+    architecturalBoundaries: [
+      {
+        title: "Host vs Server Separation of Concerns",
+        desc: "The MCP host handles the LLM interaction and tool-selection loop; the MCP server provides the capability. This separation allows compatible AI clients to reuse the same server."
+      },
+      {
+        title: "Does MCP Replace REST APIs?",
+        desc: "You don't need MCP just to build your original search API. A React frontend can call Flask directly. MCP becomes useful when you want an AI assistant or agent to discover and use your search capability alongside other tools—for example, checking inventory, comparing prices, and searching designs. MCP doesn't replace REST APIs; your MCP server can call existing REST APIs internally."
+      }
+    ],
+    faqs: [
+      {
+        q: "Is MCP an LLM?",
+        a: "No. MCP is a communication protocol, not a model."
+      },
+      {
+        q: "Is MCP secure by default?",
+        a: "Don't assume that it is. Validate inputs, restrict tool permissions, protect credentials, authenticate remote connections, and require approval for sensitive operations where appropriate."
+      },
+      {
+        q: "When would you use MCP instead of directly integrating a tool?",
+        a: "When multiple compatible AI clients or agent workflows need a standardized way to discover and reuse the same capabilities. For a single simple application, a direct function call may be simpler."
+      }
+    ]
   }
 ];
