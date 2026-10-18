@@ -4180,6 +4180,114 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 52: OpenAI vs. Azure AI & LLM vs. CLIP Inference */}
+            {item.id === 'openai-vs-azure-ai' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase font-sans font-bold">OpenAI vs. Azure AI Core Relationship: </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {/* What Exactly Do You Use OpenAI For? */}
+                {item.whatDoYouUseOpenAiFor && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="space-y-1 border-b border-zinc-800 pb-3">
+                      <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-[10px] font-mono uppercase font-bold tracking-wider">
+                        <Sparkles className="w-3 h-3 text-cyan-400" />
+                        <span>System Architecture</span>
+                      </div>
+                      <h4 className="text-sm sm:text-base font-bold text-white tracking-tight pt-0.5">
+                        {item.whatDoYouUseOpenAiFor.question}
+                      </h4>
+                      <p className="text-xs text-cyan-200/90 font-sans leading-relaxed">
+                        {item.whatDoYouUseOpenAiFor.answer}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+                      {item.whatDoYouUseOpenAiFor.architecturePipeline.map((comp, cIdx) => (
+                        <div key={cIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between hover:border-cyan-500/30 transition">
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-zinc-900 text-cyan-300 border border-zinc-700/60 inline-block">
+                              {comp.tag}
+                            </span>
+                            <div className="text-xs font-bold text-white font-mono text-cyan-200">
+                              {comp.component}
+                            </div>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                            {comp.role}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* How is LLM Inference Different from CLIP Inference? */}
+                {item.inferenceComparison && (
+                  <div className="space-y-2">
+                    <div className="space-y-0.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.inferenceComparison.title}</span>
+                      </h4>
+                      <p className="text-[11px] text-zinc-400 font-sans italic">{item.inferenceComparison.subtext}</p>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                        <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                          <tr>
+                            <th className="p-3 border-b border-zinc-800 w-1/5">Aspect</th>
+                            <th className="p-3 border-b border-zinc-800 text-cyan-400 font-bold w-2/5">LLM Inference</th>
+                            <th className="p-3 border-b border-zinc-800 text-amber-300 font-bold w-2/5">CLIP Inference</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 bg-black/60 font-sans">
+                          {item.inferenceComparison.matrix.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-semibold text-white font-mono text-zinc-200">{row.aspect}</td>
+                              <td className="p-3 text-cyan-200 font-mono text-[11px] leading-relaxed">{row.llmInference}</td>
+                              <td className="p-3 text-amber-200 font-mono text-[11px] leading-relaxed">{row.clipInference}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Ecosystem Breakdown: OpenAI vs Azure AI vs Azure OpenAI */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    OpenAI vs. Azure AI vs. Azure OpenAI Infrastructure
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.platformComparison.map((plt, pIdx) => (
+                      <div key={pIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <h5 className="text-xs font-bold text-cyan-300 font-mono uppercase">{plt.feature}</h5>
+                        <div className="space-y-1.5 text-xs text-zinc-400">
+                          <div><strong className="text-zinc-200 font-mono">OpenAI: </strong>{plt.openAi}</div>
+                          <div><strong className="text-zinc-200 font-mono">Azure AI: </strong>{plt.azureAi}</div>
+                          <div className="text-cyan-200/90 bg-cyan-950/20 p-2 rounded border border-cyan-800/30">
+                            <strong className="text-cyan-300 font-mono">Azure OpenAI: </strong>{plt.azureOpenAi}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Dual-Inference Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
