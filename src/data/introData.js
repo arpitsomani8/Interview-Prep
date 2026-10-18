@@ -69,13 +69,13 @@ export const introData = {
       id: "fashion",
       title: "Fashion AI Copilot",
       category: "Agentic Multimodal Design Platform",
-      stack: ["Azure AI Vision", "Azure OpenAI (GPT-4o)", "HNSW Vector DB", "PostgreSQL", "ControlNet", "SDXL", "Zero123", "LangGraph"],
+      stack: ["Azure AI Vision", "Azure OpenAI (GPT-4o)", "HNSW Vector DB", "PostgreSQL", "ControlNet", "SDXL", "LangGraph"],
       highlights: [
-        "100,000+ garment catalog retrieval with text, image & hybrid late fusion",
+        "10,000+ garment catalog retrieval with text, image & hybrid late fusion",
         "Self-service retailer bulk ordering (S/M/L/XL) with OTP email verification",
-        "25-item lazy loading & pagination + Top-5 LLM context hydration",
-        "Kept existing production PostgreSQL server (no cloud DB migration)",
-        "Azure OCR integration for graphic tees and typography search"
+        "Top-K vector retrieval with 25-item lazy loading & pagination",
+        "PostgreSQL database for catalog inventory, retailers & orders",
+        "In-progress Azure OCR integration for graphic typography search"
       ]
     },
     {
