@@ -588,17 +588,105 @@ export default function AllDefinitionsPage() {
 
             {/* Item 12: RAG */}
             {item.id === 'rag' && (
-              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
                 {/* Key Principle Alert */}
                 <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed">
                   <strong className="text-amber-400 font-mono uppercase">Key Principle & Safeguards: </strong>
                   {item.keyPrinciple}
                 </div>
 
-                {/* Real Project Breakdown */}
-                <div className="space-y-2">
+                {/* FAQ Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                  {item.faqs.map((faq, fIdx) => (
+                    <div key={fIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                      <h5 className="text-xs font-bold text-cyan-300">{faq.q}</h5>
+                      <p className="text-xs text-zinc-400 leading-relaxed">{faq.a}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 5 Pipeline Pillars */}
+                <div className="space-y-2.5">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
-                    Real Production Project: {item.realProject.name}
+                    RAG is a Multi-Component Pipeline (Not a Single Algorithm)
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    {item.pipelinePillars.map((p, pIdx) => (
+                      <div key={pIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <span className="text-xs font-bold text-white font-mono">{p.pillar}</span>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{p.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800/80 text-[11px] text-zinc-400">
+                    <strong className="text-cyan-400 font-mono">Indexing Clarification: </strong>
+                    {item.vectorSearchNote}
+                  </div>
+                </div>
+
+                {/* Flow Diagram */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 font-mono">
+                    End-to-End RAG Execution Flowchart
+                  </h4>
+                  <div className="flex flex-wrap items-center gap-2 p-4 rounded-xl bg-black border border-zinc-800">
+                    {item.pipelineFlow.map((step, sIdx) => (
+                      <React.Fragment key={sIdx}>
+                        <span className="px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-xs font-mono text-cyan-300">
+                          {step}
+                        </span>
+                        {sIdx < item.pipelineFlow.length - 1 && (
+                          <span className="text-zinc-600 font-bold">→</span>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Minimal Retrieval Example (NumPy + OpenAI) */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                      Minimal In-Memory Vector Search (NumPy + Embeddings)
+                    </h4>
+                    <span className="text-[10px] font-mono text-zinc-500">Pure Vector Math</span>
+                  </div>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    {item.minimalExplanation}
+                  </p>
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>minimal_search.py (Pure Vector Cosine Similarity)</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-min-rag', item.minimalRetrievalCode)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-min-rag' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                      {item.minimalRetrievalCode}
+                    </pre>
+                  </div>
+                </div>
+
+                {/* Real Project Breakdown */}
+                <div className="space-y-2 pt-2 border-t border-zinc-800">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Full Project: {item.realProject.name}
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {item.realProject.components.map((comp, cIdx) => (
@@ -776,7 +864,29 @@ export default function AllDefinitionsPage() {
 
             {/* Item 14: Vector Database */}
             {item.id === 'vector-database' && (
-              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* Concrete Operational Walkthrough */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-cyan-900/40 space-y-3">
+                  <h4 className="text-xs font-bold text-cyan-300 font-mono uppercase">
+                    {item.concreteExample.title}
+                  </h4>
+                  <div className="p-3 rounded-lg bg-black/80 border border-zinc-800 space-y-1 font-mono text-xs text-zinc-300">
+                    <div className="text-zinc-500 font-semibold mb-1">Stored Company Policies:</div>
+                    {item.concreteExample.policies.map((pol, pIdx) => (
+                      <div key={pIdx} className="text-cyan-200/90">{pol}</div>
+                    ))}
+                  </div>
+                  <div className="space-y-1.5 pt-1">
+                    {item.concreteExample.steps.map((st, stIdx) => (
+                      <div key={stIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                        <span className="text-cyan-400 mt-0.5">•</span>
+                        <span>{st}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Details Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {item.details.map((detail, dIdx) => (
                     <div key={dIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 leading-relaxed text-zinc-300">
@@ -784,6 +894,235 @@ export default function AllDefinitionsPage() {
                       <span>{detail}</span>
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Item 15: Similarity / Semantic Search */}
+            {item.id === 'similarity-semantic-search' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* Similarity Search */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-bold text-white">{item.similaritySection.title}</h4>
+                    <span className="text-[10px] font-mono text-cyan-400 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800">Vector Geometry</span>
+                  </div>
+                  <p className="text-xs text-zinc-300 leading-relaxed">
+                    {item.similaritySection.desc}
+                  </p>
+                  <div className="p-3 rounded-lg bg-black/60 border border-zinc-800/80 text-xs text-cyan-200 italic">
+                    Example: {item.similaritySection.example}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                    {item.similaritySection.metrics.map((m, mIdx) => (
+                      <div key={mIdx} className="p-3 rounded-lg bg-black border border-zinc-800">
+                        <div className="text-xs font-bold text-cyan-300 font-mono mb-1">{m.name}</div>
+                        <div className="text-[11px] text-zinc-400 leading-relaxed">{m.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Semantic Search */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-bold text-white">{item.semanticSection.title}</h4>
+                    <span className="text-[10px] font-mono text-cyan-400 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800">Conceptual Matching</span>
+                  </div>
+                  <p className="text-xs text-zinc-300 leading-relaxed">
+                    {item.semanticSection.desc}
+                  </p>
+                  <div className="p-3 rounded-lg bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-300 font-medium">
+                    {item.semanticSection.example}
+                  </div>
+                  <div className="space-y-1.5 pt-1">
+                    <div className="text-xs font-semibold text-white mb-1">How Semantic Search Works:</div>
+                    {item.semanticSection.steps.map((st, stIdx) => (
+                      <div key={stIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                        <span className="text-cyan-400 font-bold mt-0.5">•</span>
+                        <span>{st}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Item 16: Predictive Modeling */}
+            {item.id === 'predictive-modeling' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Key Distinction from RAG: </strong>
+                  {item.contrastWithRag}
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    7 Steps to Build a Production Predictive Model
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.sevenSteps.map((s, sIdx) => (
+                      <div key={sIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <span className="text-xs font-bold text-white font-mono">{s.step}</span>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{s.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Item 17: Production Databases */}
+            {item.id === 'production-databases' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* 5 Core Categories Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                    <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                      <tr>
+                        <th className="p-3 border-b border-zinc-800">Database Type</th>
+                        <th className="p-3 border-b border-zinc-800 text-cyan-400">Example Technologies</th>
+                        <th className="p-3 border-b border-zinc-800">Core Purpose</th>
+                        <th className="p-3 border-b border-zinc-800">AI / Logistics Use Case</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-800/80 bg-black/60">
+                      {item.categories.map((cat, cIdx) => (
+                        <tr key={cIdx} className="hover:bg-zinc-900/40 transition">
+                          <td className="p-3 font-semibold text-white font-mono">{cat.type}</td>
+                          <td className="p-3 text-cyan-300 font-mono text-[11px]">{cat.tech}</td>
+                          <td className="p-3 text-zinc-300">{cat.purpose}</td>
+                          <td className="p-3 text-zinc-400 italic">{cat.useCase}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Other Useful Technologies */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Advanced Data Stack Ecosystem
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {item.otherUsefulTech.map((tech, tIdx) => (
+                      <div key={tIdx} className="p-2.5 rounded-lg bg-black/60 border border-zinc-800/80 text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                        <span className="text-cyan-400 font-bold mt-0.5">•</span>
+                        <span>{tech}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Complete End-to-End Architecture */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-900/40 space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-300 font-mono">
+                    End-to-End Multi-Tier Logistics Pipeline
+                  </h4>
+                  <div className="space-y-1.5">
+                    {item.endToEndLogisticsArchitecture.map((arch, aIdx) => (
+                      <div key={aIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                        <span className="text-cyan-400 font-bold font-mono">{aIdx + 1}.</span>
+                        <span>{arch}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Item 18: Classical ML vs Deep Learning */}
+            {item.id === 'classical-ml' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* Comparison Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                    <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                      <tr>
+                        <th className="p-3 border-b border-zinc-800">Dimension</th>
+                        <th className="p-3 border-b border-zinc-800 text-amber-400 font-bold">Classical ML</th>
+                        <th className="p-3 border-b border-zinc-800 text-cyan-400 font-bold">Deep Learning / Modern ML</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-800/80 bg-black/60">
+                      {item.comparisonTable.map((row, rIdx) => (
+                        <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                          <td className="p-3 font-semibold text-white font-mono">{row.dimension}</td>
+                          <td className="p-3 text-zinc-300">{row.classical}</td>
+                          <td className="p-3 text-cyan-200">{row.deepLearning}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Logistics Roles */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Four Paradigm Roles in Our Logistics Architecture
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.logisticsProjectRoles.map((role, rIdx) => (
+                      <div key={rIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                        <div className="text-xs font-bold text-white font-mono">{role.role}</div>
+                        <div className="text-[11px] text-zinc-400 leading-relaxed">{role.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Item 19: Fine-Tuning */}
+            {item.id === 'fine-tuning' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* LLM Fine-Tuning */}
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                    <h4 className="text-sm font-bold text-white">{item.llmFineTuning.title}</h4>
+                    <div className="space-y-1.5 pt-1">
+                      {item.llmFineTuning.steps.map((st, sIdx) => (
+                        <div key={sIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                          <span className="text-cyan-400 font-bold">→</span>
+                          <span>{st}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Classical ML Fine-Tuning */}
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                    <h4 className="text-sm font-bold text-white">{item.classicalFineTuning.title}</h4>
+                    <div className="space-y-1.5 pt-1">
+                      {item.classicalFineTuning.steps.map((st, sIdx) => (
+                        <div key={sIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                          <span className="text-cyan-400 font-bold">→</span>
+                          <span>{st}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* When to use RAG vs Fine-Tuning */}
+                <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    When to Use RAG vs Fine-Tuning?
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {item.ragVsFineTuningDecision.map((dec, dIdx) => (
+                      <div key={dIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+                        <div className="text-xs font-bold text-amber-300 font-mono">{dec.criteria}</div>
+                        <div className="text-[11px] text-zinc-300 leading-relaxed">{dec.recommendation}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Golden Rule */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Fundamental Law: </strong>
+                  {item.goldenRule}
                 </div>
               </div>
             )}

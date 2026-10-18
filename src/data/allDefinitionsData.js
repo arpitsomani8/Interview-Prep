@@ -12,7 +12,12 @@ export const definitionBookmarks = [
   { id: "custom-model-fastapi", label: "Custom Model with FastAPI" },
   { id: "rag", label: "RAG" },
   { id: "embedding", label: "Embedding" },
-  { id: "vector-database", label: "Vector Database" }
+  { id: "vector-database", label: "Vector Database" },
+  { id: "similarity-semantic-search", label: "Similarity / Semantic Search" },
+  { id: "predictive-modeling", label: "Predictive Modeling" },
+  { id: "production-databases", label: "Production Databases" },
+  { id: "classical-ml", label: "Classical ML" },
+  { id: "fine-tuning", label: "Fine-Tuning" }
 ];
 
 export const definitionsData = [
@@ -306,6 +311,94 @@ def predict_damage(data: ParcelData):
     badge: "Information Retrieval & Grounded LLMs",
     summary: "A technique in which we retrieve relevant information from an external data source and provide it to an LLM so that it can generate an answer based on that information.",
     keyPrinciple: "RAG doesn't guarantee a correct answer. Retrieval can miss relevant information, and the model can still misinterpret its context, so we need evaluation and safeguards. Key point: RAG generally does not retrain or fine-tune the LLM. It supplies relevant information at inference time.",
+    faqs: [
+      {
+        q: "Does RAG require fine-tuning?",
+        a: "No. RAG typically supplies retrieved information to the model at inference time without changing its learned weights."
+      },
+      {
+        q: "What happens if retrieval returns the wrong passages?",
+        a: "The model may produce an incorrect or incomplete answer. We can improve chunking, embeddings, retrieval filters, reranking, and evaluation."
+      },
+      {
+        q: "What is the difference between RAG and an AI agent?",
+        a: "RAG retrieves information to help generate an answer. An agent can use RAG as one tool while also planning steps and calling other tools to accomplish a goal."
+      }
+    ],
+    pipelinePillars: [
+      {
+        pillar: "A. Chunking",
+        desc: "Splits documents into manageable passages. Common strategies include fixed-size chunks, overlapping chunks, and paragraph or heading-based chunks."
+      },
+      {
+        pillar: "B. Embedding Models",
+        desc: "Convert text into numerical vectors. Examples include OpenAI embedding models and open embedding models such as BGE and E5."
+      },
+      {
+        pillar: "C. Retrieval Algorithms",
+        desc: "Dense vector retrieval (nearest-neighbor search using embeddings), BM25 (keyword-based ranking), and Hybrid retrieval (combines keyword and vector retrieval)."
+      },
+      {
+        pillar: "D. Reranking (Optional)",
+        desc: "A cross-encoder or another ranking model scores retrieved query-document pairs to reorder and surface the highest quality passages."
+      },
+      {
+        pillar: "E. Generation",
+        desc: "GPT, LLaMA, or another LLM uses the question and retrieved context to generate the final answer."
+      }
+    ],
+    vectorSearchNote: "For vector search, common techniques include exact nearest-neighbor search and approximate nearest-neighbor indexes such as HNSW. Note: HNSW is an indexing algorithm, not an LLM or a RAG-specific model.",
+    pipelineFlow: [
+      "Company documents",
+      "Extract text",
+      "Split into chunks",
+      "Generate embeddings",
+      "Store in vector database",
+      "User asks a question",
+      "Embed the question",
+      "Retrieve top-k relevant chunks",
+      "Send question + context to LLM",
+      "Return answer with sources"
+    ],
+    minimalRetrievalCode: `import numpy as np
+from openai import OpenAI
+
+client = OpenAI()
+
+documents = [
+    "Damaged parcels must be moved to inspection.",
+    "Customers can request delivery updates.",
+    "Torn packaging requires a contents check."
+]
+
+def embed(texts):
+    result = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=texts
+    )
+    return np.array([x.embedding for x in result.data])
+
+# Index the documents
+doc_vectors = embed(documents)
+
+# Search for a relevant passage
+question = "What do we do with ripped packaging?"
+query_vector = embed([question])[0]
+
+# Cosine similarity calculation using dot product and L2 norms
+scores = (
+    doc_vectors @ query_vector
+    / (
+        np.linalg.norm(doc_vectors, axis=1)
+        * np.linalg.norm(query_vector)
+    )
+)
+
+best_index = int(np.argmax(scores))
+
+print("Retrieved:", documents[best_index])
+print("Similarity:", round(float(scores[best_index]), 3))`,
+    minimalExplanation: "This example searches the three in-memory passages and returns the closest one using pure NumPy vector operations. It demonstrates the retrieval step independently from FastAPI, vector database persistence, or generation.",
     realProject: {
       name: "Logistics Policy Assistant",
       components: [
@@ -544,11 +637,193 @@ def ask_question(data: Question):
     title: "Vector Database",
     badge: "Vector Indexing & Similarity Search",
     summary: "A vector database is a specialized database engine purpose-built to store, index, and query high-dimensional vector embeddings with sub-linear search time.",
+    concreteExample: {
+      title: "How Does a Vector Database Actually Work?",
+      policies: [
+        "Passage 1: 'Damaged parcels must be inspected.'",
+        "Passage 2: 'Customers can request delivery updates.'",
+        "Passage 3: 'Torn packaging requires a contents check.'"
+      ],
+      steps: [
+        "First, an embedding model converts each passage into a vector. The vector database stores those vectors alongside the original text and metadata.",
+        "When a user asks: 'What should we do with ripped packaging?', the system:",
+        "1. Converts the query into a vector using the same embedding model.",
+        "2. Searches for nearby vectors using distance metrics.",
+        "3. Retrieves the most relevant passages (e.g. passages 1 and 3).",
+        "4. Sends those passages to the LLM to generate the answer."
+      ]
+    },
     details: [
       "Why Not Relational SQL? Traditional databases query using exact scalar equality (WHERE name = 'x') or B-Trees on numeric ranges. They cannot compute high-dimensional mathematical distances (Cosine, Dot Product, Euclidean L2) across millions of dense vectors in low latency.",
       "Approximate Nearest Neighbor (ANN): Vector DBs utilize algorithmic indexing like HNSW (Hierarchical Navigable Small World) or IVF (Inverted File Index) to retrieve similar vectors in milliseconds without scanning every single vector.",
       "Local vs Cloud-Scale: ChromaDB provides lightweight embedded vector storage ideal for local microservices; Pinecone, Milvus, and Qdrant provide distributed multi-tenant clustering with high concurrency and automatic indexing replication.",
       "Role in RAG: The vector database acts as the external long-term semantic memory for the LLM. It stores passage chunks, metadata, and embeddings, returning context on demand at inference time."
     ]
+  },
+  {
+    id: "similarity-semantic-search",
+    title: "Similarity / Semantic Search",
+    badge: "Vector Distance & Conceptual Retrieval",
+    summary: "Finding items based on vector closeness and underlying meaning rather than relying solely on matching exact keywords.",
+    similaritySection: {
+      title: "Similarity Search",
+      desc: "Finds items that are most similar to a given item according to a chosen comparison method.",
+      example: "Imagine a warehouse stores 10,000 parcel images. You upload a new image of a damaged parcel and want to find visually similar cases.",
+      metrics: [
+        { name: "Cosine Similarity", desc: "Compares the direction (angle) between two vectors, invariant to vector magnitude." },
+        { name: "Euclidean Distance (L2)", desc: "Measures the straight-line physical distance between two coordinate vectors in multi-dimensional space." },
+        { name: "Dot Product", desc: "Measures the alignment and magnitude of vectors; ideal when embeddings are normalized to unit length." }
+      ]
+    },
+    semanticSection: {
+      title: "Semantic Search",
+      desc: "Finds information based on meaning rather than relying only on matching exact words.",
+      example: "'Broken Parcel' and 'Damaged Parcel' share the same semantic relationship, even though they share zero identical words.",
+      steps: [
+        "1. Convert each document into an embedding — a vector of numbers.",
+        "2. Store those vectors in a vector index or database.",
+        "3. Convert the user's search query into a vector using the same embedding model.",
+        "4. Compare the query vector with document vectors using distance metrics.",
+        "5. Return the closest matches ranked by relevance score."
+      ]
+    }
+  },
+  {
+    id: "predictive-modeling",
+    title: "Predictive Modeling",
+    badge: "Supervised Learning Lifecycle",
+    summary: "Predictive modeling uses historical data to learn mathematical patterns and predict an outcome for new, unseen data.",
+    contrastWithRag: "Unlike RAG, which retrieves relevant information for an answer, predictive modeling estimates an outcome using a trained model.",
+    sevenSteps: [
+      { step: "1. Collect Data", desc: "Gather historical parcel records, sensor measurements, and damage labels." },
+      { step: "2. Clean Data", desc: "Handle missing values, fix corrupted data types, remove duplicates, and normalize scales." },
+      { step: "3. Create Features", desc: "Select and engineer useful inputs, such as parcel weight, impact score, conveyor velocity, and carton dimensions." },
+      { step: "4. Split Data", desc: "Partition data into training, validation, and test datasets to guard against data leakage." },
+      { step: "5. Train the Model", desc: "Let an algorithm (Random Forest, XGBoost, Neural Net) learn patterns and decision boundaries from the training data." },
+      { step: "6. Evaluate", desc: "Measure precision, recall, F1 score, ROC-AUC, and latency to verify business readiness." },
+      { step: "7. Deploy & Monitor", desc: "Serve predictions through a FastAPI endpoint and track concept drift and data quality over time." }
+    ]
+  },
+  {
+    id: "production-databases",
+    title: "Production Databases & Modern Data Stack",
+    badge: "Data Architecture & Storage Systems",
+    summary: "Systematic mapping of database technologies across enterprise AI pipelines: Relational, Vector, Document, Object Storage, and Data Warehouses.",
+    categories: [
+      {
+        type: "Relational Databases",
+        tech: "PostgreSQL, MySQL",
+        purpose: "Store structured data in tables with rows, columns, foreign key relationships, and ACID constraints.",
+        useCase: "Customer records, parcel tracking IDs, order status, transactions."
+      },
+      {
+        type: "Vector Databases",
+        tech: "Pinecone, Qdrant, Milvus, Weaviate, ChromaDB",
+        purpose: "Store high-dimensional embedding vectors and perform fast nearest-neighbor similarity search.",
+        useCase: "Search company documents by meaning, retrieve relevant policy passages for RAG."
+      },
+      {
+        type: "Document Databases",
+        tech: "MongoDB",
+        purpose: "Store flexible, semi-structured JSON-like BSON documents.",
+        useCase: "Conversation session metadata, chat histories, document-processing OCR results."
+      },
+      {
+        type: "Object Storage",
+        tech: "Amazon S3, Azure Blob Storage, Google Cloud Storage",
+        purpose: "Store unstructured large binary files and datasets at scale with high durability.",
+        useCase: "Conveyor parcel training images, surveillance video clips, large PDF policy manuals."
+      },
+      {
+        type: "Data Warehouses",
+        tech: "Snowflake, Google BigQuery, Amazon Redshift",
+        purpose: "Analyze large volumes of structured and semi-structured historical analytical data.",
+        useCase: "Prepare training datasets, run BI reports, analyze model drift and inspection KPIs over months."
+      }
+    ],
+    otherUsefulTech: [
+      "Feature Stores (Feast, Tecton): Centralized repository for managing and serving features consistently between training and low-latency inference.",
+      "Lakehouse Technologies (Delta Lake, Apache Iceberg): Unify ACID transactions and metadata governance over open data lakes.",
+      "Time-Series Databases (TimescaleDB): Specialized indexing for high-frequency timestamped sensor and conveyor belt telemetry.",
+      "Hybrid PGVector: PostgreSQL with the pgvector extension allows storing ordinary relational records and embedding vectors inside the exact same database."
+    ],
+    endToEndLogisticsArchitecture: [
+      "1. Images are stored in Amazon S3, and YOLO analyzes them for carton defects.",
+      "2. Prediction results and parcel tracking records are persisted in PostgreSQL.",
+      "3. Company policy documents are converted to embeddings and indexed in a vector database.",
+      "4. FastAPI coordinates the components, executing inference and retrieval, and returns results to the frontend.",
+      "5. The warehouse operations team uses the real-time dashboard to review damage alerts and ask policy questions."
+    ]
+  },
+  {
+    id: "classical-ml",
+    title: "Classical ML vs Deep Learning",
+    badge: "Algorithm Paradigms & Compute Profiles",
+    summary: "Classical ML refers to traditional machine learning algorithms designed primarily for structured tabular data, contrasted with modern deep learning.",
+    comparisonTable: [
+      {
+        dimension: "Core Algorithms",
+        classical: "Logistic Regression, Random Forest, SVM, XGBoost, LightGBM",
+        deepLearning: "Deep Neural Networks, CNNs, Transformers, Diffusion Models"
+      },
+      {
+        dimension: "Data Strengths",
+        classical: "Often exceptionally effective on structured tabular business data",
+        deepLearning: "Excels with high-dimensional unstructured data: images, text, audio, video"
+      },
+      {
+        dimension: "Feature Engineering",
+        classical: "Frequently requires manual feature engineering and domain math",
+        deepLearning: "Learns complex hierarchical representations and patterns automatically"
+      },
+      {
+        dimension: "Compute Requirements",
+        classical: "Often trains on standard CPUs with relatively modest compute budgets",
+        deepLearning: "Large models typically require substantial multi-GPU acceleration clusters"
+      }
+    ],
+    logisticsProjectRoles: [
+      { role: "Classical ML", desc: "Predicts whether a parcel will suffer transit damage based on weight, handling history, route type, and carton thickness." },
+      { role: "Deep Learning", desc: "Executes YOLO to identify visible punctures, open flaps, and torn tape directly on camera frames." },
+      { role: "GenAI", desc: "Uses an LLM (e.g. GPT or LLaMA) to explain the damage policy and draft customer notification summaries." },
+      { role: "RAG", desc: "Retrieves the relevant company insurance policy before the LLM generates its response." }
+    ]
+  },
+  {
+    id: "fine-tuning",
+    title: "Fine-Tuning (LLMs vs Classical ML)",
+    badge: "Model Adaptation & Weight Optimization",
+    summary: "Fine-tuning means taking an already-trained foundational model and training its weights further on a curated task-specific dataset.",
+    llmFineTuning: {
+      title: "Fine-Tuning an LLM",
+      steps: [
+        "Start with a pretrained foundational model (e.g. LLaMA, GPT-style transformer).",
+        "Train further on curated task-specific input-output prompt demonstrations.",
+        "Model adapts its internal attention weights and tone directly to the target domain."
+      ]
+    },
+    classicalFineTuning: {
+      title: "Fine-Tuning a Classical ML Model",
+      steps: [
+        "Take an existing Random Forest, Gradient Boosted Tree, or Logistic Regression.",
+        "Retrain on cleaner/newer dataset samples or optimize hyperparameters (GridSearchCV / Optuna).",
+        "Produces a higher-accuracy, better-calibrated task-specific model."
+      ]
+    },
+    ragVsFineTuningDecision: [
+      {
+        criteria: "Use RAG When",
+        recommendation: "The model needs direct access to dynamically changing company documents, real-time records, internal policies, or private knowledge bases with zero model hallucination."
+      },
+      {
+        criteria: "Use Fine-Tuning When",
+        recommendation: "You need to permanently adapt model style, formatting constraints, specific output syntax (e.g. strict JSON schema), or specialized domain terminology."
+      },
+      {
+        criteria: "Use Both When",
+        recommendation: "A project requires specialized behavior/formatting and real-time grounding on the latest internal business documents."
+      }
+    ],
+    goldenRule: "Fundamental Distinction: RAG does not itself update the model's learned weights. It supplies external reference context dynamically at inference time."
   }
 ];
