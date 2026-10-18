@@ -2350,6 +2350,153 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 41: NLP General Flow & Architecture Selection */}
+            {item.id === 'nlp-general-flow' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 4-Stage Lifecycle */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    The 4-Stage NLP General Flow
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.fourStages.map((st, sIdx) => (
+                      <div key={sIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <span className="text-xs font-bold text-white font-mono text-emerald-400">{st.stage}</span>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{st.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Which Approach Would I Choose (4 Options) */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Which Approach Would I Choose — and Why? (Comparing 4 Options)
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {item.fourOptions.map((opt, oIdx) => (
+                      <div key={oIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2.5 flex flex-col justify-between">
+                        <div>
+                          <div className="text-xs font-bold text-white font-mono">{opt.option}</div>
+                          <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block mb-1">
+                            {opt.role}
+                          </span>
+                        </div>
+                        <div className="space-y-2 text-xs">
+                          <div className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-900/40 text-[11px] text-emerald-200/90 leading-relaxed">
+                            <strong className="text-emerald-400 font-mono uppercase text-[10px] block mb-0.5">Why Choose It:</strong>
+                            {opt.why}
+                          </div>
+                          <div className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-900/40 text-[11px] text-rose-200/90 leading-relaxed">
+                            <strong className="text-rose-400 font-mono uppercase text-[10px] block mb-0.5">Why Not Always / Immediately:</strong>
+                            {opt.whyNot}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Decision Rules Framework */}
+                <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    My Architectural Decision Rules
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {item.decisionRules.map((rule, rIdx) => (
+                      <div key={rIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+                        <div className="text-[10px] font-mono text-zinc-500 uppercase">Requirement</div>
+                        <div className="text-xs font-bold text-white font-mono">{rule.condition}</div>
+                        <div className="text-xs text-emerald-400 font-medium pt-1">→ {rule.recommendation}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* What is Happening (Baseline Pipeline Breakdown) */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    What is Happening in the Baseline Supervised Model?
+                  </h4>
+                  <ul className="space-y-1.5 pt-1">
+                    {item.pipelineBreakdown.map((step, sIdx) => (
+                      <li key={sIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                        <span className="text-cyan-400 mt-0.5">•</span>
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* What If the Business Also Wants AI-Generated Answers? */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-900/40 space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-300 font-mono">
+                    {item.ragExtension.title}
+                  </h4>
+                  <ul className="space-y-1.5 pt-1">
+                    {item.ragExtension.steps.map((st, stIdx) => (
+                      <li key={stIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                        <span className="text-cyan-400 font-bold font-mono">{stIdx + 1}.</span>
+                        <span>{st}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* What Would Make Me Choose a Transformer Instead? */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300 font-mono">
+                    {item.contextNegationExample.title} (Context & Negation)
+                  </h4>
+                  <p className="text-xs text-zinc-400">
+                    {item.contextNegationExample.scenario}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="p-3 rounded-lg bg-black border border-rose-900/40 font-mono text-xs text-rose-300">
+                      Ticket A: {item.contextNegationExample.ticketA}
+                    </div>
+                    <div className="p-3 rounded-lg bg-black border border-emerald-900/40 font-mono text-xs text-emerald-300">
+                      Ticket B: {item.contextNegationExample.ticketB}
+                    </div>
+                  </div>
+                  <p className="text-xs text-zinc-300 leading-relaxed">
+                    {item.contextNegationExample.explanation}
+                  </p>
+                </div>
+
+                {/* Systematic Evaluation Matrix */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Systematic Evaluation Matrix (Comparing Models on the Same Test Set)
+                  </h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                      <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                        <tr>
+                          <th className="p-3 border-b border-zinc-800 w-1/3">Evaluation Area</th>
+                          <th className="p-3 border-b border-zinc-800 text-cyan-400 font-bold">Why It Matters</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/80 bg-black/60">
+                        {item.evaluationMatrix.map((row, rIdx) => (
+                          <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="p-3 font-semibold text-white font-mono text-emerald-400">{row.area}</td>
+                            <td className="p-3 text-zinc-300 leading-relaxed">{row.why}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Engineering Wisdom */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Engineering Wisdom: </strong>
+                  {item.engineeringWisdom}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

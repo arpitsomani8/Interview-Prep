@@ -38,7 +38,8 @@ export const definitionBookmarks = [
   { id: "vision-foundation-model", label: "Vision Model" },
   { id: "langchain-langgraph", label: "LangChain / LangGraph" },
   { id: "normalization-scaling", label: "Normalization / Scaling" },
-  { id: "boosting", label: "Boosting" }
+  { id: "boosting", label: "Boosting" },
+  { id: "nlp-general-flow", label: "NLP General Flow" }
 ];
 
 export const definitionsData = [
@@ -1631,5 +1632,95 @@ print("Class probabilities:", model.predict_proba(new_parcel)[0])`,
       answer: "Usually not for tree-based boosting algorithms, because tree splits depend on feature thresholds rather than distance calculations. Other preprocessing may still be needed for missing values, categorical data, and data quality."
     },
     triadTakeaway: "Embeddings represent information; normalization changes numerical scales or vector lengths; boosting combines models to improve predictions."
+  },
+  {
+    id: "nlp-general-flow",
+    title: "NLP General Flow & Architecture Selection",
+    badge: "Text Processing & Architectural Decision Matrix",
+    summary: "NLP (Natural Language Processing) is the area of AI concerned with processing and understanding human language. NLP is the overall problem area; TF-IDF, machine-learning classifiers, and Transformers are different ways to represent or process the text.",
+    fourStages: [
+      {
+        stage: "1. Raw text",
+        desc: "“I've been charged twice for my order!”"
+      },
+      {
+        stage: "2. Text preprocessing",
+        desc: "Normalize whitespace and handle text consistently. Preserve meaningful words, negation, and punctuation where useful."
+      },
+      {
+        stage: "3. Text representation",
+        desc: "Convert text into numbers using TF-IDF, learned embeddings, or contextual Transformer representations."
+      },
+      {
+        stage: "4. Prediction",
+        desc: "Billing issue, with a confidence score or a decision to escalate for review."
+      }
+    ],
+    fourOptions: [
+      {
+        option: "Option A — TF-IDF + Logistic Regression",
+        role: "My baseline choice",
+        why: "We have labelled historical tickets and a stable set of categories. This approach is inexpensive, fast, explainable, and a strong starting point for text classification.",
+        whyNot: "It has limited contextual understanding. Similar words in different contexts may be treated similarly, and it may struggle with complex language."
+      },
+      {
+        option: "Option B — Transformer classifier",
+        role: "Fine-tuning BERT or a similar pretrained encoder",
+        why: "It can capture context and relationships between words better than a basic TF-IDF model. I'd evaluate it if the baseline misses important cases or accuracy requirements are higher.",
+        whyNot: "It generally needs more compute and operational complexity, and may require more careful training and deployment."
+      },
+      {
+        option: "Option C — RAG",
+        role: "Dynamic evidence retrieval",
+        why: "If the system must answer questions using changing company policies, refund rules, delivery procedures, or knowledge articles, retrieval can supply the relevant evidence.",
+        whyNot: "RAG is not inherently a classification algorithm. If all we need is a ticket category, retrieving documents and generating an answer may add unnecessary cost and latency."
+      },
+      {
+        option: "Option D — LLM directly",
+        role: "Zero/Few-shot generative inference",
+        why: "Useful when categories are new, instructions change frequently, or the task requires nuanced interpretation and structured extraction with little labelled data.",
+        whyNot: "It can be more expensive and slower, can produce inconsistent outputs, and needs strict validation. A language model's confidence-like output is not automatically a calibrated probability."
+      }
+    ],
+    decisionRules: [
+      { condition: "Predict a fixed label", recommendation: "Start with supervised ML." },
+      { condition: "Need stronger contextual classification", recommendation: "Evaluate a Transformer classifier." },
+      { condition: "Answer from company documents", recommendation: "Use RAG with an LLM." },
+      { condition: "Need multi-step tool use or actions", recommendation: "Consider an agentic workflow." },
+      { condition: "Need several of these capabilities", recommendation: "Combine them only where evaluation shows a benefit." }
+    ],
+    pipelineBreakdown: [
+      "1. TfidfVectorizer converts text into numerical features based on word and phrase importance.",
+      "2. LogisticRegression learns how those features relate to the categories.",
+      "3. fit() trains the pipeline.",
+      "4. The test set checks how the trained model performs on examples it did not train on.",
+      "5. joblib.dump() saves the fitted pipeline for later inference."
+    ],
+    ragExtension: {
+      title: "What if the business also wants AI-generated answers?",
+      steps: [
+        "1. Retrieve the relevant, current refund and delivery policies.",
+        "2. Supply the ticket and retrieved passages to an LLM.",
+        "3. Ask it to answer using only the provided policy evidence.",
+        "4. Return the answer with citations or references to the relevant policy.",
+        "5. Escalate if the policy is missing, ambiguous, or the case requires human approval."
+      ]
+    },
+    contextNegationExample: {
+      title: "What would make me choose a Transformer instead?",
+      scenario: "Suppose the TF-IDF classifier frequently confuses these two tickets:",
+      ticketA: "“I do not want a refund.”",
+      ticketB: "“I want a refund.”",
+      explanation: "The distinction depends on context and negation. TF-IDF can represent the word “not,” but it doesn't inherently understand its meaning in context."
+    },
+    evaluationMatrix: [
+      { area: "Precision per category", why: "How many tickets assigned to a category actually belong there?" },
+      { area: "Recall per category", why: "How many actual tickets in that category did the model find?" },
+      { area: "Macro F1", why: "How well does it perform across categories, including less frequent ones?" },
+      { area: "Latency", why: "Can it meet real-time routing requirements?" },
+      { area: "Cost", why: "Does the improvement justify additional compute?" },
+      { area: "Calibration", why: "Are predicted probabilities reliable enough for threshold-based routing?" }
+    ],
+    engineeringWisdom: "I wouldn't claim a Transformer is better without testing. If TF-IDF meets the requirements, keeping it may be the better engineering decision."
   }
 ];
