@@ -6793,6 +6793,68 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 69: Model Choice */}
+            {item.id === 'model-choice' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Rule Callout Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl space-y-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                        {item.question}
+                      </h4>
+                    </div>
+                    <span className="text-[10px] font-mono text-cyan-300 uppercase bg-cyan-950/40 px-2.5 py-0.5 rounded border border-cyan-800/40 shrink-0 self-start sm:self-auto">
+                      Empirical Selection
+                    </span>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-black border border-cyan-900/50 text-xs sm:text-sm text-cyan-200 font-sans font-semibold leading-relaxed">
+                    {item.coreRule}
+                  </div>
+                </div>
+
+                {/* 6 Evaluation Criteria */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>The 6 Core Selection Criteria</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                    {item.criteria.map((crit, cIdx) => (
+                      <div
+                        key={cIdx}
+                        className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-2 flex flex-col justify-between"
+                      >
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between gap-1.5">
+                            <span className="w-5 h-5 rounded bg-cyan-950 border border-cyan-800 text-cyan-300 font-mono text-[10px] flex items-center justify-center font-bold shrink-0">
+                              {cIdx + 1}
+                            </span>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-amber-300 border border-zinc-800">
+                              {crit.badge}
+                            </span>
+                          </div>
+                          <h5 className="text-xs font-bold text-white font-mono leading-snug pt-1">
+                            {crit.title}
+                          </h5>
+                          <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
+                            {crit.desc}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

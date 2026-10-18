@@ -65,7 +65,8 @@ export const definitionBookmarks = [
   { id: "async-sync", label: "Async vs. Sync" },
   { id: "load-balancing", label: "Load Balancing" },
   { id: "docker", label: "Docker" },
-  { id: "cicd", label: "CI/CD" }
+  { id: "cicd", label: "CI/CD" },
+  { id: "model-choice", label: "Model Choice" }
 ];
 
 export const definitionsData = [
@@ -4304,5 +4305,46 @@ def health_check():
       goldenRule: "Use versioned model artifacts and deployments so the previous model can actually be restored."
     },
     takeaway: "CI/CD automates quality gates from commit to production. A responsive health endpoint enables orchestrator traffic routing, multi-tier monitoring tracks both infrastructure and ML/RAG drift, and versioned artifacts guarantee instantaneous rollback when issues arise."
+  },
+  {
+    id: "model-choice",
+    title: "Model Choice — Which Model Should You Choose?",
+    badge: "Evaluation & System Architecture",
+    summary: "Which model should you choose? Choose based on measured performance, not the name alone.",
+    question: "Which model should you choose?",
+    coreRule: "Choose based on measured performance, not the name alone:",
+    criteria: [
+      {
+        title: "Quality on your task-specific test set",
+        badge: "Accuracy & Domain Fit",
+        desc: "Evaluate accuracy, precision, and domain correctness on representative internal datasets rather than generic public leaderboards."
+      },
+      {
+        title: "Latency and throughput",
+        badge: "Speed & Concurrency",
+        desc: "Measure end-to-end response time, time-to-first-token (TTFT), p95 latency, and tokens-per-second under peak concurrent traffic."
+      },
+      {
+        title: "Context length and multimodal requirements",
+        badge: "Modality & Capacity",
+        desc: "Determine if the use-case requires long document ingestion, image/audio understanding, or native structured tool/function calling."
+      },
+      {
+        title: "Hosting, privacy, and data residency requirements",
+        badge: "Security & Governance",
+        desc: "Assess enterprise security mandates: private VPC / on-premises deployment, data residency laws, zero-data-retention, and compliance."
+      },
+      {
+        title: "Hardware and operating costs",
+        badge: "TCO & Efficiency",
+        desc: "Calculate total cost of ownership including cloud token pricing, GPU memory requirements, quantization feasibility, and operational overhead."
+      },
+      {
+        title: "Reliability, tool support, and licensing",
+        badge: "Maturity & Legal",
+        desc: "Verify commercial licensing permissions, ecosystem tooling compatibility (LangChain/LlamaIndex), and provider availability SLAs."
+      }
+    ],
+    takeaway: "Never select a model based on marketing hype or leaderboard rank alone. Systematically benchmark candidate models against your task-specific test set, factoring in latency, hosting constraints, hardware budget, and commercial licensing."
   }
 ];
