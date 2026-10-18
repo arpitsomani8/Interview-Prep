@@ -333,6 +333,36 @@ def predict_damage(data: ParcelData):
     badge: "Information Retrieval & Grounded LLMs",
     summary: "A technique in which we retrieve relevant information from an external data source and provide it to an LLM so that it can generate an answer based on that information.",
     keyPrinciple: "RAG doesn't guarantee a correct answer. Retrieval can miss relevant information, and the model can still misinterpret its context, so we need evaluation and safeguards. Key point: RAG generally does not retrain or fine-tune the LLM. It supplies relevant information at inference time.",
+    ragPipelineOverview: {
+      title: "Understand the RAG Pipeline",
+      stages: [
+        {
+          step: "1",
+          stage: "Documents",
+          desc: "Policy files or knowledge articles"
+        },
+        {
+          step: "2",
+          stage: "Chunking + embedding model",
+          desc: "Split documents and convert chunks into vectors"
+        },
+        {
+          step: "3",
+          stage: "Retrieve relevant chunks",
+          desc: "Compare the question vector against stored vectors"
+        },
+        {
+          step: "4",
+          stage: "LLM",
+          desc: "Generate an answer using the retrieved context"
+        },
+        {
+          step: "5",
+          stage: "Answer to the user",
+          desc: "Deliver grounded, factual answer to the end user"
+        }
+      ]
+    },
     faqs: [
       {
         q: "Does RAG require fine-tuning?",

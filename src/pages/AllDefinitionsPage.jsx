@@ -595,6 +595,37 @@ export default function AllDefinitionsPage() {
                   {item.keyPrinciple}
                 </div>
 
+                {/* Understand the RAG Pipeline */}
+                {item.ragPipelineOverview && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800/90 shadow-xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-emerald-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                          {item.ragPipelineOverview.title}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-400 uppercase bg-black/60 px-2.5 py-1 rounded border border-zinc-800">
+                        5 Core Stages
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                      {item.ragPipelineOverview.stages.map((stg, sIdx) => (
+                        <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-md bg-emerald-950/80 border border-emerald-800/80 text-emerald-300 font-mono text-[10px] flex items-center justify-center font-bold shrink-0">
+                              {stg.step}
+                            </span>
+                            <span className="text-xs font-bold text-white font-mono text-cyan-300">{stg.stage}</span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed pt-1">{stg.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* FAQ Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                   {item.faqs.map((faq, fIdx) => (
