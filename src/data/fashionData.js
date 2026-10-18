@@ -175,9 +175,98 @@ Future & In-Progress R&D:
         "Grounded Advice: It looks at the customer's query, the product images, and the fabric specs to explain styling options and compare materials.",
         "Truthful Answers: Because it gets real product data injected from PostgreSQL, all its suggestions are accurate and practical."
       ]
+    },
+    {
+      id: "shared-vector-space",
+      title: "Shared Vector Space",
+      badge: "Coordinate Mapping",
+      summary: "Placing both image pixels and written words onto the exact same 1024-dimensional coordinate space.",
+      details: [
+        "How It Works: Normally, text and images speak different computer languages. A shared vector space maps the photo of a pink dress and the words 'pink floral maxi dress' to nearly identical coordinates.",
+        "Direct Search: Because they share the same space, you don't need text tags to find an image—a text query vector directly finds image vectors.",
+        "Why 1024 Dimensions: 1024 numbers provide enough detail to distinguish subtle fashion traits like collar types, fabric textures, and garment drape."
+      ]
+    },
+    {
+      id: "multimodal-dual-encoder",
+      title: "Multimodal Dual-Encoder",
+      badge: "Two-Tower AI Model",
+      summary: "Two separate neural networks (one for images, one for text) working together in parallel.",
+      details: [
+        "Two Separate Towers: One Vision Transformer (ViT) processes the garment photo, while another Transformer processes the text description.",
+        "Contrastive Training: During training, matching pairs (photo + description) are pulled close together, while non-matching pairs are pushed far apart.",
+        "Fast Querying: At query time, we only run the text tower on the user's search text, and compare it instantly against pre-saved image vectors."
+      ]
+    },
+    {
+      id: "l2-normalization",
+      title: "L2 Normalization",
+      badge: "Vector Math Shortcut",
+      summary: "Rescaling every vector so its mathematical length is exactly 1.0.",
+      details: [
+        "Why We Do It: It scales every vector by dividing each number by the total vector length: v / ||v||_2 = 1.0.",
+        "Turns Math Into Dot Product: When both vectors have a length of 1.0, complex Cosine Similarity turns into simple multiplication and addition (dot product).",
+        "CPU Speed: Eliminates heavy square root and division calculations, letting the CPU scan thousands of vectors in milliseconds."
+      ]
+    },
+    {
+      id: "cosine-similarity",
+      title: "Cosine Similarity",
+      badge: "Similarity Metric",
+      summary: "Measuring the angle between two vectors instead of their size.",
+      details: [
+        "Angle Over Magnitude: A score of 1.0 means identical angle/direction (perfect match), 0 means completely unrelated, and -1 means opposite.",
+        "Image Size Doesn't Matter: Whether an image is high resolution or low resolution, its direction in vector space captures the core style.",
+        "Fast Hardware Execution: With L2 normalization, calculating cosine similarity between query and catalog items uses fast AVX CPU instructions."
+      ]
+    },
+    {
+      id: "hnsw",
+      title: "HNSW",
+      badge: "Graph-Based Search",
+      summary: "A multi-layered graph that jumps directly to the closest matching designs in milliseconds.",
+      details: [
+        "Skip-List for Vectors: Think of it like an express highway with local exits. The top layer takes huge leaps across categories, and bottom layers zoom in on the exact style.",
+        "Logarithmic Speed: Replaces slow O(N) scanning of all 10,000 items with O(log N) graph traversal, finding matches in under 5 milliseconds.",
+        "Runs in Memory: For 10,000 fashion designs, the entire HNSW graph takes just ~40MB of RAM, so it runs right inside our backend container."
+      ]
+    },
+    {
+      id: "sdxl-controlnet",
+      title: "SDXL & ControlNet",
+      badge: "Generative AI",
+      summary: "Turning rough designer sketches into photorealistic clothing photos.",
+      details: [
+        "ControlNet (Canny Edge): Locks the outline, neckline, and seams from a hand-drawn sketch so the AI doesn't warp the shape of the clothing.",
+        "Stable Diffusion XL (SDXL): Paints realistic fabric textures, folds, lighting, and colors inside that locked outline.",
+        "SAM (Segment Anything): Automatically creates a precise mask around the clothing, so we can swap fabrics without altering the model's face, skin, or pose."
+      ]
+    },
+    {
+      id: "ranking-reranking",
+      title: "Ranking & Re-ranking",
+      badge: "Two-Stage Search",
+      summary: "ChromaDB finds the top 50 candidates fast, then business rules and GPT-4o re-rank the best items.",
+      details: [
+        "Stage 1 (Fast Retrieval): ChromaDB scans 10,000+ vectors in 5ms to grab the Top-50 candidate designs based on cosine similarity.",
+        "Stage 2 (PostgreSQL Business Filter): Filters out out-of-stock items, matches requested sizes (S to XXL), and checks wholesale pricing.",
+        "Stage 3 (GPT-4o Re-ranking): Evaluates fabric GSM and style match to pick and order the top 25 most relevant designs for the buyer."
+      ]
+    },
+    {
+      id: "langchain-langgraph",
+      title: "LangChain / LangGraph",
+      badge: "Agentic AI Workflow",
+      summary: "State machine orchestrating the step-by-step agentic search and ordering workflow.",
+      details: [
+        "Stateful Flow: Manages the transition between search -> hydration -> GPT-4o critique -> bulk cart selection -> order placement.",
+        "Cyclic Control with LangGraph: If a buyer's query is vague or no stock matches, the graph loops back with clarifying questions or suggests alternative fabrics.",
+        "Clean Tool Execution: Keeps vector search, PostgreSQL queries, and OpenAI completions modular and easy to debug."
+      ]
     }
   ]
 };
+
 
 
 
