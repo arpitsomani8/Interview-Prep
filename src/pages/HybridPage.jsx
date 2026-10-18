@@ -128,10 +128,10 @@ export default function HybridPage() {
             </div>
             <div className="text-xs font-mono bg-black/50 p-3.5 rounded-lg border border-zinc-800/80 space-y-1 text-zinc-300">
               <div><span className="text-zinc-500">Audit ID:</span> <span className="text-white font-bold">{hybridData.userExample.sampleOutput.auditRecord.audit_id}</span></div>
-              <div><span className="text-zinc-500">Tenant ID:</span> {hybridData.userExample.sampleOutput.auditRecord.tenant_id}</div>
+              <div><span className="text-zinc-500">Database:</span> {hybridData.userExample.sampleOutput.auditRecord.tenant_database}</div>
               <div><span className="text-zinc-500">Route:</span> {hybridData.userExample.sampleOutput.auditRecord.route_selected}</div>
-              <div><span className="text-zinc-500">Features:</span> {hybridData.userExample.sampleOutput.auditRecord.features}</div>
-              <div><span className="text-zinc-500">Score & Latency:</span> <span className="text-emerald-400 font-bold">{hybridData.userExample.sampleOutput.auditRecord.score} in {hybridData.userExample.sampleOutput.auditRecord.latency}</span></div>
+              <div><span className="text-zinc-500">Policy:</span> {hybridData.userExample.sampleOutput.auditRecord.policy_reference}</div>
+              <div><span className="text-zinc-500">Score & Latency:</span> <span className="text-emerald-400 font-bold">{hybridData.userExample.sampleOutput.auditRecord.score}</span></div>
               <div><span className="text-zinc-500">Status:</span> <span className="text-emerald-400 font-bold">{hybridData.userExample.sampleOutput.auditRecord.status}</span></div>
             </div>
           </div>
