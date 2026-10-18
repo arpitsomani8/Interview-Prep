@@ -1,6 +1,6 @@
 import React from 'react';
 import { fashionData } from '../data/fashionData';
-import { ArrowUp, ShieldCheck, MessageSquareQuote, Layers } from 'lucide-react';
+import { ArrowUp, ShieldCheck, MessageSquareQuote, Layers, Database, Cpu } from 'lucide-react';
 
 export default function FashionPage() {
   const scrollToTop = () => {
@@ -8,7 +8,7 @@ export default function FashionPage() {
   };
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-8">
+    <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
       {/* Title */}
       <div className="space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-semibold uppercase tracking-wider">
@@ -31,56 +31,97 @@ export default function FashionPage() {
         </p>
       </div>
 
-      {/* 90-Second Interview Script Banner */}
+      {/* 90-Second Interview Script Banner (AI/ML Model Flow First) */}
       <div className="rounded-2xl bg-[#0a0a0c] border border-indigo-500/30 p-6 sm:p-8 space-y-4 shadow-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm uppercase tracking-wider">
             <MessageSquareQuote className="w-5 h-5" />
-            <span>Executive 90-Second Interview Defense Script (Word-for-Word)</span>
+            <span>Executive 90-Second Interview Defense Script (Model-First Flow)</span>
           </div>
           <span className="text-xs px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
             Timing: 90s
           </span>
         </div>
-        <blockquote className="text-sm sm:text-base text-zinc-200 leading-relaxed italic border-l-4 border-indigo-500 pl-4 py-1">
+        <blockquote className="text-sm sm:text-base text-zinc-200 leading-relaxed italic border-l-4 border-indigo-500 pl-4 py-1 whitespace-pre-line">
           {fashionData.executiveScript}
         </blockquote>
       </div>
 
-      {/* Architecture Steps */}
-      <div className="space-y-8">
-        {fashionData.overviewSteps.map((step) => (
-          <div
-            key={step.id}
-            id={step.id}
-            className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 hover:border-zinc-700 p-6 sm:p-8 space-y-4 shadow-xl transition"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+      {/* 3-Tier Production Storage Architecture (Cleanly Aligned Grid) */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-400">
+          <Database className="w-4 h-4 text-cyan-400" />
+          <span>3-Tier Production Storage Architecture</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {fashionData.storageArchitecture.map((item, idx) => (
+            <div
+              key={idx}
+              className="rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 space-y-4 hover:border-zinc-700 transition shadow-xl flex flex-col justify-between"
+            >
+              <div className="space-y-2">
+                <div className="text-[11px] uppercase font-mono px-2.5 py-1 rounded-md bg-zinc-900 text-cyan-300 border border-zinc-800 inline-block font-semibold">
+                  {item.badge}
+                </div>
+                <h3 className="text-lg font-bold text-white tracking-tight">
+                  {item.tier}
+                </h3>
+              </div>
+              <ul className="space-y-2.5 pt-3 border-t border-zinc-800/80">
+                {item.points.map((pt, pIdx) => (
+                  <li key={pIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2 leading-relaxed">
+                    <span className="text-cyan-400 font-bold mt-0.5">•</span>
+                    <span>{pt}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* High-Level AI/ML Pipeline Flow */}
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+            <Cpu className="w-6 h-6 text-cyan-400" />
+            <span>End-to-End AI/ML & Multimodal Pipeline Flow</span>
+          </h2>
+          <p className="text-sm text-zinc-400">
+            Model-first execution sequence: Embedding generation, Top-K ChromaDB retrieval, PostgreSQL hydration, and GPT-4o context injection.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {fashionData.pipelineFlow.map((step, idx) => (
+            <div
+              key={idx}
+              className="rounded-2xl bg-[#0a0a0c] border border-zinc-800 hover:border-zinc-700 p-6 space-y-3 shadow-xl transition"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-bold">
+                  STEP {step.step}
+                </span>
+                <span className="text-xs font-mono text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
+                  {step.tag}
+                </span>
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
                 {step.title}
               </h3>
-              <button onClick={scrollToTop} className="text-zinc-500 hover:text-cyan-400">
-                <ArrowUp className="w-4 h-4" />
-              </button>
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                {step.desc}
+              </p>
             </div>
-
-            <div className="space-y-3">
-              {step.points.map((pt, i) => (
-                <div key={i} className="text-sm sm:text-base text-zinc-300 leading-relaxed">
-                  <strong className="text-cyan-300 font-semibold">{pt.label}: </strong>
-                  <span>{pt.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Deep Dives */}
       <div id="fashion-deep-dives" className="scroll-mt-36 space-y-6 pt-6 border-t border-zinc-800">
         <div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">Bookmarked Technical Deep Dives</h2>
-          <p className="text-sm text-zinc-400">Clickable interview defense for terms used in Fashion AI Copilot</p>
+          <h2 className="text-2xl font-bold text-white tracking-tight">Technical Deep Dives</h2>
+          <p className="text-sm text-zinc-400">Interview defense for core algorithmic concepts used in Fashion AI Copilot</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -94,12 +135,21 @@ export default function FashionPage() {
                 <span className="text-xs font-mono px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-400 border border-cyan-800/50">
                   Concept
                 </span>
-                <button onClick={scrollToTop} className="text-xs text-zinc-500 hover:text-cyan-400">Top</button>
+                <button onClick={scrollToTop} className="flex items-center gap-1 text-xs text-zinc-500 hover:text-cyan-400 cursor-pointer">
+                  <ArrowUp className="w-3 h-3" />
+                  <span>Top</span>
+                </button>
               </div>
 
               <h3 className="text-lg font-bold text-white tracking-tight">{dive.term}</h3>
               <p className="text-xs sm:text-sm text-cyan-200/90 font-medium">{dive.summary}</p>
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">{dive.details}</p>
+              <div className="space-y-1.5 pt-1">
+                {dive.details.map((detail, dIdx) => (
+                  <p key={dIdx} className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                    • {detail}
+                  </p>
+                ))}
+              </div>
             </div>
           ))}
         </div>
