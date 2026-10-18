@@ -2216,6 +2216,140 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 40: Boosting */}
+            {item.id === 'boosting' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Gradient Loss Principle */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Sequential Optimization Principle: </strong>
+                  {item.gradientLossPrinciple}
+                </div>
+
+                {/* Popular Boosting Algorithms Table */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Popular Boosting Algorithms Matrix
+                  </h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                      <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                        <tr>
+                          <th className="p-3 border-b border-zinc-800 w-1/4">Algorithm</th>
+                          <th className="p-3 border-b border-zinc-800 text-cyan-400 font-bold w-3/8">Key Idea</th>
+                          <th className="p-3 border-b border-zinc-800 text-zinc-400 font-bold w-3/8">When It Can Be Useful</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/80 bg-black/60">
+                        {item.popularAlgorithms.map((row, rIdx) => (
+                          <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="p-3 font-semibold text-white font-mono text-emerald-400">{row.name}</td>
+                            <td className="p-3 text-zinc-300">{row.keyIdea}</td>
+                            <td className="p-3 text-cyan-200/90">{row.whenUseful}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Bagging vs Boosting vs Bootstrapping */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                    <div className="text-xs font-bold text-amber-300 font-mono uppercase">Bagging</div>
+                    <p className="text-xs text-zinc-400 leading-relaxed">{item.baggingVsBoosting.bagging}</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                    <div className="text-xs font-bold text-cyan-400 font-mono uppercase">Boosting</div>
+                    <p className="text-xs text-zinc-400 leading-relaxed">{item.baggingVsBoosting.boosting}</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                    <div className="text-xs font-bold text-emerald-300 font-mono uppercase">Bootstrapping</div>
+                    <p className="text-xs text-zinc-400 leading-relaxed">{item.baggingVsBoosting.bootstrapping}</p>
+                  </div>
+                </div>
+
+                {/* Python Scikit-Learn GradientBoostingClassifier Code */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Hands-On Scikit-Learn GradientBoostingClassifier Implementation
+                  </h4>
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>gradient_boosting_parcel.py (GradientBoostingClassifier Pipeline)</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-boosting', item.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-boosting' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                      {item.code}
+                    </pre>
+                  </div>
+                </div>
+
+                {/* What did we do? */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                  <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                    What did we do?
+                  </h5>
+                  <ul className="space-y-1.5">
+                    {item.workflowSteps.map((step, sIdx) => (
+                      <li key={sIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                        <span className="text-cyan-400 mt-0.5">•</span>
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* What do the main parameters mean? */}
+                <div className="space-y-2">
+                  <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                    What do the main parameters mean?
+                  </h5>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.parameters.map((p, pIdx) => (
+                      <div key={pIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                        <span className="text-xs font-bold font-mono text-emerald-400">{p.param}</span>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{p.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Does boosting require normalization? */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                  <div className="text-xs font-bold text-amber-300 font-mono uppercase">
+                    {item.normalizationQ.question}
+                  </div>
+                  <p className="text-xs text-zinc-300 leading-relaxed">
+                    {item.normalizationQ.answer}
+                  </p>
+                </div>
+
+                {/* Triad Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-900/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Triad Takeaway: </strong>
+                  {item.triadTakeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

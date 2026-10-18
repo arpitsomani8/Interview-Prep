@@ -37,7 +37,8 @@ export const definitionBookmarks = [
   { id: "diffusion-model", label: "Diffusion Model" },
   { id: "vision-foundation-model", label: "Vision Model" },
   { id: "langchain-langgraph", label: "LangChain / LangGraph" },
-  { id: "normalization-scaling", label: "Normalization / Scaling" }
+  { id: "normalization-scaling", label: "Normalization / Scaling" },
+  { id: "boosting", label: "Boosting" }
 ];
 
 export const definitionsData = [
@@ -1515,5 +1516,120 @@ print(normalized)  # [0.6 0.8]
 print(np.linalg.norm(normalized))  # 1.0`,
       takeaway: "When vectors are L2-normalized to unit length, cosine similarity simplifies directly to the dot product."
     }
+  },
+  {
+    id: "boosting",
+    title: "Boosting (Ensemble Learning)",
+    badge: "Ensemble Algorithms & Sequential Optimization",
+    summary: "Boosting is an ensemble machine-learning technique that combines multiple weaker models to build a stronger predictive model. Boosting builds a sequence of models where later models attempt to improve on mistakes made by earlier ones.",
+    gradientLossPrinciple: "For gradient boosting, each new tree is trained to improve the ensemble's predictions by following the gradient of a chosen loss function. AdaBoost uses a different strategy that emphasizes examples earlier models handled poorly.",
+    popularAlgorithms: [
+      {
+        name: "AdaBoost",
+        keyIdea: "Reweights difficult training examples",
+        whenUseful: "Smaller classification problems"
+      },
+      {
+        name: "Gradient Boosting",
+        keyIdea: "Adds models that reduce the chosen loss",
+        whenUseful: "General tabular prediction"
+      },
+      {
+        name: "XGBoost",
+        keyIdea: "Optimized gradient-boosted trees with regularization and engineering improvements",
+        whenUseful: "Business classification and regression"
+      },
+      {
+        name: "LightGBM",
+        keyIdea: "Efficient tree boosting designed for speed and scale",
+        whenUseful: "Large tabular datasets"
+      },
+      {
+        name: "CatBoost",
+        keyIdea: "Gradient boosting with strong support for categorical features",
+        whenUseful: "Business data containing many categorical columns"
+      }
+    ],
+    baggingVsBoosting: {
+      bagging: "Bagging trains multiple models independently, often on bootstrapped samples, and combines their predictions. Random Forest is a common example.",
+      boosting: "Boosting builds models sequentially, with each stage improving the ensemble according to its training objective.",
+      bootstrapping: "Bootstrapping is the resampling technique often used by bagging algorithms."
+    },
+    code: `import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Illustrative training data
+df = pd.DataFrame({
+    "weight_kg": [
+        2, 5, 8, 12, 3, 15, 7, 18, 4, 10,
+        20, 6, 9, 14, 2, 16, 11, 5, 13, 7
+    ],
+    "impact_score": [
+        1, 2, 3, 8, 1, 9, 3, 9, 2, 7,
+        10, 2, 5, 8, 1, 9, 6, 3, 8, 4
+    ],
+    "package_strength": [
+        9, 8, 7, 4, 9, 3, 8, 2, 8, 4,
+        2, 9, 6, 3, 9, 2, 5, 8, 3, 7
+    ],
+    "damaged": [
+        0, 0, 0, 1, 0, 1, 0, 1, 0, 1,
+        1, 0, 0, 1, 0, 1, 1, 0, 1, 0
+    ]
+})
+
+X = df[["weight_kg", "impact_score", "package_strength"]]
+y = df["damaged"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.25,
+    random_state=42,
+    stratify=y
+)
+
+model = GradientBoostingClassifier(
+    n_estimators=50,
+    learning_rate=0.05,
+    max_depth=2,
+    random_state=42
+)
+
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+
+print("Accuracy:", accuracy_score(y_test, predictions))
+print(classification_report(y_test, predictions, zero_division=0))
+
+# Predict risk for a new parcel
+new_parcel = pd.DataFrame([{
+    "weight_kg": 12,
+    "impact_score": 8,
+    "package_strength": 4
+}])
+
+print("Predicted class:", model.predict(new_parcel)[0])
+print("Class probabilities:", model.predict_proba(new_parcel)[0])`,
+    workflowSteps: [
+      "1. Separated the features (X) from the target (y).",
+      "2. Split the data into training and testing sets.",
+      "3. Trained a gradient boosting classifier.",
+      "4. Evaluated predictions on held-out examples.",
+      "5. Used the fitted model to predict a new parcel's damage class and class probabilities."
+    ],
+    parameters: [
+      { param: "n_estimators=50", desc: "Use 50 boosting stages/trees." },
+      { param: "learning_rate=0.05", desc: "Controls how strongly each stage contributes to the ensemble." },
+      { param: "max_depth=2", desc: "Limits the depth of each individual tree." },
+      { param: "random_state=42", desc: "Makes randomized parts of the procedure reproducible." }
+    ],
+    normalizationQ: {
+      question: "Does boosting require normalization?",
+      answer: "Usually not for tree-based boosting algorithms, because tree splits depend on feature thresholds rather than distance calculations. Other preprocessing may still be needed for missing values, categorical data, and data quality."
+    },
+    triadTakeaway: "Embeddings represent information; normalization changes numerical scales or vector lengths; boosting combines models to improve predictions."
   }
 ];
