@@ -3082,6 +3082,98 @@ export default function AllDefinitionsPage() {
                 )}
               </div>
             )}
+
+            {/* Item 43: Testing & Deployment Evaluation */}
+            {item.id === 'testing' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Philosophy Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Evaluation Philosophy: </strong>
+                  {item.corePhilosophy}
+                </div>
+
+                {/* Component vs What I'd Measure Table */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Component-Level Quality & Metric Measurement Matrix</span>
+                  </h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                      <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                        <tr>
+                          <th className="p-3 border-b border-zinc-800 w-1/4">Component</th>
+                          <th className="p-3 border-b border-zinc-800 text-cyan-400 font-bold w-1/2">What I'd Measure</th>
+                          <th className="p-3 border-b border-zinc-800 text-emerald-400 font-bold w-1/4">Evaluation Focus</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/80 bg-black/60">
+                        {item.componentMetrics.map((row, rIdx) => (
+                          <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="p-3 font-semibold text-white font-mono text-cyan-300">{row.component}</td>
+                            <td className="p-3 text-zinc-300 leading-relaxed">{row.measures}</td>
+                            <td className="p-3 text-emerald-400 font-mono text-[11px]">{row.focus}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Key Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 44: Text / Image Search */}
+            {item.id === 'text-image-search' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-cyan-400" />
+                  <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    How Does Searching Work? (3 Modalities)
+                  </h4>
+                </div>
+
+                {/* 3 Search Modalities Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {item.searchModalities.map((mod, mIdx) => (
+                    <div key={mIdx} className="p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 space-y-3 flex flex-col justify-between shadow-xl">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-white font-mono text-cyan-300 uppercase tracking-wide">
+                            {mod.mode}
+                          </span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-400 border border-cyan-800/50">
+                            {mIdx === 0 ? 'Text' : mIdx === 1 ? 'Vision' : 'Hybrid'}
+                          </span>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-black border border-zinc-800 text-xs text-amber-200/90 font-mono">
+                          {mod.queryExample}
+                        </div>
+                        <ul className="space-y-1.5 pt-1">
+                          {mod.steps.map((st, stIdx) => (
+                            <li key={stIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                              <span className="text-cyan-400 mt-0.5">•</span>
+                              <span>{st}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Cross-Modal Takeaway */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Search Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

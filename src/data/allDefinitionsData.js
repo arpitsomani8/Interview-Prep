@@ -40,7 +40,9 @@ export const definitionBookmarks = [
   { id: "normalization-scaling", label: "Normalization / Scaling" },
   { id: "boosting", label: "Boosting" },
   { id: "nlp-general-flow", label: "NLP General Flow" },
-  { id: "aws-azure", label: "AWS / Azure in AI/ML" }
+  { id: "aws-azure", label: "AWS / Azure in AI/ML" },
+  { id: "testing", label: "Testing" },
+  { id: "text-image-search", label: "Text / Image Search" }
 ];
 
 export const definitionsData = [
@@ -1986,5 +1988,81 @@ s3.upload_file(
 print("Image uploaded successfully")`,
       takeaway: "S3 upload decouples camera image ingestion from synchronous ML inference, enabling scalable event-driven queues."
     }
+  },
+  {
+    id: "testing",
+    title: "Testing & Deployment Evaluation",
+    badge: "Evaluation Frameworks & Component Metrics",
+    summary: "How would you test and deploy it? I'd separate quality checks by component rather than judging the whole system by a few impressive screenshots.",
+    corePhilosophy: "I'd separate quality checks by component rather than judging the whole system by a few impressive screenshots.",
+    componentMetrics: [
+      {
+        component: "Embeddings and retrieval",
+        measures: "Recall@K, Precision@K, ranking quality on a labelled test set",
+        focus: "Retrieval Accuracy & Ranking Quality"
+      },
+      {
+        component: "LLM responses",
+        measures: "Groundedness, citation correctness, relevance, unsupported claims",
+        focus: "Faithfulness & Hallucination Prevention"
+      },
+      {
+        component: "Trend agent",
+        measures: "Extraction accuracy, source coverage, usefulness to designers",
+        focus: "Domain Intelligence & Source Coverage"
+      },
+      {
+        component: "Image generation",
+        measures: "Instruction adherence, visual artifacts, garment preservation, designer acceptance",
+        focus: "Visual Fidelity & Instruction Compliance"
+      },
+      {
+        component: "Backend and cloud",
+        measures: "p50/p95 latency, error rate, throughput, cost per request",
+        focus: "Infrastructure SLA & Operational Cost"
+      }
+    ],
+    takeaway: "Decomposing evaluation by subsystem prevents superficial validation, isolates bugs quickly, and ensures reproducible production quality across multi-modal pipelines."
+  },
+  {
+    id: "text-image-search",
+    title: "Text / Image Search (How Searching Works)",
+    badge: "Multimodal Search & Vector Retrieval",
+    summary: "How does searching work across text search, reference image search, and combined text + image multimodal search workflows.",
+    searchModalities: [
+      {
+        mode: "A. Text search",
+        queryExample: "Retailer types: “blue floral patterns for summer dresses.”",
+        steps: [
+          "1. The text embedding model converts the search phrase into a vector.",
+          "2. The vector search engine compares it with the precomputed catalog vectors.",
+          "3. The engine retrieves the best candidate designs.",
+          "4. We optionally apply metadata filters, such as category or availability.",
+          "5. We rank the results and return the first 25."
+        ]
+      },
+      {
+        mode: "B. Image search",
+        queryExample: "Retailer uploads a reference image.",
+        steps: [
+          "1. The backend validates the uploaded image.",
+          "2. The image embedding model converts it into a vector.",
+          "3. The vector search engine retrieves visually similar designs.",
+          "4. We apply relevant filters and ranking rules.",
+          "5. The first 25 results are returned."
+        ]
+      },
+      {
+        mode: "C. Text + image search",
+        queryExample: "Retailer uploads a pattern image and adds: “Find similar designs in darker blue.”",
+        steps: [
+          "1. We can retrieve candidates from the image and text separately.",
+          "2. Cross-modal projection aligns visual pattern vectors and semantic color modifiers in joint embedding space.",
+          "3. Combine and rerank candidate scores balancing visual similarity with textual color instruction.",
+          "4. Return the top 25 curated multimodal recommendations."
+        ]
+      }
+    ],
+    takeaway: "Multimodal search pipelines allow separate text and visual embedding generation, flexible cross-modal reranking, and sub-second retrieval for rich enterprise catalogs."
   }
 ];
