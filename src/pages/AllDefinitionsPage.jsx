@@ -1619,6 +1619,319 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 30: LLM */}
+            {item.id === 'llm' && (
+              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                  {item.qaItems.map((qa, qIdx) => (
+                    <div key={qIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
+                      <h4 className="text-xs font-bold text-cyan-300 font-mono">
+                        {qa.question}
+                      </h4>
+                      <p className="text-xs text-zinc-400 leading-relaxed">
+                        {qa.answer}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Item 31: Azure AI Vision */}
+            {item.id === 'azure-ai-vision' && (
+              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                  <div className="text-xs font-bold text-white font-mono uppercase text-cyan-400">
+                    Core Functionality
+                  </div>
+                  <p className="text-xs text-zinc-300 leading-relaxed">
+                    {item.role}
+                  </p>
+                </div>
+                <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 font-mono flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                  <span>{item.takeaway}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Item 32: Azure OpenAI */}
+            {item.id === 'azure-openai' && (
+              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                  <div className="text-xs font-bold text-white font-mono uppercase text-emerald-400">
+                    Reasoning & Policy Interpretation
+                  </div>
+                  <p className="text-xs text-zinc-300 leading-relaxed">
+                    {item.role}
+                  </p>
+                </div>
+                <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-800/40 text-xs text-emerald-200/90 font-mono flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <span>{item.takeaway}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Item 33: Transformer */}
+            {item.id === 'transformer' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* 6 Processing Steps */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    How a Transformer Processes Text (6-Step Lifecycle)
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {item.processingSteps.map((st, sIdx) => (
+                      <div key={sIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                        <div className="text-xs font-bold text-white font-mono text-cyan-300">{st.step}</div>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{st.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 3 Architecture Flavors */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    Three Architectural Variations
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.flavorTypes.map((flv, fIdx) => (
+                      <div key={fIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <div className="text-xs font-bold text-amber-300 font-mono">{flv.type}</div>
+                        <p className="text-xs text-zinc-400 leading-relaxed">{flv.role}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Technology Stack Distinction */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Stack Level Distinction: </strong>
+                  {item.stackDistinction}
+                </div>
+              </div>
+            )}
+
+            {/* Item 34: Self-Attention */}
+            {item.id === 'self-attention' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* QKV Vectors */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    The Three Vectors Computed for Each Token
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.qkvVectors.map((v, vIdx) => (
+                      <div key={vIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                        <div className="text-xs font-bold text-white font-mono text-cyan-300">{v.vector}</div>
+                        <p className="text-xs text-zinc-400 leading-relaxed">{v.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Mathematical Intuition Steps */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    Attention Computation Intuition
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.intuitionSteps.map((st, sIdx) => (
+                      <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                        <div className="text-xs font-bold text-emerald-400 font-mono">{st.step}</div>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{st.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Multi-Head Attention */}
+                <div className="p-4 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Multi-Head Attention: </strong>
+                  {item.multiHeadNote}
+                </div>
+              </div>
+            )}
+
+            {/* Item 35: 360° Fashion Visualization */}
+            {item.id === 'fashion-360-visualization' && (
+              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                  {item.workflowSteps.map((ws, wIdx) => (
+                    <div key={wIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                      <div className="text-xs font-bold text-cyan-300 font-mono">{ws.step}</div>
+                      <p className="text-xs text-zinc-400 leading-relaxed">{ws.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Item 36: Diffusion Model */}
+            {item.id === 'diffusion-model' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Training Phase */}
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">
+                      During Training (Forward Noising & Noise Prediction)
+                    </h4>
+                    <ul className="space-y-2 pt-1">
+                      {item.trainingPhase.map((tr, tIdx) => (
+                        <li key={tIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                          <span className="text-amber-400 mt-0.5">•</span>
+                          <span>{tr}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Generation Phase */}
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                      During Generation (Reverse Denoising)
+                    </h4>
+                    <ul className="space-y-2 pt-1">
+                      {item.generationPhase.map((gen, gIdx) => (
+                        <li key={gIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                          <span className="text-emerald-400 mt-0.5">•</span>
+                          <span>{gen}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Item 37: Vision Foundation Model */}
+            {item.id === 'vision-foundation-model' && (
+              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {item.modelFamilies.map((fam, fIdx) => (
+                    <div key={fIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                      <div className="text-xs font-bold text-cyan-300 font-mono">{fam.name}</div>
+                      <p className="text-xs text-zinc-400 leading-relaxed">{fam.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Item 38: LangChain / LangGraph */}
+            {item.id === 'langchain-langgraph' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 2 Frameworks Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {item.frameworks.map((fw, fIdx) => (
+                    <div key={fIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                      <div className="text-xs font-bold text-cyan-400 font-mono uppercase">{fw.name}</div>
+                      <p className="text-xs text-zinc-300 leading-relaxed">{fw.role}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 4 Steps for Shopping Assistant */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    How the Shopping Assistant Executes a Request
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.shoppingAssistantSteps.map((st, sIdx) => (
+                      <div key={sIdx} className="p-3 rounded-lg bg-black border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
+                        {st}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Production Architecture */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Production Architecture Components
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {item.productionArchitecture.map((arch, aIdx) => (
+                      <div key={aIdx} className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                        <div className="text-xs font-bold text-white font-mono text-cyan-300">{arch.comp}</div>
+                        <div className="text-[11px] text-zinc-400 leading-relaxed">{arch.role}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tool Code Block */}
+                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                  <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                    <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>tools.py (LangChain Tool Binding)</span>
+                    </div>
+                    <button
+                      onClick={() => handleCopyCode('code-lc-tool', item.toolCode)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                    >
+                      {copiedId === 'code-lc-tool' ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy Code</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                    {item.toolCode}
+                  </pre>
+                </div>
+
+                {/* StateGraph Code Block */}
+                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                  <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                    <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>workflow.py (LangGraph StateGraph & State Transitions)</span>
+                    </div>
+                    <button
+                      onClick={() => handleCopyCode('code-lg-graph', item.graphCode)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                    >
+                      {copiedId === 'code-lg-graph' ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy Code</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                    {item.graphCode}
+                  </pre>
+                </div>
+
+                {/* Q&A Takeaways */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {item.qaItems.map((qa, qIdx) => (
+                    <div key={qIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                      <h5 className="text-xs font-bold text-amber-300 font-mono">{qa.question}</h5>
+                      <p className="text-xs text-zinc-400 leading-relaxed">{qa.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

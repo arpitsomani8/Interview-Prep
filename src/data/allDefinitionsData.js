@@ -27,7 +27,16 @@ export const definitionBookmarks = [
   { id: "rest-api-vs-fastapi", label: "REST API vs FastAPI" },
   { id: "onion-architecture", label: "Onion Architecture" },
   { id: "multi-tenant", label: "Multi-Tenant" },
-  { id: "coding-best-practices", label: "Coding Best Practices" }
+  { id: "coding-best-practices", label: "Coding Best Practices" },
+  { id: "llm", label: "LLM" },
+  { id: "azure-ai-vision", label: "Azure AI Vision" },
+  { id: "azure-openai", label: "Azure OpenAI" },
+  { id: "transformer", label: "Transformer" },
+  { id: "self-attention", label: "Self-Attention" },
+  { id: "fashion-360-visualization", label: "360° Fashion Visualization" },
+  { id: "diffusion-model", label: "Diffusion Model" },
+  { id: "vision-foundation-model", label: "Vision Model" },
+  { id: "langchain-langgraph", label: "LangChain / LangGraph" }
 ];
 
 export const definitionsData = [
@@ -1184,6 +1193,220 @@ predictions = loaded_model.predict(X_test)`,
         desc: "Track latency, errors, model version, pipeline version, and prediction metrics. Version the preprocessing logic together with the model so predictions can be reproduced.",
         bad: "Unstructured log prints with no trace IDs or version metadata.",
         better: "Structured logging, latency metrics, and linked model/pipeline versioning."
+      }
+    ]
+  },
+  {
+    id: "llm",
+    title: "LLM (Large Language Model)",
+    badge: "Language Models & Generative AI",
+    summary: "Large Language Models are deep neural networks trained on massive text corpora to perform probabilistic next-token generation, contextual reasoning, and language understanding.",
+    qaItems: [
+      {
+        question: "Why not let the LLM calculate everything?",
+        answer: "LLMs can make arithmetic and consistency errors. Deterministic code and database queries are more appropriate for exact counts, percentages, validation, and business constraints."
+      },
+      {
+        question: "How do you prevent hallucinated product details?",
+        answer: "Retrieve actual catalog records, obtain prices and stock from authoritative systems, validate the model's output, and avoid allowing the LLM to invent business facts."
+      },
+      {
+        question: "How would you improve performance?",
+        answer: "Measure retrieval and model latency separately, reduce unnecessary LLM calls, parallelize independent reads where safe, cache appropriate results, and evaluate smaller models for simpler tasks."
+      }
+    ]
+  },
+  {
+    id: "azure-ai-vision",
+    title: "Azure AI Vision",
+    badge: "Managed Vision Service & Cloud AI",
+    summary: "Cloud-managed computer vision service that processes images using vision capabilities including image analysis, OCR, and object detection. Azure AI Vision analyzes the image to extract visual information.",
+    role: "Image Understanding: Processes images using supported vision capabilities, such as image analysis, OCR, or object detection depending on the service and model. It helps extract visual information from a parcel image.",
+    takeaway: "Azure AI Vision analyzes the image."
+  },
+  {
+    id: "azure-openai",
+    title: "Azure OpenAI",
+    badge: "Enterprise LLM Hosting & Cognitive Reasoning",
+    summary: "Enterprise hosting of supported OpenAI models that can interpret inspection results, combine them with policies or business context, and produce structured explanations or recommendations.",
+    role: "Language Understanding & Reasoning: Hosts supported OpenAI models that can interpret inspection results, combine them with policies or business context, and produce a structured explanation or recommendation.",
+    takeaway: "Azure OpenAI helps interpret the results and generate a useful business response."
+  },
+  {
+    id: "transformer",
+    title: "Transformer Architecture",
+    badge: "Neural Network Architecture & Attention",
+    summary: "A Transformer is a neural-network architecture that learns relationships between elements in a sequence using attention mechanisms. A Transformer uses attention to learn which other tokens are relevant when processing a particular token.",
+    processingSteps: [
+      { step: "1. Input text", desc: "“The parcel was damaged.”" },
+      { step: "2. Tokenization", desc: "Text is split into tokens, which may be words, parts of words, or punctuation." },
+      { step: "3. Embeddings + position information", desc: "Tokens become numerical vectors, with information about their positions." },
+      { step: "4. Self-attention", desc: "Each token can use information from relevant tokens in the context." },
+      { step: "5. Feed-forward layers + repeated blocks", desc: "The model transforms token representations into richer contextual representations." },
+      { step: "6. Task-specific output", desc: "For a language model, generate scores for possible next tokens and select or sample a token." }
+    ],
+    flavorTypes: [
+      { type: "Encoder-Style Transformers", role: "Creates contextual representations for classification, embeddings, and understanding (e.g., BERT, RoBERTa)." },
+      { type: "Decoder-Style Transformers", role: "Trained autoregressively to predict the next token (e.g., many GPT models, LLaMA)." },
+      { type: "Encoder-Decoder Transformers", role: "Sequence-to-sequence mappings useful for tasks such as translation and summarization (e.g., T5, BART)." }
+    ],
+    stackDistinction: "A Transformer is a model architecture, GPT and Llama are model families, and Azure AI Vision and Azure OpenAI are services you can integrate into an application. They operate at different levels of the technology stack."
+  },
+  {
+    id: "self-attention",
+    title: "Self-Attention Mechanism",
+    badge: "Sequence Modeling & Contextual Weights",
+    summary: "Self-attention lets the model decide how much information to draw from other tokens when representing a token.",
+    qkvVectors: [
+      { vector: "Query (Q)", desc: "What information is this token looking for?" },
+      { vector: "Key (K)", desc: "What information does each token offer?" },
+      { vector: "Value (V)", desc: "What information can each token contribute?" }
+    ],
+    intuitionSteps: [
+      { step: "1. Compare queries with keys", desc: "Calculate pairwise relevance scores between tokens." },
+      { step: "2. Apply softmax", desc: "Turn those raw scores into normalized attention weights summing to 1." },
+      { step: "3. Combine value vectors", desc: "Use those weights to combine the value vectors into a context-aware representation of each token." }
+    ],
+    multiHeadNote: "Multi-head attention repeats this process through multiple learned attention heads, allowing the model to capture different kinds of relationships simultaneously."
+  },
+  {
+    id: "fashion-360-visualization",
+    title: "360° Fashion Visualization",
+    badge: "Diffusion & Vision Foundation Models",
+    summary: "360° fashion visualization using diffusion and vision foundation models allows generating photorealistic, view-consistent images of garments from all angles.",
+    workflowSteps: [
+      {
+        step: "1. Input product image",
+        desc: "A photograph of the original garment, ideally with multiple reference angles, clear fabric details, and a clean background."
+      },
+      {
+        step: "2. Generate or synthesize a view",
+        desc: "A model generates a new view or places the garment into a target pose. The system must preserve key details such as color, pockets, seams, logos, and shape."
+      },
+      {
+        step: "3. Review multiple views",
+        desc: "Present front, side, and back images to the shopper, with quality checks to detect visual inconsistencies."
+      }
+    ]
+  },
+  {
+    id: "diffusion-model",
+    title: "Diffusion Model",
+    badge: "Generative Modeling & Denoising",
+    summary: "A diffusion model is a generative model that learns to create images by learning how to reverse a process that gradually adds noise to training images.",
+    trainingPhase: [
+      "1. Start with a real image.",
+      "2. Add different amounts of noise to it over discrete timesteps.",
+      "3. Train a neural network to predict or remove that noise."
+    ],
+    generationPhase: [
+      "1. Start with random noise, or a noisy version of an input image.",
+      "2. Iteratively denoise it, conditioned on information such as a text prompt, garment image, or pose.",
+      "3. Decode the result into an image."
+    ]
+  },
+  {
+    id: "vision-foundation-model",
+    title: "Vision Foundation Model",
+    badge: "Computer Vision & Pretrained Representations",
+    summary: "A vision foundation model is a model trained on large amounts of visual data that can be adapted to many image-understanding tasks.",
+    modelFamilies: [
+      {
+        name: "SAM (Segment Anything Model)",
+        desc: "Identifies and segments objects or regions in images."
+      },
+      {
+        name: "CLIP",
+        desc: "Learns aligned image and text representations, useful for image-text similarity and retrieval."
+      },
+      {
+        name: "DINOv2",
+        desc: "Produces visual features useful for image understanding and similarity tasks."
+      },
+      {
+        name: "Pose-estimation models",
+        desc: "Identify body keypoints such as shoulders, elbows, hips, and knees."
+      }
+    ]
+  },
+  {
+    id: "langchain-langgraph",
+    title: "LangChain / LangGraph",
+    badge: "Framework & Stateful Orchestration",
+    summary: "LangChain connects language models to prompts, retrievers, structured outputs, and tools. LangGraph orchestrates stateful, multi-step workflows as nodes and transitions with checkpoints and branching.",
+    frameworks: [
+      {
+        name: "LangChain",
+        role: "Framework for building applications around language models. It provides reusable building blocks for connecting an LLM to prompts, retrievers, structured outputs, and tools."
+      },
+      {
+        name: "LangGraph",
+        role: "Framework for orchestrating stateful, multi-step workflows and agents. It represents a workflow as nodes and transitions. Nodes execute operations, while transitions decide what should happen next. Useful when the workflow needs branching, persistent state, retries, checkpoints, human approval, or the ability to resume after an interruption."
+      }
+    ],
+    shoppingAssistantSteps: [
+      "1. Retrieve similar products using image or text embeddings.",
+      "2. Query the product database for price and inventory.",
+      "3. Ask an LLM to organize the results.",
+      "4. Return a structured response to the frontend."
+    ],
+    productionArchitecture: [
+      { comp: "FastAPI", role: "Exposes /fashion-assistant endpoint to the frontend." },
+      { comp: "LangChain", role: "Connects the language model to retrievers and approved tools." },
+      { comp: "Vector database", role: "Retrieves similar products and fashion descriptions." },
+      { comp: "PostgreSQL", role: "Stores product details, prices, and inventory." },
+      { comp: "LangGraph", role: "Manages the multi-step workflow and its state." },
+      { comp: "Azure OpenAI / Supported Provider", role: "Interprets the request and produces the recommendation." }
+    ],
+    toolCode: `from langchain_core.tools import tool
+from langchain_openai import ChatOpenAI
+
+@tool
+def search_fashion_products(query: str) -> str:
+    """Search the product catalog for relevant fashion items."""
+    return str(search_products(query))
+
+llm = ChatOpenAI(model="YOUR_SUPPORTED_MODEL")
+llm_with_tools = llm.bind_tools([search_fashion_products])`,
+    graphCode: `from typing import TypedDict
+from langgraph.graph import StateGraph, START, END
+
+class FashionState(TypedDict):
+    question: str
+    products: list
+    answer: str
+
+def retrieve_products(state: FashionState):
+    products = search_products(state["question"])
+    return {"products": products}
+
+def generate_answer(state: FashionState):
+    # A real implementation calls the configured LLM
+    # with the question and retrieved product evidence.
+    answer = create_recommendation(
+        state["question"],
+        state["products"]
+    )
+    return {"answer": answer}
+
+graph_builder = StateGraph(FashionState)
+
+graph_builder.add_node("retrieve", retrieve_products)
+graph_builder.add_node("recommend", generate_answer)
+
+graph_builder.add_edge(START, "retrieve")
+graph_builder.add_edge("retrieve", "recommend")
+graph_builder.add_edge("recommend", END)
+
+fashion_graph = graph_builder.compile()`,
+    qaItems: [
+      {
+        question: "How do you prevent hallucinated product details?",
+        answer: "Retrieve actual catalog records, obtain prices and stock from authoritative systems, validate the model's output, and avoid allowing the LLM to invent business facts."
+      },
+      {
+        question: "How would you improve performance?",
+        answer: "Measure retrieval and model latency separately, reduce unnecessary LLM calls, parallelize independent reads where safe, cache appropriate results, and evaluate smaller models for simpler tasks."
       }
     ]
   }
