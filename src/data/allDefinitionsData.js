@@ -353,6 +353,21 @@ def predict_damage(data: ParcelData):
     title: "RAG — Retrieval-Augmented Generation",
     badge: "Information Retrieval & Grounded LLMs",
     summary: "A technique in which we retrieve relevant information from an external data source and provide it to an LLM so that it can generate an answer based on that information.",
+    twoPhases: {
+      headline: "RAG usually has two phases:",
+      phases: [
+        {
+          phase: "1. Indexing (Before User Queries)",
+          timing: "Offline / Data Preparation",
+          desc: "Load documents, chunk them, generate embeddings, and store chunks and metadata in the vector database."
+        },
+        {
+          phase: "2. Retrieval & Generation (At Inference Time)",
+          timing: "Online / Query Serving",
+          desc: "Search for relevant chunks, pass them to the LLM along with the prompt, and generate the response."
+        }
+      ]
+    },
     keyPrinciple: "RAG doesn't guarantee a correct answer. Retrieval can miss relevant information, and the model can still misinterpret its context, so we need evaluation and safeguards. Key point: RAG generally does not retrain or fine-tune the LLM. It supplies relevant information at inference time.",
     ragPipelineOverview: {
       title: "Understand the RAG Pipeline",

@@ -598,6 +598,42 @@ export default function AllDefinitionsPage() {
                   {item.keyPrinciple}
                 </div>
 
+                {/* Two Phases of RAG: Indexing & Retrieval/Generation */}
+                {item.twoPhases && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                          {item.twoPhases.headline}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-400 uppercase bg-black/60 px-2.5 py-1 rounded border border-zinc-800">
+                        Lifecycle Overview
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.twoPhases.phases.map((ph, pIdx) => (
+                        <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
+                          <div className="flex items-center justify-between gap-2">
+                            <h5 className="text-xs font-bold text-white font-mono flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                              <span>{ph.phase}</span>
+                            </h5>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-300 border border-zinc-800">
+                              {ph.timing}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {ph.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Understand the RAG Pipeline */}
                 {item.ragPipelineOverview && (
                   <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800/90 shadow-xl">
