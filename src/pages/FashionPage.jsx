@@ -23,12 +23,12 @@ export default function FashionPage() {
   return (
     <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
       {/* Title */}
-      <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-semibold uppercase tracking-wider">
-          <Layers className="w-3.5 h-3.5" />
+      <div className="space-y-2">
+        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-[11px] font-semibold uppercase tracking-wider">
+          <Layers className="w-3 h-3" />
           <span>Project 1 Master Blueprint</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
           {fashionData.title}
         </h1>
       </div>
