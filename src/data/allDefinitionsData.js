@@ -3195,7 +3195,43 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
     title: "AI/ML Inference: Latency, Throughput, Prefill/Decode & Cost Optimization",
     badge: "Model Serving & High-Performance Inference Systems",
     summary: "The model processes the input and generates a response: that is inference. Master the core triad metrics (latency, throughput, concurrency), execution paradigms (batch, stream, cache), the two-phase anatomy of LLM generation (prefill vs decode), context windows, temperature controls, and cost optimization levers.",
-    coreDefinition: "The model processes the input and generates a response: that is inference. Inference latency is how long a model or service takes to return a result.",
+    coreDefinition: "Inference means using a trained model to make predictions on new inputs. Inference latency is how long a model or service takes to return a result.",
+    staticVsDynamicInference: {
+      headline: "Static vs. Dynamic Inference & Execution",
+      coreDefinition: "Inference means using a trained model to make predictions on new inputs.",
+      inferenceParadigms: [
+        {
+          name: "Static inference",
+          badge: "Fixed Configuration",
+          accent: "text-blue-400",
+          desc: "A fixed model configuration and execution path are used for predictions.",
+          detail: "Every request follows a predetermined, unchanging model pipeline and compute path."
+        },
+        {
+          name: "Dynamic inference",
+          badge: "Runtime Adaptive",
+          accent: "text-purple-400",
+          desc: "The system selects or adjusts the model, execution path, or processing strategy at runtime based on the request or system conditions.",
+          detail: "Dynamically routes queries to different models (e.g., small vs. large LLMs), adjusts precision, or activates early-exit branches based on load or input difficulty."
+        }
+      ],
+      executionParadigms: [
+        {
+          name: "Static execution",
+          badge: "Graph-Compiled & Optimized",
+          accent: "text-emerald-400",
+          desc: "A computation graph is captured or compiled ahead of execution, potentially enabling optimization.",
+          detail: "Compiles the computation graph ahead of time (e.g. TorchScript, ONNX Runtime, TensorRT) to unlock kernel fusion, memory planning, and constant folding."
+        },
+        {
+          name: "Dynamic execution",
+          badge: "Eager & Imperative",
+          accent: "text-amber-400",
+          desc: "Operations are executed as the program runs, with control flow that can vary by input.",
+          detail: "Runs operations eagerly line-by-line (e.g. standard PyTorch), allowing Python control flow (if/else, loops) and variable tensor shapes to vary dynamically per input."
+        }
+      ]
+    },
     coreTriad: [
       {
         metric: "Latency",

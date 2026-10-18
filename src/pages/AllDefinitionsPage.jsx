@@ -4870,6 +4870,77 @@ export default function AllDefinitionsPage() {
                   {item.coreDefinition}
                 </div>
 
+                {/* Static vs. Dynamic Inference & Execution */}
+                {item.staticVsDynamicInference && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-900 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Sliders className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                          {item.staticVsDynamicInference.headline}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Inference Architecture
+                      </span>
+                    </div>
+
+                    {/* Inference Paradigms */}
+                    <div className="space-y-2">
+                      <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold tracking-wider">
+                        Model Configuration & Routing:
+                      </span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {item.staticVsDynamicInference.inferenceParadigms.map((p, pIdx) => (
+                          <div key={pIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${p.accent}`}>
+                                {p.name}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {p.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                              {p.desc}
+                            </p>
+                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                              {p.detail}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Execution Paradigms */}
+                    <div className="space-y-2 pt-2 border-t border-zinc-900">
+                      <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold tracking-wider">
+                        Computation Graph & Runtime Execution:
+                      </span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {item.staticVsDynamicInference.executionParadigms.map((e, eIdx) => (
+                          <div key={eIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${e.accent}`}>
+                                {e.name}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {e.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                              {e.desc}
+                            </p>
+                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                              {e.detail}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Core Triad Metrics */}
                 <div className="space-y-2">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
