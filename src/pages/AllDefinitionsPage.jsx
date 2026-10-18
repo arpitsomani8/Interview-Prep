@@ -4722,6 +4722,86 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 57: Prompt Engineering vs Fine-Tuning */}
+            {item.id === 'prompt-engineering' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase font-sans font-bold">What is Prompt Engineering? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {/* Prompt Engineering vs Fine-Tuning Comparison Table */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Prompt Engineering vs. Fine-Tuning</span>
+                  </h4>
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                            <th className="p-3 w-1/4">Aspect</th>
+                            <th className="p-3 w-3/8 text-cyan-400">Prompt Engineering</th>
+                            <th className="p-3 w-3/8 text-amber-400">Fine-Tuning</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.comparisonTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                {row.feature}
+                              </td>
+                              <td className="p-3 text-cyan-200/90 text-[11px] leading-relaxed">
+                                {row.promptEngineering}
+                              </td>
+                              <td className="p-3 text-amber-200/90 text-[11px] leading-relaxed">
+                                {row.fineTuning}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Golden Engineering Rule Callout */}
+                <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs sm:text-sm text-amber-200/95 leading-relaxed font-mono">
+                  <strong className="text-amber-400 uppercase font-sans font-bold">Core Production Principle: </strong>
+                  {item.goldenRule}
+                </div>
+
+                {/* Core Techniques Grid */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono flex items-center gap-2">
+                    <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Essential Production Prompting Techniques</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {item.engineeringTechniques.map((tech, tIdx) => (
+                      <div key={tIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition">
+                        <h5 className="text-xs font-bold text-white font-mono flex items-center gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>{tech.technique}</span>
+                        </h5>
+                        <p className="text-xs text-zinc-400 leading-relaxed font-sans pl-5.5">
+                          {tech.purpose}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

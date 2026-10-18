@@ -53,7 +53,8 @@ export const definitionBookmarks = [
   { id: "openai-vs-azure-ai", label: "OpenAI vs Azure AI" },
   { id: "inference", label: "Inference" },
   { id: "edge-cases", label: "Edge Cases" },
-  { id: "debugging", label: "Debugging" }
+  { id: "debugging", label: "Debugging" },
+  { id: "prompt-engineering", label: "Prompt Engineering" }
 ];
 
 export const definitionsData = [
@@ -3184,5 +3185,54 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
       }
     ],
     takeaway: "Prompt engineering is just one layer of an AI application. Production debugging requires tracing failures back to their root causes—whether corrupted metadata, conflated hard constraints, under-retrieval in vector search, or missing reranking."
+  },
+  {
+    id: "prompt-engineering",
+    title: "Prompt Engineering vs. Fine-Tuning",
+    badge: "LLM Control & Model Customization",
+    summary: "The discipline of designing, structuring, and optimizing instructions, context, and schemas provided to an LLM at inference time to yield deterministic, reliable, and production-grade outputs without retraining.",
+    coreDefinition: "Prompt engineering is the process of designing and refining instructions and context given to an LLM so that it produces more useful, consistent, and appropriate outputs.",
+    comparisonTable: [
+      {
+        feature: "Mechanism",
+        promptEngineering: "Changes instructions or context at inference time",
+        fineTuning: "Updates model parameters through additional training"
+      },
+      {
+        feature: "Iteration Speed",
+        promptEngineering: "Usually quicker to experiment with (instant testing)",
+        fineTuning: "Requires curated dataset preparation, training runs, and GPU infrastructure"
+      },
+      {
+        feature: "Primary Strength",
+        promptEngineering: "Useful for task instructions, output format, and behavior",
+        fineTuning: "Useful when a model needs to learn a persistent task-specific pattern"
+      },
+      {
+        feature: "Model Weights",
+        promptEngineering: "Doesn't retrain the model (weights remain frozen)",
+        fineTuning: "Produces a modified model checkpoint or adapter weights"
+      }
+    ],
+    goldenRule: "You generally try a clear prompt, structured outputs, and proper validation before deciding that fine-tuning is necessary.",
+    engineeringTechniques: [
+      {
+        technique: "System Role & Persona Definition",
+        purpose: "Establishes domain authority, boundary constraints, and communication tone."
+      },
+      {
+        technique: "Few-Shot Examples",
+        purpose: "Provides concrete input-output demonstration pairs to resolve ambiguous edge cases."
+      },
+      {
+        technique: "Structured JSON / Pydantic Enforcement",
+        purpose: "Ensures the LLM strictly adheres to machine-parseable schemas for deterministic backend downstream consumption."
+      },
+      {
+        technique: "Delimited Context Separation",
+        purpose: "Uses XML/Markdown tags (`<context>`, `<query>`) to prevent prompt injection and hallucinated instructions."
+      }
+    ],
+    takeaway: "Always start with prompt engineering, structured outputs (Pydantic/JSON), and programmatic validation. Fine-tune only when persistent stylistic nuances, specialized vocabularies, or strict latency/cost requirements demand a custom-trained checkpoint."
   }
 ];
