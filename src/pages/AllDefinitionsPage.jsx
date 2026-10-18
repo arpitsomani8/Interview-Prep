@@ -3591,11 +3591,26 @@ export default function AllDefinitionsPage() {
                       AWS (Amazon Web Services) Ecosystem for AI/ML
                     </h4>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {item.awsServices.map((svc, aIdx) => (
-                      <div key={aIdx} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1">
-                        <div className="text-xs font-bold text-amber-400 font-mono">{svc.name}</div>
-                        <div className="text-[11px] text-zinc-400 leading-relaxed">{svc.role}</div>
+                      <div key={aIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between hover:border-amber-500/30 transition">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="text-xs font-bold text-amber-400 font-mono">{svc.name}</span>
+                            {svc.category && (
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-800">
+                                {svc.category}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-zinc-300 leading-relaxed font-sans">{svc.role}</div>
+                        </div>
+                        {svc.example && (
+                          <div className="pt-2 border-t border-zinc-900 text-[10px] text-zinc-400 font-sans">
+                            <strong className="text-amber-400 font-mono">Example: </strong>
+                            {svc.example}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -3615,9 +3630,24 @@ export default function AllDefinitionsPage() {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     {item.azureServices.map((az, azIdx) => (
-                      <div key={azIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
-                        <div className="text-xs font-bold text-cyan-400 font-mono">{az.name}</div>
-                        <p className="text-[11px] text-zinc-400 leading-relaxed">{az.desc}</p>
+                      <div key={azIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between hover:border-cyan-500/30 transition">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between gap-1">
+                            <div className="text-xs font-bold text-cyan-400 font-mono">{az.name}</div>
+                            {az.category && (
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-300 border border-zinc-800">
+                                {az.category}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{az.desc}</p>
+                        </div>
+                        {az.example && (
+                          <div className="pt-2 border-t border-zinc-900 text-[10px] text-zinc-400 font-sans">
+                            <strong className="text-cyan-400 font-mono">Example: </strong>
+                            {az.example}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -4698,6 +4728,38 @@ export default function AllDefinitionsPage() {
                   <strong className="text-cyan-400 uppercase font-sans font-bold">OpenAI vs. Azure AI Core Relationship: </strong>
                   {item.coreDefinition}
                 </div>
+
+                {/* Core Platforms Breakdown: OpenAI & Azure AI */}
+                {item.coreEntities && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {item.coreEntities.map((ent, eIdx) => (
+                      <div
+                        key={eIdx}
+                        className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-2.5 flex flex-col justify-between"
+                      >
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className={`text-sm font-bold font-mono ${ent.accent}`}>
+                              {ent.name}
+                            </span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black text-zinc-300 border border-zinc-800">
+                              {ent.category}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {ent.description}
+                          </p>
+                        </div>
+                        {ent.example && (
+                          <div className="pt-2 border-t border-zinc-900 text-[11px] text-zinc-400 font-sans">
+                            <strong className="text-cyan-400 font-mono">Example: </strong>
+                            {ent.example}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {/* What Exactly Do You Use OpenAI For? */}
                 {item.whatDoYouUseOpenAiFor && (

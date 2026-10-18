@@ -2244,33 +2244,74 @@ print("Class probabilities:", model.predict_proba(new_parcel)[0])`,
       { step: "5. Dashboard and alerts", desc: "Operations team reviews flagged parcels in real time." }
     ],
     awsServices: [
-      { name: "Amazon S3", role: "Store images and datasets" },
-      { name: "Amazon SageMaker", role: "Train and deploy models" },
-      { name: "AWS Lambda", role: "Event-driven processing" },
-      { name: "Amazon EC2", role: "Run application servers" },
-      { name: "Amazon CloudWatch", role: "Monitor operations" }
+      {
+        name: "Amazon SageMaker",
+        category: "Cloud ML platform",
+        role: "Used to build, train, tune, manage, and deploy machine-learning models on AWS.",
+        example: "Train a parcel-damage classifier and deploy it behind a prediction endpoint."
+      },
+      {
+        name: "Amazon S3",
+        category: "Object storage",
+        role: "Stores files such as images, PDFs, datasets, model artifacts, and logs.",
+        example: "Store thousands of parcel images used to train a model."
+      },
+      {
+        name: "AWS Lambda",
+        category: "Serverless Compute",
+        role: "Event-driven processing triggered by S3 uploads or message queues.",
+        example: "Automatically trigger lightweight pre-processing or YOLO inference upon image upload."
+      },
+      {
+        name: "Amazon EC2",
+        category: "Virtual Compute",
+        role: "Run scalable backend application servers with custom GPU/CPU sizing.",
+        example: "Host containerized FastAPI prediction microservices."
+      },
+      {
+        name: "Amazon CloudWatch",
+        category: "Observability",
+        role: "Monitor operational telemetry, logs, request volume, and model drift.",
+        example: "Track p95 inference latency and trigger alerts on error rate spikes."
+      }
     ],
     awsAdditionalServices: "Other useful AWS services include IAM for permissions, SQS for asynchronous job queues, API Gateway for managed API entry points, and managed databases for storing application results.",
     azureServices: [
       {
+        name: "Azure AI",
+        category: "Cloud AI services and development tools",
+        desc: "Microsoft's AI offerings include Azure AI Foundry and services for building, evaluating, and deploying AI applications, alongside hosted models and APIs.",
+        example: "Build a document-processing application using Azure-hosted AI models."
+      },
+      {
         name: "Azure Blob Storage",
-        desc: "Store parcel images, datasets, and model artifacts. The backend can upload images and retrieve them through appropriately secured access."
+        category: "Object storage",
+        desc: "Store parcel images, datasets, and model artifacts. The backend can upload images and retrieve them through appropriately secured access.",
+        example: "Store millions of customer-uploaded garment images for visual similarity search."
       },
       {
         name: "Azure AI Vision",
-        desc: "Use supported image-analysis capabilities such as image descriptions or OCR where suitable. For precise parcel-damage localization, verify the service capability or deploy a compatible custom detector such as YOLO."
+        category: "Vision Foundation Models",
+        desc: "Use supported image-analysis capabilities such as image descriptions or OCR where suitable. For precise parcel-damage localization, verify the service capability or deploy a compatible custom detector such as YOLO.",
+        example: "Perform OCR on package waybills to extract recipient addresses automatically."
       },
       {
         name: "Azure OpenAI",
-        desc: "Use a supported deployed language or multimodal model to summarize inspection results, explain findings, or answer questions using company policies. It is not a substitute for validating visual detection accuracy."
+        category: "Enterprise Hosted LLMs",
+        desc: "Use a supported deployed language or multimodal model to summarize inspection results, explain findings, or answer questions using company policies. It is not a substitute for validating visual detection accuracy.",
+        example: "Deploy GPT-4o with private VPC isolation and zero data retention for customer support routing."
       },
       {
         name: "Azure Machine Learning",
-        desc: "Manage model training, experiments, model registration, and deployment workflows for supported ML workloads."
+        category: "Cloud ML platform",
+        desc: "Manage model training, experiments, model registration, and deployment workflows for supported ML workloads.",
+        example: "Track MLflow experiments, register versioned models, and deploy managed endpoints."
       },
       {
         name: "Azure Functions",
-        desc: "Run event-driven code, such as responding to a storage event or triggering an inspection workflow. For sustained or GPU-intensive inference, use an appropriate hosting option instead."
+        category: "Serverless Compute",
+        desc: "Run event-driven code, such as responding to a storage event or triggering an inspection workflow. For sustained or GPU-intensive inference, use an appropriate hosting option instead.",
+        example: "Execute serverless image resizing and metadata extraction on blob creation."
       }
     ],
     azureAdditionalServices: "Other relevant Azure services include Azure Container Apps or Azure Kubernetes Service for containerized workloads, Azure Monitor for telemetry, Microsoft Entra ID for identity, and Azure Key Vault for secrets.",
@@ -3050,6 +3091,22 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
     badge: "Foundation Models vs. Cloud Platforms & Dual-Inference Pipelines",
     summary: "OpenAI is the AI model provider, while Azure AI is Microsoft's cloud AI platform. Microsoft also offers Azure OpenAI, which provides access to supported OpenAI models through Azure.",
     coreDefinition: "OpenAI is the AI model provider, while Azure AI is Microsoft's cloud AI platform. Microsoft also offers Azure OpenAI, which provides access to supported OpenAI models through Azure.",
+    coreEntities: [
+      {
+        name: "OpenAI",
+        category: "AI models and APIs",
+        description: "Provides models and APIs for language, image, audio, and other AI tasks. You can integrate them into your application without training a foundation model yourself.",
+        example: "Use an OpenAI model to explain a damage-inspection result or answer questions about company policies.",
+        accent: "text-emerald-400"
+      },
+      {
+        name: "Azure AI",
+        category: "Cloud AI services and development tools",
+        description: "Microsoft's AI offerings include Azure AI Foundry and services for building, evaluating, and deploying AI applications, alongside hosted models and APIs.",
+        example: "Build a document-processing application using Azure-hosted AI models.",
+        accent: "text-cyan-400"
+      }
+    ],
     whatDoYouUseOpenAiFor: {
       question: "What exactly do you use OpenAI for?",
       answer: "You use the OpenAI API when you want to add language or multimodal intelligence to your own application instead of building a foundation model from scratch.",
