@@ -1,21 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { fashionData } from '../data/fashionData';
-import { Bookmark, ArrowUp, ShieldCheck, MessageSquareQuote, Layers } from 'lucide-react';
+import { ArrowUp, ShieldCheck, MessageSquareQuote, Layers } from 'lucide-react';
 
 export default function FashionPage() {
-  const [activeBookmark, setActiveBookmark] = useState(null);
-
-  const scrollToId = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setActiveBookmark(id);
-    }
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    setActiveBookmark(null);
   };
 
   return (
@@ -58,45 +47,7 @@ export default function FashionPage() {
         </blockquote>
       </div>
 
-      {/* Page Bookmarks Bar */}
-      <div className="sticky top-20 z-40 bg-black/95 backdrop-blur-md rounded-2xl border border-zinc-800 p-4 shadow-2xl">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-300">
-            <Bookmark className="w-4 h-4 text-cyan-400" />
-            <span>Page Bookmarks (On-Page Only)</span>
-          </div>
-          <button
-            onClick={scrollToTop}
-            className="flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer"
-          >
-            <ArrowUp className="w-3.5 h-3.5" />
-            <span>Top</span>
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {fashionData.overviewSteps.map((step) => (
-            <button
-              key={step.id}
-              onClick={() => scrollToId(step.id)}
-              className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer ${
-                activeBookmark === step.id
-                  ? 'bg-cyan-500 text-black font-bold border-cyan-400'
-                  : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-800 hover:text-white'
-              }`}
-            >
-              {step.title.split('.')[1] || step.title}
-            </button>
-          ))}
-          <button
-            onClick={() => scrollToId('fashion-deep-dives')}
-            className="text-xs px-3 py-1.5 rounded-lg border bg-indigo-950/60 text-indigo-200 border-indigo-800 hover:bg-indigo-900 transition cursor-pointer font-semibold"
-          >
-            Technical Deep Dives (Bookmarked Terms)
-          </button>
-        </div>
-      </div>
-
-      {/* Main 10 Steps */}
+      {/* Architecture Steps */}
       <div className="space-y-8">
         {fashionData.overviewSteps.map((step) => (
           <div
