@@ -106,51 +106,5 @@ Future & In-Progress R&D Pipeline:
       tag: "Generative AI + OCR",
       desc: "Custom design requests route to Stable Diffusion XL + ControlNet (Canny edge) & SAM for sketch-to-garment rendering. Ongoing integration with Azure AI Vision OCR extracts typography and slogans from graphic garments into PostgreSQL."
     }
-  ],
-
-  deepDives: [
-    {
-      id: "deep-rag",
-      term: "Multimodal RAG Architecture & Context Injection",
-      summary: "In-Context Multimodal Retrieval-Augmented Generation connecting PostgreSQL, ChromaDB, and Azure OpenAI GPT-4o.",
-      details: [
-        "Why No Fine-Tuning: Modifying model weights for 10,000+ dynamic products causes stale data when stock or prices change. RAG decouples knowledge retrieval from reasoning, guaranteeing zero hallucinations.",
-        "Ingestion: Pre-computes 1024-d embeddings via Azure AI Vision vectorizeImage for all 10,000+ images and stores them in ChromaDB with HNSW indexing.",
-        "Top-K Retrieval: At query time, evaluates query vectors and retrieves Top-K candidate product IDs based on cosine similarity.",
-        "PostgreSQL Hydration: Executes SQL query against PostgreSQL to pull live inventory, available sizes, fabric GSM, price, and CDN SAS image URLs.",
-        "Context Injection: Passes JSON specs and image CDN URLs directly into GPT-4o chat completion endpoint for grounded design assessments."
-      ]
-    },
-    {
-      id: "deep-embeddings",
-      term: "Dual-Encoder Embeddings & Shared Metric Space",
-      summary: "Mapping text and visual pixels into an identical 1024-dimensional unit hypersphere.",
-      details: [
-        "Dual-Encoder Architecture: Two separate neural towers—a Vision Transformer (ViT) for images and a Transformer for text—projecting into a common 1024-d vector space.",
-        "Contrastive Alignment: Trained contrastively to align visual concepts and semantic text descriptions into the same coordinate space.",
-        "L2-Normalization: Every vector is strictly normalized (v / ||v||_2 = 1.0). When magnitude is 1.0, Cosine Similarity is mathematically identical to a hardware-accelerated Dot Product.",
-        "Late Vector Fusion: e_hybrid = alpha * e_text + (1 - alpha) * e_image (with alpha=0.65 to let text steer color/fabric while keeping the visual silhouette intact)."
-      ]
-    },
-    {
-      id: "deep-generative",
-      term: "Generative AI: ControlNet, SDXL & SAM",
-      summary: "Generative pipeline for sketch-to-garment synthesis and fabric replacement.",
-      details: [
-        "ControlNet Sketch-to-Garment: Uses Canny edge detection to lock garment outlines and necklines from rough hand drawings, while SDXL paints realistic fabric textures and drape.",
-        "SAM Fabric Inpainting: Segment Anything Model (SAM) produces a zero-shot binary mask over the garment. SDXL Inpainting resynthesizes target fabric without altering the human model's pose, face, skin, or background."
-      ]
-    },
-    {
-      id: "deep-ocr",
-      term: "In-Progress Feature: Azure AI Vision OCR (Read API)",
-      summary: "Active R&D implementation for optical text recognition for slogan, quote, and typography extraction on apparel.",
-      details: [
-        "The Graphic Garment Blind Spot: Standard visual embeddings recognize a 'black cotton t-shirt', but miss printed alphanumeric text like 'NEW YORK 1985' or 'VINTAGE ATHLETIC CLUB'.",
-        "Pipeline Integration: Active engineering phase where garment images pass through Azure AI Vision OCR to extract printed text.",
-        "Database Storage: Extracted text is stored in PostgreSQL as printed_graphic_text and appended to the searchable description string before vectorization.",
-        "Query Matching: Enables exact keyword and typography searches combined with visual silhouette matching."
-      ]
-    }
   ]
 };

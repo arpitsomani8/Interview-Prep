@@ -1,11 +1,8 @@
 import React from 'react';
 import { fashionData } from '../data/fashionData';
-import { ArrowUp, ShieldCheck, MessageSquareQuote, Layers, Database, Cpu } from 'lucide-react';
+import { ShieldCheck, MessageSquareQuote, Layers, Database, Cpu } from 'lucide-react';
 
 export default function FashionPage() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   return (
     <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
@@ -112,44 +109,6 @@ export default function FashionPage() {
               <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
                 {step.desc}
               </p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Deep Dives */}
-      <div id="fashion-deep-dives" className="scroll-mt-36 space-y-6 pt-6 border-t border-zinc-800">
-        <div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">Technical Deep Dives</h2>
-          <p className="text-sm text-zinc-400">Interview defense for core algorithmic concepts used in Fashion AI Copilot</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {fashionData.deepDives.map((dive) => (
-            <div
-              key={dive.id}
-              id={dive.id}
-              className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 space-y-3 shadow-xl"
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-400 border border-cyan-800/50">
-                  Concept
-                </span>
-                <button onClick={scrollToTop} className="flex items-center gap-1 text-xs text-zinc-500 hover:text-cyan-400 cursor-pointer">
-                  <ArrowUp className="w-3 h-3" />
-                  <span>Top</span>
-                </button>
-              </div>
-
-              <h3 className="text-lg font-bold text-white tracking-tight">{dive.term}</h3>
-              <p className="text-xs sm:text-sm text-cyan-200/90 font-medium">{dive.summary}</p>
-              <div className="space-y-1.5 pt-1">
-                {dive.details.map((detail, dIdx) => (
-                  <p key={dIdx} className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                    • {detail}
-                  </p>
-                ))}
-              </div>
             </div>
           ))}
         </div>
