@@ -52,7 +52,8 @@ export const definitionBookmarks = [
   { id: "ai-assisted-coding-tools", label: "AI-Assisted Coding Tools" },
   { id: "openai-vs-azure-ai", label: "OpenAI vs Azure AI" },
   { id: "inference", label: "Inference" },
-  { id: "edge-cases", label: "Edge Cases" }
+  { id: "edge-cases", label: "Edge Cases" },
+  { id: "debugging", label: "Debugging" }
 ];
 
 export const definitionsData = [
@@ -3101,5 +3102,87 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
     ],
     debuggingPrinciple: "The solution is not simply to change the prompt. We need to identify which part of the pipeline caused the bad result: catalog metadata, embedding model alignment, hard filter enforcement, or retrieval ranking.",
     takeaway: "Robust AI systems are engineered for the failure modes. Enforcing hard metadata constraints, isolating inventory state from vector embeddings, and validating data pipelines prevents subtle edge cases from eroding user trust."
+  },
+  {
+    id: "debugging",
+    title: "Debugging AI & Search Pipelines",
+    badge: "Pipeline Diagnostics & Root-Cause Analysis",
+    summary: "A rigorous, step-by-step methodology for isolating, reproducing, and solving search anomalies, relevance degradations, and model failures across multi-stage GenAI systems.",
+    corePhilosophy: "The solution is not simply to change the prompt. We need to identify which part of the pipeline caused the bad result.",
+    debuggingSteps: [
+      {
+        step: 1,
+        title: "Reproduce the Problem",
+        summary: "Make the failure repeatable before changing any code or prompt.",
+        details: "Save the exact query, returned product IDs, similarity scores, catalog metadata, and model/index versions. Make the failure repeatable.",
+        actionItem: "Freeze inputs & outputs: query text, raw embedding vector, FAISS top-K distances, metadata snapshots, and runtime configs."
+      },
+      {
+        step: 2,
+        title: "Check the Catalog Data",
+        summary: "Verify whether the upstream data itself is corrupted or mislabeled.",
+        details: "Verify whether the incorrect color or category labels are already wrong in the database. A model cannot reliably filter on metadata that is missing or incorrect.",
+        actionItem: "Inspect raw database records. If a red dress is tagged as 'pink' or has null category, the database must be corrected first."
+      },
+      {
+        step: 3,
+        title: "Separate Hard Constraints from Similarity",
+        summary: "Never rely on dense vector embeddings to enforce deterministic boolean rules.",
+        details: "If the user explicitly requires red dresses under ₹2,000, enforce those constraints using trustworthy metadata. Use similarity to rank the remaining eligible items.",
+        actionItem: "Apply metadata pre-filters or hybrid boolean SQL filters (color='red' AND price <= 2000), then let vector similarity rank eligible items."
+      },
+      {
+        step: 4,
+        title: "Improve Retrieval and Ranking",
+        summary: "Tune candidate pool size, embedding representation, and multi-stage scoring.",
+        details: "Retrieve a larger candidate set, use better metadata, tune the ranking strategy, or evaluate a different embedding model. If necessary, introduce a reranker.",
+        actionItem: "Increase top-K (e.g., 50 → 200), test domain-adapted vision-text encoders (e.g., Fashion-CLIP), or integrate a cross-encoder reranker."
+      },
+      {
+        step: 5,
+        title: "Evaluate Before Releasing",
+        summary: "Ensure regressions do not occur across standard benchmarks before production rollout.",
+        details: "Compare the old and new approaches on a representative set of labeled queries. Measure Recall@25, Precision@25, constraint violations, latency, and cost.",
+        actionItem: "Run offline benchmark evaluations with ground truth query sets; verify latency SLAs (p95 < 200ms) and token economics."
+      }
+    ],
+    techniquesTable: [
+      {
+        technique: "Better catalog metadata",
+        improves: "Exact attributes such as color, size, price, and category",
+        howItWorks: "Eliminates upstream data flaws at ingestion time; ensures filters match ground-truth inventory attributes."
+      },
+      {
+        technique: "Better query parsing",
+        improves: "Separates the user's intent and constraints",
+        howItWorks: "Extracts explicit filter parameters (budget, size, color) using LLM tool calling or regex/NER."
+      },
+      {
+        technique: "Hybrid retrieval",
+        improves: "Combines semantic similarity with keyword or structured filtering",
+        howItWorks: "Fuses sparse BM25 / metadata filters with dense vector embeddings (FAISS/CLIP) to balance recall and precision."
+      },
+      {
+        technique: "Reranking",
+        improves: "Reorders the initial candidate set using additional relevance signals",
+        howItWorks: "Evaluates full query-product cross-attention on candidate top-K items to elevate the most relevant results."
+      },
+      {
+        technique: "Model evaluation",
+        improves: "Identifies which queries or categories perform poorly",
+        howItWorks: "Systematically tracks Recall@K, Precision@K, and constraint violation rates on golden evaluation datasets."
+      },
+      {
+        technique: "Fine-tuning",
+        improves: "Can improve task-specific behavior when sufficient quality data is available",
+        howItWorks: "Adapts base vision or language model weights to domain-specific fashion nomenclature and aesthetic nuances."
+      },
+      {
+        technique: "Prompt engineering",
+        improves: "Improves how an LLM interprets instructions and formats its response",
+        howItWorks: "Refines system prompts, few-shot examples, and Pydantic schemas for deterministic intent extraction and formatting."
+      }
+    ],
+    takeaway: "Prompt engineering is just one layer of an AI application. Production debugging requires tracing failures back to their root causes—whether corrupted metadata, conflated hard constraints, under-retrieval in vector search, or missing reranking."
   }
 ];

@@ -11,7 +11,8 @@ import {
   Sparkles, 
   CheckCircle2, 
   Terminal,
-  Globe 
+  Globe,
+  Bug 
 } from 'lucide-react';
 
 export default function AllDefinitionsPage() {
@@ -4615,6 +4616,108 @@ export default function AllDefinitionsPage() {
                 {/* Final Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
                   <strong className="text-cyan-400 uppercase">Resilience Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 56: Debugging AI & Search Pipelines */}
+            {item.id === 'debugging' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Philosophy Callout */}
+                <div className="p-4 rounded-xl bg-gradient-to-r from-amber-950/30 via-zinc-950 to-rose-950/20 border border-amber-800/40 text-xs sm:text-sm text-amber-200/95 leading-relaxed font-mono flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
+                    <Bug className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <strong className="text-amber-400 uppercase font-sans font-bold block mb-1">
+                      First Principle of AI Debugging:
+                    </strong>
+                    <span>{item.corePhilosophy}</span>
+                  </div>
+                </div>
+
+                {/* Step-by-Step Debugging Approach */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Step-by-Step Production Debugging Framework</span>
+                  </h4>
+                  <div className="space-y-3">
+                    {item.debuggingSteps.map((step) => (
+                      <div
+                        key={step.step}
+                        className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 hover:border-cyan-500/30 transition flex flex-col md:flex-row gap-4 items-start md:items-center justify-between"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-cyan-950/60 border border-cyan-800/50 flex items-center justify-center text-cyan-400 font-mono font-bold text-xs shrink-0">
+                            0{step.step}
+                          </div>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h5 className="text-sm font-bold text-white font-mono">
+                                Step {step.step} — {step.title}
+                              </h5>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-300 border border-zinc-800">
+                                {step.summary}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                              {step.details}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="w-full md:w-auto md:max-w-xs shrink-0 p-2.5 rounded-xl bg-black border border-zinc-800 text-[11px] font-mono text-amber-300/90">
+                          <span className="text-[10px] text-zinc-500 uppercase block mb-0.5">Action Item:</span>
+                          {step.actionItem}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Common Techniques for Improving Model Results */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono flex items-center gap-2">
+                    <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Common Techniques for Improving Model Results</span>
+                  </h4>
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                            <th className="p-3 w-1/4">Technique</th>
+                            <th className="p-3 w-1/3 text-cyan-400">What It Improves</th>
+                            <th className="p-3 w-5/12 text-emerald-400">Implementation Details</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.techniquesTable.map((tech, tIdx) => (
+                            <tr key={tIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-cyan-300">
+                                  {tech.technique}
+                                </span>
+                              </td>
+                              <td className="p-3 text-cyan-200/90 text-[11px] leading-relaxed">
+                                {tech.improves}
+                              </td>
+                              <td className="p-3 text-zinc-400 text-[11px] leading-relaxed font-sans">
+                                {tech.howItWorks}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Production Takeaway: </strong>
                   {item.takeaway}
                 </div>
               </div>
