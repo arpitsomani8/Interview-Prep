@@ -6578,8 +6578,8 @@ export default function AllDefinitionsPage() {
             {/* Item 67: Docker */}
             {item.id === 'docker' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                {/* Core Concept Banner */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl space-y-2">
+                {/* Core Concept Banner & Laptop vs Production Challenge */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl space-y-3">
                   <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                     <div className="flex items-center gap-2">
                       <Terminal className="w-4 h-4 text-cyan-400" />
@@ -6592,9 +6592,86 @@ export default function AllDefinitionsPage() {
                     </span>
                   </div>
                   <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans font-medium">
-                    {item.coreConcept}
+                    {item.containerization ? item.containerization.definition : item.coreConcept}
                   </p>
+                  
+                  {item.containerization && (
+                    <div className="p-3.5 rounded-xl bg-black border border-cyan-900/40 space-y-2">
+                      <div className="flex items-start gap-2.5">
+                        <span className="text-amber-400 font-bold text-sm mt-0.5">⚠️</span>
+                        <div className="space-y-1">
+                          <p className="text-xs text-amber-200/90 font-sans leading-relaxed">
+                            {item.containerization.scenario}
+                          </p>
+                          <p className="text-xs text-emerald-300 font-sans font-medium pt-1">
+                            ✓ {item.containerization.solution}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
+
+                {/* What a Container Usually Includes */}
+                {item.containerization && item.containerization.includesList && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.containerization.includesTitle}</span>
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.containerization.includesList.map((inc, iIdx) => (
+                        <div
+                          key={iIdx}
+                          className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 flex items-start gap-2.5 hover:border-zinc-700 transition"
+                        >
+                          <span className="w-5 h-5 rounded bg-cyan-950 text-cyan-300 font-mono text-xs flex items-center justify-center shrink-0 mt-0.5 font-bold">
+                            0{iIdx + 1}
+                          </span>
+                          <span className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                            {inc}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Docker vs Kubernetes Tools Breakdown */}
+                {item.orchestrationTools && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Container Execution vs. Cluster Orchestration</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.orchestrationTools.map((tool, tIdx) => (
+                        <div
+                          key={tIdx}
+                          className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-2.5 flex flex-col justify-between"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className={`text-base font-bold font-mono ${tool.accent}`}>
+                                {tool.name}
+                              </span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black text-zinc-300 border border-zinc-800">
+                                {tool.badge}
+                              </span>
+                            </div>
+                            <div className="text-xs text-zinc-200 font-sans font-semibold">
+                              {tool.role}
+                            </div>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900 text-xs text-zinc-400 font-sans">
+                            <strong className="text-amber-400 font-mono text-[11px]">Example: </strong>
+                            {tool.example}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Dockerfile & Directives Breakdown */}
                 <div className="space-y-3">

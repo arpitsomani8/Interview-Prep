@@ -4268,6 +4268,34 @@ tracemalloc.stop()`,
     badge: "Containerization & Reproducibility",
     summary: "Docker packages your application and dependencies into an image so it can run consistently in different environments.",
     coreConcept: "Docker packages your application and dependencies into an image so it can run consistently in different environments.",
+    containerization: {
+      definition: "Containerization is packaging an application and its dependencies into a container so it can run consistently across different environments.",
+      scenario: "Imagine your ML model works on your laptop but fails on a production server because the Python version or installed libraries are different.",
+      solution: "Containerization helps avoid this by packaging the application code, runtime, and dependencies together.",
+      includesTitle: "A container usually includes:",
+      includesList: [
+        "Application code and API.",
+        "Required Python packages.",
+        "Runtime configuration.",
+        "Libraries needed by the application."
+      ]
+    },
+    orchestrationTools: [
+      {
+        name: "Docker",
+        role: "Used to build images and run containers.",
+        example: "Package your FastAPI model service into an image and run one instance on a server.",
+        accent: "text-cyan-400",
+        badge: "Image Build & Container Runtime"
+      },
+      {
+        name: "Kubernetes",
+        role: "Used to manage containerized applications across a cluster.",
+        example: "Run multiple instances of your ML service, distribute traffic, restart failed instances, and scale replicas.",
+        accent: "text-blue-400",
+        badge: "Cluster Management & Autoscaling"
+      }
+    ],
     dockerfileCode: `FROM python:3.12-slim
 WORKDIR /app
 
