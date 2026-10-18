@@ -1210,6 +1210,79 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 21: Scikit-Learn */}
+            {item.id === 'scikit-learn' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Core Traditional ML Algorithms Provided
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {item.coreAlgorithms.map((algo, aIdx) => (
+                      <div key={aIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                        <div className="text-xs font-bold text-white font-mono">{algo.name}</div>
+                        <div className="text-[11px] text-zinc-400 leading-relaxed">{algo.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-black border border-cyan-900/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Unified Architecture Role: </strong>
+                  {item.role}
+                </div>
+              </div>
+            )}
+
+            {/* Item 22: Joblib */}
+            {item.id === 'joblib' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* Code Block */}
+                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                  <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                    <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>train_and_save.py (Training, Joblib Serialization & Inference)</span>
+                    </div>
+                    <button
+                      onClick={() => handleCopyCode('code-joblib', item.code)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                    >
+                      {copiedId === 'code-joblib' ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy Code</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                    {item.code}
+                  </pre>
+                </div>
+
+                {/* Explanation points */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Key Execution Takeaways
+                  </h4>
+                  <ul className="space-y-1.5">
+                    {item.explanation.map((exp, eIdx) => (
+                      <li key={eIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                        <span className="text-cyan-400 mt-0.5">•</span>
+                        <span>{exp}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

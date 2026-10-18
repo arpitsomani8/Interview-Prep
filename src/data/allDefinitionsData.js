@@ -18,7 +18,9 @@ export const definitionBookmarks = [
   { id: "production-databases", label: "Production Databases" },
   { id: "classical-ml", label: "Classical ML" },
   { id: "fine-tuning", label: "Fine-Tuning" },
-  { id: "optimization", label: "Optimization" }
+  { id: "optimization", label: "Optimization" },
+  { id: "scikit-learn", label: "Scikit-Learn" },
+  { id: "joblib", label: "Joblib" }
 ];
 
 export const definitionsData = [
@@ -879,6 +881,51 @@ def ask_question(data: Question):
       { metric: "Retrieval Precision & Recall", desc: "Benchmark whether the search system consistently surfaces true relevant policy passages." },
       { metric: "Answer Faithfulness & Citation Accuracy", desc: "Verify that model responses are directly grounded in retrieved context with accurate references." },
       { metric: "Model Performance Drift", desc: "Monitor classification metric stability and data distribution shifts over long operational windows." }
+    ]
+  },
+  {
+    id: "scikit-learn",
+    title: "Scikit-Learn",
+    badge: "Machine Learning Library",
+    summary: "scikit-learn is a Python library that provides traditional ML algorithms such as Logistic Regression, Random Forest, Support Vector Machines, Decision Trees, and Gradient Boosting. It helps you train, evaluate, and use ML models.",
+    coreAlgorithms: [
+      { name: "Logistic Regression", desc: "Linear model for binary and multiclass classification predicting probabilistic outcomes." },
+      { name: "Random Forest", desc: "Ensemble learning method constructing an array of decision trees to eliminate variance." },
+      { name: "Support Vector Machines (SVM)", desc: "Effective in high-dimensional spaces, finding optimal hyperplanes to separate classes." },
+      { name: "Decision Trees", desc: "Non-parametric supervised learning method creating interpretable decision rules inferred from data." },
+      { name: "Gradient Boosting", desc: "Ensemble technique training trees sequentially to correct preceding errors and minimize loss." }
+    ],
+    role: "It provides unified, standardized APIs for model training (.fit()), evaluation metrics, and inference (.predict())."
+  },
+  {
+    id: "joblib",
+    title: "Joblib",
+    badge: "Model Serialization & Persistence",
+    summary: "joblib is a Python library commonly used to save and load trained scikit-learn models and large in-memory objects efficiently.",
+    code: `import joblib
+from sklearn.ensemble import RandomForestClassifier
+
+# Train a model
+model = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
+)
+
+model.fit(X_train, y_train)
+
+# Save the trained model
+joblib.dump(model, "parcel_model.joblib")
+
+# Load it later for predictions
+loaded_model = joblib.load("parcel_model.joblib")
+
+predictions = loaded_model.predict(X_test)`,
+    explanation: [
+      "Here, X_train, y_train, and X_test represent your prepared training and test data.",
+      "The model learns patterns during fit().",
+      "joblib.dump() saves the fitted model and its learned weights to disk.",
+      "joblib.load() restores the trained model artifact for later use in your API.",
+      "Fundamental Law: joblib does not train or fine-tune the model. It handles serialization and loading."
     ]
   }
 ];
