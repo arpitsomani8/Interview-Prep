@@ -70,7 +70,8 @@ export const definitionBookmarks = [
   { id: "production-check", label: "Production Check" },
   { id: "caching", label: "Caching" },
   { id: "backend-architecture", label: "Backend Architecture" },
-  { id: "onnx", label: "ONNX" }
+  { id: "onnx", label: "ONNX" },
+  { id: "gpu-cuda", label: "GPU / CUDA" }
 ];
 
 export const definitionsData = [
@@ -4690,5 +4691,45 @@ def health_check():
       }
     ],
     takeaway: "ONNX standardizes trained models into an open computational graph format. Paired with ONNX Runtime, execution providers, and techniques like model pruning and DeepSparse, it decouples offline training from optimized production inference."
+  },
+  {
+    id: "gpu-cuda",
+    title: "GPU / CUDA & cuDNN — Accelerated Computing for Deep Learning",
+    badge: "Hardware Acceleration & Parallel Computing",
+    summary: "CUDA is NVIDIA's parallel computing platform and programming model for using NVIDIA GPUs to perform general-purpose computations. GPUs perform massive parallel matrix operations essential for deep learning.",
+    coreDefinition: "CUDA is NVIDIA's parallel computing platform and programming model for using NVIDIA GPUs to perform general-purpose computations.",
+    gpuParallelPrinciple: "GPUs can perform many operations in parallel, which is particularly useful for the large matrix computations involved in deep learning.",
+    usefulAreasIntro: "Where CUDA is useful",
+    usefulAreas: [
+      "Training neural networks.",
+      "Running inference with supported GPU-enabled frameworks.",
+      "Processing images and videos.",
+      "Performing large tensor operations.",
+      "Accelerating some scientific and numerical computations."
+    ],
+    triadHierarchy: [
+      {
+        entity: "GPU",
+        definition: "The physical hardware that performs parallel computation.",
+        accent: "text-emerald-400",
+        badge: "Silicon Hardware",
+        desc: "Massively parallel processor featuring thousands of CUDA cores and high-bandwidth memory (HBM/GDDR) optimized for concurrent floating-point throughput."
+      },
+      {
+        entity: "CUDA",
+        definition: "NVIDIA's platform and programming model for GPU computation.",
+        accent: "text-cyan-400",
+        badge: "Software Platform & API",
+        desc: "Exposes GPU compute capabilities to general-purpose languages (C, C++, Python) via kernel functions, thread hierarchies (grids/blocks), and driver runtimes."
+      },
+      {
+        entity: "cuDNN",
+        definition: "NVIDIA's library of optimized operations used for deep neural networks.",
+        accent: "text-purple-400",
+        badge: "Deep Learning Primitives",
+        desc: "GPU-accelerated library providing highly tuned implementations for standard deep learning routines: 2D/3D convolutions, pooling, normalization, and activation layers."
+      }
+    ],
+    takeaway: "The GPU provides raw parallel hardware cores, CUDA acts as the programming interface and runtime enabling code to execute across those cores, and cuDNN delivers pre-optimized algorithmic primitives for deep neural networks."
   }
 ];

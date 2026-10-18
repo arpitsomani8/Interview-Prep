@@ -17,7 +17,8 @@ import {
   Sliders,
   Database,
   Layers,
-  Zap
+  Zap,
+  Cpu
 } from 'lucide-react';
 
 export default function AllDefinitionsPage() {
@@ -7520,6 +7521,109 @@ export default function AllDefinitionsPage() {
                           <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
                             {concept.detail}
                           </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 74: GPU / CUDA & cuDNN */}
+            {item.id === 'gpu-cuda' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner & Parallel Matrix Principle */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <Cpu className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Parallel Computing Platform</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800">
+                      Hardware Acceleration
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-emerald-800/40 shadow-xl space-y-3">
+                    <p className="text-xs sm:text-sm text-emerald-200 font-sans leading-relaxed font-semibold">
+                      {item.coreDefinition}
+                    </p>
+                    <div className="p-3.5 rounded-xl bg-black border border-emerald-900/50 flex items-start gap-3">
+                      <span className="text-emerald-400 font-bold text-base leading-none mt-0.5">⚡</span>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.gpuParallelPrinciple}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Where CUDA is Useful */}
+                {item.usefulAreas && (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.usefulAreasIntro}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Workload Applications
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.usefulAreas.map((area, aIdx) => (
+                        <div
+                          key={aIdx}
+                          className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition flex items-start gap-2.5"
+                        >
+                          <span className="w-5 h-5 rounded bg-cyan-950 border border-cyan-800 text-cyan-300 font-mono text-[11px] flex items-center justify-center shrink-0 font-bold mt-0.5">
+                            0{aIdx + 1}
+                          </span>
+                          <span className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                            {area}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* The Triad: GPU vs CUDA vs cuDNN */}
+                {item.triadHierarchy && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-purple-400" />
+                      <span>The Hardware-to-Software Stack (GPU vs. CUDA vs. cuDNN)</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {item.triadHierarchy.map((layer, lIdx) => (
+                        <div
+                          key={lIdx}
+                          className="p-4 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition space-y-2.5 flex flex-col justify-between"
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className={`text-base font-bold font-mono ${layer.accent}`}>
+                                {layer.entity}
+                              </span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                                {layer.badge}
+                              </span>
+                            </div>
+                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-200 font-sans">
+                              {layer.definition}
+                            </div>
+                            <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
+                              {layer.desc}
+                            </p>
+                          </div>
                         </div>
                       ))}
                     </div>
