@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { fashionData } from '../data/fashionData';
-import { ShieldCheck, MessageSquareQuote, Layers, Database, Cpu, Bookmark, ArrowUp } from 'lucide-react';
+import { ShieldCheck, MessageSquareQuote, Layers, Database, Cpu, Bookmark, ArrowUp, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function FashionPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
@@ -58,6 +58,94 @@ export default function FashionPage() {
         <blockquote className="text-sm sm:text-base text-zinc-200 leading-relaxed italic border-l-4 border-indigo-500 pl-4 py-1 whitespace-pre-line">
           {fashionData.executiveScript}
         </blockquote>
+      </div>
+
+      {/* Real-World User Example & High-Level Execution Flow */}
+      <div className="rounded-2xl bg-[#0a0a0c] border border-pink-500/30 p-6 sm:p-8 space-y-6 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-pink-500/10 text-pink-400 border border-pink-500/30 text-xs font-semibold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Real-World Execution Trace</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>Example Query:</span>
+              <span className="text-pink-400 font-mono">"{fashionData.userExample.query}"</span>
+            </h2>
+          </div>
+          <span className="text-xs font-mono text-zinc-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800 self-start sm:self-auto">
+            Total Pipeline Latency: &lt; 200ms
+          </span>
+        </div>
+
+        <p className="text-sm text-zinc-300 leading-relaxed">
+          {fashionData.userExample.description}
+        </p>
+
+        {/* 6 Sequential Step Progression Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {fashionData.userExample.steps.map((st) => (
+            <div
+              key={st.step}
+              className="rounded-xl bg-zinc-950/70 border border-zinc-800/80 p-5 space-y-3 hover:border-pink-500/40 transition flex flex-col justify-between"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-pink-500/10 text-pink-400 border border-pink-500/30">
+                    STEP {st.step}
+                  </span>
+                  <span className="text-[11px] font-mono text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
+                    {st.badge}
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-white tracking-tight">
+                  {st.title}
+                </h3>
+                <div className="text-xs text-pink-300/90 font-medium">
+                  {st.system}
+                </div>
+                <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
+                  {st.action}
+                </p>
+              </div>
+
+              <div className="pt-2.5 border-t border-zinc-800/60 text-[11px] font-mono text-zinc-400 leading-relaxed bg-black/40 p-2.5 rounded-lg border border-zinc-900">
+                <span className="text-zinc-500 font-bold block mb-1">Under the Hood:</span>
+                {st.technicalDetail}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Final Output & Order Placement Showcase */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2">
+          {/* GPT-4o Response */}
+          <div className="rounded-xl bg-zinc-950 border border-zinc-800 p-5 space-y-2.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <span>Grounded GPT-4o Answer to Retailer</span>
+            </div>
+            <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed bg-black/50 p-3.5 rounded-lg border border-zinc-800/80 italic">
+              "{fashionData.userExample.sampleOutput.aiResponse}"
+            </p>
+          </div>
+
+          {/* PostgreSQL Order Record */}
+          <div className="rounded-xl bg-zinc-950 border border-zinc-800 p-5 space-y-2.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span>Order Created in PostgreSQL (orders table)</span>
+            </div>
+            <div className="text-xs font-mono bg-black/50 p-3.5 rounded-lg border border-zinc-800/80 space-y-1 text-zinc-300">
+              <div><span className="text-zinc-500">Order ID:</span> <span className="text-white font-bold">{fashionData.userExample.sampleOutput.orderRecord.order_id}</span></div>
+              <div><span className="text-zinc-500">Buyer:</span> {fashionData.userExample.sampleOutput.orderRecord.retailer_id}</div>
+              <div><span className="text-zinc-500">Item:</span> {fashionData.userExample.sampleOutput.orderRecord.product_id} (Pink Crewneck)</div>
+              <div><span className="text-zinc-500">Sizes:</span> {fashionData.userExample.sampleOutput.orderRecord.breakdown}</div>
+              <div><span className="text-zinc-500">Total:</span> <span className="text-emerald-400 font-bold">{fashionData.userExample.sampleOutput.orderRecord.total_units} units ({fashionData.userExample.sampleOutput.orderRecord.total_value})</span></div>
+              <div><span className="text-zinc-500">Status:</span> <span className="text-emerald-400 font-bold">{fashionData.userExample.sampleOutput.orderRecord.status}</span></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Bookmarked Technical Concepts & Interview Defense */}

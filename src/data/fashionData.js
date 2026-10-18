@@ -26,6 +26,73 @@ On the Retailer Web Portal:
 Future & In-Progress R&D:
 • For custom garments, we are building a generative pipeline using Stable Diffusion XL, ControlNet, and SAM to turn sketches into realistic photos. In parallel, we are integrating Azure AI Vision OCR to read printed slogans and quotes on t-shirts and save them in PostgreSQL, so buyers can search by exact printed text.`,
 
+  userExample: {
+    query: "Do you have a pink T-shirt?",
+    description: "End-to-end execution flow showing how a retailer's natural language question travels through our AI models, databases, and UI to place an order.",
+    steps: [
+      {
+        step: "01",
+        title: "User Search Input",
+        system: "Retailer Web Portal",
+        badge: "Frontend -> API",
+        action: "Buyer types: 'Do you have a pink T-shirt?' into the search bar and presses enter.",
+        technicalDetail: "The Next.js/React frontend captures the string and fires an async POST request to our FastAPI backend endpoint: /api/v1/search/hybrid with payload { query: 'Do you have a pink T-shirt?', limit: 25 }."
+      },
+      {
+        step: "02",
+        title: "Text Vectorization via Azure AI Vision",
+        system: "Azure AI Vision (vectorizeText)",
+        badge: "1024-d Embedding",
+        action: "The text query is converted into a 1024-dimensional float vector.",
+        technicalDetail: "FastAPI calls Azure AI Vision vectorizeText API in ~15ms. The output is a 1024-d float vector. We strictly L2-normalize it (length = 1.0) so it projects into the exact same coordinate space as our pre-computed clothing images."
+      },
+      {
+        step: "03",
+        title: "ChromaDB Fast Vector Search",
+        system: "ChromaDB (HNSW Graph)",
+        badge: "Top-K Candidates",
+        action: "Scans 10,000+ catalog designs in 4ms to find the closest matching product IDs.",
+        technicalDetail: "Because the vector has length 1.0, ChromaDB computes Cosine Similarity using hardware-accelerated dot products across its HNSW index in RAM. It retrieves the Top-25 closest product_ids (e.g., PROD_0014, PROD_0089, PROD_0142) that represent pink t-shirts."
+      },
+      {
+        step: "04",
+        title: "PostgreSQL Master Data Hydration",
+        system: "PostgreSQL Database",
+        badge: "Live SQL Lookup",
+        action: "Pulls live inventory, available sizes, fabric specs, and image filenames.",
+        technicalDetail: "FastAPI runs: SELECT product_id, image_filename, sizes_available, color, fabric, wholesale_price, stock_count FROM products WHERE product_id IN ('PROD_0014', ...). It pulls live stock (S: 120, M: 250, L: 180, XL: 90), fabric (220gsm Combed Cotton), price ($12.50/unit), and CDN image URLs."
+      },
+      {
+        step: "05",
+        title: "Context Injection & GPT-4o Evaluation",
+        system: "Azure OpenAI (GPT-4o)",
+        badge: "Multimodal RAG",
+        action: "GPT-4o analyzes the prompt + database specs + garment images to form a grounded answer.",
+        technicalDetail: "Prompt payload with user query + hydrated PostgreSQL JSON + image CDN URLs is sent to GPT-4o. GPT-4o responds: 'Yes! We have our Blush Pink Crewneck T-Shirt (PROD_0014) in stock across sizes S, M, L, and XL, crafted from 220gsm Combed Organic Cotton at $12.50/unit wholesale.' Zero hallucination because data comes directly from PostgreSQL."
+      },
+      {
+        step: "06",
+        title: "UI Rendering & Bulk Wholesale Order Confirmation",
+        system: "Retailer Portal & Orders Table",
+        badge: "60fps Lazy Load & Order Insert",
+        action: "Retailer views the pink t-shirts, selects bulk sizes (S, M, L, XL), and checks out.",
+        technicalDetail: "Frontend renders the first 25 matching pink t-shirts with lazy loading. The buyer enters wholesale quantities (e.g. 50 S, 100 M, 100 L), verifies their email OTP, and an order record is instantly inserted into PostgreSQL's 'orders' table while updating live stock."
+      }
+    ],
+    sampleOutput: {
+      aiResponse: "Yes! We have our Blush Pink Crewneck T-Shirt (PROD_0014) in stock across sizes S, M, L, and XL. It is crafted from premium 220gsm Combed Organic Cotton at $12.50/unit wholesale with 640 total pieces available. Below are the closest matching design samples from our archive:",
+      orderRecord: {
+        order_id: "ORD_9421",
+        retailer_id: "RET_8820 (Nordic Apparel)",
+        product_id: "PROD_0014",
+        breakdown: "S: 50 | M: 100 | L: 100 | XL: 50",
+        total_units: 300,
+        total_value: "$3,750.00",
+        status: "CONFIRMED_IN_POSTGRESQL"
+      }
+    }
+  },
+
   storageArchitecture: [
     {
       tier: "1. Azure Blob Storage",
