@@ -4288,6 +4288,201 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 53: Inference Systems, Metrics & Optimization */}
+            {item.id === 'inference' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase font-sans font-bold">What is Inference? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {/* Core Triad Metrics */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>The Inference Triad: Latency, Throughput & Concurrency</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.coreTriad.map((triad, tIdx) => (
+                      <div key={tIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="flex items-center justify-between gap-2">
+                          <h5 className="text-sm font-bold text-white font-mono">{triad.metric}</h5>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-700">
+                            {triad.tag}
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-400 leading-relaxed">{triad.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Production Solutions & Hardware */}
+                {item.productionSolutions && (
+                  <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                      <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Production Inference Solutions</span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs text-zinc-400 font-sans">
+                      {item.productionSolutions.strategies.map((strat, sIdx) => (
+                        <div key={sIdx} className="flex items-center gap-2 p-2 rounded bg-zinc-950 border border-zinc-800/60">
+                          <span className="text-cyan-400 font-mono text-[11px]">✓</span>
+                          <span>{strat}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[11px] font-mono text-zinc-400 bg-zinc-950 p-2.5 rounded border border-zinc-800/80">
+                      <strong className="text-cyan-300">Hardware Primer: </strong>
+                      {item.productionSolutions.hardwareNote}
+                    </p>
+                  </div>
+                )}
+
+                {/* 3 Inference Modes: Batch, Streaming, Caching */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    Inference Execution Modes: Batch, Streaming & Caching
+                  </h4>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    {item.inferenceModes.map((mode, mIdx) => (
+                      <div key={mIdx} className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <h5 className="text-sm font-bold text-amber-300 font-mono uppercase">{mode.mode}</h5>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">{mode.definition}</p>
+                          <div className="space-y-1 pt-1 border-t border-zinc-800/60">
+                            <span className="text-[10px] font-mono text-cyan-400 uppercase font-bold">Key Benefits:</span>
+                            {mode.benefits.map((b, bIdx) => (
+                              <div key={bIdx} className="text-[11px] text-zinc-400 flex items-start gap-1.5">
+                                <span className="text-emerald-400">•</span>
+                                <span>{b}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-black text-[11px] text-zinc-400 border border-zinc-800 font-sans leading-relaxed">
+                          <strong className="text-amber-400 font-mono">Trade-offs & Tuning: </strong>
+                          {mode.tradeoffs}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Two Phases of LLM Inference: Prefill vs Decode */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>The Two Essential Phases of LLM Inference</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {item.llmPhases.map((phase, pIdx) => (
+                      <div key={pIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="flex items-center justify-between gap-2">
+                          <h5 className="text-xs font-bold text-white font-mono">{phase.phase}</h5>
+                          <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${
+                            pIdx === 0 
+                              ? 'bg-cyan-950/60 text-cyan-300 border border-cyan-800/50' 
+                              : 'bg-amber-950/60 text-amber-300 border border-amber-800/50'
+                          }`}>
+                            {phase.bound}
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-300 leading-relaxed font-sans">{phase.desc}</p>
+                        <p className="text-[11px] font-mono text-zinc-400 bg-black p-2 rounded border border-zinc-800">
+                          <strong className="text-cyan-400">Example: </strong>{phase.example}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Context Window & Temperature Controls */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {item.hyperparameters.map((hp, hIdx) => (
+                    <div key={hIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                      <h5 className="text-xs font-bold text-cyan-300 font-mono uppercase">{hp.param}</h5>
+                      <p className="text-xs text-zinc-300 leading-relaxed font-sans">{hp.role}</p>
+                      <p className="text-[11px] font-mono text-amber-300/90 bg-amber-950/20 p-2 rounded border border-amber-800/30">
+                        <strong>Operational Insight: </strong>{hp.note}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 6 Cost-Reduction Levers */}
+                {item.costOptimization && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="space-y-1 border-b border-zinc-800 pb-3">
+                      <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-mono uppercase font-bold tracking-wider">
+                        <Terminal className="w-3 h-3 text-emerald-400" />
+                        <span>Financial Engineering & FinOps</span>
+                      </div>
+                      <h4 className="text-sm sm:text-base font-bold text-white tracking-tight pt-0.5">
+                        Cost of Inference & 6 Optimization Levers
+                      </h4>
+                      <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                        {item.costOptimization.overview}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+                      {item.costOptimization.levers.map((lev, lIdx) => (
+                        <div key={lIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                          <div className="text-xs font-bold text-emerald-400 font-mono">{lev.lever}</div>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">{lev.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Inference Quality Evaluation Matrix */}
+                {item.qualityEvaluation && (
+                  <div className="space-y-2">
+                    <div className="space-y-0.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Evaluating Inference Quality (Beyond Latency)</span>
+                      </h4>
+                      <p className="text-[11px] text-zinc-400 font-sans italic">{item.qualityEvaluation.headline}</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.qualityEvaluation.metrics.map((qm, qIdx) => (
+                        <div key={qIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                          <div className="text-xs font-bold text-white font-mono text-cyan-300">{qm.metric}</div>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">{qm.target}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Production Hardening Checklist */}
+                <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
+                  <h5 className="text-xs font-bold text-amber-300 font-mono uppercase tracking-wider">
+                    Production Hardening Checklist
+                  </h5>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                    {item.productionChecklist.map((chk, cIdx) => (
+                      <div key={cIdx} className="flex items-center gap-2 text-xs text-zinc-300 font-sans">
+                        <span className="text-emerald-400 font-mono">✔</span>
+                        <span>{chk}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Production Systems Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

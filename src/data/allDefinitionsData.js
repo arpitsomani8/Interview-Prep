@@ -50,7 +50,8 @@ export const definitionBookmarks = [
   { id: "faiss", label: "FAISS" },
   { id: "update-deployed-model", label: "Update a Deployed Model" },
   { id: "ai-assisted-coding-tools", label: "AI-Assisted Coding Tools" },
-  { id: "openai-vs-azure-ai", label: "OpenAI vs Azure AI" }
+  { id: "openai-vs-azure-ai", label: "OpenAI vs Azure AI" },
+  { id: "inference", label: "Inference" }
 ];
 
 export const definitionsData = [
@@ -2875,5 +2876,127 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
       ]
     },
     takeaway: "In production AI systems, LLMs and CLIP play complementary roles: LLM inference reasons over natural-language semantics and intent, while CLIP inference maps multimodal concepts into dense metric spaces for lightning-fast FAISS retrieval."
+  },
+  {
+    id: "inference",
+    title: "AI/ML Inference: Latency, Throughput, Prefill/Decode & Cost Optimization",
+    badge: "Model Serving & High-Performance Inference Systems",
+    summary: "The model processes the input and generates a response: that is inference. Master the core triad metrics (latency, throughput, concurrency), execution paradigms (batch, stream, cache), the two-phase anatomy of LLM generation (prefill vs decode), context windows, temperature controls, and cost optimization levers.",
+    coreDefinition: "The model processes the input and generates a response: that is inference. Inference latency is how long a model or service takes to return a result.",
+    coreTriad: [
+      {
+        metric: "Latency",
+        desc: "How long one individual request takes from ingress to response egress (measured in p50, p95, and p99).",
+        tag: "Time per Request"
+      },
+      {
+        metric: "Throughput",
+        desc: "How many requests or tokens the system can successfully process per second or minute (RPS / TPS).",
+        tag: "System Capacity"
+      },
+      {
+        metric: "Concurrency",
+        desc: "How many requests or computational workloads are in progress simultaneously at any given millisecond.",
+        tag: "In-Flight Workloads"
+      }
+    ],
+    productionSolutions: {
+      strategies: [
+        "Dynamic micro-batching and continuous batching",
+        "Asynchronous non-blocking worker pools (FastAPI + AsyncIO / Celery / Ray)",
+        "Horizontal autoscaling across GPU/CPU worker nodes",
+        "Semantic vector and prompt response caching (Redis / in-memory)",
+        "Dedicated model-serving runtimes (vLLM, TensorRT-LLM, Triton Inference Server)"
+      ],
+      hardwareNote: "CPU stands for Central Processing Unit (versatile serial computation), and GPU stands for Graphics Processing Unit (massive parallel tensor matrix operations)."
+    },
+    inferenceModes: [
+      {
+        mode: "Batch Inference",
+        definition: "Processing several inputs together in parallel tensor batches.",
+        benefits: [
+          "Better hardware utilization on GPUs",
+          "Significantly higher overall system throughput",
+          "Lower per-item compute overhead"
+        ],
+        tradeoffs: "Larger batches require more GPU VRAM and increase waiting time for individual requests. In production, use small dynamic micro-batches for user search, and large offline batches for catalog ingestion."
+      },
+      {
+        mode: "Streaming Inference",
+        definition: "Incrementally sending output tokens over Server-Sent Events (SSE) or WebSockets as they are generated.",
+        benefits: [
+          "Dramatically reduces Time to First Token (TTFT)",
+          "Prevents client-side network timeouts on long generations",
+          "Creates responsive, perceived real-time user experiences"
+        ],
+        tradeoffs: "Maintains open persistent network connections per client; requires stream-compatible client handlers."
+      },
+      {
+        mode: "Inference Caching",
+        definition: "Storing precomputed query embeddings or final LLM responses for frequent queries.",
+        benefits: [
+          "Eliminates duplicate neural model execution",
+          "Reduces latency from hundreds of milliseconds to single-digit ms",
+          "Directly slashes LLM provider API costs to zero for cached hits"
+        ],
+        tradeoffs: "Requires cache-invalidation strategies when catalog data or underlying business logic changes."
+      }
+    ],
+    llmPhases: [
+      {
+        phase: "1. Prefill Phase (Context Encoding)",
+        bound: "Compute-Bound",
+        desc: "The model processes the entire prompt in parallel, generating internal representations and populating the Key/Value (KV) cache for all attention heads.",
+        example: "Processing a long fashion catalog description or conversational chat history."
+      },
+      {
+        phase: "2. Decode Phase (Autoregressive Generation)",
+        bound: "Memory-Bandwidth Bound",
+        desc: "The model generates output tokens one by one sequentially. In each step, it attends to the KV cache without recomputing past token representations.",
+        example: "Generating recommendation explanations or structured JSON attributes token by token."
+      }
+    ],
+    hyperparameters: [
+      {
+        param: "Context Window",
+        role: "The maximum amount of tokenized information a model can attend to in a single interaction, subject to model-specific context limits.",
+        note: "Exceeding the context window triggers truncation or memory overflow."
+      },
+      {
+        param: "Temperature",
+        role: "Controls how sharply the model's next-token probability distribution is scaled during softmax sampling.",
+        note: "Lower values (e.g. 0.0) yield predictable, deterministic outputs; higher values (e.g. 0.8) permit creative variability. Temperature does not guarantee factual correctness."
+      }
+    ],
+    costOptimization: {
+      overview: "Hosted model providers charge per input token, output token, or image; self-hosted inference requires dedicated compute, GPU VRAM, and cluster operational cost.",
+      levers: [
+        { lever: "Avoid unnecessary LLM calls", desc: "Use classical rules, SQL queries, or embeddings for deterministic tasks." },
+        { lever: "Cache repeated query embeddings", desc: "Save embeddings in Redis so identical searches skip model calls." },
+        { lever: "Send only top candidates to the LLM", desc: "Use FAISS to filter 15,000 items down to 25 before prompting the LLM." },
+        { lever: "Limit generated output length", desc: "Set strict max_tokens limits and enforce structured schemas." },
+        { lever: "Route to smaller models", desc: "Use gpt-4o-mini or small open-weights when reasoning requirements permit." },
+        { lever: "Comprehensive telemetry", desc: "Monitor token counts, latency profiles, and cost-per-request in CloudWatch." }
+      ]
+    },
+    qualityEvaluation: {
+      headline: "How do we evaluate inference quality? A model returning an output quickly does not mean it is producing a good result.",
+      metrics: [
+        { metric: "Recall@25", target: "How many of the relevant designs appear among the top 25 retrieved results." },
+        { metric: "Precision@25", target: "How many of those top 25 retrieved designs are genuinely relevant." },
+        { metric: "Inference Latency", target: "End-to-end response time (p50, p95, p99 targets)." },
+        { metric: "Error Rate", target: "Percentage of requests failing, timing out, or throwing 5xx errors." },
+        { metric: "Availability Accuracy", target: "Whether returned product recommendations are actively in-stock." },
+        { metric: "Cost per Search", target: "Average dollar cost of compute and model API invocations per search." }
+      ]
+    },
+    productionChecklist: [
+      "Input Validation (sanitize text, reject prompt injections and empty payloads)",
+      "Network Timeouts (enforce strict request deadlines across all upstream calls)",
+      "Structured Output Validation (enforce Pydantic schemas / JSON mode)",
+      "Fallback & Circuit Breakers (graceful degradation when GPU workers spike)",
+      "Continuous Monitoring (track TTFT, token throughput, and drift over time)"
+    ],
+    takeaway: "Inference is where models meet production reality. Balancing latency, throughput, memory bounds (prefill vs decode), and cost safeguards distinguishes hobbyist prototypes from resilient enterprise AI platforms."
   }
 ];
