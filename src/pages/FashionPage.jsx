@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { fashionData } from '../data/fashionData';
-import { Sparkles, Bookmark, ArrowUp, ShieldCheck, MessageSquareQuote, ChevronRight, Layers } from 'lucide-react';
+import { Bookmark, ArrowUp, ShieldCheck, MessageSquareQuote, Layers } from 'lucide-react';
 
 export default function FashionPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { hybridData } from '../data/hybridData';
-import { Cpu, Bookmark, ArrowUp, ShieldCheck, MessageSquareQuote, GitFork, AlertTriangle } from 'lucide-react';
+import { Cpu, Bookmark, ArrowUp, ShieldCheck, MessageSquareQuote } from 'lucide-react';
 
 export default function HybridPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
@@ -76,7 +76,11 @@ export default function HybridPage() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => scrollToId('business-problem')}
-            className="text-xs px-3 py-1.5 rounded-lg border bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white cursor-pointer"
+            className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer ${
+              activeBookmark === 'business-problem'
+                ? 'bg-cyan-500 text-slate-950 font-bold border-cyan-400'
+                : 'bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'
+            }`}
           >
             1. Core Business Problem
           </button>
@@ -84,26 +88,42 @@ export default function HybridPage() {
             <button
               key={idx}
               onClick={() => scrollToId(`step-${s.step}`)}
-              className="text-xs px-3 py-1.5 rounded-lg border bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white cursor-pointer"
+              className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer ${
+                activeBookmark === `step-${s.step}`
+                  ? 'bg-cyan-500 text-slate-950 font-bold border-cyan-400'
+                  : 'bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'
+              }`}
             >
               Step {s.step}: {s.title.split(':')[0]}
             </button>
           ))}
           <button
             onClick={() => scrollToId('database-reality')}
-            className="text-xs px-3 py-1.5 rounded-lg border bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white cursor-pointer"
+            className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer ${
+              activeBookmark === 'database-reality'
+                ? 'bg-cyan-500 text-slate-950 font-bold border-cyan-400'
+                : 'bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'
+            }`}
           >
             4. Database Reality
           </button>
           <button
             onClick={() => scrollToId('tradeoffs')}
-            className="text-xs px-3 py-1.5 rounded-lg border bg-indigo-900/60 text-indigo-200 border-indigo-700 hover:bg-indigo-800 transition cursor-pointer font-semibold"
+            className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer font-semibold ${
+              activeBookmark === 'tradeoffs'
+                ? 'bg-indigo-500 text-white font-bold border-indigo-400'
+                : 'bg-indigo-900/60 text-indigo-200 border-indigo-700 hover:bg-indigo-800'
+            }`}
           >
             5. Trade-Offs (Why This vs That)
           </button>
           <button
             onClick={() => scrollToId('edge-cases')}
-            className="text-xs px-3 py-1.5 rounded-lg border bg-indigo-900/60 text-indigo-200 border-indigo-700 hover:bg-indigo-800 transition cursor-pointer font-semibold"
+            className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer font-semibold ${
+              activeBookmark === 'edge-cases'
+                ? 'bg-indigo-500 text-white font-bold border-indigo-400'
+                : 'bg-indigo-900/60 text-indigo-200 border-indigo-700 hover:bg-indigo-800'
+            }`}
           >
             6. Edge Cases & Defense
           </button>

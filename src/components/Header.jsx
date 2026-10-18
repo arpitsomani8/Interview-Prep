@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layers, Sparkles, Cpu, Eye, BookOpen, ExternalLink } from 'lucide-react';
+import { Layers, Sparkles, Cpu, Eye, BookOpen, FileCode, ExternalLink } from 'lucide-react';
 
 export default function Header({ activeTab, setActiveTab }) {
   const tabs = [
@@ -8,6 +8,7 @@ export default function Header({ activeTab, setActiveTab }) {
     { id: 'hybrid', label: 'Hybrid AI Engine', icon: Cpu },
     { id: 'yolo', label: 'YOLO + DeepSparse', icon: Eye },
     { id: 'definitions', label: 'Other Definitions', icon: BookOpen },
+    { id: 'all-definitions', label: 'All Definitions', icon: FileCode },
   ];
 
   return (
@@ -35,8 +36,8 @@ export default function Header({ activeTab, setActiveTab }) {
             </div>
           </div>
 
-          {/* Desktop Navigation Tabs */}
-          <nav className="flex items-center space-x-1 sm:space-x-2">
+          {/* Desktop Navigation Tabs (6 Tabs) */}
+          <nav className="flex items-center space-x-1 sm:space-x-1.5 overflow-x-auto py-2">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -44,14 +45,14 @@ export default function Header({ activeTab, setActiveTab }) {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${
+                  className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer whitespace-nowrap ${
                     isActive
                       ? 'bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/20'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                   }`}
                 >
                   <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
-                  <span className="whitespace-nowrap">{tab.label}</span>
+                  <span>{tab.label}</span>
                 </button>
               );
             })}
@@ -62,7 +63,7 @@ export default function Header({ activeTab, setActiveTab }) {
               target="_blank"
               rel="noopener noreferrer"
               title="Open Standalone Interactive HTML Guide"
-              className="hidden lg:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 bg-slate-800/80 hover:bg-slate-700/80 hover:text-cyan-300 border border-slate-700 transition"
+              className="hidden xl:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 bg-slate-800/80 hover:bg-slate-700/80 hover:text-cyan-300 border border-slate-700 transition"
             >
               <span>HTML Guide</span>
               <ExternalLink className="w-3.5 h-3.5 text-slate-400" />

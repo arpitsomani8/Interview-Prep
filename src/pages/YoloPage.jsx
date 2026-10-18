@@ -86,7 +86,11 @@ export default function YoloPage() {
             <button
               key={id}
               onClick={() => scrollToId(id)}
-              className="text-xs px-3 py-1.5 rounded-lg border bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white cursor-pointer"
+              className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer ${
+                activeBookmark === id
+                  ? 'bg-cyan-500 text-slate-950 font-bold border-cyan-400'
+                  : 'bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'
+              }`}
             >
               {id.replace('-', ' ').toUpperCase()}
             </button>
