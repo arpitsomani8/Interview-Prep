@@ -2759,11 +2759,55 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 2 Frameworks Overview */}
+                {/* 3 Frameworks Comparison: LangChain, LlamaIndex, LangGraph */}
+                {item.frameworksComparison && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          Framework Roles & Comparison
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-400 uppercase bg-black/60 px-2.5 py-1 rounded border border-zinc-800">
+                        Ecosystem Overview
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.frameworksComparison.map((fw, fIdx) => (
+                        <div
+                          key={fIdx}
+                          className="p-4 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition flex flex-col justify-between space-y-3"
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                                {fw.name}
+                              </h5>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-cyan-300">
+                                {fw.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {fw.role}
+                            </p>
+                          </div>
+                          <div className="text-[11px] font-mono text-zinc-400 pt-2 border-t border-zinc-900">
+                            <span className="text-zinc-500 uppercase text-[10px] block font-sans">Primary Scope</span>
+                            <span className="text-zinc-300">{fw.focus}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 2 Frameworks Deep-dive Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {item.frameworks.map((fw, fIdx) => (
                     <div key={fIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
-                      <div className="text-xs font-bold text-cyan-400 font-mono uppercase">{fw.name}</div>
+                      <div className="text-xs font-bold text-cyan-400 font-mono uppercase">{fw.name} Architecture Details</div>
                       <p className="text-xs text-zinc-300 leading-relaxed">{fw.role}</p>
                     </div>
                   ))}

@@ -1738,6 +1738,26 @@ print("Output:", output)`,
         role: "Framework for orchestrating stateful, multi-step workflows and agents. It represents a workflow as nodes and transitions. Nodes execute operations, while transitions decide what should happen next. Useful when the workflow needs branching, persistent state, retries, checkpoints, human approval, or the ability to resume after an interruption."
       }
     ],
+    frameworksComparison: [
+      {
+        name: "LangChain",
+        badge: "Integrations & Chains",
+        role: "Components and integrations for document loading, retrieval, prompts, and model calls.",
+        focus: "Prompt engineering, document loaders, vector store retrieval connectors, and external model integrations."
+      },
+      {
+        name: "LlamaIndex",
+        badge: "Ingestion & Indexing",
+        role: "Document ingestion, indexing, retrieval, and data-connected LLM applications.",
+        focus: "Connecting external structured/unstructured private data directly to LLM query engines."
+      },
+      {
+        name: "LangGraph",
+        badge: "Stateful Workflows & Agents",
+        role: "Stateful orchestration for multi-step and agentic workflows.",
+        focus: "Cyclic state graphs, persistent checkpoints, human-in-the-loop approvals, and multi-agent systems."
+      }
+    ],
     shoppingAssistantSteps: [
       "1. Retrieve similar products using image or text embeddings.",
       "2. Query the product database for price and inventory.",
