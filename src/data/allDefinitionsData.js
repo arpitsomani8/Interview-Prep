@@ -57,7 +57,8 @@ export const definitionBookmarks = [
   { id: "prompt-engineering", label: "Prompt Engineering" },
   { id: "ranking-reranking", label: "Ranking / Reranking" },
   { id: "auth-authorization", label: "Authentication & Authorization" },
-  { id: "tuple", label: "Tuple" }
+  { id: "tuple", label: "Tuple" },
+  { id: "pandas", label: "Pandas" }
 ];
 
 export const definitionsData = [
@@ -3470,5 +3471,82 @@ model_name, emb_dim, is_normalized = get_model_specs()`,
       }
     ],
     takeaway: "Use tuples when grouping fixed records where immutability provides safety, cacheability, and memory efficiency. Be vigilant with nested mutable structures—immutability applies to the tuple's object references, not deep contents."
+  },
+  {
+    id: "pandas",
+    title: "Pandas (Data Manipulation & Analysis)",
+    badge: "Python Libraries & ML Data Pipelines",
+    summary: "The industry-standard Python library for data manipulation, cleaning, and tabular analysis, crucial for ETL and preprocessing in AI and machine learning pipelines.",
+    coreDefinition: "Pandas is a Python library used for data manipulation and analysis.",
+    commonUses: [
+      "Loading data from CSV, Excel, and SQL databases.",
+      "Cleaning missing or duplicate values.",
+      "Filtering rows and selecting columns based on conditions.",
+      "Grouping data and calculating aggregate statistics.",
+      "Preparing datasets before training ML models."
+    ],
+    codeExample: `import pandas as pd
+
+# 1. Load catalog dataset
+df = pd.read_csv("catalog_products.csv")
+
+# 2. Inspect structure & missing values
+print(df.head())          # View first 5 rows
+print(df.info())          # Column data types & non-null counts
+print(df.describe())      # Numerical summary statistics
+print(df.isnull().sum())  # Count missing values per column
+
+# 3. Clean & sanitize
+df = df.drop_duplicates(subset=["product_id"])
+df["color"] = df["color"].fillna("Unknown")
+df["price"] = df["price"].fillna(df["price"].median())
+
+# 4. Filter & group
+red_dresses = df[(df["category"] == "dress") & (df["color"] == "red") & (df["price"] <= 2000)]
+category_stats = df.groupby("category")["price"].agg(["mean", "count"])
+print(category_stats)`,
+    methodsTable: [
+      {
+        method: "read_csv()",
+        purpose: "Load a CSV file into a DataFrame",
+        example: "df = pd.read_csv('catalog.csv')"
+      },
+      {
+        method: "head()",
+        purpose: "View the first rows (default 5)",
+        example: "df.head(10)"
+      },
+      {
+        method: "info()",
+        purpose: "Check columns, non-null counts, and data types",
+        example: "df.info()"
+      },
+      {
+        method: "describe()",
+        purpose: "Get summary statistics (mean, std, min, max, percentiles)",
+        example: "df.describe()"
+      },
+      {
+        method: "isnull().sum()",
+        purpose: "Count missing / NaN values per column",
+        example: "df.isnull().sum()"
+      },
+      {
+        method: "drop_duplicates()",
+        purpose: "Remove duplicate rows",
+        example: "df.drop_duplicates(subset=['id'], inplace=True)"
+      },
+      {
+        method: "fillna()",
+        purpose: "Fill missing values with a constant, mean, or median",
+        example: "df['price'].fillna(df['price'].median())"
+      },
+      {
+        method: "groupby()",
+        purpose: "Group rows by category and calculate aggregate metrics",
+        example: "df.groupby('category')['price'].mean()"
+      }
+    ],
+    takeaway: "In production AI pipelines, raw data is never clean. Pandas serves as the primary ETL and exploratory data analysis (EDA) tool to sanitize, normalize, and inspect tabular features before feeding them into embedding generators or model trainers."
   }
 ];
