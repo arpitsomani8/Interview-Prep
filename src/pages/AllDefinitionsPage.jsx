@@ -2236,6 +2236,37 @@ export default function AllDefinitionsPage() {
             {/* Item 33: Transformer */}
             {item.id === 'transformer' && (
               <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* Transformer Architecture & Layer Anatomy */}
+                {item.layerArchitecture && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs sm:text-base font-bold uppercase tracking-wider text-white font-mono">
+                          {item.layerArchitecture.title}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-2.5 py-1 rounded border border-cyan-800/60">
+                        {item.layerArchitecture.headline}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.layerArchitecture.components.map((comp, cIdx) => (
+                        <div key={cIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
+                          <h5 className="text-xs font-bold text-cyan-300 font-mono flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                            <span>{comp.name}</span>
+                          </h5>
+                          <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                            {comp.role}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* 6 Processing Steps */}
                 <div className="space-y-2">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">

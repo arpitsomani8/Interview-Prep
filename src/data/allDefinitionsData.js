@@ -1493,6 +1493,24 @@ print(response.output_text)`,
     title: "Transformer Architecture",
     badge: "Neural Network Architecture & Attention",
     summary: "A Transformer is a neural-network architecture that learns relationships between elements in a sequence using attention mechanisms. A Transformer uses attention to learn which other tokens are relevant when processing a particular token.",
+    layerArchitecture: {
+      title: "Transformer Architecture & Layer Anatomy",
+      headline: "A Transformer layer typically contains:",
+      components: [
+        {
+          name: "Self-attention",
+          role: "Allows tokens to incorporate information from other tokens."
+        },
+        {
+          name: "Feed-forward network",
+          role: "Transforms each token's representation."
+        },
+        {
+          name: "Residual connections and normalization",
+          role: "Help training and information flow."
+        }
+      ]
+    },
     processingSteps: [
       { step: "1. Input text", desc: "“The parcel was damaged.”" },
       { step: "2. Tokenization", desc: "Text is split into tokens, which may be words, parts of words, or punctuation." },
