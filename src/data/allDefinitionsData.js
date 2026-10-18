@@ -1450,7 +1450,57 @@ print(response.output_text)`,
       { type: "Decoder-Style Transformers", role: "Trained autoregressively to predict the next token (e.g., many GPT models, LLaMA)." },
       { type: "Encoder-Decoder Transformers", role: "Sequence-to-sequence mappings useful for tasks such as translation and summarization (e.g., T5, BART)." }
     ],
-    stackDistinction: "A Transformer is a model architecture, GPT and Llama are model families, and Azure AI Vision and Azure OpenAI are services you can integrate into an application. They operate at different levels of the technology stack."
+    stackDistinction: "A Transformer is a model architecture, GPT and Llama are model families, and Azure AI Vision and Azure OpenAI are services you can integrate into an application. They operate at different levels of the technology stack.",
+    simpleTransformerApp: {
+      title: "Build a Simple Transformer Application",
+      threeApproaches: [
+        {
+          approach: "Using a Pretrained Transformer",
+          desc: "Download/load a model and run inference."
+        },
+        {
+          approach: "Fine-Tuning a Transformer",
+          desc: "Train an existing pretrained model further on your task-specific labelled dataset."
+        },
+        {
+          approach: "Training a Transformer from Scratch",
+          desc: "Initialize and train the architecture using a large dataset and substantial compute."
+        }
+      ],
+      installCmd: "pip install transformers torch",
+      packages: [
+        { name: "transformers", role: "Provides pretrained model architectures, tokenizers, and pipelines." },
+        { name: "torch", role: "Runs the neural network using PyTorch." }
+      ],
+      codeFilename: "main.py",
+      code: `from transformers import pipeline
+
+# Load a pretrained Transformer for sentiment analysis.
+classifier = pipeline(
+    "sentiment-analysis",
+    model="distilbert/distilbert-base-uncased-finetuned-sst-2-english"
+)
+
+text = input("Enter a customer message: ")
+
+result = classifier(text)
+
+print("Prediction:", result[0]["label"])
+print("Model score:", round(result[0]["score"], 4))`,
+      runCmd: "python main.py",
+      exampleInputs: [
+        "Input 1: The delivery was excellent and the product is great.",
+        "Input 2: The delivery was terrible and the product arrived damaged."
+      ],
+      outputNote: "The model returns a positive or negative sentiment label and a model score.",
+      internalLifecycle: [
+        { stage: "Input sentence", desc: "“The delivery was excellent.”" },
+        { stage: "Tokenizer", desc: "Converts text into token IDs and any required attention masks" },
+        { stage: "Transformer encoder", desc: "Self-attention and neural-network layers build contextual representations" },
+        { stage: "Classification head", desc: "Maps the representation to sentiment classes" },
+        { stage: "Prediction", desc: "Positive or negative" }
+      ]
+    }
   },
   {
     id: "self-attention",

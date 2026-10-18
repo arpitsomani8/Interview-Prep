@@ -2147,6 +2147,144 @@ export default function AllDefinitionsPage() {
                   <strong className="text-cyan-400 font-mono uppercase">Stack Level Distinction: </strong>
                   {item.stackDistinction}
                 </div>
+
+                {/* Build a Simple Transformer Application */}
+                {item.simpleTransformerApp && (
+                  <div className="space-y-5 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800/90 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+                      <div className="space-y-1">
+                        <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-[10px] font-mono uppercase font-bold tracking-wider">
+                          <Terminal className="w-3 h-3" />
+                          <span>Hugging Face Transformers</span>
+                        </div>
+                        <h4 className="text-sm sm:text-base font-bold text-white tracking-tight">
+                          {item.simpleTransformerApp.title}
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-2 font-mono text-[11px] text-zinc-400 bg-black/60 px-3 py-1.5 rounded-lg border border-zinc-800">
+                        <span>Task:</span>
+                        <span className="text-cyan-400 font-bold">Sentiment Analysis Inference</span>
+                      </div>
+                    </div>
+
+                    {/* Three Operational Approaches */}
+                    <div className="space-y-2">
+                      <h5 className="text-xs font-bold text-zinc-200 uppercase tracking-wider font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Three Ways to Build with Transformers</span>
+                      </h5>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {item.simpleTransformerApp.threeApproaches.map((appr, aIdx) => (
+                          <div key={aIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                            <span className="text-xs font-bold text-cyan-300 font-mono">{appr.approach}</span>
+                            <p className="text-[11px] text-zinc-400 leading-relaxed">{appr.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Packages & Installation */}
+                    <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-zinc-200 uppercase tracking-wider font-mono">
+                          Dependencies & Roles
+                        </span>
+                        <button
+                          onClick={() => handleCopyCode('pip-transformer', item.simpleTransformerApp.installCmd)}
+                          className="flex items-center gap-1 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-[10px] text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'pip-transformer' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy pip</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <div className="text-[11px] font-mono text-cyan-300 bg-zinc-900/80 px-2.5 py-1 rounded border border-zinc-800">
+                        {item.simpleTransformerApp.installCmd}
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                        {item.simpleTransformerApp.packages.map((pkg, pIdx) => (
+                          <div key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2 p-2 rounded bg-zinc-950 border border-zinc-800/80">
+                            <span className="font-mono text-emerald-400 font-bold shrink-0">• {pkg.name}:</span>
+                            <span className="text-zinc-400 text-[11px] leading-relaxed">{pkg.role}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Code Container: main.py */}
+                    <div className="space-y-2">
+                      <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                        <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                          <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                            <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>{item.simpleTransformerApp.codeFilename} (Pretrained Sentiment Pipeline)</span>
+                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/50">DistilBERT</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopyCode('code-transformer', item.simpleTransformerApp.code)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                          >
+                            {copiedId === 'code-transformer' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-400" />
+                                <span>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                <span>Copy Code</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                          {item.simpleTransformerApp.code}
+                        </pre>
+                      </div>
+                    </div>
+
+                    {/* Execution & Example Inputs */}
+                    <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                      <div className="flex items-center gap-2 text-xs font-mono">
+                        <span className="text-zinc-400">Run:</span>
+                        <span className="text-emerald-400 font-bold bg-zinc-900 px-2 py-0.5 rounded border border-zinc-700">{item.simpleTransformerApp.runCmd}</span>
+                      </div>
+                      <div className="space-y-1.5">
+                        {item.simpleTransformerApp.exampleInputs.map((ex, eIdx) => (
+                          <div key={eIdx} className="p-2 rounded bg-zinc-950 border border-zinc-800/80 font-mono text-xs text-zinc-300">
+                            {ex}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-[11px] text-zinc-400 font-mono italic">
+                        * {item.simpleTransformerApp.outputNote}
+                      </p>
+                    </div>
+
+                    {/* What Happens Inside the Transformer? */}
+                    <div className="space-y-2.5">
+                      <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                        What happens inside the Transformer?
+                      </h5>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+                        {item.simpleTransformerApp.internalLifecycle.map((stage, sIdx) => (
+                          <div key={sIdx} className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1 flex flex-col justify-between">
+                            <span className="text-xs font-bold text-emerald-400 font-mono">{stage.stage}</span>
+                            <p className="text-[11px] text-zinc-400 leading-relaxed">{stage.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
