@@ -44,7 +44,8 @@ export const definitionBookmarks = [
   { id: "testing", label: "Testing" },
   { id: "text-image-search", label: "Text / Image Search" },
   { id: "denoising", label: "Denoising" },
-  { id: "mcp", label: "MCP" }
+  { id: "mcp", label: "MCP" },
+  { id: "blockchain", label: "Blockchain" }
 ];
 
 export const definitionsData = [
@@ -2269,5 +2270,60 @@ def get_order_status(order_id: str) -> dict:
         a: "When multiple compatible AI clients or agent workflows need a standardized way to discover and reuse the same capabilities. For a single simple application, a direct function call may be simpler."
       }
     ]
+  },
+  {
+    id: "blockchain",
+    title: "Blockchain (Distributed Ledger Technology)",
+    badge: "Distributed Systems & Cryptographic Verification",
+    summary: "Blockchain is a distributed digital ledger that records transactions in blocks, where each block is cryptographically linked to the previous block.",
+    coreDefinition: "A distributed digital ledger that records transactions in blocks, where each block is cryptographically linked to the previous block.",
+    howItWorksSteps: [
+      {
+        step: "1. Transaction Submitted",
+        desc: "A transaction is submitted, such as transferring digital assets."
+      },
+      {
+        step: "2. Network Validation",
+        desc: "Network participants validate the transaction according to the protocol."
+      },
+      {
+        step: "3. Block Grouping",
+        desc: "Valid transactions are grouped into a block."
+      },
+      {
+        step: "4. Cryptographic Linking",
+        desc: "The block is linked to the previous block using a cryptographic hash."
+      },
+      {
+        step: "5. Consensus Acceptance",
+        desc: "The network's consensus mechanism determines which blocks are accepted."
+      }
+    ],
+    hashChainDemo: {
+      title: "Cryptographic Hash Chain Demonstration (Python)",
+      filename: "blockchain_hash_chain.py",
+      code: `import hashlib
+import json
+
+def calculate_hash(index, prev_hash, timestamp, data):
+    payload = f"{index}{prev_hash}{timestamp}{json.dumps(data, sort_keys=True)}"
+    return hashlib.sha256(payload.encode()).hexdigest()
+
+# Genesis Block (Block 0)
+timestamp_0 = 1700000000
+data_0 = {"event": "Genesis Block - Ledger Initialized"}
+hash_0 = calculate_hash(0, "0" * 64, timestamp_0, data_0)
+
+# Block 1 (Cryptographically linked to Block 0)
+timestamp_1 = 1700000060
+data_1 = {"from": "Alice", "to": "Bob", "asset": "Asset #1024", "status": "Transferred"}
+hash_1 = calculate_hash(1, hash_0, timestamp_1, data_1)
+
+print("Block 0 Hash:         ", hash_0)
+print("Block 1 Previous Hash:", hash_0)
+print("Block 1 Current Hash: ", hash_1)`,
+      explanation: "Each block includes the previous block's SHA-256 hash. If any past data is altered, its hash changes, breaking all subsequent links and alerting the network to tampering."
+    },
+    takeaway: "Immutability is guaranteed by cryptographic hashing and decentralized consensus, ensuring trustless auditability without a single central authority."
   }
 ];

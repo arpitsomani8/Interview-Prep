@@ -3518,6 +3518,83 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 47: Blockchain */}
+            {item.id === 'blockchain' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Core Definition: </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {/* How It Works 5-Step Workflow */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>How Blockchain Works (5 Sequential Stages)</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    {item.howItWorksSteps.map((st, sIdx) => (
+                      <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <span className="text-xs font-bold text-white font-mono text-cyan-300">{st.step}</span>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{st.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Cryptographic Hash Chain Demonstration Code */}
+                {item.hashChainDemo && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.hashChainDemo.title}</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 font-sans italic">{item.hashChainDemo.explanation}</p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/50">SHA-256 Hashing</span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.hashChainDemo.filename}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-blockchain', item.hashChainDemo.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-blockchain' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                        {item.hashChainDemo.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Immutability & Consensus Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
