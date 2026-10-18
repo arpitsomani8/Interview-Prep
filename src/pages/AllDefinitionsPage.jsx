@@ -859,6 +859,126 @@ export default function AllDefinitionsPage() {
                   <strong className="text-cyan-400 font-mono uppercase">Two-Model Architecture Takeaway: </strong>
                   {item.twoModelTakeaway}
                 </div>
+
+                {/* How Embeddings are Created */}
+                {item.creationWorkflow && (
+                  <div className="space-y-3 pt-2 border-t border-zinc-800">
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                      <h4 className="text-xs font-bold text-cyan-400 font-mono uppercase tracking-wider">
+                        {item.creationWorkflow.question}
+                      </h4>
+                      <p className="text-xs text-zinc-300 leading-relaxed">
+                        {item.creationWorkflow.answer}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.creationWorkflow.steps.map((st, sIdx) => (
+                        <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                          <span className="text-xs font-bold text-white font-mono text-cyan-300">{st.stage}</span>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed">{st.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Different Types of Embeddings Table */}
+                {item.typesOfEmbeddings && (
+                  <div className="space-y-3 pt-2 border-t border-zinc-800">
+                    <div className="space-y-1">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                        {item.typesOfEmbeddings.question}
+                      </h4>
+                      <p className="text-xs text-zinc-400">
+                        {item.typesOfEmbeddings.answer}
+                      </p>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                        <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                          <tr>
+                            <th className="p-3 border-b border-zinc-800 w-1/4">Type</th>
+                            <th className="p-3 border-b border-zinc-800 text-cyan-400 font-bold w-3/8">Represents</th>
+                            <th className="p-3 border-b border-zinc-800 text-zinc-400 font-bold w-3/8">Example Use</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 bg-black/60">
+                          {item.typesOfEmbeddings.table.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-semibold text-white font-mono">{row.type}</td>
+                              <td className="p-3 text-cyan-200">{row.represents}</td>
+                              <td className="p-3 text-zinc-400">{row.useCase}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
+                      <strong className="text-amber-400 font-mono uppercase">Key Model Families: </strong>
+                      {item.typesOfEmbeddings.modelFamiliesNote}
+                    </div>
+                  </div>
+                )}
+
+                {/* Sentence Transformers & Cosine Similarity Code Example */}
+                {item.sentenceTransformersExample && (
+                  <div className="space-y-3 pt-2 border-t border-zinc-800">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                        {item.sentenceTransformersExample.title}
+                      </h4>
+                      <div className="flex items-center gap-2 font-mono text-[11px] text-emerald-400 bg-black px-2.5 py-1 rounded border border-zinc-800">
+                        <Terminal className="w-3.5 h-3.5" />
+                        <span>{item.sentenceTransformersExample.installCommand}</span>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>embeddings_similarity.py (Sentence Transformers + Scikit-Learn)</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-st-example', item.sentenceTransformersExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-st-example' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                        {item.sentenceTransformersExample.code}
+                      </pre>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                      <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                        What happens here?
+                      </h5>
+                      <ul className="space-y-1.5">
+                        {item.sentenceTransformersExample.explanation.map((exp, eIdx) => (
+                          <li key={eIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                            <span className="text-cyan-400 mt-0.5">•</span>
+                            <span>{exp}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

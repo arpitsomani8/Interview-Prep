@@ -649,7 +649,58 @@ def ask_question(data: Question):
       { step: "4. GPT", desc: "Receives the question and retrieved passages, then generates a grounded response." },
       { step: "5. FastAPI", desc: "Returns the generated answer and source metadata as JSON." }
     ],
-    twoModelTakeaway: "Notice that we use two different model operations: The embedding model finds relevant information, while the generative LLM uses that information to write an answer. ChromaDB stores and searches the vectors; it is not the language model."
+    twoModelTakeaway: "Notice that we use two different model operations: The embedding model finds relevant information, while the generative LLM uses that information to write an answer. ChromaDB stores and searches the vectors; it is not the language model.",
+    creationWorkflow: {
+      question: "How are embeddings actually created?",
+      answer: "A pretrained embedding model has learned numerical representations from training data. At inference time, you give it an input and it produces a vector.",
+      exampleInput: "“Dark leather jacket”",
+      steps: [
+        { stage: "Input text", desc: "“Dark leather jacket”" },
+        { stage: "Tokenization", desc: "Convert text into tokens the model understands." },
+        { stage: "Neural network", desc: "Transform token information into learned representations." },
+        { stage: "Embedding vector", desc: "A fixed-length list of numbers for this input." }
+      ]
+    },
+    typesOfEmbeddings: {
+      question: "Are there different types of embeddings?",
+      answer: "Yes. There are different types based on what you want to represent and how you want to use them.",
+      table: [
+        { type: "Word embeddings", represents: "Individual words", useCase: "Word similarity and NLP" },
+        { type: "Sentence embeddings", represents: "A sentence or short text", useCase: "Semantic search and FAQ matching" },
+        { type: "Document embeddings", represents: "Longer text or document chunks", useCase: "RAG and document retrieval" },
+        { type: "Image embeddings", represents: "Visual content in an image", useCase: "Similar-product search" },
+        { type: "Multimodal embeddings", represents: "Aligned text and image representations", useCase: "Search for products using either text or images" },
+        { type: "Audio embeddings", represents: "Audio or speech information", useCase: "Audio search and classification" }
+      ],
+      modelFamiliesNote: "Examples of model families include Word2Vec and GloVe for traditional word embeddings, Sentence Transformers for sentence embeddings, and CLIP for aligned image-text embeddings."
+    },
+    sentenceTransformersExample: {
+      title: "Sentence Transformers & Cosine Similarity Hands-On Example",
+      installCommand: "pip install sentence-transformers",
+      code: `from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+sentences = [
+    "Black leather jacket",
+    "Dark leather coat",
+    "Banana smoothie recipe",
+]
+
+embeddings = model.encode(sentences)
+
+scores = cosine_similarity(embeddings)
+
+print("Embedding shape:", embeddings.shape)
+print(scores[0])`,
+      explanation: [
+        "1. The pretrained model converts each sentence into a vector.",
+        "2. embeddings.shape shows how many sentences and vector dimensions were produced.",
+        "3. cosine_similarity() compares each vector with the others.",
+        "4. The first sentence should generally be more similar to the second than to the unrelated recipe, though actual scores depend on the model."
+      ]
+    }
   },
   {
     id: "vector-database",
