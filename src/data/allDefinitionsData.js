@@ -46,7 +46,8 @@ export const definitionBookmarks = [
   { id: "denoising", label: "Denoising" },
   { id: "mcp", label: "MCP" },
   { id: "blockchain", label: "Blockchain" },
-  { id: "ocr", label: "OCR" }
+  { id: "ocr", label: "OCR" },
+  { id: "faiss", label: "FAISS" }
 ];
 
 export const definitionsData = [
@@ -2439,5 +2440,155 @@ print("Block 1 Current Hash: ", hash_1)`,
       }
     ],
     takeaway: "Dedicated OCR extracts text cheaply and accurately at scale; LLMs provide contextual reasoning and schema normalization. Combining both yields robust Document AI pipelines."
+  },
+  {
+    id: "faiss",
+    title: "FAISS (Facebook AI Similarity Search)",
+    badge: "Vector Similarity Search & High-Performance Indexing",
+    summary: "FAISS is an open-source C++ library with comprehensive Python bindings developed by Meta AI for ultra-fast vector similarity search, dense clustering, and nearest-neighbor (k-NN) retrieval across millions to billions of high-dimensional embeddings on CPUs and GPUs.",
+    coreDefinition: "FAISS is an optimized vector similarity search engine engineered to index and query massive collections of high-dimensional dense embeddings (such as OpenAI, CLIP, or BERT vectors) in microseconds, utilizing exact search or Approximate Nearest Neighbor (ANN) indexing structures.",
+    howItWorksSteps: [
+      {
+        step: "1. Vector Embedding",
+        desc: "An embedding model (e.g., text-embedding-3 or CLIP) converts documents, queries, or images into fixed-dimension floating point vectors (e.g. 512, 768, 1536 dimensions)."
+      },
+      {
+        step: "2. Index Selection",
+        desc: "An index algorithm (Flat, IVF, HNSW, or PQ) is selected based on dataset scale, memory constraints, and required search latency."
+      },
+      {
+        step: "3. Index Training",
+        desc: "Quantized and cluster-based indices (IVF / PQ) run an offline training phase over sample vectors to construct Voronoi centroids or quantization codebooks."
+      },
+      {
+        step: "4. Index Population",
+        desc: "Database vectors are ingested into the index. FAISS assigns sequential integer IDs (0 to N-1) or custom 64-bit integer tags."
+      },
+      {
+        step: "5. k-NN Search Execution",
+        desc: "A query vector is projected against the index. FAISS calculates vector distances (L2 or Inner Product) and returns the top-k nearest IDs with distance/similarity scores."
+      }
+    ],
+    indexTypes: [
+      {
+        name: "IndexFlatL2 / IndexFlatIP",
+        type: "Exact Brute-Force",
+        complexity: "O(d · N)",
+        pros: "100% precision recall; zero training phase required.",
+        cons: "Linear scan; latency scales proportionally with dataset size.",
+        useCase: "Small-to-medium collections (<100K vectors) or generating ground-truth evaluation baselines."
+      },
+      {
+        name: "IndexIVFFlat (Inverted File)",
+        type: "Clustering-Based ANN",
+        complexity: "O(d · (N / nlist) · nprobe)",
+        pros: "10x–50x speedup by dividing space into Voronoi cells and probing only the nearest centroids.",
+        cons: "Requires training phase; accuracy depends on tuning nlist and nprobe.",
+        useCase: "Medium-to-large production datasets (100K to 10M vectors) balancing speed and recall."
+      },
+      {
+        name: "IndexIVFPQ (Product Quantization)",
+        type: "Quantized Compression ANN",
+        complexity: "Ultra-low memory",
+        pros: "Compresses 1536d float32 vectors by 80%–95%, allowing billions of vectors to reside in RAM.",
+        cons: "Approximate quantization error; slight loss in recall precision.",
+        useCase: "Billion-scale retrieval where RAM budget is constrained and approximate results are acceptable."
+      },
+      {
+        name: "IndexHNSWFlat (Hierarchical Graph)",
+        type: "Graph-Based ANN",
+        complexity: "O(log N)",
+        pros: "Exceptional query throughput and recall without an explicit training step.",
+        cons: "Higher RAM overhead to maintain multi-layer navigable proximity graphs.",
+        useCase: "Real-time interactive applications, RAG pipelines, and conversational AI assistants."
+      }
+    ],
+    handsOnCode: {
+      title: "Hands-on Python Implementation: Cosine Similarity Vector Search with FAISS",
+      filename: "faiss_vector_search.py",
+      installCmd: "pip install faiss-cpu numpy",
+      code: `import numpy as np
+import faiss
+
+# 1. Configuration: 512-dimension vectors (e.g. CLIP / small dense embeddings)
+d = 512          # Dimension of each vector
+n_vectors = 10000  # Number of vectors in knowledge base
+k = 5            # Number of nearest neighbors to retrieve
+
+# Generate synthetic database vectors (float32 required by FAISS)
+np.random.seed(42)
+db_vectors = np.random.random((n_vectors, d)).astype('float32')
+
+# 2. Normalize vectors for Cosine Similarity
+# When vectors have unit length (L2 norm = 1), Inner Product == Cosine Similarity
+faiss.normalize_L2(db_vectors)
+
+# 3. Create FAISS index: IndexFlatIP (Inner Product)
+index = faiss.IndexFlatIP(d)
+print(f"Index trained: {index.is_trained}")  # Flat indices are ready immediately
+
+# 4. Add vectors to the index
+index.add(db_vectors)
+print(f"Total vectors stored in index: {index.ntotal}")
+
+# 5. Simulate an incoming query vector (e.g., user question embedding)
+query_vector = np.random.random((1, d)).astype('float32')
+faiss.normalize_L2(query_vector)
+
+# 6. Execute k-NN search: returns cosine similarity scores and vector IDs
+distances, indices = index.search(query_vector, k)
+
+print(f"\\nTop-{k} Nearest Chunks / Vectors:")
+for rank, (idx, score) in enumerate(zip(indices[0], distances[0]), 1):
+    print(f"  Rank {rank}: Vector ID {idx:04d} | Cosine Similarity: {score:.4f}")`,
+      explanation: "Using `IndexFlatIP` with `faiss.normalize_L2` computes mathematically exact Cosine Similarity. The search yields top-ranked vector IDs and similarity scores at sub-millisecond speeds."
+    },
+    systemComparison: [
+      {
+        aspect: "Primary Role",
+        faiss: "In-memory C++/Python vector indexing and distance computation library",
+        sqlDb: "Relational data persistence & transactional ACID processing",
+        managedVectorDb: "Distributed database with replication, cloud storage & CRUD lifecycle"
+      },
+      {
+        aspect: "Popular Implementations",
+        faiss: "faiss-cpu, faiss-gpu",
+        sqlDb: "PostgreSQL (pgvector), MySQL, SQLite",
+        managedVectorDb: "Pinecone, Qdrant, Milvus, Weaviate, Chroma"
+      },
+      {
+        aspect: "Metadata Filtering",
+        faiss: "Limited (requires custom ID mapping or IDSelector bitmaps)",
+        sqlDb: "Native, expressive SQL WHERE filters and composite B-tree indices",
+        managedVectorDb: "Built-in payload filtering combined directly with vector distance queries"
+      },
+      {
+        aspect: "Query Latency",
+        faiss: "Microseconds (direct memory access, AVX2/AVX-512 SIMD, GPU kernels)",
+        sqlDb: "Milliseconds to seconds on dense embeddings",
+        managedVectorDb: "Low single-digit to tens of milliseconds over network gRPC/HTTP"
+      },
+      {
+        aspect: "Hardware Acceleration",
+        faiss: "Native NVIDIA CUDA GPU acceleration via faiss-gpu",
+        sqlDb: "CPU-bound",
+        managedVectorDb: "Managed cloud clusters (CPU/GPU options)"
+      }
+    ],
+    faqs: [
+      {
+        q: "What is the core difference between FAISS and a Vector Database (like Pinecone)?",
+        a: "FAISS is a raw algorithmic library designed for computing similarity matrix math in-memory on CPU/GPU. Pinecone, Qdrant, and Milvus are full databases providing high availability, replication, distributed sharding, dynamic CRUD, metadata filtering, RBAC, and client APIs."
+      },
+      {
+        q: "How does FAISS compute Cosine Similarity?",
+        a: "Normalize all vectors to unit length using faiss.normalize_L2(vectors), and use an Inner Product index (IndexFlatIP). The dot product of two L2-normalized unit vectors is mathematically identical to their cosine similarity."
+      },
+      {
+        q: "When should you use Approximate Nearest Neighbor (ANN) instead of Exact Search (Flat)?",
+        a: "Use Flat when dataset size is small (<100K vectors) or when 100% recall is strictly required. For collections exceeding hundreds of thousands or millions of vectors, ANN algorithms (IVF, HNSW, PQ) deliver 10x-100x faster searches while retaining >98% retrieval accuracy."
+      }
+    ],
+    takeaway: "FAISS is the high-performance computation standard for vector similarity search. In modern GenAI architectures, it powers dense retrieval for RAG, visual recommendation, and cross-modal search with microsecond latency."
   }
 ];
