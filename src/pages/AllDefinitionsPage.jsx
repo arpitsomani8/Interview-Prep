@@ -1283,6 +1283,184 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 23: DeepSparse */}
+            {item.id === 'deepsparse' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Core Concept: </strong>
+                  Training creates a model; inference uses that trained model to make predictions. DeepSparse was designed to make inference faster on supported hardware and models.
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                  {item.keyPoints.map((pt, pIdx) => (
+                    <div key={pIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                      <div className="text-xs font-bold text-white font-mono">{pt.title}</div>
+                      <p className="text-xs text-zinc-400 leading-relaxed">{pt.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="p-4 rounded-xl bg-black border border-zinc-800 flex items-center justify-between text-xs text-zinc-400">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span>Role: Inference Technology & Sparse CPU Execution</span>
+                  </div>
+                  <span className="font-mono text-cyan-400 text-[11px]">Not an Object Detector · Not Model Training</span>
+                </div>
+              </div>
+            )}
+
+            {/* Item 24: Pruning */}
+            {item.id === 'pruning' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Two Common Types of Pruning
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {item.types.map((t, tIdx) => (
+                      <div key={tIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                        <div className="text-xs font-bold text-cyan-300 font-mono">{t.name}</div>
+                        <p className="text-xs text-zinc-300 leading-relaxed">{t.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-black border border-cyan-900/40 space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-300 font-mono">
+                    Why Do It? (Business & Engineering Rationale)
+                  </h4>
+                  <ul className="space-y-2 pt-1">
+                    {item.whyPrune.map((reason, rIdx) => (
+                      <li key={rIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                        <span className="text-emerald-400 font-bold mt-0.5">✓</span>
+                        <span>{reason}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* Item 25: Quantization */}
+            {item.id === 'quantization' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* Visual Precision Reduction Banner */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="space-y-1 text-center sm:text-left">
+                    <span className="text-[10px] font-mono text-zinc-500 uppercase">Original Precision</span>
+                    <div className="text-sm font-bold text-amber-400 font-mono">32-bit Floating Point (FP32)</div>
+                    <p className="text-[11px] text-zinc-400">Standard deep learning training precision</p>
+                  </div>
+                  <div className="text-cyan-400 font-mono font-bold text-lg">→ 4x Compression →</div>
+                  <div className="space-y-1 text-center sm:text-right">
+                    <span className="text-[10px] font-mono text-zinc-500 uppercase">Quantized Precision</span>
+                    <div className="text-sm font-bold text-emerald-400 font-mono">8-bit Integer (INT8)</div>
+                    <p className="text-[11px] text-zinc-400">Drastically reduced memory & compute footprint</p>
+                  </div>
+                </div>
+
+                {/* Technical Takeaways */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                  {item.details.map((detail, dIdx) => (
+                    <div key={dIdx} className="p-4 rounded-xl bg-black border border-zinc-800 leading-relaxed text-xs text-zinc-300 flex flex-col justify-between">
+                      <p>{detail}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed">
+                  <strong className="text-amber-400 font-mono uppercase">Engineering Trade-Off: </strong>
+                  Quantization can reduce memory consumption and improve inference speed on compatible hardware. However, it may introduce numerical errors and reduce accuracy if not calibrated.
+                </div>
+              </div>
+            )}
+
+            {/* Item 26: REST API vs FastAPI */}
+            {item.id === 'rest-api-vs-fastapi' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Definition Callout */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                    <div className="text-xs font-bold text-amber-400 font-mono uppercase">REST (Architectural Style)</div>
+                    <p className="text-xs text-zinc-300 leading-relaxed">
+                      REST stands for Representational State Transfer. It is an architectural style for building web APIs. It is not a Python library.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                    <div className="text-xs font-bold text-cyan-400 font-mono uppercase">FastAPI (Python Web Framework)</div>
+                    <p className="text-xs text-zinc-300 leading-relaxed">
+                      FastAPI is a modern, high-performance Python web framework specifically designed to build production APIs with native types and asynchronous I/O.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Comparison Table: FastAPI vs Flask */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    FastAPI vs Flask Framework Comparison
+                  </h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                      <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                        <tr>
+                          <th className="p-3 border-b border-zinc-800 w-1/4">Feature</th>
+                          <th className="p-3 border-b border-zinc-800 text-cyan-400 font-bold w-3/8">FastAPI</th>
+                          <th className="p-3 border-b border-zinc-800 text-zinc-400 font-bold w-3/8">Flask</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/80 bg-black/60">
+                        {item.comparisonTable.map((row, rIdx) => (
+                          <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="p-3 font-semibold text-white font-mono">{row.feature}</td>
+                            <td className="p-3 text-cyan-200 font-medium">{row.fastapi}</td>
+                            <td className="p-3 text-zinc-400">{row.flask}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* AI / ML Selection Rationale */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Why Choose FastAPI for AI/ML? </strong>
+                  {item.aiMlChoice}
+                </div>
+
+                {/* 4-Tier Backend Architecture Layers */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    4-Tier Backend Architecture Layering
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.backendLayers.map((layer, lIdx) => (
+                      <div key={lIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <div className="text-xs font-bold text-white font-mono">{layer.layer}</div>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed font-mono">{layer.components}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Backend Components Breakdown */}
+                <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    What an AI Backend System Contains
+                  </h4>
+                  <ul className="space-y-1.5 pt-1">
+                    {item.backendComponents.map((comp, cIdx) => (
+                      <li key={cIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                        <span className="text-cyan-400 mt-0.5">•</span>
+                        <span>{comp}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

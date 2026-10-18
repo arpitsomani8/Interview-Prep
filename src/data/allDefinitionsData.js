@@ -20,7 +20,11 @@ export const definitionBookmarks = [
   { id: "fine-tuning", label: "Fine-Tuning" },
   { id: "optimization", label: "Optimization" },
   { id: "scikit-learn", label: "Scikit-Learn" },
-  { id: "joblib", label: "Joblib" }
+  { id: "joblib", label: "Joblib" },
+  { id: "deepsparse", label: "DeepSparse" },
+  { id: "pruning", label: "Pruning" },
+  { id: "quantization", label: "Quantization" },
+  { id: "rest-api-vs-fastapi", label: "REST API vs FastAPI" }
 ];
 
 export const definitionsData = [
@@ -926,6 +930,117 @@ predictions = loaded_model.predict(X_test)`,
       "joblib.dump() saves the fitted model and its learned weights to disk.",
       "joblib.load() restores the trained model artifact for later use in your API.",
       "Fundamental Law: joblib does not train or fine-tune the model. It handles serialization and loading."
+    ]
+  },
+  {
+    id: "deepsparse",
+    title: "DeepSparse",
+    badge: "CPU Inference Engine & Sparsity Runtime",
+    summary: "DeepSparse is an inference runtime developed by Neural Magic to run supported neural networks efficiently on CPUs using sparse computation and model optimizations.",
+    keyPoints: [
+      {
+        title: "Training vs Inference",
+        desc: "In simple terms, training creates a model; inference uses that trained model to make predictions. DeepSparse was designed specifically to make inference faster on supported hardware and models."
+      },
+      {
+        title: "Architectural Role",
+        desc: "DeepSparse is not an object detection algorithm like YOLO, and it does not train a model from scratch. It is an inference acceleration technology."
+      },
+      {
+        title: "Sparse Architecture Execution",
+        desc: "Executes pruned (sparse) and INT8 quantized neural networks on standard x86 and ARM CPUs at speeds competitive with dedicated GPUs, drastically lowering cloud infrastructure costs."
+      }
+    ]
+  },
+  {
+    id: "pruning",
+    title: "Pruning (Neural Network Sparsification)",
+    badge: "Model Compression & Sparsity",
+    summary: "Pruning removes selected parameters or connections from a trained neural network because they contribute relatively little to its predictions.",
+    types: [
+      {
+        name: "Unstructured Pruning",
+        desc: "Removes individual weights across tensor matrices, creating scattered zeros throughout parameter matrices."
+      },
+      {
+        name: "Structured Pruning",
+        desc: "Removes entire channels, convolutional filters, or attention heads from the network architecture."
+      }
+    ],
+    whyPrune: [
+      "It can reduce model storage size when sparse weights are stored using compressed sparse matrix formats.",
+      "It can reduce computation and FLOPs when the inference runtime (such as DeepSparse) supports the resulting sparsity.",
+      "It helps improve inference efficiency, throughput, and reduces power consumption on edge and cloud servers."
+    ]
+  },
+  {
+    id: "quantization",
+    title: "Quantization (Precision Reduction)",
+    badge: "Numerical Precision Optimization",
+    summary: "Quantization reduces the numerical precision used to represent a model's weights and sometimes its activations.",
+    details: [
+      "Numerical Representation: A model originally uses 32-bit floating-point weights (FP32). Quantization maps them into 8-bit integers (INT8), achieving a 4x reduction in memory bandwidth and footprint.",
+      "Inference Acceleration: INT8 tensor multiplication runs drastically faster on modern CPU architectures (using VNNI / AVX-512) and GPU Tensor Cores.",
+      "Engineering Tradeoff: Quantization can reduce memory consumption and improve inference speed on compatible hardware. However, it may introduce numerical errors and slightly reduce accuracy if not calibrated properly."
+    ]
+  },
+  {
+    id: "rest-api-vs-fastapi",
+    title: "REST API vs FastAPI & Backend Architecture",
+    badge: "API Architecture & System Design",
+    summary: "REST stands for Representational State Transfer. It is an architectural style for building web APIs, not a Python library. FastAPI is a modern Python web framework used to build RESTful APIs.",
+    comparisonTable: [
+      {
+        feature: "Type",
+        fastapi: "Python web framework",
+        flask: "Python web framework"
+      },
+      {
+        feature: "Data Validation",
+        fastapi: "Integrated natively with Pydantic v2",
+        flask: "Often added using extensions or custom code"
+      },
+      {
+        feature: "API Documentation",
+        fastapi: "Automatic interactive OpenAPI documentation (Swagger UI / ReDoc)",
+        flask: "Usually needs manual setup or external extensions (e.g. Flasgger)"
+      },
+      {
+        feature: "Async Support",
+        fastapi: "Designed with native async / await support (ASGI / Uvicorn)",
+        flask: "Supports async views, with different execution considerations (WSGI)"
+      },
+      {
+        feature: "Best Fit",
+        fastapi: "API-heavy services, real-time ML inference endpoints, microservices",
+        flask: "Lightweight APIs, web apps with templates, flexible minimal backends"
+      }
+    ],
+    aiMlChoice: "For an AI/ML project, I would generally choose FastAPI when I need typed request validation, automatic API documentation, and asynchronous I/O.",
+    backendLayers: [
+      {
+        layer: "API / Presentation Layer",
+        components: "FastAPI routes · Pydantic request validation · Response serialization"
+      },
+      {
+        layer: "Business / Service Layer",
+        components: "Damage inspection rules · RAG orchestration · Workflow business logic"
+      },
+      {
+        layer: "Data Access Layer",
+        components: "Repositories · Database queries · Caching layers"
+      },
+      {
+        layer: "Infrastructure Layer",
+        components: "PostgreSQL · Vector database · S3 object storage · Model inference endpoints"
+      }
+    ],
+    backendComponents: [
+      "API routes that receive and route HTTP requests.",
+      "Business logic that decides what operational actions should happen.",
+      "Services that call YOLO, GPT, or an internal RAG pipeline.",
+      "Repositories that access PostgreSQL or an indexed vector database.",
+      "Cross-cutting concerns: Authentication, telemetry logging, metrics, and error handling."
     ]
   }
 ];
