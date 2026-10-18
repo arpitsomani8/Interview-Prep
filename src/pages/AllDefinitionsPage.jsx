@@ -8961,6 +8961,147 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 83: Document Chunking */}
+            {item.id === 'chunking' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-amber-400" />
+                      <span>RAG Preprocessing & Document Indexing</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-800">
+                      Chunking & Boundaries
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-amber-900/40 shadow-xl space-y-3">
+                    <p className="text-xs sm:text-sm text-amber-200 font-sans leading-relaxed font-semibold">
+                      {item.coreDefinition}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 6-Step Ingestion Lifecycle */}
+                {item.howChunkingWorksSteps && (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.howChunkingWorksIntro}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Lifecycle Pipeline
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.howChunkingWorksSteps.map((step, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-cyan-900/40 transition flex items-start gap-2.5"
+                        >
+                          <span className="w-5 h-5 rounded bg-cyan-950 border border-cyan-800 text-cyan-300 font-mono text-[11px] flex items-center justify-center shrink-0 font-bold mt-0.5">
+                            0{sIdx + 1}
+                          </span>
+                          <span className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                            {step.replace(/^\d+\.\s*/, '')}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Chunk Size vs Chunk Overlap Split Cards */}
+                {item.chunkSizeAndOverlap && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.chunkSizeAndOverlapIntro}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Core Parameters
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.chunkSizeAndOverlap.map((param, pIdx) => (
+                        <div
+                          key={pIdx}
+                          className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition flex flex-col justify-between space-y-3"
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                                {param.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-sm font-bold font-mono ${param.accent}`}>
+                              {param.concept}
+                            </h5>
+                            <div className="p-2.5 rounded-lg bg-black border border-zinc-900">
+                              <p className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                                {param.definition}
+                              </p>
+                            </div>
+                            <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                              {param.details}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4 Chunking Strategies */}
+                {item.chunkingStrategies && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <FileCode className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Production Chunking Strategies</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.chunkingStrategies.map((strat, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-black text-purple-300 border border-purple-900/60">
+                                {strat.badge}
+                              </span>
+                            </div>
+                            <h5 className="text-xs font-bold text-zinc-200 font-mono">
+                              {strat.strategy}
+                            </h5>
+                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                              {strat.desc}
+                            </p>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900 text-[10px] text-purple-300/80 font-mono">
+                            <strong className="text-zinc-500 uppercase">Best for: </strong>
+                            {strat.bestFor}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

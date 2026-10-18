@@ -79,7 +79,8 @@ export const definitionBookmarks = [
   { id: "throughput-latency", label: "Throughput / Latency" },
   { id: "paged-attention", label: "PagedAttention" },
   { id: "multi-agent-orchestration", label: "Multi-Agent Orchestration" },
-  { id: "coherence", label: "Coherence" }
+  { id: "coherence", label: "Coherence" },
+  { id: "chunking", label: "Chunking" }
 ];
 
 export const definitionsData = [
@@ -5314,5 +5315,65 @@ def health_check():
       { method: "Natural Language Inference (NLI)", desc: "Use cross-encoder entailment models to automatically detect premise-conclusion contradictions within the generated text." }
     ],
     takeaway: "Coherence transforms raw token probabilities into dependable intelligence. By grounding generations with RAG, enforcing structured schemas, breaking workflows into intermediate reasoning steps, and evaluating for contradictions, AI systems produce robust, trustworthy responses."
+  },
+  {
+    id: "chunking",
+    title: "Document Chunking — RAG Preprocessing, Boundaries & Strategies",
+    badge: "Vector Search & RAG Ingestion Pipeline",
+    summary: "Chunking means splitting a large document into smaller pieces of text before creating embeddings and indexing them. Master chunk size, chunk overlap, the 6-step ingestion lifecycle, and semantic boundary strategies.",
+    coreDefinition: "Chunking means splitting a large document into smaller pieces of text before creating embeddings and indexing them.",
+    howChunkingWorksIntro: "How chunking works step by step",
+    howChunkingWorksSteps: [
+      "1. Load the document and extract its text.",
+      "2. Split it into chunks using a strategy such as paragraphs, document sections, or token-based windows.",
+      "3. Optionally add overlap between adjacent chunks.",
+      "4. Create an embedding for each chunk.",
+      "5. Store each embedding with the chunk text and metadata in an index or vector database.",
+      "6. At query time, retrieve relevant chunks and pass them to the LLM as context."
+    ],
+    chunkSizeAndOverlapIntro: "What are chunk size and overlap?",
+    chunkSizeAndOverlap: [
+      {
+        concept: "Chunk size",
+        definition: "How much text each chunk contains, often measured in tokens.",
+        accent: "text-amber-400",
+        badge: "Granularity Control",
+        details: "Balances embedding specificity against context completeness. Smaller chunks (e.g. 256 tokens) yield sharp similarity scores; larger chunks (e.g. 1024 tokens) preserve broad topical context."
+      },
+      {
+        concept: "Chunk overlap",
+        definition: "How much text is repeated between neighboring chunks to preserve context around boundaries.",
+        accent: "text-cyan-400",
+        badge: "Boundary Preservation",
+        details: "Typically set to 10%–20% of the chunk size (e.g. 50 tokens on a 500-token chunk). Ensures sentences or critical facts cut at chunk boundaries are fully readable in adjacent chunks."
+      }
+    ],
+    chunkingStrategies: [
+      {
+        strategy: "Fixed-Size Sliding Window",
+        badge: "Token-Based",
+        desc: "Splits strictly by token count (e.g. 500 tokens with 50-token overlap). Fast and predictable, but may slice sentences mid-thought.",
+        bestFor: "Uniform documents, logs, and fast baseline RAG setups."
+      },
+      {
+        strategy: "Recursive Character Splitting",
+        badge: "Delimited Hierarchy",
+        desc: "Iteratively attempts splits on double newlines (paragraphs), single newlines, sentence punctuation, and spaces until reaching chunk size.",
+        bestFor: "General prose, markdown files, and standard enterprise documents (LangChain default)."
+      },
+      {
+        strategy: "Document-Structure Aware",
+        badge: "Syntax & Headers",
+        desc: "Parses headings (H1, H2, H3), table tags, or Markdown sections to keep related sub-sections contained together in one chunk.",
+        bestFor: "Technical documentation, legal contracts, manuals, and code files."
+      },
+      {
+        strategy: "Semantic / Embedding-Based",
+        badge: "Distance Clustering",
+        desc: "Computes sentence-level embeddings and splits when cosine distance between consecutive sentences exceeds a statistical threshold.",
+        bestFor: "Transcripts, uninterrupted narrative streams, and conversational logs without clear formatting."
+      }
+    ],
+    takeaway: "Chunking directly determines the quality ceiling of any RAG pipeline: chunks that are too large dilute vector embedding precision, while chunks that are too small amputate critical context. Optimal systems tune chunk size and overlap to match the document layout and query specificity."
   }
 ];
