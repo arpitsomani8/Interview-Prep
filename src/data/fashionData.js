@@ -2,59 +2,58 @@ export const fashionData = {
   title: "Fashion AI Copilot | Agentic Multimodal Design Platform",
   resumeBullet: "Architected and led development of an Agentic AI platform enabling multimodal fashion design search using image, text, and hybrid retrieval powered by Azure AI Vision, Azure OpenAI, ChromaDB, and PostgreSQL.",
 
-  executiveScript: `This was an enterprise AI solution we developed for our client, a regional garment manufacturer managing a catalog of over 10,000+ garment design samples across shirts, t-shirts, pants, and outerwear.
+  executiveScript: `We built Fashion AI Copilot for our client, a garment manufacturer with a catalog of over 10,000 clothing designs across shirts, t-shirts, pants, and jackets.
 
-The core business challenge was that whenever a retailer or buyer requested specific styles, our client's sales team had to manually hunt through thousands of image folders for matching designs and exchange back-and-forth emails with PDF lookbooks to see if they fit the buyer's needs. When multiple retailers were in line requesting dozens of different styles, this manual cycle was extremely slow, labor-intensive, and bottlenecked wholesale order closures. To streamline this, we engineered Fashion AI Copilot.
+The main problem was a slow, manual sales cycle. Whenever a retailer wanted to see designs or order in bulk, our sales team had to manually search through image folders and email PDF lookbooks back and forth. When multiple buyers were waiting, this created a huge bottleneck. So, we built this self-service platform to make search and ordering instant.
 
-Our underlying master data is structured across three synchronized storage tiers:
-• First, Azure Blob Storage houses 10,000+ raw high-resolution garment images, referenced by image filename and served via time-limited SAS URLs over Azure CDN for sub-second image loading.
-• Second, PostgreSQL serves as our relational OLTP source of truth. Its core products table stores product_id (e.g. PROD_0001), image_filename, category, gender, sizes_available (S, M, L, XL, XXL), color, color_hex, fabric GSM, wholesale price, live inventory, and a rich 1–2 sentence description (e.g., "Stylish pink T-shirt for men in XL size, featuring an attractive design and a trendy look, perfect for casual outings"). PostgreSQL also manages our retailers table for verified buyer credentials and our wholesale orders table to capture order items, size breakdowns across S through XXL, and order status.
-• Third, ChromaDB serves as our vector database, holding 1024-dimensional float embeddings linked directly to the PostgreSQL product_id.
+We store our data across three simple places:
+• 1. Azure Blob Storage: Stores all 10,000+ garment images, served fast to users via CDN.
+• 2. PostgreSQL: This is our main database. Its products table stores product ID (e.g. PROD_0001), image filename, category, gender, sizes (S, M, L, XL, XXL), color, fabric, price, inventory, and a rich 1–2 sentence description (like: "Stylish pink T-shirt for men in XL size, featuring an attractive design and a trendy look, perfect for casual outings"). It also stores our retailers table and orders table.
+• 3. ChromaDB: This is our vector database. It stores the 1024-dimensional embeddings linked to each product ID for fast search.
 
-On the AI/ML and retrieval architecture:
-• Multimodal Embedding Generation: During data ingestion, we feed the rich description from PostgreSQL directly into Azure AI Vision's text vectorizer to generate 1024-dimensional text embeddings, while the corresponding garment photo from Azure Blob Storage produces 1024-dimensional visual embeddings in the same shared metric space.
-• L2 Normalization & Fast Dot Product: We strictly normalize every 1024-dimensional vector to unit Euclidean length (length = 1.0). When vectors have a length of 1.0, calculating Cosine Similarity is mathematically identical to a fast, hardware-accelerated Dot Product without square-root divisions, allowing ChromaDB with an HNSW graph to scan through 10,000+ vectors in under 10 milliseconds.
-• Late Vector Fusion: To support hybrid queries (a reference photo with text modifiers like "same cut in forest green linen"), we fuse vectors at runtime: e_hybrid = 0.65 * e_text + 0.35 * e_image.
-• Zero Chunking Strategy: Catalog descriptions are atomic 50–80 word summaries, so chunking was intentionally avoided to prevent decoupling critical entity relationships between silhouette, fabric, and color.
-• PostgreSQL Hydration & Context Injection: Why no fine-tuning? Fine-tuning an LLM on 10,000 dynamic products causes stale weights and hallucinations as inventory changes. Instead, ChromaDB retrieves Top-K candidate product_ids, which immediately execute an SQL query in PostgreSQL to hydrate live stock, available sizes, fabric GSM, wholesale price, and SAS image URLs. These hydrated specs and image URLs are injected into Azure OpenAI GPT-4o alongside the user prompt, delivering grounded, hallucination-free styling critiques and design comparisons.
+Here is how the AI and retrieval flow works:
+• Generating Embeddings: During data ingestion, we take the rich description from PostgreSQL and convert it into a 1024-dimensional text embedding using Azure AI Vision. We also take the garment image from Blob Storage and convert it into a 1024-dimensional image embedding in the exact same vector space.
+• L2 Normalization & Fast Dot Product: We normalize every vector to a length of 1.0. When vectors have length 1.0, cosine similarity is just a fast dot product (simple multiplication and addition). This lets ChromaDB scan 10,000 designs in under 10 milliseconds.
+• Hybrid Search (Late Fusion): If a buyer uploads a reference photo and also types a modification (like "same cut in green linen"), we blend the vectors: 65% weight to text (for color/fabric) and 35% weight to image (for silhouette).
+• No Chunking: Each description is short and atomic (50 to 80 words), so we don't chunk text. Chunking would break apart the connection between color, fabric, and fit.
+• Top-K Search & PostgreSQL Hydration: ChromaDB finds the top matching product IDs in milliseconds. Then, PostgreSQL pulls live inventory, available sizes, fabric details, and image URLs. We don't fine-tune models because stock and prices change daily.
+• GPT-4o Insights: We send the user's prompt, the top product details, and the images to GPT-4o so it can give grounded styling advice without hallucinating.
 
-On the Self-Service Retailer Portal & Ordering Flow:
-• The web portal allows retailers to search the 10,000+ archive using text, reference images, or hybrid queries. To ensure 60fps UI performance, search results are paginated with 25-item lazy loading on scroll.
-• Retailers select bulk quantities across S, M, L, XL, and XXL sizes and checkout with email OTP verification. If verified in PostgreSQL, the order is confirmed immediately into the orders table; new retailers are logged as qualified leads for onboarding verification.
+On the Retailer Web Portal:
+• Retailers can search using text, images, or hybrid queries. We use lazy loading—showing 25 items first and loading more as they scroll—so the page stays fast and smooth at 60fps.
+• Retailers pick bulk quantities across sizes (S, M, L, XL, XXL) and checkout with email OTP. Verified orders go directly into our PostgreSQL orders table.
 
-Future & In-Progress R&D Pipeline:
-• For buyers needing custom garments, we designed a pipeline using Stable Diffusion XL with ControlNet (Canny edge) for sketch-to-garment photorealistic rendering and SAM for fabric inpainting. In parallel, we are actively integrating Azure AI Vision OCR (Read API) to read printed slogans and typography on graphic t-shirts and hoodies into PostgreSQL, enabling retailers to search for exact phrases alongside visual styles.`,
+Future & In-Progress R&D:
+• For custom garments, we are building a generative pipeline using Stable Diffusion XL, ControlNet, and SAM to turn sketches into realistic photos. In parallel, we are integrating Azure AI Vision OCR to read printed slogans and quotes on t-shirts and save them in PostgreSQL, so buyers can search by exact printed text.`,
 
   storageArchitecture: [
     {
-      tier: "1. Azure Blob Storage (CDN)",
-      badge: "Object Storage & Media Delivery",
+      tier: "1. Azure Blob Storage",
+      badge: "Images & Media",
       points: [
-        "Raw Garment JPGs (10,000+ high-resolution master design samples)",
-        "Referenced in PostgreSQL via image_filename column",
-        "Time-limited SAS URLs for secure, authenticated media delivery",
-        "Edge-cached over Azure CDN for global sub-second preview loading"
+        "Stores 10,000+ raw garment photos",
+        "Referenced in PostgreSQL via image_filename",
+        "Fast image loading delivered through Azure CDN"
       ]
     },
     {
-      tier: "2. PostgreSQL (OLTP Database)",
-      badge: "Relational Master Data & Ground Truth",
+      tier: "2. PostgreSQL Database",
+      badge: "Master Business Data",
       points: [
-        "products table: product_id (PK), image_filename, category, gender, sizes_available (S, M, L, XL, XXL), color, color_hex, fabric GSM, live inventory",
-        "description column: Rich 1-2 sentence text (e.g., 'Stylish pink T-shirt for men in XL size...') used directly to compute 1024-d text embeddings",
-        "retailers table: Retail buyer accounts, verified credentials, and onboarding lead records",
-        "orders table: Wholesale orders capturing size breakdown (S/M/L/XL), bulk quantities, and order status"
+        "products table: product_id, image_filename, category, gender, sizes (S, M, L, XL, XXL), color, fabric, price, inventory",
+        "description column: Rich 1-2 sentence description used to create 1024-d text embeddings",
+        "retailers table: Buyer profiles and verified accounts",
+        "orders table: Bulk wholesale orders and size breakdowns"
       ]
     },
     {
-      tier: "3. ChromaDB (Vector Database)",
-      badge: "Semantic Vector Store",
+      tier: "3. ChromaDB",
+      badge: "Vector Search",
       points: [
-        "1024-dimensional float embeddings generated via Azure AI Vision",
-        "Strict L2 Normalization (||v||₂ = 1.0): turns Cosine Similarity into a fast, hardware-accelerated Dot Product",
-        "Stores both visual embeddings (from Blob images) and text embeddings (from PostgreSQL descriptions)",
-        "HNSW indexing graph for sub-10ms Approximate Nearest Neighbor (ANN) search across 10,000+ designs",
-        "Cosine similarity matching linked directly to PostgreSQL product_id for instant SQL hydration"
+        "Stores 1024-dimensional embeddings from Azure AI Vision",
+        "L2-normalized vectors (length = 1.0) for fast dot-product math",
+        "HNSW index scans 10,000+ designs in under 10 milliseconds",
+        "Maps matching product IDs directly to PostgreSQL"
       ]
     }
   ],
@@ -114,70 +113,71 @@ Future & In-Progress R&D Pipeline:
     {
       id: "late-vector-fusion",
       title: "Late Vector Fusion",
-      badge: "Mathematical Vector Algebra",
-      summary: "Runtime weighted combination of normalized multimodal vectors: e_hybrid = 0.65 * e_text + 0.35 * e_image.",
+      badge: "Vector Math",
+      summary: "Blending text and image vectors: e_hybrid = 0.65 * text + 0.35 * image.",
       details: [
-        "Late vs. Early Fusion: Early fusion fuses raw pixels and text tokens inside a heavy cross-attention transformer, requiring massive compute per query. Late fusion operates directly on pre-computed 1024-d unit vectors, computing combinations in sub-millisecond runtime.",
-        "Weighting Ratio (0.65 / 0.35): When a retailer uploads a garment photo with text like 'same silhouette in maroon corduroy', 0.65 gives text the steering power over color, fabric GSM, and texture, while 0.35 locks the garment neckline, cut, and sleeve silhouette.",
-        "Re-Normalization: After weighted linear combination, the resulting vector is strictly L2-normalized (v / ||v||_2 = 1.0) so it projects back onto the unit hypersphere for instant dot-product similarity search in ChromaDB."
+        "Why 65% Text / 35% Image: If a retailer uploads a photo and types 'same cut in green linen', 65% weight lets text steer the color and fabric, while 35% locks the original garment shape and neckline.",
+        "Late Fusion vs Early Fusion: Late fusion blends already-calculated vectors in less than 1 millisecond. Early fusion re-processes pixels and text together every time, which is too slow and expensive.",
+        "Re-Normalizing: After blending, we normalize the vector back to length 1.0 so ChromaDB can quickly search it using dot products."
       ]
     },
     {
       id: "lazy-loading",
       title: "Lazy Loading",
-      badge: "Frontend DOM & Network Optimization",
-      summary: "Paginated 25-item batch rendering with IntersectionObserver to maintain 60fps UI performance.",
+      badge: "Fast UI (60fps)",
+      summary: "Loading 25 items at a time so the website stays smooth and loads instantly.",
       details: [
-        "The DOM Bottleneck: Injecting hundreds of high-resolution garment preview images into the DOM simultaneously creates huge memory bloat, high layout thrashing, and freezes the browser main thread.",
-        "25-Item Initial Payload: ChromaDB retrieves Top-K candidates, and PostgreSQL hydrates the first 25 items immediately for an ultra-fast First Contentful Paint (<100ms).",
-        "IntersectionObserver Sentinel: As the retailer scrolls within 200px of the page bottom, an invisible sentinel element triggers lazy loading of the next batch of 25 items without jarring layout shifts or frame drops."
+        "The Problem: If you render hundreds of high-resolution clothing images all at once, the webpage freezes and uses too much memory.",
+        "25-Item Batches: We load the first 25 designs immediately so the page opens in under 100 milliseconds.",
+        "Smooth Scrolling: As the user scrolls near the bottom, the next 25 designs load automatically in the background without any lag."
       ]
     },
     {
       id: "top-k-vector-search",
       title: "Top-K Vector Search",
-      badge: "ChromaDB + HNSW Graph",
-      summary: "Sub-10ms Approximate Nearest Neighbor (ANN) search across 10,000+ 1024-dimensional vectors.",
+      badge: "ChromaDB + HNSW",
+      summary: "Finding the top matching designs in under 10 milliseconds using ChromaDB and HNSW.",
       details: [
-        "HNSW Indexing: Hierarchical Navigable Small World graphs provide logarithmic O(log N) search complexity instead of an exhaustive linear O(N) scan across 10,000 items.",
-        "L2 Dot-Product Acceleration: Because all vectors are pre-normalized to length 1.0, Cosine Similarity simplifies to a pure hardware-accelerated Dot Product (AVX-512 SIMD instructions), completely avoiding square roots.",
-        "In-Memory Footprint: For 10,000 vectors with 1024 dimensions, the entire HNSW index fits in ~40MB of RAM, executing Top-K retrieval in 3 to 7 milliseconds."
+        "HNSW Index: Instead of checking all 10,000 designs one-by-one, HNSW uses a smart graph shortcut to jump directly to the closest matches in milliseconds.",
+        "Fast Dot Product: Because all our vectors have a length of 1.0, cosine similarity is just simple multiplication and addition (dot product). This makes search super fast on regular CPUs.",
+        "Low Memory: For 10,000 products, the entire ChromaDB index needs only about 40MB of RAM."
       ]
     },
     {
       id: "multimodal-rag",
       title: "Multimodal RAG",
       badge: "PostgreSQL + ChromaDB + GPT-4o",
-      summary: "Retrieval-Augmented Generation connecting real-time relational stock with multimodal vector embeddings.",
+      summary: "Connecting ChromaDB vector search, live PostgreSQL data, and GPT-4o.",
       details: [
-        "Why No Fine-Tuning: Garment stock, pricing, and available sizes fluctuate continuously. Fine-tuning model weights causes stale data, hallucinated prices, and high retraining GPU costs. RAG decouples knowledge retrieval from reasoning, guaranteeing zero hallucinations.",
-        "PostgreSQL Hydration: ChromaDB Top-K candidate product_ids query PostgreSQL to pull live sizes (S/M/L/XL/XXL), fabric GSM, wholesale price, and SAS image URLs.",
-        "Prompt Context Injection: Structured JSON specs and authenticated image URLs are injected directly into the GPT-4o context window for grounded styling evaluations and buyer advice."
+        "Why We Don't Fine-Tune: Stock levels, prices, and sizes change every day. If you fine-tune an AI model, its data becomes outdated immediately. RAG lets us pull fresh data every second.",
+        "Live Data Pull: ChromaDB finds the top product IDs, and PostgreSQL instantly pulls live sizes (S to XXL), fabric details, price, and image links.",
+        "Zero Hallucination: GPT-4o reads this exact database data before answering, so it never invents fake prices or out-of-stock items."
       ]
     },
     {
       id: "azure-ai-vision",
       title: "Azure AI Vision",
-      badge: "Dual-Encoder Shared Hypersphere",
-      summary: "Multi-tenant dual-encoder neural architecture projecting image pixels and text descriptions into an identical 1024-d unit vector space.",
+      badge: "Multimodal Embeddings",
+      summary: "Converting both clothing photos and text descriptions into 1024-dimensional vectors.",
       details: [
-        "Dual-Encoder Architecture: Uses two separate neural towers—a Vision Transformer (ViT) for garment images and a Transformer for text descriptions—projecting into a common 1024-d vector coordinate space.",
-        "Contrastive Alignment: Contrastively trained on massive fashion datasets so that visual concepts (e.g. puff sleeves, ribbed knit, camp collar) align directly with natural text descriptors.",
-        "Dual API Endpoints: Out-of-the-box support for vectorizeImage (using garment photos) and vectorizeText (using PostgreSQL rich descriptions) with zero GPU maintenance overhead."
+        "Shared Vector Space: It uses two separate neural towers (one for images, one for text) that place visual styles and written descriptions into the exact same coordinate space.",
+        "Fashion Understanding: It understands fashion details like collars, sleeve cuts, fabrics, and drape much better than generic text models.",
+        "Ready-to-Use APIs: Gives us simple endpoints (vectorizeImage and vectorizeText) without needing to manage our own GPU servers."
       ]
     },
     {
       id: "azure-openai",
       title: "Azure OpenAI",
-      badge: "GPT-4o Multimodal Reasoning Engine",
-      summary: "Enterprise multimodal LLM providing grounded design critiques, trend comparisons, and wholesale order advisory.",
+      badge: "GPT-4o Reasoning",
+      summary: "Using GPT-4o as a smart fashion copilot to advise retailers.",
       details: [
-        "Architectural Decoupling: GPT-4o is never used to scan or search the 10,000 images—that would be cost-prohibitive ($$$) and slow (10+ seconds). ChromaDB filters the catalog to the Top-K candidates first.",
-        "Grounded Reasoning: GPT-4o receives the retailer's query, the Top-K hydrated PostgreSQL specs (fabric GSM, sizes, price), and SAS image URLs to compare silhouettes, explain fabric qualities, and recommend complementary styles.",
-        "Zero Stale Knowledge: Relies strictly on the injected PostgreSQL ground-truth payload, eliminating hallucinated stock numbers or inaccurate wholesale prices."
+        "Smart Division of Labor: GPT-4o does not search through 10,000 images itself. ChromaDB does the fast search first, and GPT-4o only looks at the top few matching items.",
+        "Grounded Advice: It looks at the customer's query, the product images, and the fabric specs to explain styling options and compare materials.",
+        "Truthful Answers: Because it gets real product data injected from PostgreSQL, all its suggestions are accurate and practical."
       ]
     }
   ]
 };
+
 
 
