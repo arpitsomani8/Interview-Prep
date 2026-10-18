@@ -1,7 +1,7 @@
 export const definitionBookmarks = [
   { id: "yolo", label: "YOLO" },
   { id: "confidence-score", label: "Confidence Score" },
-  { id: "confusion-matrix-precision-recall", label: "Confusion Matrix / Precision / Recall" },
+  { id: "confusion-matrix-precision-recall", label: "Precision, Recall & Accuracy" },
   { id: "gpt-llama", label: "GPT / LLaMA" },
   { id: "agentic-workflow", label: "Agentic Workflow" },
   { id: "genai-vs-traditional-ai", label: "GenAI vs Traditional AI" },
@@ -121,9 +121,52 @@ export const definitionsData = [
   },
   {
     id: "confusion-matrix-precision-recall",
-    title: "Confusion Matrix / Precision / Recall",
-    badge: "Evaluation Metrics & Business Tradeoffs",
-    summary: "Fundamental diagnostic tools evaluating model classification performance, error distribution, and operational cost impact.",
+    title: "Confusion Matrix: Accuracy, Precision, Recall & F1-Score",
+    badge: "Evaluation Metrics & Diagnostic Signals",
+    summary: "Fundamental diagnostic metrics evaluating classification performance: Accuracy, Precision, Recall, and F1-score, derived from the Confusion Matrix.",
+    coreMetricsIntro: "Core Classification Metrics:",
+    classificationMetrics: [
+      {
+        name: "Accuracy",
+        definition: "The fraction of predictions that are correct. This example has 4 correct predictions out of 6, giving about 66.7%.",
+        formula: "Accuracy = (TP + TN) / Total",
+        example: "4 correct predictions out of 6 total = 4/6 ≈ 66.7%",
+        accent: "text-emerald-400",
+        badge: "Overall Correctness",
+        question: "What fraction of all predictions were correct?",
+        businessImpact: "Provides an intuitive high-level ratio, but can be dangerously misleading when classes are imbalanced (e.g. 99% normal parcels)."
+      },
+      {
+        name: "Precision",
+        definition: "Of the items predicted positive, how many really were positive?",
+        formula: "Precision = TP / (TP + FP)",
+        example: "Flagged damaged parcels that were truly damaged",
+        accent: "text-cyan-400",
+        badge: "Prediction Quality",
+        question: "Of the items predicted positive, how many really were positive?",
+        businessImpact: "Low precision means too many false alarms. Warehouse operators waste hours manually re-inspecting perfectly normal parcels, destroying conveyor throughput."
+      },
+      {
+        name: "Recall",
+        definition: "Of all actual positive items, how many did the model detect?",
+        formula: "Recall = TP / (TP + FN)",
+        example: "Actual damaged parcels successfully caught by YOLO",
+        accent: "text-amber-400",
+        badge: "Detection Sensitivity",
+        question: "Of all actual positive items, how many did the model detect?",
+        businessImpact: "Low recall means damaged parcels pass through undetected. This leads to broken goods reaching customers, carrier damage claims, returns, and reputational loss."
+      },
+      {
+        name: "F1-score",
+        definition: "The harmonic mean of precision and recall.",
+        formula: "F1 = 2 × (Precision × Recall) / (Precision + Recall)",
+        example: "Harmonic balance between false alarms and missed defects",
+        accent: "text-purple-400",
+        badge: "Harmonic Mean",
+        question: "How well does the model balance false alarms against missed detections?",
+        businessImpact: "Essential single-metric benchmark when positive and negative classes are heavily imbalanced."
+      }
+    ],
     matrixComponents: [
       { term: "TP (True Positive)", desc: "Model predicted Damaged, and parcel was actually Damaged." },
       { term: "TN (True Negative)", desc: "Model predicted Normal, and parcel was actually Normal." },
@@ -143,7 +186,8 @@ export const definitionsData = [
         formula: "Recall = TP / (TP + FN)",
         businessImpact: "Low recall means damaged parcels pass through undetected. This leads to broken goods reaching customers, carrier damage claims, returns, and massive reputational loss."
       }
-    ]
+    ],
+    takeaway: "Accuracy measures the overall fraction of correct predictions (e.g. 4 out of 6 ≈ 66.7%). Precision verifies positive alarm quality, Recall measures defect detection coverage, and F1-score provides their harmonic mean."
   },
   {
     id: "gpt-llama",

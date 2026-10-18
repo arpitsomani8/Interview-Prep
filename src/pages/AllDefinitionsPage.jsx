@@ -259,39 +259,84 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 3: Confusion Matrix / Precision / Recall */}
+            {/* Item 3: Confusion Matrix / Precision / Recall / Accuracy / F1 */}
             {item.id === 'confusion-matrix-precision-recall' && (
-              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
                 {/* 4 Matrix Components */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                  {item.matrixComponents.map((c, cIdx) => (
-                    <div key={cIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
-                      <div className="text-xs font-bold text-cyan-300 font-mono mb-1">{c.term}</div>
-                      <div className="text-xs text-zinc-300 leading-relaxed">{c.desc}</div>
-                    </div>
-                  ))}
+                <div className="space-y-2">
+                  <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider font-semibold">
+                    Confusion Matrix Quadrants (Ground Truth vs Prediction)
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.matrixComponents.map((c, cIdx) => (
+                      <div key={cIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition">
+                        <div className="text-xs font-bold text-cyan-300 font-mono mb-1">{c.term}</div>
+                        <div className="text-xs text-zinc-300 leading-relaxed font-sans">{c.desc}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-                {/* Precision & Recall Breakdown Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-                  {item.metrics.map((m, mIdx) => (
-                    <div key={mIdx} className="p-4 rounded-xl bg-black border border-cyan-900/30 space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-white">{m.name}</span>
-                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-800/60 text-cyan-300">
-                          {m.formula}
-                        </span>
+                {/* 4 Core Classification Metrics: Accuracy, Precision, Recall, F1 */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>The 4 Essential Classification Metrics</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800">
+                      Accuracy • Precision • Recall • F1
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {(item.classificationMetrics || item.metrics).map((m, mIdx) => (
+                      <div
+                        key={mIdx}
+                        className="p-4 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition space-y-3 flex flex-col justify-between"
+                      >
+                        <div className="space-y-2.5">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className={`text-base font-bold font-mono ${m.accent || 'text-cyan-400'}`}>
+                              {m.name}
+                            </span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300 font-semibold">
+                              {m.formula}
+                            </span>
+                          </div>
+
+                          {/* Verbatim Definition Callout */}
+                          <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-200 font-sans leading-relaxed">
+                            <strong className="text-white font-mono text-[11px] block mb-1">Definition:</strong>
+                            {m.definition || m.question}
+                          </div>
+
+                          {m.example && (
+                            <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 px-2.5 py-1.5 rounded bg-zinc-900/60 border border-zinc-800/80">
+                              <span className="text-amber-400 font-bold">› Example:</span>
+                              <span className="text-zinc-200">{m.example}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {m.businessImpact && (
+                          <div className="text-xs text-zinc-400 leading-relaxed pt-2.5 border-t border-zinc-800/80 font-sans">
+                            <strong className="text-cyan-400 font-mono text-[11px]">Business Impact: </strong>
+                            {m.businessImpact}
+                          </div>
+                        )}
                       </div>
-                      <div className="text-xs text-zinc-400 italic">
-                        "{m.question}"
-                      </div>
-                      <p className="text-xs text-zinc-300 leading-relaxed pt-1 border-t border-zinc-800">
-                        <strong className="text-amber-400">Logistics Impact: </strong>
-                        {m.businessImpact}
-                      </p>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
+
+                {/* Takeaway Banner */}
+                {item.takeaway && (
+                  <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                    <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                    {item.takeaway}
+                  </div>
+                )}
               </div>
             )}
 
