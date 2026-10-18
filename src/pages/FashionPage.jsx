@@ -82,36 +82,26 @@ export default function FashionPage() {
           {fashionData.userExample.description}
         </p>
 
-        {/* 6 Sequential Step Progression Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Clean Line-by-Line Execution Flow */}
+        <div className="rounded-xl bg-zinc-950/80 border border-zinc-800 divide-y divide-zinc-800/80 overflow-hidden">
           {fashionData.userExample.steps.map((st) => (
             <div
               key={st.step}
-              className="rounded-xl bg-zinc-950/70 border border-zinc-800/80 p-5 space-y-3 hover:border-pink-500/40 transition flex flex-col justify-between"
+              className="p-4 sm:p-5 flex flex-col md:flex-row md:items-start gap-3 md:gap-5 hover:bg-zinc-900/30 transition"
             >
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-pink-500/10 text-pink-400 border border-pink-500/30">
-                    STEP {st.step}
-                  </span>
-                  <span className="text-[11px] font-mono text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
-                    {st.badge}
-                  </span>
-                </div>
-                <h3 className="text-base font-bold text-white tracking-tight">
-                  {st.title}
-                </h3>
-                <div className="text-xs text-pink-300/90 font-medium">
-                  {st.system}
-                </div>
-                <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
-                  {st.action}
-                </p>
+              <div className="flex items-center gap-2.5 md:w-56 shrink-0">
+                <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-pink-500/10 text-pink-400 border border-pink-500/30">
+                  Step {st.step}
+                </span>
+                <span className="text-sm font-bold text-white tracking-tight">
+                  {st.stage}
+                </span>
               </div>
-
-              <div className="pt-2.5 border-t border-zinc-800/60 text-[11px] font-mono text-zinc-400 leading-relaxed bg-black/40 p-2.5 rounded-lg border border-zinc-900">
-                <span className="text-zinc-500 font-bold block mb-1">Under the Hood:</span>
-                {st.technicalDetail}
+              <div className="flex-1 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                {st.text}
+              </div>
+              <div className="text-[11px] font-mono text-zinc-400 bg-zinc-900 px-2.5 py-1 rounded border border-zinc-800 shrink-0 self-start">
+                {st.system}
               </div>
             </div>
           ))}

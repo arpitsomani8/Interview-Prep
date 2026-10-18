@@ -32,51 +32,39 @@ Future & In-Progress R&D:
     steps: [
       {
         step: "01",
-        title: "User Search Input",
-        system: "Retailer Web Portal",
-        badge: "Frontend -> API",
-        action: "Buyer types: 'Do you have a pink T-shirt?' into the search bar and presses enter.",
-        technicalDetail: "The Next.js/React frontend captures the string and fires an async POST request to our FastAPI backend endpoint: /api/v1/search/hybrid with payload { query: 'Do you have a pink T-shirt?', limit: 25 }."
+        stage: "Frontend → API",
+        system: "Retailer Portal & FastAPI",
+        text: "Buyer types 'Do you have a pink T-shirt?' into the search bar; the Next.js frontend sends an async POST request to the FastAPI backend endpoint (/api/v1/search/hybrid) with limit 25."
       },
       {
         step: "02",
-        title: "Text Vectorization via Azure AI Vision",
+        stage: "Text Vectorization",
         system: "Azure AI Vision (vectorizeText)",
-        badge: "1024-d Embedding",
-        action: "The text query is converted into a 1024-dimensional float vector.",
-        technicalDetail: "FastAPI calls Azure AI Vision vectorizeText API in ~15ms. The output is a 1024-d float vector. We strictly L2-normalize it (length = 1.0) so it projects into the exact same coordinate space as our pre-computed clothing images."
+        text: "FastAPI calls Azure AI Vision's vectorizeText API in ~15ms, producing a 1024-dimensional float vector normalized to length 1.0 to project directly into our shared image vector space."
       },
       {
         step: "03",
-        title: "ChromaDB Fast Vector Search",
-        system: "ChromaDB (HNSW Graph)",
-        badge: "Top-K Candidates",
-        action: "Scans 10,000+ catalog designs in 4ms to find the closest matching product IDs.",
-        technicalDetail: "Because the vector has length 1.0, ChromaDB computes Cosine Similarity using hardware-accelerated dot products across its HNSW index in RAM. It retrieves the Top-25 closest product_ids (e.g., PROD_0014, PROD_0089, PROD_0142) that represent pink t-shirts."
+        stage: "Top-K Vector Search",
+        system: "ChromaDB (HNSW Index)",
+        text: "ChromaDB performs hardware-accelerated dot products across its in-memory HNSW graph in 4ms, retrieving the Top-25 closest product IDs (e.g. PROD_0014, PROD_0089) matching pink t-shirts."
       },
       {
         step: "04",
-        title: "PostgreSQL Master Data Hydration",
+        stage: "Live Data Hydration",
         system: "PostgreSQL Database",
-        badge: "Live SQL Lookup",
-        action: "Pulls live inventory, available sizes, fabric specs, and image filenames.",
-        technicalDetail: "FastAPI runs: SELECT product_id, image_filename, sizes_available, color, fabric, wholesale_price, stock_count FROM products WHERE product_id IN ('PROD_0014', ...). It pulls live stock (S: 120, M: 250, L: 180, XL: 90), fabric (220gsm Combed Cotton), price ($12.50/unit), and CDN image URLs."
+        text: "FastAPI executes a SQL lookup in PostgreSQL to fetch real-time inventory (S: 120, M: 250, L: 180, XL: 90), fabric specs (220gsm Combed Cotton), wholesale price ($12.50/unit), and CDN image URLs."
       },
       {
         step: "05",
-        title: "Context Injection & GPT-4o Evaluation",
+        stage: "Multimodal RAG Evaluation",
         system: "Azure OpenAI (GPT-4o)",
-        badge: "Multimodal RAG",
-        action: "GPT-4o analyzes the prompt + database specs + garment images to form a grounded answer.",
-        technicalDetail: "Prompt payload with user query + hydrated PostgreSQL JSON + image CDN URLs is sent to GPT-4o. GPT-4o responds: 'Yes! We have our Blush Pink Crewneck T-Shirt (PROD_0014) in stock across sizes S, M, L, and XL, crafted from 220gsm Combed Organic Cotton at $12.50/unit wholesale.' Zero hallucination because data comes directly from PostgreSQL."
+        text: "The prompt combines the buyer's query, PostgreSQL data, and image URLs. GPT-4o analyzes them and returns a grounded styling recommendation with zero hallucinations."
       },
       {
         step: "06",
-        title: "UI Rendering & Bulk Wholesale Order Confirmation",
-        system: "Retailer Portal & Orders Table",
-        badge: "60fps Lazy Load & Order Insert",
-        action: "Retailer views the pink t-shirts, selects bulk sizes (S, M, L, XL), and checks out.",
-        technicalDetail: "Frontend renders the first 25 matching pink t-shirts with lazy loading. The buyer enters wholesale quantities (e.g. 50 S, 100 M, 100 L), verifies their email OTP, and an order record is instantly inserted into PostgreSQL's 'orders' table while updating live stock."
+        stage: "UI Render & Order Confirmation",
+        system: "Retailer Web Portal & Orders Table",
+        text: "The portal lazy-loads the top 25 pink t-shirts at 60fps; the retailer chooses bulk quantities (50 S, 100 M, 100 L, 50 XL), verifies with OTP, and order ORD_9421 ($3,750) is inserted into PostgreSQL."
       }
     ],
     sampleOutput: {
