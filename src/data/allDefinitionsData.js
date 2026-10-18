@@ -54,7 +54,8 @@ export const definitionBookmarks = [
   { id: "inference", label: "Inference" },
   { id: "edge-cases", label: "Edge Cases" },
   { id: "debugging", label: "Debugging" },
-  { id: "prompt-engineering", label: "Prompt Engineering" }
+  { id: "prompt-engineering", label: "Prompt Engineering" },
+  { id: "ranking-reranking", label: "Ranking / Reranking" }
 ];
 
 export const definitionsData = [
@@ -3234,5 +3235,90 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
       }
     ],
     takeaway: "Always start with prompt engineering, structured outputs (Pydantic/JSON), and programmatic validation. Fine-tune only when persistent stylistic nuances, specialized vocabularies, or strict latency/cost requirements demand a custom-trained checkpoint."
+  },
+  {
+    id: "ranking-reranking",
+    title: "Ranking & Re-ranking (Multi-Stage Retrieval)",
+    badge: "Information Retrieval & Recommendation Systems",
+    summary: "The algorithmic process of ordering candidate results from most relevant to least relevant, moving from fast approximate vector candidate retrieval to precise business filtering and multi-signal reranking.",
+    coreDefinition: "Ranking is the process of ordering candidate results from most relevant to least relevant according to a scoring rule or model.",
+    retrievalVsRanking: {
+      retrieval: "Find a set of potentially relevant items quickly from large-scale collections (high recall, e.g., Top-100 from 10,000 via FAISS).",
+      ranking: "Decide the exact order in which those items should appear to the user (high precision, e.g., Top-25 via cross-encoder scoring & filters)."
+    },
+    rankingApproaches: [
+      {
+        id: "A",
+        name: "Approach A: Similarity-Based Ranking",
+        method: "Cosine similarity between query embedding and item embeddings.",
+        details: "CLIP converts the user's text and each catalog image into vectors. We compare them using cosine similarity: cos(θ) = (A · B) / (||A|| ||B||). A higher score generally means a stronger semantic or visual match within this retrieval setup. It is a relative score, not a probability.",
+        pros: "Fast, vector-native, zero training required."
+      },
+      {
+        id: "B",
+        name: "Approach B: Business-Rule Filtering Plus Ranking",
+        method: "Strict metadata constraint filtering followed by relevance ranking.",
+        details: "For our use case, first enforce strict constraints (e.g., in-stock, budget ≤ ₹2,000, size = 'M') using trustworthy catalog metadata, and then rank eligible items by relevance.",
+        pros: "Guarantees 0% constraint violations without sacrificing relevance."
+      },
+      {
+        id: "C",
+        name: "Approach C: Combine Multiple Ranking Signals",
+        method: "Weighted combination of semantic similarity, business metrics, and customer signals.",
+        details: "Sometimes similarity alone isn't enough. We combine multiple relevance signals into a weighted score: Score = w1 * Similarity + w2 * Popularity + w3 * Rating + w4 * InventoryVelocity.",
+        pros: "Balances user relevance with business metrics and catalog freshness."
+      }
+    ],
+    hardConstraintRule: "Hard constraints such as maximum budget should normally be enforced separately rather than merely penalized in the score. Otherwise, an over-budget product might still win because its similarity score is high.",
+    rerankingDefinition: "Reranking is a second-stage ranking process applied to an initial candidate set.",
+    pipelineStages: [
+      {
+        stage: "Stage 1: Catalog Corpus",
+        count: "10,000 Designs",
+        desc: "Full catalog of images, vector embeddings, and metadata stored in S3 & SQL database."
+      },
+      {
+        stage: "Stage 2: Initial Retrieval",
+        count: "Top 100 Candidates",
+        desc: "Fast approximate nearest neighbor search using CLIP embeddings and FAISS index."
+      },
+      {
+        stage: "Stage 3: Filter + Rerank",
+        count: "Evaluate & Score",
+        desc: "Check hard constraints, combine relevance signals, and optionally apply a learned cross-encoder reranker."
+      },
+      {
+        stage: "Stage 4: Final Selection",
+        count: "Top 25 Designs",
+        desc: "Deliver the top 25 high-precision, fully compliant products to the user."
+      }
+    ],
+    evaluationMetrics: [
+      {
+        metric: "Precision@25",
+        definition: "Fraction of the top 25 returned products that are relevant.",
+        formula: "(Relevant items in Top-25) / 25",
+        target: "Maximizes relevance density in the visible viewport"
+      },
+      {
+        metric: "Recall@25",
+        definition: "Fraction of all known relevant products that appear in the top 25.",
+        formula: "(Relevant items in Top-25) / (Total known relevant items)",
+        target: "Ensures high-intent matching items are not omitted"
+      },
+      {
+        metric: "NDCG@25",
+        definition: "Normalized Discounted Cumulative Gain: measures ranking quality while rewarding relevant products that appear nearer the top.",
+        formula: "DCG@25 / IDCG@25",
+        target: "Penalizes relevant items placed near the bottom of results"
+      },
+      {
+        metric: "Constraint Violation Rate",
+        definition: "Fraction of returned products that violate strict requirements, such as price or availability.",
+        formula: "(Violating items in Top-25) / 25",
+        target: "Must be 0% in production"
+      }
+    ],
+    takeaway: "A production search system splits the workload: fast vector search (FAISS) fetches high-recall candidates, deterministic metadata filters eliminate violations, and multi-signal reranking ensures the most relevant, profitable items appear at the very top."
   }
 ];
