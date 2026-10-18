@@ -888,7 +888,33 @@ def ask_question(data: Question):
       { metric: "Retrieval Precision & Recall", desc: "Benchmark whether the search system consistently surfaces true relevant policy passages." },
       { metric: "Answer Faithfulness & Citation Accuracy", desc: "Verify that model responses are directly grounded in retrieved context with accurate references." },
       { metric: "Model Performance Drift", desc: "Monitor classification metric stability and data distribution shifts over long operational windows." }
-    ]
+    ],
+    agenticAiOptimization: {
+      question: "What does “optimizing agentic AI workflows” mean?",
+      coreAnswer: "It means improving reliability, answer quality, speed, cost, and safety—not simply making the model bigger.",
+      dimensions: [
+        {
+          title: "Retrieval Optimization",
+          desc: "Improve chunk sizes, embedding quality, metadata filtering, hybrid search, and reranking. Measure whether the correct evidence appears in the retrieved results."
+        },
+        {
+          title: "Workflow Optimization",
+          desc: "Avoid unnecessary tool calls, cap the number of steps, parallelize independent read-only operations where safe, and stop when sufficient evidence is available."
+        },
+        {
+          title: "Latency and Cost Optimization",
+          desc: "Use smaller models for simpler tasks, cache safe and reusable results, limit context size, and measure latency and cost per completed task."
+        },
+        {
+          title: "Reliability and Safety",
+          desc: "Validate tool inputs, enforce authorization, treat retrieved documents as untrusted content, use timeouts and bounded retries, and require human approval for consequential actions."
+        },
+        {
+          title: "Evaluation",
+          desc: "Build a test set of real business questions and measure retrieval quality, tool-selection accuracy, factual correctness, citation quality, task completion, latency, and cost."
+        }
+      ]
+    }
   },
   {
     id: "scikit-learn",

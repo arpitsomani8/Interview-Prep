@@ -1208,6 +1208,32 @@ export default function AllDefinitionsPage() {
                     ))}
                   </div>
                 </div>
+
+                {/* Optimizing Agentic AI Workflows Section */}
+                {item.agenticAiOptimization && (
+                  <div className="space-y-3 pt-2 border-t border-zinc-800">
+                    <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 space-y-1.5">
+                      <h4 className="text-xs font-bold text-cyan-400 font-mono uppercase tracking-wider">
+                        {item.agenticAiOptimization.question}
+                      </h4>
+                      <p className="text-xs text-cyan-200/90 leading-relaxed font-medium">
+                        {item.agenticAiOptimization.coreAnswer}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.agenticAiOptimization.dimensions.map((dim, dIdx) => (
+                        <div key={dIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                          <div className="text-xs font-bold text-white font-mono flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                            <span>{dim.title}</span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed">{dim.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
