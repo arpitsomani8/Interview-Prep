@@ -1294,6 +1294,8 @@ predictions = loaded_model.predict(X_test)`,
     title: "Diffusion Model",
     badge: "Generative Modeling & Denoising",
     summary: "A diffusion model is a generative model that learns to create images by learning how to reverse a process that gradually adds noise to training images.",
+    takeaway: "Diffusion models generate images.",
+    ecosystemContext: "Diffusion models generate images; vision foundation models understand visual content; LangChain connects LLMs to tools and retrieval; LangGraph controls the steps of a workflow.",
     trainingPhase: [
       "1. Start with a real image.",
       "2. Add different amounts of noise to it over discrete timesteps.",
@@ -1310,6 +1312,8 @@ predictions = loaded_model.predict(X_test)`,
     title: "Vision Foundation Model",
     badge: "Computer Vision & Pretrained Representations",
     summary: "A vision foundation model is a model trained on large amounts of visual data that can be adapted to many image-understanding tasks.",
+    takeaway: "Vision foundation models understand visual content.",
+    ecosystemContext: "Diffusion models generate images; vision foundation models understand visual content; LangChain connects LLMs to tools and retrieval; LangGraph controls the steps of a workflow.",
     modelFamilies: [
       {
         name: "SAM (Segment Anything Model)",
@@ -1334,6 +1338,8 @@ predictions = loaded_model.predict(X_test)`,
     title: "LangChain / LangGraph",
     badge: "Framework & Stateful Orchestration",
     summary: "LangChain connects language models to prompts, retrievers, structured outputs, and tools. LangGraph orchestrates stateful, multi-step workflows as nodes and transitions with checkpoints and branching.",
+    takeaway: "LangChain connects LLMs to tools and retrieval; LangGraph controls the steps of a workflow.",
+    ecosystemContext: "Diffusion models generate images; vision foundation models understand visual content; LangChain connects LLMs to tools and retrieval; LangGraph controls the steps of a workflow.",
     frameworks: [
       {
         name: "LangChain",

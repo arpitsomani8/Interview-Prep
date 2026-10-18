@@ -1804,6 +1804,17 @@ export default function AllDefinitionsPage() {
                     </ul>
                   </div>
                 </div>
+
+                {/* Core Ecosystem Role */}
+                {item.takeaway && (
+                  <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400 shrink-0"></span>
+                      <span className="font-bold text-white font-mono">{item.takeaway}</span>
+                    </div>
+                    <span className="text-[11px] text-zinc-400 italic font-mono">{item.ecosystemContext}</span>
+                  </div>
+                )}
               </div>
             )}
 
@@ -1818,12 +1829,34 @@ export default function AllDefinitionsPage() {
                     </div>
                   ))}
                 </div>
+
+                {/* Core Ecosystem Role */}
+                {item.takeaway && (
+                  <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400 shrink-0"></span>
+                      <span className="font-bold text-white font-mono">{item.takeaway}</span>
+                    </div>
+                    <span className="text-[11px] text-zinc-400 italic font-mono">{item.ecosystemContext}</span>
+                  </div>
+                )}
               </div>
             )}
 
             {/* Item 38: LangChain / LangGraph */}
             {item.id === 'langchain-langgraph' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Ecosystem Role */}
+                {item.takeaway && (
+                  <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400 shrink-0"></span>
+                      <span className="font-bold text-white font-mono">{item.takeaway}</span>
+                    </div>
+                    <span className="text-[11px] text-zinc-400 italic font-mono">{item.ecosystemContext}</span>
+                  </div>
+                )}
+
                 {/* 2 Frameworks Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {item.frameworks.map((fw, fIdx) => (
