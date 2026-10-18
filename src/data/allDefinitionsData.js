@@ -4313,6 +4313,14 @@ def health_check():
     summary: "Which model should you choose? Choose based on measured performance, not the name alone.",
     question: "Which model should you choose?",
     coreRule: "Choose based on measured performance, not the name alone:",
+    verbatimBullets: [
+      "Quality on your task-specific test set",
+      "Latency and throughput",
+      "Context length and multimodal requirements",
+      "Hosting, privacy, and data residency requirements",
+      "Hardware and operating costs",
+      "Reliability, tool support, and licensing"
+    ],
     criteria: [
       {
         title: "Quality on your task-specific test set",

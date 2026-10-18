@@ -6797,8 +6797,8 @@ export default function AllDefinitionsPage() {
             {/* Item 69: Model Choice */}
             {item.id === 'model-choice' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                {/* Core Rule Callout Banner */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl space-y-2">
+                {/* Core Rule Callout Banner & Verbatim Checklist */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-cyan-400" />
@@ -6810,8 +6810,21 @@ export default function AllDefinitionsPage() {
                       Empirical Selection
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-xl bg-black border border-cyan-900/50 text-xs sm:text-sm text-cyan-200 font-sans font-semibold leading-relaxed">
-                    {item.coreRule}
+
+                  <div className="p-4 rounded-xl bg-black border border-cyan-900/50 space-y-3">
+                    <div className="text-xs sm:text-sm text-cyan-200 font-sans font-semibold leading-relaxed">
+                      {item.coreRule}
+                    </div>
+                    {item.verbatimBullets && (
+                      <ul className="space-y-2 pt-1 font-sans text-xs text-zinc-300">
+                        {item.verbatimBullets.map((bullet, bIdx) => (
+                          <li key={bIdx} className="flex items-start gap-2.5">
+                            <span className="text-cyan-400 font-bold mt-0.5 text-sm">•</span>
+                            <span className="font-medium text-white">{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
 
