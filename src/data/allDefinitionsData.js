@@ -77,7 +77,8 @@ export const definitionBookmarks = [
   { id: "redis", label: "Redis" },
   { id: "data-model-drift", label: "Data / Model Drift" },
   { id: "throughput-latency", label: "Throughput / Latency" },
-  { id: "paged-attention", label: "PagedAttention" }
+  { id: "paged-attention", label: "PagedAttention" },
+  { id: "multi-agent-orchestration", label: "Multi-Agent Orchestration" }
 ];
 
 export const definitionsData = [
@@ -5192,5 +5193,73 @@ def health_check():
       { benefit: "Continuous / Iteration-Level Batching", desc: "Requests can join or leave the serving batch at each token iteration rather than waiting for entire sequence completions." }
     ],
     takeaway: "PagedAttention brings virtual memory paging to LLM serving: by breaking the KV cache into non-contiguous blocks mapped via block tables, vLLM eliminates memory fragmentation, enables larger concurrent batches, and maximizes aggregate tokens-per-second."
+  },
+  {
+    id: "multi-agent-orchestration",
+    title: "Multi-Agent Orchestration — Systems Design, Patterns & Coordination",
+    badge: "Autonomous Agents & Distributed AI Workflows",
+    summary: "Multi-agent orchestration means coordinating multiple AI agents so they can work together to complete a larger task. Master hierarchical supervision, sequential pipelines, shared state graphs, and evaluation loops.",
+    coreDefinition: "Multi-agent orchestration means coordinating multiple AI agents so they can work together to complete a larger task.",
+    whyMultiAgent: [
+      {
+        benefit: "Narrow Specialization & System Prompts",
+        desc: "Each agent focuses on a single responsibility with targeted system instructions and only the exact tools it requires, avoiding prompt confusion."
+      },
+      {
+        benefit: "Context Window Efficiency",
+        desc: "Prevents a single prompt from overflowing with tool outputs, raw search results, and complex instructions; each agent maintains its own compact context."
+      },
+      {
+        benefit: "Modularity & Independent Debugging",
+        desc: "Engineers can test, monitor, and upgrade individual agent nodes (e.g. Researcher vs. Code Reviewer) without rewriting the entire application."
+      },
+      {
+        benefit: "Deterministic Guardrails & Error Isolation",
+        desc: "If one worker agent encounters a failure or hallucination, orchestrator state machines can retry or invoke fallback agents without failing the whole job."
+      }
+    ],
+    orchestrationPatterns: [
+      {
+        pattern: "1. Hierarchical / Supervisor (Router-Worker)",
+        badge: "Manager-Subordinate",
+        accent: "text-blue-400",
+        desc: "A central supervisor agent interprets user intent, delegates specialized sub-tasks to subordinate worker agents, reviews outputs, and synthesizes the final response.",
+        example: "Research Manager delegates Web Search to Researcher Agent, SQL extraction to Database Agent, and drafts synthesis with Writer Agent."
+      },
+      {
+        pattern: "2. Sequential / Pipeline (Assembly Line)",
+        badge: "Deterministic Flow",
+        accent: "text-emerald-400",
+        desc: "Agents execute in a predefined linear order where the structured output of Agent N becomes the direct input of Agent N+1.",
+        example: "Document Ingestion: Extractor Agent -> Compliance Auditor Agent -> Summary Agent -> Notification Agent."
+      },
+      {
+        pattern: "3. Evaluator-Optimizer (Generator-Critic Loop)",
+        badge: "Self-Refining Loop",
+        accent: "text-amber-400",
+        desc: "One agent generates a proposed solution or code snippet, while a separate critic/evaluator agent runs unit tests or evaluates against criteria, providing feedback loops until passing.",
+        example: "Code Generation: Coder Agent writes Python script -> Test Runner Agent runs pytest -> Coder Agent fixes errors."
+      },
+      {
+        pattern: "4. Collaborative / Peer-to-Peer (Group Chat)",
+        badge: "Decentralized Discussion",
+        accent: "text-purple-400",
+        desc: "Multiple autonomous agents share a common message thread or state bus, taking turns or responding dynamically based on conversation triggers.",
+        example: "Software Trio: Product Manager Agent, Architect Agent, and QA Agent debate API specifications in a round-robin channel."
+      }
+    ],
+    productionFrameworks: [
+      { name: "LangGraph", type: "State Graph", desc: "Graph-based cyclical state machines with persistence, branching, and human-in-the-loop approvals." },
+      { name: "CrewAI", type: "Role-Based", desc: "Orchestrates collaborative role-playing autonomous agents executing hierarchical or sequential processes." },
+      { name: "Microsoft AutoGen", type: "Conversational", desc: "Multi-agent conversational framework enabling peer-to-peer and group chat multi-agent dialogues." },
+      { name: "OpenAI Swarm", type: "Lightweight Ergonomic", desc: "Experimental educational framework emphasizing stateless coordination and client-side agent handoffs." }
+    ],
+    keyChallenges: [
+      { challenge: "Latency Multiplier", desc: "Multiple sequential agent LLM calls compound round-trip API wait times significantly." },
+      { challenge: "Token Cost Amplification", desc: "Each agent invocation incurs prompt serialization and context transfer expenses." },
+      { challenge: "Infinite Loops & Recursion", desc: "Risk of agents ping-ponging endlessly without reaching termination; requires strict recursion caps and circuit breakers." },
+      { challenge: "Shared State Synchronization", desc: "Maintaining consistent, conflict-free state across asynchronous parallel workers." }
+    ],
+    takeaway: "Multi-agent orchestration elevates AI development from isolated prompt engineering into robust distributed systems engineering: breaking monolithic prompts into specialized agents governed by state machine graphs, deterministic routing, and recursion limits."
   }
 ];
