@@ -6868,6 +6868,118 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 70: Production Check - Measuring AI Agents in Production */}
+            {item.id === 'production-check' && (
+              <div className="space-y-6">
+                {/* Core Philosophy Callout */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
+                      <span>{item.question}</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950/70 text-rose-300 border border-rose-800">
+                      Production Observability
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-black border border-rose-900/50 space-y-2">
+                    <div className="flex items-start gap-3">
+                      <span className="text-rose-400 font-bold text-base leading-none mt-0.5">⚠️</span>
+                      <p className="text-xs sm:text-sm text-rose-200 font-sans font-semibold leading-relaxed">
+                        {item.coreRule}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Metrics Table & Visual Breakdown */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Production Agent Evaluation Metrics (Metric vs. What It Tells You)</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                      6 Core Production Signals
+                    </span>
+                  </div>
+
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                        <tr>
+                          <th className="py-3 px-4 font-semibold text-zinc-300">Metric</th>
+                          <th className="py-3 px-4 font-semibold text-zinc-300">Category</th>
+                          <th className="py-3 px-4 font-semibold text-emerald-400">What it tells you</th>
+                          <th className="py-3 px-4 font-semibold text-zinc-300">Production SRE Focus</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/80 font-sans">
+                        {item.agentMetrics.map((m, mIdx) => (
+                          <tr key={mIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="py-3.5 px-4 font-mono font-bold text-white whitespace-nowrap">
+                              <span className={`inline-block ${m.accent}`}>{m.metric}</span>
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <span className="inline-block px-2 py-0.5 text-[10px] font-mono rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
+                                {m.category}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-4 font-semibold text-zinc-100">
+                              {m.tellsYou}
+                            </td>
+                            <td className="py-3.5 px-4 text-zinc-400 text-xs">
+                              {m.detail}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Responsive Grid View for Mobile / Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                    {item.agentMetrics.map((m, mIdx) => (
+                      <div
+                        key={mIdx}
+                        className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-2.5 flex flex-col justify-between"
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between gap-1.5">
+                            <span className="text-[10px] font-mono font-bold text-zinc-500">
+                              0{mIdx + 1}
+                            </span>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-cyan-300 border border-zinc-800">
+                              {m.category}
+                            </span>
+                          </div>
+                          <div>
+                            <h5 className={`text-sm font-bold font-mono ${m.accent}`}>
+                              {m.metric}
+                            </h5>
+                            <div className="mt-1.5 p-2 rounded-lg bg-black border border-zinc-800 text-xs font-semibold text-zinc-200">
+                              {m.tellsYou}
+                            </div>
+                          </div>
+                          <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
+                            {m.detail}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

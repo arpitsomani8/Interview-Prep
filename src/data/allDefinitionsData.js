@@ -66,7 +66,8 @@ export const definitionBookmarks = [
   { id: "load-balancing", label: "Load Balancing" },
   { id: "docker", label: "Docker" },
   { id: "cicd", label: "CI/CD" },
-  { id: "model-choice", label: "Model Choice" }
+  { id: "model-choice", label: "Model Choice" },
+  { id: "production-check", label: "Production Check" }
 ];
 
 export const definitionsData = [
@@ -4354,5 +4355,58 @@ def health_check():
       }
     ],
     takeaway: "Never select a model based on marketing hype or leaderboard rank alone. Systematically benchmark candidate models against your task-specific test set, factoring in latency, hosting constraints, hardware budget, and commercial licensing."
+  },
+  {
+    id: "production-check",
+    title: "Production Check — Measuring AI Agents in Production",
+    badge: "Evaluation, Observability & Agentic SRE",
+    summary: "How do you measure an AI agent in production? For an agent that uses tools, retrieves documents, and performs tasks, don't measure only whether its final answer sounds good.",
+    question: "How do you measure an AI agent in production?",
+    coreRule: "For an agent that uses tools, retrieves documents, and performs tasks, don't measure only whether its final answer sounds good.",
+    agentMetrics: [
+      {
+        metric: "Task completion rate",
+        tellsYou: "Percentage of tasks completed successfully",
+        category: "Effectiveness",
+        accent: "text-emerald-400",
+        detail: "Determines whether the multi-step agent actually reached the objective without human intervention or premature termination."
+      },
+      {
+        metric: "Tool-selection accuracy",
+        tellsYou: "Whether the agent chose the correct tool",
+        category: "Routing & Decision",
+        accent: "text-cyan-400",
+        detail: "Measures whether the model invoked the right tool with valid arguments given the current sub-goal."
+      },
+      {
+        metric: "Retrieval recall",
+        tellsYou: "Whether relevant evidence was retrieved",
+        category: "RAG & Grounding",
+        accent: "text-blue-400",
+        detail: "Evaluates whether external knowledge retrieval successfully surfaced the ground-truth document chunks necessary to answer."
+      },
+      {
+        metric: "Factual correctness",
+        tellsYou: "Whether the final answer matches verified facts",
+        category: "Accuracy & Trust",
+        accent: "text-purple-400",
+        detail: "Checks for hallucinations and ensures all claims made in the answer are grounded in retrieved source documents."
+      },
+      {
+        metric: "p95 latency",
+        tellsYou: "How long the slower 5% of requests take",
+        category: "Performance & SLA",
+        accent: "text-amber-400",
+        detail: "Captures tail latency delays caused by repeated LLM reasoning loops, tool round-trips, and slow database calls."
+      },
+      {
+        metric: "Cost per successful task",
+        tellsYou: "Total cost divided by successful tasks",
+        category: "Unit Economics",
+        accent: "text-rose-400",
+        detail: "Combines prompt/completion token expenses and tool execution costs divided strictly by successfully resolved tasks."
+      }
+    ],
+    takeaway: "Never evaluate a production agent on conversational fluency alone. A production-ready evaluation system tracks quantitative task completion, tool precision, retrieval recall, factual grounding, p95 tail latencies, and unit cost per completed task."
   }
 ];
