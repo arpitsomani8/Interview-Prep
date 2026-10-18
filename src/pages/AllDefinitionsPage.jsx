@@ -335,6 +335,14 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
+                {/* Runtime Execution Contrast */}
+                {item.runtimeContrast && (
+                  <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed">
+                    <strong className="text-amber-400 font-mono uppercase">Runtime Execution Contrast: </strong>
+                    {item.runtimeContrast}
+                  </div>
+                )}
+
                 {/* Key Distinction / RAG relationship */}
                 <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
                   <strong className="text-cyan-400 font-mono uppercase">Key Architect Distinction: </strong>
@@ -572,6 +580,208 @@ export default function AllDefinitionsPage() {
                   {item.keyAdvantages.map((adv, aIdx) => (
                     <div key={aIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
                       {adv}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Item 12: RAG */}
+            {item.id === 'rag' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* Key Principle Alert */}
+                <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed">
+                  <strong className="text-amber-400 font-mono uppercase">Key Principle & Safeguards: </strong>
+                  {item.keyPrinciple}
+                </div>
+
+                {/* Real Project Breakdown */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Real Production Project: {item.realProject.name}
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {item.realProject.components.map((comp, cIdx) => (
+                      <div key={cIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+                        <div className="text-xs font-bold text-white mb-0.5">{comp.name}</div>
+                        <div className="text-[11px] text-zinc-400 leading-relaxed">{comp.role}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Architecture Stages: Part A & Part B */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {item.architectureStages.map((stage, sIdx) => (
+                    <div key={sIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
+                      <h5 className="text-xs font-bold text-cyan-300 font-mono">{stage.part}</h5>
+                      <ul className="space-y-1.5 pt-1">
+                        {stage.steps.map((st, stIdx) => (
+                          <li key={stIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                            <span className="text-cyan-400 mt-0.5">•</span>
+                            <span>{st}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Folder Structure & Chunking Rationale */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-2">
+                    <h5 className="text-xs font-bold text-white font-mono uppercase">Folder Structure</h5>
+                    <pre className="text-xs font-mono text-cyan-300/90 leading-relaxed bg-black/80 p-3 rounded-lg border border-zinc-800">
+                      {item.folderStructure}
+                    </pre>
+                  </div>
+                  <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-2 flex flex-col justify-between">
+                    <div>
+                      <h5 className="text-xs font-bold text-white font-mono uppercase">Why Chunk the Document?</h5>
+                      <p className="text-xs text-zinc-300 leading-relaxed mt-2">
+                        {item.chunkingRationale}
+                      </p>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-black border border-zinc-800 font-mono text-xs text-emerald-400 flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>{item.ingestRun}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Ingest Code Block */}
+                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                  <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                    <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>ingest.py (Chunking, Embedding & ChromaDB Indexing)</span>
+                    </div>
+                    <button
+                      onClick={() => handleCopyCode('code-ingest', item.ingestCode)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                    >
+                      {copiedId === 'code-ingest' ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy Code</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                    {item.ingestCode}
+                  </pre>
+                </div>
+
+                {/* Ingest Takeaways */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                  <h5 className="text-xs font-bold text-cyan-400 font-mono uppercase">Key Code Explanations</h5>
+                  <ul className="space-y-1.5">
+                    {item.ingestTakeaways.map((takeaway, tIdx) => (
+                      <li key={tIdx} className="text-xs text-zinc-300 flex items-start gap-2">
+                        <span className="text-cyan-400 mt-0.5">•</span>
+                        <span>{takeaway}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* Item 13: Embedding & Query Pipeline */}
+            {item.id === 'embedding' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* 4 Query Steps */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Query Pipeline Lifecycle
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.querySteps.map((step, qIdx) => (
+                      <div key={qIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
+                        {step}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Main Code Block */}
+                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                  <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                    <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>main.py (FastAPI Endpoint + ChromaDB Query + GPT Response)</span>
+                    </div>
+                    <button
+                      onClick={() => handleCopyCode('code-rag-main', item.mainCode)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                    >
+                      {copiedId === 'code-rag-main' ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy Code</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                    {item.mainCode}
+                  </pre>
+                </div>
+
+                {/* Run Command & Source Citations Note */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-3.5 rounded-xl bg-black border border-zinc-800 flex items-center gap-3 font-mono text-xs text-emerald-400">
+                    <Terminal className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>{item.runCommand}</span>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
+                    <strong className="text-amber-400 font-mono uppercase">Production Metadata: </strong>
+                    {item.sourceCitationNote}
+                  </div>
+                </div>
+
+                {/* Request Trace Breakdown */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Tracing a Single Request Through the Pipeline
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    {item.traceRequest.map((tr, trIdx) => (
+                      <div key={trIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
+                        <div className="text-xs font-bold text-white mb-1">{tr.step}</div>
+                        <div className="text-[11px] text-zinc-400 leading-relaxed">{tr.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Two Model Takeaway */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Two-Model Architecture Takeaway: </strong>
+                  {item.twoModelTakeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 14: Vector Database */}
+            {item.id === 'vector-database' && (
+              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {item.details.map((detail, dIdx) => (
+                    <div key={dIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 leading-relaxed text-zinc-300">
+                      <span className="text-cyan-400 font-bold mr-1">•</span>
+                      <span>{detail}</span>
                     </div>
                   ))}
                 </div>
