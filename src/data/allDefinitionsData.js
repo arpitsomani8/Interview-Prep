@@ -68,7 +68,8 @@ export const definitionBookmarks = [
   { id: "cicd", label: "CI/CD" },
   { id: "model-choice", label: "Model Choice" },
   { id: "production-check", label: "Production Check" },
-  { id: "caching", label: "Caching" }
+  { id: "caching", label: "Caching" },
+  { id: "backend-architecture", label: "Backend Architecture" }
 ];
 
 export const definitionsData = [
@@ -4504,5 +4505,48 @@ def health_check():
       }
     ],
     takeaway: "Layered caching across responses, embeddings, retrievals, features, and model weights transforms an AI application from a slow, token-burning prototype into a scalable, sub-second production system."
+  },
+  {
+    id: "backend-architecture",
+    title: "Backend Architecture — System Patterns Beyond Onion Architecture",
+    badge: "Distributed Systems & Enterprise Design",
+    summary: "What architectures exist besides Onion Architecture? Modular monolith, Microservices, Event-driven, and CQRS.",
+    question: "What architectures exist besides Onion Architecture?",
+    coreContext: "While Onion/Clean/Hexagonal Architecture structures code within a single service boundary around core domain models and dependency inversion, modern backend systems adopt various architectural paradigms depending on team scale, operational complexity, and throughput requirements.",
+    architectures: [
+      {
+        name: "Modular monolith",
+        definition: "One deployable application with well-defined modules",
+        accent: "text-emerald-400",
+        badge: "Single Deployment Unit",
+        howItWorks: "All domain modules live in a single codebase and run within a single process/binary, but enforce strict boundaries via internal APIs/packages without cross-domain database coupling.",
+        whenToUse: "Ideal for early-to-mid stage startups and teams wanting fast developer velocity without the operational overhead, network latency, and distributed transaction complexity of microservices."
+      },
+      {
+        name: "Microservices",
+        definition: "Independently deployable services",
+        accent: "text-cyan-400",
+        badge: "Distributed Services",
+        howItWorks: "The system is broken down into autonomous services organized around business capabilities (e.g. Auth, Catalog, Billing, Inference). Each service has its own dedicated database and deployment pipeline.",
+        whenToUse: "Best for large organizations with independent product teams, high scale where specific subsystems need targeted autoscaling, and heterogenous technology requirements."
+      },
+      {
+        name: "Event-driven",
+        definition: "Components react to events",
+        accent: "text-amber-400",
+        badge: "Asynchronous Messaging",
+        howItWorks: "Services produce and consume immutable event notifications via message brokers (Kafka, RabbitMQ, AWS SQS/SNS). Decouples publishers from subscribers in time and space.",
+        whenToUse: "Perfect for high-throughput streaming, background job execution, async AI inference pipelines, real-time analytics, and loosely coupled distributed workflows."
+      },
+      {
+        name: "CQRS",
+        definition: "Separate read and write models where beneficial",
+        accent: "text-purple-400",
+        badge: "Command Query Responsibility Segregation",
+        howItWorks: "Separates update operations (Commands that write data and enforce business invariants) from retrieval operations (Queries that return read-optimized projections or search views).",
+        whenToUse: "High-value in read-heavy domains (e.g. e-commerce product catalogs, search engines, vector retrieval) where complex queries require different indexing than transactional writes."
+      }
+    ],
+    takeaway: "No single backend architecture fits every system. Choose Modular Monolith for simplicity, Microservices for organizational scale, Event-driven for decoupled async throughput, and CQRS when read and write workloads diverge."
   }
 ];

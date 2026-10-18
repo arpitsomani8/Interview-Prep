@@ -7153,6 +7153,126 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 72: Backend Architecture - Beyond Onion Architecture */}
+            {item.id === 'backend-architecture' && (
+              <div className="space-y-6">
+                {/* Core Question & Scope Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.question}</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-800">
+                      System Topologies
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-black border border-cyan-900/50 space-y-2">
+                    <div className="flex items-start gap-3">
+                      <span className="text-cyan-400 font-bold text-base leading-none mt-0.5">🏛️</span>
+                      <p className="text-xs sm:text-sm text-cyan-200 font-sans leading-relaxed">
+                        {item.coreContext}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* The 4 Architectural Paradigms Breakdown */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Major Architectures Beyond Onion Architecture</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                      4 Core Patterns
+                    </span>
+                  </div>
+
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                        <tr>
+                          <th className="py-3 px-4 font-semibold text-zinc-300">Architecture Pattern</th>
+                          <th className="py-3 px-4 font-semibold text-emerald-400">Core Definition</th>
+                          <th className="py-3 px-4 font-semibold text-zinc-300">System Mechanics</th>
+                          <th className="py-3 px-4 font-semibold text-cyan-400">Optimal Use Case</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/80 font-sans">
+                        {item.architectures.map((arch, aIdx) => (
+                          <tr key={aIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="py-3.5 px-4 font-mono font-bold text-white whitespace-nowrap">
+                              <span className={`inline-block ${arch.accent}`}>{arch.name}</span>
+                              <div className="text-[10px] font-normal text-zinc-500 font-mono mt-0.5">
+                                {arch.badge}
+                              </div>
+                            </td>
+                            <td className="py-3.5 px-4 font-semibold text-zinc-100">
+                              {arch.definition}
+                            </td>
+                            <td className="py-3.5 px-4 text-zinc-400 text-xs">
+                              {arch.howItWorks}
+                            </td>
+                            <td className="py-3.5 px-4 text-cyan-300 text-xs font-medium">
+                              {arch.whenToUse}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Responsive Grid Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {item.architectures.map((arch, aIdx) => (
+                      <div
+                        key={aIdx}
+                        className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-3 flex flex-col justify-between"
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between gap-1.5">
+                            <span className="text-[10px] font-mono font-bold text-zinc-500">
+                              Pattern 0{aIdx + 1}
+                            </span>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-amber-300 border border-zinc-800">
+                              {arch.badge}
+                            </span>
+                          </div>
+                          <div>
+                            <h5 className={`text-sm font-bold font-mono ${arch.accent}`}>
+                              {arch.name}
+                            </h5>
+                            <div className="mt-1.5 p-2.5 rounded-lg bg-black border border-zinc-800 text-xs font-semibold text-zinc-200 font-sans">
+                              {arch.definition}
+                            </div>
+                          </div>
+                          <div className="space-y-2 pt-1 text-xs">
+                            <p className="text-zinc-400 leading-relaxed font-sans">
+                              <strong className="text-zinc-300 font-mono text-[11px]">Mechanics: </strong>
+                              {arch.howItWorks}
+                            </p>
+                            <p className="text-cyan-300 leading-relaxed font-sans font-medium text-[11px] pt-1 border-t border-zinc-900">
+                              <strong className="text-cyan-400 font-mono">When to Use: </strong>
+                              {arch.whenToUse}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
