@@ -5386,6 +5386,218 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 63: Time & Space Complexity */}
+            {item.id === 'time-space-complexity' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Time & Space Complexity Dual Concept Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                      <h5 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                        Time Complexity
+                      </h5>
+                    </div>
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                      {item.timeComplexityDef}
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                      <h5 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">
+                        Space Complexity
+                      </h5>
+                    </div>
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                      {item.spaceComplexityDef}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Big O Notation Hierarchy */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Big O Complexity Growth Rates</span>
+                  </h4>
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                            <th className="p-3 w-1/4">Complexity</th>
+                            <th className="p-3 w-1/4 text-cyan-400">Name</th>
+                            <th className="p-3 w-1/2 text-emerald-400">Practical Example</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.bigONotation.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-amber-300">
+                                  {row.complexity}
+                                </span>
+                              </td>
+                              <td className="p-3 text-cyan-200/90 text-[11px] leading-relaxed font-mono">
+                                {row.name}
+                              </td>
+                              <td className="p-3 text-zinc-300 text-[11px] leading-relaxed">
+                                {row.example}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Profiling Tools Table */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono flex items-center gap-2">
+                    <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Tools for Measuring Execution Time & Memory</span>
+                  </h4>
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                            <th className="p-3 w-1/5">Tool</th>
+                            <th className="p-3 w-1/4 text-cyan-400">Scope</th>
+                            <th className="p-3 w-1/5 text-amber-400">Origin</th>
+                            <th className="p-3 w-2/5 text-emerald-400">Primary Purpose</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.profilingTools.map((pt, pIdx) => (
+                            <tr key={pIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-cyan-300">
+                                  {pt.tool}
+                                </span>
+                              </td>
+                              <td className="p-3 text-cyan-200/90 text-[11px] leading-relaxed font-mono">
+                                {pt.scope}
+                              </td>
+                              <td className="p-3 text-amber-200/90 text-[11px] leading-relaxed">
+                                {pt.origin}
+                              </td>
+                              <td className="p-3 text-zinc-300 text-[11px] leading-relaxed font-sans">
+                                {pt.purpose}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Profiler vs Theoretical Big O Callout */}
+                <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs sm:text-sm text-amber-200/95 leading-relaxed font-mono">
+                  <strong className="text-amber-400 uppercase font-sans font-bold block mb-1">
+                    Crucial Distinction:
+                  </strong>
+                  <span>{item.profilerVsTheoryNote}</span>
+                </div>
+
+                {/* Profiling Code Example */}
+                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                  <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                    <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>benchmark_profiling.py (timeit & tracemalloc)</span>
+                    </div>
+                    <button
+                      onClick={() => handleCopyCode('code-profiling', item.profilingCode)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                    >
+                      {copiedId === 'code-profiling' ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy Code</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
+                    {item.profilingCode}
+                  </pre>
+                </div>
+
+                {/* 6 Steps to Manage Complexity in Production */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>How to Manage Complexity in a Production ML System (6 Strategies)</span>
+                    </h4>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {item.productionComplexityStrategies.map((strat) => (
+                      <div key={strat.step} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition">
+                        <div className="flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-md bg-cyan-950 border border-cyan-800 text-cyan-400 font-mono text-xs flex items-center justify-center font-bold">
+                            {strat.step}
+                          </span>
+                          <h5 className="text-xs font-bold text-white font-mono">
+                            {strat.title}
+                          </h5>
+                        </div>
+                        <p className="text-xs text-zinc-400 leading-relaxed font-sans pl-7">
+                          {strat.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="p-3 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                    <strong className="text-cyan-400 uppercase">Quality vs Speed Tradeoff: </strong>
+                    {item.qualityTradeoffRule}
+                  </div>
+                </div>
+
+                {/* The 9 Pre-Deployment Steps */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>The 9 Critical Steps Before Production Model Deployment</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {item.preDeploymentChecklist.map((chk) => (
+                      <div key={chk.step} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 hover:border-amber-500/30 transition">
+                        <div className="flex items-center justify-between gap-2">
+                          <h5 className="text-xs font-bold text-white font-mono flex items-center gap-1.5">
+                            <span className="text-amber-400">{chk.step}.</span>
+                            <span>{chk.name}</span>
+                          </h5>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                            Phase {chk.step}
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                          {chk.detail}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Production Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

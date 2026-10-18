@@ -59,7 +59,8 @@ export const definitionBookmarks = [
   { id: "auth-authorization", label: "Authentication & Authorization" },
   { id: "tuple", label: "Tuple" },
   { id: "pandas", label: "Pandas" },
-  { id: "python", label: "Python" }
+  { id: "python", label: "Python" },
+  { id: "time-space-complexity", label: "Time/Space Complexity" }
 ];
 
 export const definitionsData = [
@@ -3638,5 +3639,179 @@ print([i["id"] for i in sorted_items])  # [2, 1, 3]`
       }
     ],
     takeaway: "Mastering Python's fundamental mechanics—slicing interval semantics, string splitting with maxsplit, comprehensions, generator laziness, and concise lambdas—ensures clean, idiomatic code during live coding and systems design interviews."
+  },
+  {
+    id: "time-space-complexity",
+    title: "Time & Space Complexity & ML Profiling",
+    badge: "Algorithms, Profiling & Pre-Deployment",
+    summary: "Asymptotic computational complexity in AI systems, Python/PyTorch memory & execution profiling tools, production scalability strategies, and the 9-step pre-deployment checklist.",
+    timeComplexityDef: "How does the amount of work grow when the number of designs increases from 10,000 to 100,000 or 1 million? (Example: comparing a query vector with every catalog design requires O(n) work as the catalog grows).",
+    spaceComplexityDef: "How does the extra memory required by the algorithm grow with the number of designs or input records? (Example: storing an embedding vector for every catalog design consumes O(n * d) RAM/VRAM).",
+    bigONotation: [
+      {
+        complexity: "O(1)",
+        name: "Constant",
+        example: "Access an element of a list by index; hash map key lookup"
+      },
+      {
+        complexity: "O(log n)",
+        name: "Logarithmic",
+        example: "Binary search on sorted data; tree traversal"
+      },
+      {
+        complexity: "O(n)",
+        name: "Linear",
+        example: "Scan every record once; brute-force cosine distance comparison"
+      },
+      {
+        complexity: "O(n log n)",
+        name: "Linearithmic",
+        example: "Typical efficient comparison sorting (Timsort, Mergesort)"
+      },
+      {
+        complexity: "O(n^2)",
+        name: "Quadratic",
+        example: "Compare every item with every other item using nested loops; pairwise distance matrix"
+      }
+    ],
+    profilingTools: [
+      {
+        tool: "timeit",
+        scope: "Execution Time",
+        origin: "Built into Python",
+        purpose: "Accurately compares how long small functions or code snippets take to run across multiple iterations."
+      },
+      {
+        tool: "cProfile",
+        scope: "Function-Level Profiling",
+        origin: "Built into Python",
+        purpose: "Identifies bottlenecks by showing call counts, total time, and cumulative time per function."
+      },
+      {
+        tool: "tracemalloc",
+        scope: "Python Memory Allocations",
+        origin: "Built into Python",
+        purpose: "Tracks Python heap memory allocations, current usage, and peak allocations (excludes native C/GPU allocations)."
+      },
+      {
+        tool: "PyTorch Profiler",
+        scope: "ML Model Performance",
+        origin: "PyTorch Workloads",
+        purpose: "Investigates deep learning operator execution times, CPU/GPU activity, CUDA kernel overhead, and VRAM consumption."
+      },
+      {
+        tool: "Extended Tooling",
+        scope: "System & Training Monitoring",
+        origin: "Ecosystem Tools",
+        purpose: "memory_profiler for line-by-line RAM, psutil for process-level CPU/memory, and TensorBoard for loss & compute telemetry."
+      }
+    ],
+    profilerVsTheoryNote: "Important distinction: a profiler measures real-world wall-clock performance; it does not automatically prove theoretical Big O complexity. You normally combine analytical code inspection with empirical benchmarks across multiple input scales (e.g., n=1k, 10k, 100k).",
+    profilingCode: `import timeit
+import tracemalloc
+
+def square_numbers(numbers):
+    return [x * x for x in numbers]
+
+numbers = list(range(100_000))
+
+# 1. Measure execution time
+seconds = timeit.timeit(
+    lambda: square_numbers(numbers),
+    number=5
+)
+print("Average time:", seconds / 5, "seconds")
+
+# 2. Measure Python memory allocations
+tracemalloc.start()
+
+result = square_numbers(numbers)
+
+current, peak = tracemalloc.get_traced_memory()
+print("Current memory:", current / (1024 * 1024), "MB")
+print("Peak memory:", peak / (1024 * 1024), "MB")
+
+tracemalloc.stop()`,
+    productionComplexityStrategies: [
+      {
+        step: 1,
+        title: "Analyze First",
+        desc: "Identify expensive loops, repeated calculations, unnecessary data copies, and redundant model inference calls."
+      },
+      {
+        step: 2,
+        title: "Choose the Right Algorithm",
+        desc: "For example, use an approximate vector index (FAISS IVF/HNSW) instead of scanning every embedding if benchmarks show brute-force O(n) search is too slow."
+      },
+      {
+        step: 3,
+        title: "Reduce Unnecessary Computation",
+        desc: "Cache reusable search results (Redis/lru_cache) and precompute offline catalog embeddings and static features."
+      },
+      {
+        step: 4,
+        title: "Control Memory",
+        desc: "Process large catalogs in streaming batches, use float16/int8 quantized representations, and avoid loading full datasets into RAM."
+      },
+      {
+        step: 5,
+        title: "Use Hardware Effectively",
+        desc: "Leverage GPU acceleration (CUDA/TensorRT), optimized numerical libraries (NumPy BLAS), or async multiprocessing."
+      },
+      {
+        step: 6,
+        title: "Benchmark and Monitor",
+        desc: "Test with realistic data volumes and continuously monitor latency, throughput, CPU/RAM, GPU VRAM, and model quality metrics."
+      }
+    ],
+    qualityTradeoffRule: "Faster is not always better if model quality suffers. For an approximate vector search system, for example, evaluate both latency and retrieval metrics such as Recall@25 before accepting an index configuration.",
+    preDeploymentChecklist: [
+      {
+        step: 1,
+        name: "Validate the Data",
+        detail: "Check missing values, duplicates, incorrect labels, corrupt images, inconsistent formats, and possible data leakage between training and evaluation sets."
+      },
+      {
+        step: 2,
+        name: "Split the Dataset Correctly",
+        detail: "Keep training, validation, and test data strictly separate. Use validation for hyperparameter tuning; reserve test set for final uncorrupted evaluation."
+      },
+      {
+        step: 3,
+        name: "Evaluate Model Quality",
+        detail: "Select metrics appropriate to the task: precision, recall, F1, or ROC-AUC for classification; MAE/RMSE for regression; Precision@K, Recall@K, or NDCG@K for search & ranking."
+      },
+      {
+        step: 4,
+        name: "Test Edge Cases",
+        detail: "Try empty inputs, gibberish queries, unseen categories, corrupted images, missing fields, and queries with conflicting constraints."
+      },
+      {
+        step: 5,
+        name: "Test the Complete Pipeline",
+        detail: "Verify the model, preprocessing, embeddings, vector search, business filters, ranking, API, and final response work together smoothly."
+      },
+      {
+        step: 6,
+        name: "Test Security and Privacy",
+        detail: "Check authorization, tenant isolation, prompt injection, sensitive data leakage, input validation, and API abuse protections."
+      },
+      {
+        step: 7,
+        name: "Test Performance and Load",
+        detail: "Measure response latency (p50, p95, p99), throughput (RPS), memory, CPU/GPU usage, and stability under concurrent user traffic."
+      },
+      {
+        step: 8,
+        name: "Run Integration and Regression Tests",
+        detail: "Check API-to-model integration, database and vector-index consistency, error handling, and whether new changes break previously working behavior."
+      },
+      {
+        step: 9,
+        name: "Stage, Release, and Monitor",
+        detail: "Deploy to staging, run smoke tests, release gradually via canary/blue-green deployments, monitor production metrics, and maintain an automated rollback plan."
+      }
+    ],
+    takeaway: "Algorithmic complexity sets theoretical scalability, but empirical profiling reveals real-world bottlenecks. Rigorous pre-deployment validation across all 9 dimensions ensures both computational efficiency and high retrieval quality in production."
   }
 ];
