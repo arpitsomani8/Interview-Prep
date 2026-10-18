@@ -3178,6 +3178,44 @@ export default function AllDefinitionsPage() {
                     </div>
                   </div>
                 )}
+
+                {/* 5-Step Practical Deployment Strategy to AWS */}
+                {item.deploymentStrategy && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="space-y-0.5">
+                        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-mono uppercase font-bold tracking-wider">
+                          <Sparkles className="w-3 h-3 text-amber-400" />
+                          <span>Production Cloud Deployment</span>
+                        </div>
+                        <h4 className="text-sm sm:text-base font-bold text-white tracking-tight pt-1">
+                          {item.deploymentStrategy.question}
+                        </h4>
+                      </div>
+                      <span className="text-[11px] font-mono text-zinc-400 bg-black px-2.5 py-1 rounded-lg border border-zinc-800">
+                        {item.deploymentStrategy.subtext}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3 pt-1">
+                      {item.deploymentStrategy.steps.map((st, sIdx) => (
+                        <div key={sIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between hover:border-amber-500/30 transition">
+                          <div className="space-y-1.5">
+                            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-700/60 inline-block">
+                              {st.tag}
+                            </span>
+                            <div className="text-xs font-bold text-white font-mono text-amber-200">
+                              {st.step}
+                            </div>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                            {st.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

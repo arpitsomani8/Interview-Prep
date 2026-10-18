@@ -2039,6 +2039,37 @@ s3.upload_file(
 
 print("Image uploaded successfully")`,
       takeaway: "S3 upload decouples camera image ingestion from synchronous ML inference, enabling scalable event-driven queues."
+    },
+    deploymentStrategy: {
+      question: "How would you deploy it to AWS?",
+      subtext: "Here is a practical approach using AWS. Azure can support a similar architecture.",
+      steps: [
+        {
+          step: "Step 1 — Package the application",
+          detail: "Put the Flask API, dependencies, model-loading code, and configuration into a Docker container. Keep credentials outside the image.",
+          tag: "Containerization (Docker)"
+        },
+        {
+          step: "Step 2 — Store the artifacts",
+          detail: "Keep catalog images and versioned model/index artifacts in Amazon S3. Use an appropriate database for metadata.",
+          tag: "S3 & Managed DB"
+        },
+        {
+          step: "Step 3 — Deploy the API",
+          detail: "Use Amazon ECS with Fargate for a containerized service, or EC2 when you need more control over the machine. SageMaker is another option when you want a managed model-serving workflow.",
+          tag: "ECS Fargate / EC2 / SageMaker"
+        },
+        {
+          step: "Step 4 — Secure it",
+          detail: "Configure authentication, IAM permissions, HTTPS, request validation, rate limits, and secret management.",
+          tag: "IAM, TLS, Secrets Mgr"
+        },
+        {
+          step: "Step 5 — Monitor and scale",
+          detail: "Use CloudWatch metrics, logs, alarms, and service health checks. Configure scaling based on measured demand.",
+          tag: "CloudWatch & Auto Scaling"
+        }
+      ]
     }
   },
   {
