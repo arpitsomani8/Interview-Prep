@@ -67,7 +67,8 @@ export const definitionBookmarks = [
   { id: "docker", label: "Docker" },
   { id: "cicd", label: "CI/CD" },
   { id: "model-choice", label: "Model Choice" },
-  { id: "production-check", label: "Production Check" }
+  { id: "production-check", label: "Production Check" },
+  { id: "caching", label: "Caching" }
 ];
 
 export const definitionsData = [
@@ -4408,5 +4409,56 @@ def health_check():
       }
     ],
     takeaway: "Never evaluate a production agent on conversational fluency alone. A production-ready evaluation system tracks quantitative task completion, tool precision, retrieval recall, factual grounding, p95 tail latencies, and unit cost per completed task."
+  },
+  {
+    id: "caching",
+    title: "Caching — AI Systems & High-Throughput Inference",
+    badge: "Latency Optimization & Cost Reduction",
+    summary: "Caching stores reusable results so the system can avoid repeating expensive work.",
+    corePrinciple: "Caching stores reusable results so the system can avoid repeating expensive work.",
+    verbatimIntroduction: "Common AI caches include:",
+    cacheTypes: [
+      {
+        name: "Response cache",
+        whatItStores: "Stores answers to safely reusable requests.",
+        accent: "text-emerald-400",
+        badge: "LLM & API Output",
+        example: "Exact matching or semantic caching (e.g. GPTCache / Redis) for identical queries such as FAQ lookups or product policy inquiries.",
+        benefit: "0ms LLM inference time and 100% token cost savings on repeated user prompts."
+      },
+      {
+        name: "Embedding cache",
+        whatItStores: "Stores embeddings for repeated text or images.",
+        accent: "text-cyan-400",
+        badge: "Vector Representations",
+        example: "Key-value cache mapping hash(text_chunk) or image_checksum -> 1536-dim vector float32 array in Redis/Memcached.",
+        benefit: "Eliminates repetitive calls to expensive embedding APIs (e.g. OpenAI text-embedding-3 or local CLIP inference)."
+      },
+      {
+        name: "Retrieval cache",
+        whatItStores: "Stores results of repeated searches.",
+        accent: "text-blue-400",
+        badge: "RAG & Vector Search",
+        example: "Caches top-k nearest neighbor document IDs and scores returned from vector databases (Milvus, Pinecone, pgvector).",
+        benefit: "Bypasses heavy vector similarity computations and disk reads for popular search queries."
+      },
+      {
+        name: "Feature cache",
+        whatItStores: "Stores reusable computed model inputs.",
+        accent: "text-amber-400",
+        badge: "Feature Store & ML Pipelines",
+        example: "Online feature store (Feast, Hopsworks) holding real-time aggregates like 30-day click count, user purchase history, or customer category preferences.",
+        benefit: "Eliminates redundant SQL JOINs, heavy transformations, and feature engineering at inference time."
+      },
+      {
+        name: "Model cache",
+        whatItStores: "Keeps model weights loaded instead of loading them for every request.",
+        accent: "text-purple-400",
+        badge: "GPU VRAM & Process Memory",
+        example: "Loading neural network weights (e.g. PyTorch, Hugging Face, ONNX) once into GPU VRAM or application process memory at worker startup (lifespan event).",
+        benefit: "Prevents multi-second cold start overhead from disk-to-RAM-to-VRAM model weight reloading on every HTTP request."
+      }
+    ],
+    takeaway: "Layered caching across responses, embeddings, retrievals, features, and model weights transforms an AI application from a slow, token-burning prototype into a scalable, sub-second production system."
   }
 ];

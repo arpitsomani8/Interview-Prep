@@ -14,7 +14,10 @@ import {
   Globe,
   Bug,
   ShieldCheck,
-  Sliders
+  Sliders,
+  Database,
+  Layers,
+  Zap
 } from 'lucide-react';
 
 export default function AllDefinitionsPage() {
@@ -6967,6 +6970,131 @@ export default function AllDefinitionsPage() {
                           <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
                             {m.detail}
                           </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 71: Caching - AI Systems & High-Throughput Inference */}
+            {item.id === 'caching' && (
+              <div className="space-y-6">
+                {/* Core Principle Callout */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                      <Zap className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Inference Acceleration & Cost Containment</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-800">
+                      Tiered AI Caching
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-black border border-amber-900/50 space-y-2">
+                    <div className="flex items-start gap-3">
+                      <span className="text-amber-400 font-bold text-base leading-none mt-0.5">⚡</span>
+                      <div>
+                        <p className="text-xs sm:text-sm text-amber-200 font-sans font-semibold leading-relaxed">
+                          {item.corePrinciple}
+                        </p>
+                        <p className="text-xs text-zinc-400 font-mono mt-1">
+                          {item.verbatimIntroduction}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Common AI Caches Breakdown */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>The 5 Core AI Cache Layers</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                      End-to-End System Caches
+                    </span>
+                  </div>
+
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                        <tr>
+                          <th className="py-3 px-4 font-semibold text-zinc-300">Cache Layer</th>
+                          <th className="py-3 px-4 font-semibold text-cyan-400">What It Stores (Function)</th>
+                          <th className="py-3 px-4 font-semibold text-zinc-300">Architecture Implementation</th>
+                          <th className="py-3 px-4 font-semibold text-emerald-400">Primary System Benefit</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/80 font-sans">
+                        {item.cacheTypes.map((c, cIdx) => (
+                          <tr key={cIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="py-3.5 px-4 font-mono font-bold text-white whitespace-nowrap">
+                              <span className={`inline-block ${c.accent}`}>{c.name}</span>
+                              <div className="text-[10px] font-normal text-zinc-500 font-mono mt-0.5">
+                                {c.badge}
+                              </div>
+                            </td>
+                            <td className="py-3.5 px-4 font-semibold text-zinc-100">
+                              {c.whatItStores}
+                            </td>
+                            <td className="py-3.5 px-4 text-zinc-400 text-xs">
+                              {c.example}
+                            </td>
+                            <td className="py-3.5 px-4 text-emerald-300 text-xs font-medium">
+                              {c.benefit}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Responsive Grid View for Mobile / Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                    {item.cacheTypes.map((c, cIdx) => (
+                      <div
+                        key={cIdx}
+                        className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-3 flex flex-col justify-between"
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between gap-1.5">
+                            <span className="text-[10px] font-mono font-bold text-zinc-500">
+                              0{cIdx + 1}
+                            </span>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-amber-300 border border-zinc-800">
+                              {c.badge}
+                            </span>
+                          </div>
+                          <div>
+                            <h5 className={`text-sm font-bold font-mono ${c.accent}`}>
+                              {c.name}
+                            </h5>
+                            <div className="mt-1.5 p-2 rounded-lg bg-black border border-zinc-800 text-xs font-semibold text-zinc-200">
+                              {c.whatItStores}
+                            </div>
+                          </div>
+                          <div className="space-y-1.5 pt-1 text-xs">
+                            <p className="text-zinc-400 leading-relaxed font-sans">
+                              <strong className="text-zinc-300 font-mono text-[11px]">System: </strong>
+                              {c.example}
+                            </p>
+                            <p className="text-emerald-400 leading-relaxed font-sans font-medium text-[11px]">
+                              <strong className="text-emerald-500 font-mono">Benefit: </strong>
+                              {c.benefit}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     ))}
