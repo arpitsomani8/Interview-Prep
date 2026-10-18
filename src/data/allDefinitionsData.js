@@ -24,7 +24,10 @@ export const definitionBookmarks = [
   { id: "deepsparse", label: "DeepSparse" },
   { id: "pruning", label: "Pruning" },
   { id: "quantization", label: "Quantization" },
-  { id: "rest-api-vs-fastapi", label: "REST API vs FastAPI" }
+  { id: "rest-api-vs-fastapi", label: "REST API vs FastAPI" },
+  { id: "onion-architecture", label: "Onion Architecture" },
+  { id: "multi-tenant", label: "Multi-Tenant" },
+  { id: "coding-best-practices", label: "Coding Best Practices" }
 ];
 
 export const definitionsData = [
@@ -1041,6 +1044,121 @@ predictions = loaded_model.predict(X_test)`,
       "Services that call YOLO, GPT, or an internal RAG pipeline.",
       "Repositories that access PostgreSQL or an indexed vector database.",
       "Cross-cutting concerns: Authentication, telemetry logging, metrics, and error handling."
+    ]
+  },
+  {
+    id: "onion-architecture",
+    title: "Onion Architecture",
+    badge: "Clean Software Architecture & Dependency Inversion",
+    summary: "Onion Architecture is a way of structuring software so that the core business logic stays independent of external technologies. The foundational principle is that dependencies point inward toward the core.",
+    keyPrinciple: "Dependencies strictly point inward toward the core domain. The domain knows nothing about web frameworks, databases, or external APIs.",
+    concentricLayers: [
+      {
+        ring: "Outer Layer — Infrastructure",
+        components: "FastAPI / Flask · PostgreSQL · MongoDB · GPT / YOLO adapters · S3 Cloud Storage",
+        role: "Implements technical details, external API communication, database drivers, and frameworks."
+      },
+      {
+        ring: "Application Layer",
+        components: "Use cases · Domain services · Application orchestrators · DTOs",
+        role: "Coordinates application flows, coordinates use cases, and defines interfaces needed by the business."
+      },
+      {
+        ring: "Inner Layer — Domain / Business Rules",
+        components: "Parcel entity · Inspection policy · Risk calculation rules · Pure business models",
+        role: "Contains pure enterprise business rules and entities, free from any third-party dependencies."
+      }
+    ],
+    flaskFolderStructure: [
+      { folder: "domain/", desc: "Core entities and pure business rules. No external framework or database code." },
+      { folder: "application/", desc: "Use cases, application services, and interfaces/ports for required services." },
+      { folder: "infrastructure/", desc: "Database integrations, external model adapters (YOLO, GPT), and repositories." },
+      { folder: "presentation/", desc: "Flask routes, HTTP request/response handling, and controller endpoints." }
+    ],
+    takeaway: "The folder names themselves don't make it Onion Architecture. What matters is how the dependencies flow: outer layers depend on inner layers, never the reverse."
+  },
+  {
+    id: "multi-tenant",
+    title: "Multi-Tenant Architecture & Modular Pipelines",
+    badge: "Enterprise SaaS & Tenant Isolation",
+    summary: "Multi-tenant architecture allows multiple business customers to share the same running application and infrastructure while keeping their data, classification models, thresholds, and configurations strictly isolated.",
+    threePillars: [
+      {
+        title: "1. Multi-Tenant",
+        desc: "Multiple customers use the same application, but each customer's data and configuration remain isolated. Example: Customer A classifies insurance claims; Customer B classifies loan applications."
+      },
+      {
+        title: "2. Fully Customizable",
+        desc: "Customers can have different classification models, thresholds, or preprocessing configurations without needing separate codebases or individual deployments."
+      },
+      {
+        title: "3. Modular Preprocessing Pipelines",
+        desc: "Data-cleaning steps are independent modules that can be combined, reordered where appropriate, enabled, or disabled per customer."
+      }
+    ],
+    pipelineSteps: [
+      { step: "1. Incoming API Request", desc: "Ticket text + authenticated customer identity" },
+      { step: "2. Load Tenant Configuration", desc: "Which preprocessing steps and model apply for this tenant?" },
+      { step: "3. Preprocessing Pipeline", desc: "Clean text → normalize → transform features" },
+      { step: "4. Classification Model", desc: "Predict category and confidence" },
+      { step: "5. Response + Audit Record", desc: "Return result and record prediction metadata securely" }
+    ]
+  },
+  {
+    id: "coding-best-practices",
+    title: "Coding Best Practices (Production Systems)",
+    badge: "Software Engineering & Clean Architecture",
+    summary: "The main software engineering and system architecture practices followed while building scalable, maintainable, and enterprise-grade AI/ML services.",
+    practices: [
+      {
+        number: "1",
+        title: "Single Responsibility Principle (SRP)",
+        desc: "Each function or class should have one clear responsibility.",
+        bad: "One large function that cleans data, loads a model, predicts, writes to a database, and sends a response.",
+        better: "Separate TextCleaner, Preprocessor, Classifier, and PredictionRepository."
+      },
+      {
+        number: "2",
+        title: "Modularity and Reuse",
+        desc: "Implement reusable preprocessing components. A new normalization method should not require rewriting the entire prediction service.",
+        bad: "Hardcoding regex cleaning logic directly inside route handlers.",
+        better: "Reusable pipeline components conforming to common interfaces."
+      },
+      {
+        number: "3",
+        title: "Configuration Over Hardcoding",
+        desc: "Store tenant-specific model versions, pipeline settings, and thresholds in validated configuration rather than scattered if customer == ... statements.",
+        bad: "Scattered if customer == 'client_a': ... branches across services.",
+        better: "Validated JSON/YAML configurations loaded dynamically at runtime."
+      },
+      {
+        number: "4",
+        title: "Tenant Isolation and Security",
+        desc: "Authorize each request, scope every database query to the authenticated tenant, isolate configuration and model access, and test cross-tenant access attempts.",
+        bad: "Global un-scoped queries risking cross-tenant data leakage.",
+        better: "Mandatory tenant_id scoping on every DB transaction and model context."
+      },
+      {
+        number: "5",
+        title: "Input Validation and Error Handling",
+        desc: "Reject missing text, invalid settings, unsupported model versions, and malformed input. Return safe, consistent errors and log diagnostic details without exposing sensitive data.",
+        bad: "Unchecked exceptions returning 500 stack traces to API consumers.",
+        better: "Strict Pydantic schema validation and clean, structured error responses."
+      },
+      {
+        number: "6",
+        title: "Testing (Software vs Model)",
+        desc: "Test preprocessing steps individually, the full prediction pipeline, tenant-specific configurations, and security boundaries. Validate model quality separately from software correctness.",
+        bad: "Testing only happy-path HTTP calls without edge-case or security checks.",
+        better: "Unit tests for transforms, pipeline integration tests, and model metric validation."
+      },
+      {
+        number: "7",
+        title: "Observability and Reproducibility",
+        desc: "Track latency, errors, model version, pipeline version, and prediction metrics. Version the preprocessing logic together with the model so predictions can be reproduced.",
+        bad: "Unstructured log prints with no trace IDs or version metadata.",
+        better: "Structured logging, latency metrics, and linked model/pipeline versioning."
+      }
     ]
   }
 ];

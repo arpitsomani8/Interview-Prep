@@ -1461,6 +1461,138 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 27: Onion Architecture */}
+            {item.id === 'onion-architecture' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Key Principle Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Core Architectural Rule: </strong>
+                  {item.keyPrinciple}
+                </div>
+
+                {/* 3 Concentric Layers */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Concentric Architecture Layers (Inward Dependency Flow)
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.concentricLayers.map((layer, lIdx) => (
+                      <div key={lIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-1">
+                          <div className="text-xs font-bold text-amber-300 font-mono">{layer.ring}</div>
+                          <div className="text-[11px] font-mono text-cyan-300 bg-black/60 p-2 rounded border border-zinc-800/80">
+                            {layer.components}
+                          </div>
+                        </div>
+                        <p className="text-xs text-zinc-400 leading-relaxed pt-1">
+                          {layer.role}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Flask Folder Organization */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    How Would You Organize an Onion Architecture Project in Flask?
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.flaskFolderStructure.map((folder, fIdx) => (
+                      <div key={fIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                        <div className="text-xs font-bold text-white font-mono text-emerald-400">{folder.folder}</div>
+                        <div className="text-[11px] text-zinc-400 leading-relaxed">{folder.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
+                  <strong className="text-cyan-400 font-mono uppercase">Critical Insight: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 28: Multi-Tenant Architecture */}
+            {item.id === 'multi-tenant' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 3 Core Pillars */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    The 3 Pillars of Multi-Tenant AI Services
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.threePillars.map((pillar, pIdx) => (
+                      <div key={pIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                        <div className="text-xs font-bold text-white font-mono text-cyan-300">{pillar.title}</div>
+                        <p className="text-xs text-zinc-400 leading-relaxed">{pillar.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* End-to-End Pipeline Execution Flow */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                    Multi-Tenant Execution Lifecycle (5 Sequential Stages)
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    {item.pipelineSteps.map((step, sIdx) => (
+                      <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <span className="text-xs font-bold text-white font-mono">{step.step}</span>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{step.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Item 29: Coding Best Practices */}
+            {item.id === 'coding-best-practices' && (
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                <div className="space-y-3.5">
+                  {item.practices.map((practice, pIdx) => (
+                    <div key={pIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-md bg-cyan-950 border border-cyan-800/80 text-cyan-300 font-mono text-xs flex items-center justify-center font-bold">
+                          {practice.number}
+                        </span>
+                        <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                          {practice.title}
+                        </h4>
+                      </div>
+
+                      <p className="text-xs text-zinc-300 leading-relaxed">
+                        {practice.desc}
+                      </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-900/40 text-xs">
+                          <span className="text-rose-400 font-mono font-bold uppercase text-[10px] block mb-1">
+                            ✕ Bad Pattern
+                          </span>
+                          <span className="text-rose-200/90 leading-relaxed text-[11px]">
+                            {practice.bad}
+                          </span>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-900/40 text-xs">
+                          <span className="text-emerald-400 font-mono font-bold uppercase text-[10px] block mb-1">
+                            ✓ Better Architectural Approach
+                          </span>
+                          <span className="text-emerald-200/90 leading-relaxed text-[11px]">
+                            {practice.better}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
