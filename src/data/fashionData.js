@@ -227,6 +227,17 @@ Future & In-Progress R&D:
       ]
     },
     {
+      id: "semantic-search",
+      title: "Semantic Search",
+      badge: "Meaning Over Keywords",
+      summary: "Searching based on the conceptual meaning and intent of the words, rather than exact spelling matches.",
+      details: [
+        "Meaning Over Keywords: In traditional search, typing 'crimson winter top' fails if the item is tagged 'red sweater'. Semantic search understands that crimson means red and winter top means sweater.",
+        "Handles Typos & Synonyms: Because words are mapped to vector directions based on context, it effortlessly connects synonyms (e.g. 'pants' to 'trousers', 'hoodie' to 'sweatshirt').",
+        "Multimodal Power: In Fashion AI Copilot, semantic search connects words to visual concepts—so searching 'formal dinner attire' naturally retrieves blazers, dress shirts, and pleated trousers without manual keyword tagging."
+      ]
+    },
+    {
       id: "shared-vector-space",
       title: "Shared Vector Space",
       badge: "Coordinate Mapping",
