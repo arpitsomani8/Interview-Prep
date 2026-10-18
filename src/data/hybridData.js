@@ -25,7 +25,9 @@ Third, our Intelligent Hybrid Router directs incoming requests across three clea
 • 2. Cold-Start RAG Fallback: When a tenant is brand new with fewer than 100 records, the router looks up the tenant's policy file location from PostgreSQL, searches Pinecone for the closest matching pre-embedded policy clauses, and passes them to self-hosted LLaMA. LLaMA returns an audit-ready, policy-backed recommendation in ~250 milliseconds with zero hallucinations.
 • 3. Unstructured Question Route: If a risk analyst types a free-form natural language question (like "What is our policy for accounts with velocity over $5,000?"), it queries Pinecone and LLaMA directly for an answer with exact document citations.
 
-Finally, during real-time inference, our validator calculates Z-scores (|x - μ| / σ) against the baseline distribution stored in PostgreSQL. If live incoming numbers drift by more than 3 standard deviations, a drift alert is flagged in under 1 millisecond so the team knows when automated re-training is needed.`,
+Finally, during real-time inference, our validator calculates Z-scores (|x - μ| / σ) against the baseline distribution stored in PostgreSQL. If live incoming numbers drift by more than 3 standard deviations, a drift alert is flagged in under 1 millisecond so the team knows when automated re-training is needed.
+
+To make the platform production-ready, we containerized the entire backend using multi-stage Docker builds. This locks all system dependencies and C++ runtimes for LightGBM, keeps the final container image lightweight (< 250MB), and enables seamless zero-downtime rolling deployments and horizontal autoscaling across enterprise clusters.`,
 
   userExample: {
     query: 'POST /api/v1/predict with X-Tenant-ID: fintech_corp, {"velocity_24h": 7200, "failed_logins": 3, "amount": 850}',
@@ -83,6 +85,17 @@ Finally, during real-time inference, our validator calculates Z-scores (|x - μ|
   },
 
   bookmarkedConcepts: [
+    {
+      id: "docker",
+      title: "Docker",
+      badge: "Containerization & Deployment",
+      summary: "Lightweight, reproducible container packaging ensuring identical runtime environments from local testing to enterprise production.",
+      details: [
+        "Multi-Stage Builds: Uses multi-stage Docker builds to keep production images lean (< 250MB), stripping out heavy compilers, build caches, and test dependencies.",
+        "Deterministic Runtime: Locks Python dependencies, system libraries, and C++ compilers (required by LightGBM), preventing environment drift across servers.",
+        "Production-Ready Microservices: Packages FastAPI, scoring workers, and database connection pools into isolated, reproducible containers ready for Kubernetes autoscaling and rolling updates."
+      ]
+    },
     {
       id: "fastapi",
       title: "FastAPI",
