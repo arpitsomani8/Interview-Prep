@@ -7991,6 +7991,147 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 77: Redis */}
+            {item.id === 'redis' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                      <Database className="w-3.5 h-3.5 text-rose-400" />
+                      <span>In-Memory Data Store</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950/70 text-rose-300 border border-rose-800">
+                      Cache • Broker • Storage
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-rose-900/40 shadow-xl space-y-3">
+                    <p className="text-xs sm:text-sm text-rose-200 font-sans leading-relaxed font-semibold">
+                      {item.coreDefinition}
+                    </p>
+                    <div className="p-3 rounded-xl bg-black border border-rose-950 flex items-center gap-3">
+                      <span className="text-rose-400 font-bold text-base leading-none">⚡</span>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        Operates primarily in RAM with asynchronous disk persistence, achieving sub-millisecond p99 latencies for high-throughput reads and writes.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3 Core Roles: Cache, Message Broker, Fast Data-Access Layer */}
+                {item.threeCoreRoles && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5 text-amber-400" />
+                        <span>The 3 Core Redis Roles</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Architecture Pillars
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                      {item.threeCoreRoles.map((roleObj, rIdx) => (
+                        <div
+                          key={rIdx}
+                          className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition flex flex-col justify-between space-y-3"
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-base">{roleObj.icon}</span>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                                {roleObj.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${roleObj.accent}`}>
+                              {roleObj.role}
+                            </h5>
+                            <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
+                              {roleObj.desc}
+                            </p>
+                          </div>
+
+                          <div className="pt-2 border-t border-zinc-900 space-y-1.5">
+                            <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
+                              Key Use Cases:
+                            </span>
+                            <ul className="space-y-1">
+                              {roleObj.useCases.map((uc, uIdx) => (
+                                <li key={uIdx} className="text-[11px] text-zinc-400 font-sans flex items-start gap-1.5 leading-snug">
+                                  <span className="text-zinc-600 mt-0.5">•</span>
+                                  <span>{uc}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Supported Data Structures Grid */}
+                {item.supportedDataStructures && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Native In-Memory Data Structures</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.supportedDataStructures.map((ds, dIdx) => (
+                        <div
+                          key={dIdx}
+                          className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-cyan-900/30 transition space-y-1"
+                        >
+                          <span className="text-xs font-bold text-cyan-300 font-mono flex items-center gap-1.5">
+                            <code className="px-1.5 py-0.5 rounded bg-black border border-cyan-950 text-cyan-300 text-[11px]">
+                              {ds.name}
+                            </code>
+                          </span>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                            {ds.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Persistence & Reliability Options */}
+                {item.persistenceAndReliability && (
+                  <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-xs font-bold text-emerald-300 font-mono uppercase tracking-wider">
+                        Durability, Replication & High Availability
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {item.persistenceAndReliability.map((p, pIdx) => (
+                        <div key={pIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-900 space-y-1">
+                          <span className="text-xs font-bold text-zinc-200 font-mono">
+                            {p.mechanism}
+                          </span>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {p.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

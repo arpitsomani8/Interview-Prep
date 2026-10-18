@@ -73,7 +73,8 @@ export const definitionBookmarks = [
   { id: "onnx", label: "ONNX" },
   { id: "gpu-cuda", label: "GPU / CUDA" },
   { id: "ai-fairness-auditing", label: "AI Fairness / Auditing" },
-  { id: "automl", label: "AutoML" }
+  { id: "automl", label: "AutoML" },
+  { id: "redis", label: "Redis" }
 ];
 
 export const definitionsData = [
@@ -4870,5 +4871,64 @@ def health_check():
       definition: "An organized sequence of steps used to prepare data, train or use a machine-learning model, and evaluate or deploy the results."
     },
     takeaway: "AutoML automates algorithm exploration, hyperparameter tuning, and metric comparisons, but human domain knowledge and leak-free validation designs remain essential to building reliable production ML pipelines."
+  },
+  {
+    id: "redis",
+    title: "Redis — In-Memory Data Store, Cache & Message Broker",
+    badge: "In-Memory Storage & Low-Latency Systems",
+    summary: "Redis is an in-memory data store commonly used as a cache, message broker, and fast data-access layer.",
+    coreDefinition: "Redis is an in-memory data store commonly used as a cache, message broker, and fast data-access layer.",
+    threeCoreRoles: [
+      {
+        role: "1. Cache (In-Memory Key-Value Caching)",
+        icon: "⚡",
+        accent: "text-amber-400",
+        badge: "Sub-Millisecond Latency",
+        desc: "Stores frequently accessed or expensive computation results directly in RAM so systems can avoid repeating heavy database queries, embedding generation, or API calls.",
+        useCases: [
+          "Response Caching: Cache identical LLM prompt completions or API responses with TTL expiration.",
+          "Embedding Caching: Cache text/image vector embeddings keyed by hash to prevent duplicate neural model forward passes.",
+          "Session Store: Rapid user session and authentication token lookup with auto-expiration."
+        ]
+      },
+      {
+        role: "2. Message Broker (Pub/Sub & Streams)",
+        icon: "📡",
+        accent: "text-rose-400",
+        badge: "Asynchronous Coordination",
+        desc: "Enables decoupled microservices and background job queues to communicate in real time with high throughput and low overhead.",
+        useCases: [
+          "Task Queues: Powers distributed background worker queues (e.g., Celery, BullMQ, RQ) for async model inference.",
+          "Pub/Sub Messaging: Broadcasts live notifications, telemetry, and system events to multiple active subscribers.",
+          "Redis Streams: High-speed append-only log suited for event sourcing and consumer groups."
+        ]
+      },
+      {
+        role: "3. Fast Data-Access Layer",
+        icon: "🏎️",
+        accent: "text-cyan-400",
+        badge: "Real-Time Operations",
+        desc: "Provides sub-millisecond atomic read/write operations for ephemeral data and real-time state manipulation directly in memory.",
+        useCases: [
+          "Rate Limiting: Sliding window or token bucket algorithms to protect APIs and LLMs from overuse.",
+          "Real-Time Counters & Analytics: Atomic increment (INCR) operations for page views, API quotas, and live metrics.",
+          "Leaderboards & Rankings: Sorted Sets (ZSET) with score-based sorting in O(log N) time complexity."
+        ]
+      }
+    ],
+    supportedDataStructures: [
+      { name: "Strings", desc: "Text, serialized JSON, binary blobs, raw vector bytes, integer counters (INCR/DECR)." },
+      { name: "Hashes", desc: "Field-value pairs representing objects (e.g. user profile attributes, model configs)." },
+      { name: "Lists", desc: "Linked lists supporting LPUSH/RPOP, ideal for FIFO/LIFO worker queues and event logs." },
+      { name: "Sets", desc: "Unordered collections of unique strings supporting fast O(1) membership tests and set ops (UNION, INTERSECT)." },
+      { name: "Sorted Sets (ZSET)", desc: "Unique elements ordered by floating-point scores, perfect for priority queues and leaderboards." },
+      { name: "Streams", desc: "Append-only log data structure with consumer groups, message acknowledgment, and persistence." }
+    ],
+    persistenceAndReliability: [
+      { mechanism: "RDB (Redis Database Snapshots)", desc: "Point-in-time snapshots written to disk at specified intervals." },
+      { mechanism: "AOF (Append-Only File)", desc: "Logs every write operation received by the server for maximum durability and fast crash recovery." },
+      { mechanism: "Replication & Clustering", desc: "Master-replica asynchronous replication, Redis Sentinel for automatic failover, and Redis Cluster for horizontal sharding." }
+    ],
+    takeaway: "Redis serves as the critical acceleration layer across modern architectures: keeping hot data in memory for <1ms latency, buffering workloads via message queues, and shielding downstream databases and LLM APIs from high-concurrency traffic."
   }
 ];
