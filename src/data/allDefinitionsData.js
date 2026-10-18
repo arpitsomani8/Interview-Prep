@@ -75,7 +75,8 @@ export const definitionBookmarks = [
   { id: "ai-fairness-auditing", label: "AI Fairness / Auditing" },
   { id: "automl", label: "AutoML" },
   { id: "redis", label: "Redis" },
-  { id: "data-model-drift", label: "Data / Model Drift" }
+  { id: "data-model-drift", label: "Data / Model Drift" },
+  { id: "throughput-latency", label: "Throughput / Latency" }
 ];
 
 export const definitionsData = [
@@ -5063,5 +5064,76 @@ def health_check():
       }
     ],
     takeaway: "Data drift alerts you that incoming data has changed (leading indicator, no labels required), while model drift proves that your model's real-world predictive accuracy has decayed (lagging indicator, requires ground truth). Robust MLOps monitors both to trigger safe, automated retraining before business metrics suffer."
+  },
+  {
+    id: "throughput-latency",
+    title: "Throughput & Latency — LLM & System Performance Engineering",
+    badge: "System Performance & Serving Optimization",
+    summary: "Throughput is the amount of work a system completes per unit of time. Latency is how long an individual request takes. Master TTFT, inter-token latency, Little's Law, and production serving trade-offs.",
+    coreDefinition: "Throughput is the amount of work a system completes per unit of time.",
+    comparisonsIntro: "Throughput vs. latency",
+    coreMetrics: [
+      {
+        metric: "Throughput",
+        definition: "How much work the system completes per second.",
+        unit: "RPS (Requests/sec) or TPS (Tokens/sec)",
+        accent: "text-emerald-400",
+        badge: "System Capacity",
+        details: "Reflects aggregate processing power and multi-tenant utilization. Maximized via continuous batching, pipeline parallelism, and efficient GPU saturation."
+      },
+      {
+        metric: "Latency",
+        definition: "How long an individual request takes.",
+        unit: "Milliseconds / Seconds (p50, p95, p99)",
+        accent: "text-amber-400",
+        badge: "Turnaround Time",
+        details: "Total duration elapsed from request arrival to complete response delivery. Impacted by network queuing, serialization, and sequential token decoding."
+      },
+      {
+        metric: "Time to first token (TTFT)",
+        definition: "How long the user waits for the first generated token.",
+        unit: "Milliseconds (Prefill Duration)",
+        accent: "text-cyan-400",
+        badge: "Perceived Responsiveness",
+        details: "Determined primarily by the compute-bound prompt prefill phase and KV cache initialization. Critical for interactive chatbots and streaming UX."
+      },
+      {
+        metric: "Inter-token latency",
+        definition: "The time between successive generated tokens during streaming.",
+        unit: "Milliseconds / Token (Decode Speed)",
+        accent: "text-purple-400",
+        badge: "Streaming Smoothness",
+        details: "Also known as Time Per Output Token (TPOT). Dominated by the memory-bandwidth-bound autoregressive decoding phase (reading weights & KV cache per token)."
+      }
+    ],
+    tradeoffMatrix: [
+      {
+        scenario: "Interactive Chatbot (ChatGPT, Claude)",
+        optimizationGoal: "Minimize TTFT and Inter-token latency",
+        servingStrategy: "Small micro-batches, streaming SSE tokens, high memory bandwidth GPUs (H100/A100 SXM)",
+        tradeoff: "Sacrifices total aggregate throughput to maintain smooth human reading speed (~20-40 ms/token)."
+      },
+      {
+        scenario: "Batch Offline Ingestion (Catalog Tagging, Embedding Pipeline)",
+        optimizationGoal: "Maximize Total System Throughput (TPS)",
+        servingStrategy: "Large tensor batches, high concurrency, dynamic request coalescing (vLLM / Triton)",
+        tradeoff: "Higher per-request latency and queue waiting time in exchange for maximum GPU FLOP utilization and lowest cost per million tokens."
+      }
+    ],
+    governingLaws: [
+      {
+        law: "Little's Law",
+        formula: "L = λ × W",
+        meaning: "Average Concurrency (L) = Throughput (λ) × Latency (W)",
+        insight: "To increase throughput at a fixed concurrency limit, you must lower latency. Conversely, if latency rises under heavy load, concurrency must scale up to maintain throughput."
+      },
+      {
+        law: "Prefill vs. Decode Phase Asymmetry",
+        formula: "TTFT (Compute-Bound) vs. TPOT (Memory-Bound)",
+        meaning: "Prompt processing runs all tokens in parallel; output generation runs sequentially one token at a time.",
+        insight: "Separating prefill and decode instances (disaggregated serving) prevents long input prompts from stalling active token streams."
+      }
+    ],
+    takeaway: "Throughput measures system volume; latency measures individual user waiting time. In generative AI, distinguishing TTFT (prefill latency) from inter-token latency (decode speed) is the cornerstone of designing responsive streaming interfaces and cost-effective batch serving architectures."
   }
 ];

@@ -8413,6 +8413,155 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 79: Throughput & Latency */}
+            {item.id === 'throughput-latency' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>System Performance & Serving Optimization</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800">
+                      RPS • TPS • TTFT • TPOT
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-emerald-900/40 shadow-xl space-y-3">
+                    <p className="text-xs sm:text-sm text-emerald-200 font-sans leading-relaxed font-semibold">
+                      {item.coreDefinition}
+                    </p>
+                    <div className="p-3 rounded-xl bg-black border border-emerald-950 flex items-center gap-3">
+                      <span className="text-emerald-400 font-bold text-base leading-none">⏱️</span>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        Understanding the distinct profiles of aggregate throughput vs. user-perceived latency (TTFT and inter-token speed) determines whether your AI serving stack feels instant or sluggish.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Throughput vs. Latency: 4 Core Metric Breakdown */}
+                {item.coreMetrics && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.comparisonsIntro}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        The Core Serving Quadrant
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {item.coreMetrics.map((cm, cIdx) => (
+                        <div
+                          key={cIdx}
+                          className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition flex flex-col justify-between space-y-3"
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                                {cm.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-sm font-bold font-mono ${cm.accent}`}>
+                              {cm.metric}
+                            </h5>
+                            <div className="p-2.5 rounded-lg bg-black border border-zinc-900">
+                              <p className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                                {cm.definition}
+                              </p>
+                            </div>
+                            <span className="inline-block text-[10px] font-mono text-zinc-400 px-1.5 py-0.5 rounded bg-zinc-900">
+                              Unit: {cm.unit}
+                            </span>
+                            <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                              {cm.details}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Serving Workload Trade-off Matrix */}
+                {item.tradeoffMatrix && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Production Serving Trade-Offs: Interactive vs. Batch</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.tradeoffMatrix.map((tm, tIdx) => (
+                        <div
+                          key={tIdx}
+                          className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 flex flex-col justify-between"
+                        >
+                          <div className="space-y-2">
+                            <span className="text-xs font-bold font-mono text-cyan-300">
+                              {tm.scenario}
+                            </span>
+                            <div className="p-2.5 rounded-lg bg-black border border-cyan-950 text-xs text-cyan-200/90 font-mono">
+                              <strong>Goal: </strong>{tm.optimizationGoal}
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              <strong className="text-zinc-200">Architecture Strategy: </strong>
+                              {tm.servingStrategy}
+                            </p>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900 text-[11px] text-zinc-400 font-sans">
+                            <strong className="text-amber-400 font-mono">Trade-off: </strong>
+                            {tm.tradeoff}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Governing Laws: Little's Law & Prefill/Decode Asymmetry */}
+                {item.governingLaws && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Governing Systems Laws & Performance Theorems</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {item.governingLaws.map((law, lIdx) => (
+                        <div key={lIdx} className="p-4 rounded-xl bg-black border border-purple-900/40 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-purple-300 font-mono">
+                              {law.law}
+                            </span>
+                            <code className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-950 text-purple-200 border border-purple-800">
+                              {law.formula}
+                            </code>
+                          </div>
+                          <p className="text-xs text-zinc-200 font-medium font-sans">
+                            {law.meaning}
+                          </p>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {law.insight}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
