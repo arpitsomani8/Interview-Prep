@@ -10,7 +10,8 @@ import {
   Copy, 
   Sparkles, 
   CheckCircle2, 
-  Terminal 
+  Terminal,
+  Globe 
 } from 'lucide-react';
 
 export default function AllDefinitionsPage() {
@@ -3501,6 +3502,99 @@ export default function AllDefinitionsPage() {
                     </div>
                   ))}
                 </div>
+
+                {/* WebMCP Section */}
+                {item.webMcp && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/90 border border-cyan-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+                      <div className="space-y-1">
+                        <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-[10px] font-mono uppercase font-bold tracking-wider">
+                          <Globe className="w-3 h-3 text-cyan-400" />
+                          <span>{item.webMcp.badge}</span>
+                        </div>
+                        <h4 className="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-2">
+                          <span>{item.webMcp.title}</span>
+                        </h4>
+                      </div>
+                    </div>
+
+                    {/* Definition Banner */}
+                    <div className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-800/40 text-xs sm:text-sm text-cyan-200/95 leading-relaxed font-mono">
+                      <strong className="text-cyan-400 uppercase font-sans font-bold">WebMCP Definition: </strong>
+                      {item.webMcp.definition}
+                    </div>
+
+                    {/* Conceptual Agent Comparison: Traditional vs WebMCP */}
+                    <div className="space-y-2">
+                      <h5 className="text-xs font-bold text-zinc-300 font-mono tracking-wide">
+                        {item.webMcp.differenceNote}
+                      </h5>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        {item.webMcp.agentComparison.map((agent, aIdx) => (
+                          <div 
+                            key={aIdx} 
+                            className={`p-4 rounded-xl border space-y-2 flex flex-col justify-between ${
+                              aIdx === 0 
+                                ? 'bg-zinc-950/80 border-amber-500/20 text-zinc-300' 
+                                : 'bg-cyan-950/20 border-cyan-500/30 text-cyan-200'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className={`text-xs font-bold font-mono uppercase ${
+                                aIdx === 0 ? 'text-amber-400' : 'text-cyan-300'
+                              }`}>
+                                • {agent.type}
+                              </span>
+                              <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                                aIdx === 0 ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20' : 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/20'
+                              }`}>
+                                {agent.tag}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {agent.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* MCP vs WebMCP Comparison Table */}
+                    <div className="space-y-2 pt-2">
+                      <h5 className="text-xs font-bold text-cyan-400 font-mono tracking-wide uppercase">
+                        MCP vs WebMCP Architectural Matrix
+                      </h5>
+                      <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left border-collapse text-xs">
+                            <thead>
+                              <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                                <th className="p-3 w-1/4">Feature</th>
+                                <th className="p-3 w-3/8 text-amber-300">MCP</th>
+                                <th className="p-3 w-3/8 text-cyan-300">WebMCP</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800/80 font-sans">
+                              {item.webMcp.comparisonMatrix.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                  <td className="p-3 font-semibold text-zinc-200 font-mono text-[11px]">
+                                    {row.feature}
+                                  </td>
+                                  <td className="p-3 text-zinc-400 font-mono text-[11px]">
+                                    {row.mcp}
+                                  </td>
+                                  <td className="p-3 text-cyan-200 font-mono text-[11px]">
+                                    {row.webMcp}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* FAQ Cards */}
                 <div className="space-y-2">

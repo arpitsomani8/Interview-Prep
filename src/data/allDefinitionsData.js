@@ -2270,7 +2270,47 @@ def get_order_status(order_id: str) -> dict:
         q: "When would you use MCP instead of directly integrating a tool?",
         a: "When multiple compatible AI clients or agent workflows need a standardized way to discover and reuse the same capabilities. For a single simple application, a direct function call may be simpler."
       }
-    ]
+    ],
+    webMcp: {
+      badge: "Browser-Native Tooling & Web-Exposed Actions",
+      title: "WebMCP: Exposing Website Actions as Structured Tools",
+      definition: "WebMCP lets a website expose its actions as structured tools that compatible AI agents can discover and invoke directly in the browser.",
+      differenceNote: "Think of the difference this way:",
+      agentComparison: [
+        {
+          type: "Traditional browser agent",
+          desc: "looks at a webpage, finds a search box, types into it, and clicks buttons.",
+          tag: "Heuristic DOM inspection & fragile clicking"
+        },
+        {
+          type: "WebMCP-enabled agent",
+          desc: "can call a clearly defined action such as search_products() with structured arguments.",
+          tag: "Deterministic, structured programmatic execution"
+        }
+      ],
+      comparisonMatrix: [
+        {
+          feature: "Where tools are exposed",
+          mcp: "MCP server",
+          webMcp: "Website running in the browser"
+        },
+        {
+          feature: "Typical implementation",
+          mcp: "Python, Node.js, backend services",
+          webMcp: "JavaScript and HTML forms"
+        },
+        {
+          feature: "Main purpose",
+          mcp: "Connect AI apps to tools and data",
+          webMcp: "Let browser agents interact with website functionality"
+        },
+        {
+          feature: "Example",
+          mcp: "An agent queries an inventory API through an MCP server",
+          webMcp: "An agent calls a product search tool exposed by the open shopping page"
+        }
+      ]
+    }
   },
   {
     id: "blockchain",
