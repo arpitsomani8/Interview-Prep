@@ -51,7 +51,8 @@ export const definitionBookmarks = [
   { id: "update-deployed-model", label: "Update a Deployed Model" },
   { id: "ai-assisted-coding-tools", label: "AI-Assisted Coding Tools" },
   { id: "openai-vs-azure-ai", label: "OpenAI vs Azure AI" },
-  { id: "inference", label: "Inference" }
+  { id: "inference", label: "Inference" },
+  { id: "edge-cases", label: "Edge Cases" }
 ];
 
 export const definitionsData = [
@@ -3009,5 +3010,96 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
       "Continuous Monitoring (track TTFT, token throughput, and drift over time)"
     ],
     takeaway: "Inference is where models meet production reality. Balancing latency, throughput, memory bounds (prefill vs decode), and cost safeguards distinguishes hobbyist prototypes from resilient enterprise AI platforms."
+  },
+  {
+    id: "edge-cases",
+    title: "Production Edge Cases & Resilient System Design",
+    badge: "Reliability Engineering & Failure Mode Mitigation",
+    summary: "An edge case is an unusual, unexpected, or boundary-condition input or situation that can make a system fail or return an incorrect result. Explore the 6 core fashion AI search edge cases with targeted solutions, production infrastructure failure modes, and systematic debugging protocols.",
+    coreDefinition: "An edge case is an unusual, unexpected, or boundary-condition input or situation that can make a system fail or return an incorrect result.",
+    primaryEdgeCases: [
+      {
+        id: 1,
+        title: "No Matching Products",
+        category: "Search Quality",
+        problem: "The catalog contains no red floral dresses under ₹2,000 in size M.",
+        solution: "Return a clear “no exact matches” response. Offer alternatives, such as increasing the budget, but don't silently ignore the user's constraints.",
+        tag: "Zero-Result Handling"
+      },
+      {
+        id: 2,
+        title: "Visually Similar but Incorrect Designs",
+        category: "Model Quality",
+        problem: "A pink dress is ranked highly for a red dress query because the floral pattern and overall shape are similar.",
+        solution: "Apply color and category filters using reliable product metadata, then rank the remaining candidates. Improve the model or query strategy if relevant red dresses are still missed.",
+        tag: "Metadata Pre-Filtering"
+      },
+      {
+        id: 3,
+        title: "Corrupted or Missing Image",
+        category: "Data Ingestion Pipeline",
+        problem: "A catalog image cannot be opened or decoded.",
+        solution: "Validate images during ingestion, log the product ID, skip invalid files, and retry temporary storage failures. Never let one corrupt image crash the entire catalog-processing job.",
+        tag: "Pipeline Fault Tolerance"
+      },
+      {
+        id: 4,
+        title: "Duplicate Products",
+        category: "Catalog Integrity",
+        problem: "The same dress appears multiple times because of duplicate catalog records or different image variants.",
+        solution: "Deduplicate by product ID or variant ID as appropriate. Image hashes or visual similarity can help detect duplicate images.",
+        tag: "Visual/ID Deduplication"
+      },
+      {
+        id: 5,
+        title: "Stale Inventory",
+        category: "Inventory Synchronization",
+        problem: "A dress was in stock when indexed but has since sold out.",
+        solution: "Keep inventory in the authoritative inventory system, check availability at request time, and avoid treating the vector index as the source of truth for stock.",
+        tag: "Authoritative Store Separation"
+      },
+      {
+        id: 6,
+        title: "Ambiguous Query",
+        category: "Intent Disambiguation",
+        problem: "“Something nice for a party” doesn't specify color, budget, or style.",
+        solution: "Search using the available context and optionally ask a clarifying question. Do not invent strict preferences that the user never gave.",
+        tag: "Clarifying Questions"
+      }
+    ],
+    productionEdgeCases: [
+      {
+        case: "Empty or Extremely Long Query",
+        risk: "VRAM overflow, token limits, or 400 Bad Request",
+        mitigation: "Strict request validation (e.g., Pydantic min_length=1, max_length=1000)."
+      },
+      {
+        case: "Unsupported Formats / Oversized Uploads",
+        risk: "Worker crash or out-of-memory memory leak",
+        mitigation: "Enforce MIME-type verification, max file size headers, and client-side downscaling."
+      },
+      {
+        case: "LLM API Timeouts, Rate Limits, or Invalid Output",
+        risk: "Broken user experience or unhandled exceptions",
+        mitigation: "Bounded retries with exponential backoff, circuit breakers, and fallback search modes."
+      },
+      {
+        case: "Vector Index & Embedding Model Version Inconsistency",
+        risk: "Degraded search relevance; completely scrambled similarity scores",
+        mitigation: "Strict schema and model version tagging in vector index metadata; reject mismatched vectors."
+      },
+      {
+        case: "Pagination Drift (User Requesting Page 2 After Update)",
+        risk: "Duplicate or skipped products across pagination pages",
+        mitigation: "Keyset/cursor-based pagination or snapshot search sessions rather than raw OFFSET."
+      },
+      {
+        case: "High Traffic Spikes / Memory Exhaustion",
+        risk: "503 Service Unavailable or container OOMKilled",
+        mitigation: "Horizontal Pod Autoscaling (HPA), asynchronous message queues (SQS/RabbitMQ), and Redis caching."
+      }
+    ],
+    debuggingPrinciple: "The solution is not simply to change the prompt. We need to identify which part of the pipeline caused the bad result: catalog metadata, embedding model alignment, hard filter enforcement, or retrieval ranking.",
+    takeaway: "Robust AI systems are engineered for the failure modes. Enforcing hard metadata constraints, isolating inventory state from vector embeddings, and validating data pipelines prevents subtle edge cases from eroding user trust."
   }
 ];

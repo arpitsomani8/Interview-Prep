@@ -4525,6 +4525,100 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 54: Edge Cases & Resilient System Design */}
+            {item.id === 'edge-cases' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase font-sans font-bold">What is an Edge Case? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {/* 6 Core Edge Cases & Solutions */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>6 Critical Fashion AI Search Edge Cases & Production Fixes</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {item.primaryEdgeCases.map((ec) => (
+                      <div key={ec.id} className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 flex flex-col justify-between hover:border-amber-500/30 transition">
+                        <div className="space-y-2">
+                          <div className="flex items-start justify-between gap-2">
+                            <h5 className="text-sm font-bold text-white font-mono flex items-center gap-1.5">
+                              <span className="text-amber-400">{ec.id}.</span>
+                              <span>{ec.title}</span>
+                            </h5>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-300 border border-zinc-700">
+                              {ec.category}
+                            </span>
+                          </div>
+
+                          <div className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-800/30 text-[11px] text-rose-200/90 font-sans">
+                            <strong className="text-rose-400 font-mono uppercase text-[10px] block">Problem:</strong>
+                            {ec.problem}
+                          </div>
+
+                          <div className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-800/30 text-[11px] text-emerald-200/90 font-sans">
+                            <strong className="text-emerald-400 font-mono uppercase text-[10px] block">Solution:</strong>
+                            {ec.solution}
+                          </div>
+                        </div>
+
+                        <div className="pt-2 border-t border-zinc-800/60 flex items-center justify-between">
+                          <span className="text-[10px] font-mono text-zinc-500 uppercase">Architecture Pattern:</span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black text-amber-300 border border-zinc-800">
+                            {ec.tag}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Other Production Edge Cases */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    Systemic Infrastructure & Deployment Failure Modes
+                  </h4>
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                            <th className="p-3 w-1/3">Production Edge Case</th>
+                            <th className="p-3 w-1/3 text-rose-400">System Risk</th>
+                            <th className="p-3 w-1/3 text-emerald-400">Engineering Mitigation</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.productionEdgeCases.map((pec, pIdx) => (
+                            <tr key={pIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-semibold text-white font-mono text-[11px]">{pec.case}</td>
+                              <td className="p-3 text-rose-200/90 text-[11px] leading-relaxed">{pec.risk}</td>
+                              <td className="p-3 text-emerald-200/90 text-[11px] leading-relaxed font-mono">{pec.mitigation}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Root Cause Debugging Principle */}
+                <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs sm:text-sm text-amber-200/95 leading-relaxed font-mono">
+                  <strong className="text-amber-400 uppercase font-sans font-bold">Root-Cause Debugging Philosophy: </strong>
+                  {item.debuggingPrinciple}
+                </div>
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Resilience Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
