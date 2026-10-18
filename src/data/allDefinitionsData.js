@@ -81,7 +81,8 @@ export const definitionBookmarks = [
   { id: "multi-agent-orchestration", label: "Multi-Agent Orchestration" },
   { id: "coherence", label: "Coherence" },
   { id: "chunking", label: "Chunking" },
-  { id: "lexical-search", label: "Lexical Search" }
+  { id: "lexical-search", label: "Lexical Search" },
+  { id: "pipeline", label: "Pipeline" }
 ];
 
 export const definitionsData = [
@@ -5435,5 +5436,85 @@ def health_check():
       takeaway: "Ensures exact product codes (via BM25) and conceptual queries (via dense embeddings) are both retrieved accurately."
     },
     takeaway: "Lexical search (TF-IDF / BM25) represents documents as sparse vectors based on exact vocabulary terms. While semantic dense vectors capture high-level conceptual meaning, lexical search is indispensable for exact keywords, part numbers, and acronyms—making Hybrid Search the gold standard for enterprise RAG."
+  },
+  {
+    id: "pipeline",
+    title: "Pipelines — Processing Sequences Across Data, ML, RAG & DevOps",
+    badge: "Systems Architecture & Automation",
+    summary: "Pipeline: A sequence of connected processing steps. Master the 7 core pipeline types: Data, ML training, inference, RAG, CI/CD, streaming, and multimodal pipelines.",
+    coreDefinition: "Pipeline: A sequence of connected processing steps.",
+    pipelineTypesSummary: "Pipeline types: Data, ML training, inference, RAG, CI/CD, streaming, and multimodal pipelines.",
+    sevenPipelineTypes: [
+      {
+        name: "1. Data Pipeline",
+        icon: "🗄️",
+        accent: "text-blue-400",
+        badge: "ETL / ELT",
+        stages: "Ingestion -> Validation -> Cleaning -> Transformation -> Warehousing",
+        desc: "Moves raw data from source systems to storage and analytical warehouses (Snowflake, BigQuery), guaranteeing schema consistency.",
+        tools: "Apache Spark, Airflow, dbt, AWS Glue"
+      },
+      {
+        name: "2. ML Training Pipeline",
+        icon: "🧠",
+        accent: "text-purple-400",
+        badge: "Model Development",
+        stages: "Feature Extraction -> Train/Val Split -> Hyperparameter Sweep -> Model Training -> Evaluation -> Model Registry",
+        desc: "Automates repeatable model training workflows, versioning artifacts and data splits to prevent data leakage and ensure reproducibility.",
+        tools: "Kubeflow, AWS SageMaker Pipelines, Vertex AI Pipelines, MLflow"
+      },
+      {
+        name: "3. Inference Pipeline",
+        icon: "⚡",
+        accent: "text-amber-400",
+        badge: "Real-Time Serving",
+        stages: "Request Parsing -> Validation -> Preprocessing -> Model Forward Pass -> Post-processing -> Response Serialization",
+        desc: "Executes low-latency predictions on incoming live user requests, often utilizing micro-batching and tensor engine runtimes.",
+        tools: "FastAPI, Triton Inference Server, vLLM, TorchScript, ONNX Runtime"
+      },
+      {
+        name: "4. RAG Pipeline",
+        icon: "📚",
+        accent: "text-emerald-400",
+        badge: "Knowledge Augmentation",
+        stages: "Query Rewriting -> Hybrid Dense/Sparse Retrieval -> Reranking -> Context Assembly -> LLM Synthesis -> Grounding Audit",
+        desc: "Enriches generative prompts with relevant external documents, bridging static neural weights with real-time enterprise data.",
+        tools: "LangChain, LlamaIndex, Haystack, Pinecone, Qdrant"
+      },
+      {
+        name: "5. CI/CD Pipeline",
+        icon: "🛠️",
+        accent: "text-rose-400",
+        badge: "DevOps & Automation",
+        stages: "Linting -> Unit/Integration Tests -> Docker Build -> Vulnerability Scan -> Staging Deploy -> Canary Rollout",
+        desc: "Automates software delivery, ensuring that new code and model checkpoints are tested and deployed without downtime.",
+        tools: "GitHub Actions, GitLab CI, ArgoCD, Docker, Kubernetes"
+      },
+      {
+        name: "6. Streaming Pipeline",
+        icon: "🌊",
+        accent: "text-cyan-400",
+        badge: "Real-Time Events",
+        stages: "Event Ingestion -> Stream Filtering -> Windowed Aggregations -> Real-Time Fraud/Anomaly Detection -> Sink Alerting",
+        desc: "Processes unbounded streams of continuous live events with sub-second latencies and stateful windowing.",
+        tools: "Apache Kafka, Apache Flink, Redis Streams, Spark Streaming"
+      },
+      {
+        name: "7. Multimodal Pipeline",
+        icon: "👁️",
+        accent: "text-indigo-400",
+        badge: "Vision + Audio + Text",
+        stages: "Audio Transcription -> Frame Extraction -> Cross-Modal Embedding Projection -> Multimodal Fusion -> Unified Reasoning",
+        desc: "Simultaneously ingests, tokenizes, and aligns heterogeneous data modalities (video, audio, text, sensor) into a shared semantic space.",
+        tools: "CLIP, Whisper, Gemini, GPT-4o, DeepSparse, OpenCV"
+      }
+    ],
+    coreEngineeringPrinciples: [
+      { principle: "Idempotency", desc: "Re-executing any pipeline step with identical input parameters yields identical, safe outputs without duplicate side effects." },
+      { principle: "Decoupled Modularity", desc: "Stages communicate through explicit, versioned contracts (schemas, APIs, queues), allowing independent upgrades." },
+      { principle: "Observability & Lineage", desc: "Every step logs inputs, outputs, execution duration, and data lineage for instant root-cause debugging." },
+      { principle: "Fault Tolerance & Retries", desc: "Transient failures (network timeouts, rate limits) trigger exponential backoff retries with dead-letter queues." }
+    ],
+    takeaway: "Pipelines are the connective tissue of modern AI engineering. Whether transforming raw data, training models, serving low-latency inferences, executing RAG queries, or deploying microservices via CI/CD, well-architected pipelines ensure repeatability, scalability, and deterministic reliability."
   }
 ];

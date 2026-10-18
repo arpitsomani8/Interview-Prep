@@ -9236,6 +9236,114 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 85: Pipelines */}
+            {item.id === 'pipeline' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-blue-400 font-mono flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-blue-400" />
+                      <span>Systems Architecture & Automated Processing</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950/70 text-blue-300 border border-blue-800">
+                      Processing Pipelines
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-blue-900/40 shadow-xl space-y-3">
+                    <p className="text-xs sm:text-sm text-blue-200 font-sans leading-relaxed font-semibold">
+                      {item.coreDefinition}
+                    </p>
+                    <div className="p-3 rounded-xl bg-black border border-blue-950 flex items-center gap-3">
+                      <span className="text-blue-400 font-bold text-base leading-none">⚙️</span>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.pipelineTypesSummary}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 7 Pipeline Types Grid */}
+                {item.sevenPipelineTypes && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-amber-400" />
+                        <span>The 7 Core Pipeline Architectures</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        End-to-End Stages
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {item.sevenPipelineTypes.map((pipe, pIdx) => (
+                        <div
+                          key={pIdx}
+                          className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition flex flex-col justify-between space-y-3"
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-base">{pipe.icon}</span>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                                {pipe.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${pipe.accent}`}>
+                              {pipe.name}
+                            </h5>
+                            <div className="p-2 rounded bg-black border border-zinc-900">
+                              <span className="text-[10px] font-mono text-zinc-300 block leading-relaxed">
+                                {pipe.stages}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                              {pipe.desc}
+                            </p>
+                          </div>
+
+                          <div className="pt-2 border-t border-zinc-900 text-[10px] text-zinc-400 font-mono">
+                            <strong className="text-zinc-500 uppercase">Standard Tools: </strong>
+                            <span className="text-zinc-300">{pipe.tools}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Core Pipeline Engineering Principles */}
+                {item.coreEngineeringPrinciples && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Production Pipeline Engineering Principles</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.coreEngineeringPrinciples.map((princ, prIdx) => (
+                        <div key={prIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                          <span className="text-xs font-bold text-emerald-300 font-mono block">
+                            {princ.principle}
+                          </span>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {princ.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
