@@ -1156,7 +1156,29 @@ print(scores[0])`,
       { name: "Decision Trees", desc: "Non-parametric supervised learning method creating interpretable decision rules inferred from data." },
       { name: "Gradient Boosting", desc: "Ensemble technique training trees sequentially to correct preceding errors and minimize loss." }
     ],
-    role: "It provides unified, standardized APIs for model training (.fit()), evaluation metrics, and inference (.predict())."
+    role: "It provides unified, standardized APIs for model training (.fit()), evaluation metrics, and inference (.predict()).",
+    pipelineConcept: {
+      headline: "Scikit-Learn Pipeline",
+      definition: "A scikit-learn Pipeline combines preprocessing and a model into one sequence of steps.",
+      importSnippet: `from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+# Combines preprocessing and estimator into one sequence of steps
+pipeline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("classifier", LogisticRegression())
+])
+
+# Fit on training data and predict seamlessly
+pipeline.fit(X_train, y_train)
+predictions = pipeline.predict(X_test)`,
+      advantages: [
+        "Prevents data leakage: Feature scalers and transformers are fit strictly on training splits during cross-validation.",
+        "Unified lifecycle: Only a single call to pipeline.fit() or pipeline.predict() is needed to transform data and run model inference.",
+        "Simple serialization: Allows saving the entire preprocessing + model pipeline into a single artifact using joblib.dump(pipeline, 'model.joblib')."
+      ]
+    }
   },
   {
     id: "joblib",
