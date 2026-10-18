@@ -3595,6 +3595,101 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 48: OCR (Optical Character Recognition) */}
+            {item.id === 'ocr' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Core Definition: </strong>
+                  {item.summary}
+                </div>
+
+                {/* Technology Comparison Table */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>OCR vs. Computer Vision vs. LLM vs. RAG</span>
+                  </h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                      <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                        <tr>
+                          <th className="p-3 border-b border-zinc-800 w-1/4">Technology</th>
+                          <th className="p-3 border-b border-zinc-800 text-cyan-400 font-bold w-1/3">Main Job</th>
+                          <th className="p-3 border-b border-zinc-800 text-emerald-400 font-bold">Real-World Example</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/80 bg-black/60">
+                        {item.technologyComparison.map((row, rIdx) => (
+                          <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="p-3 font-semibold text-white font-mono text-cyan-300">{row.tech}</td>
+                            <td className="p-3 text-zinc-300 leading-relaxed">{row.job}</td>
+                            <td className="p-3 text-emerald-400 font-mono text-[11px]">{row.example}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Enterprise Invoice Processing Pipeline */}
+                {item.genAiPipeline && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-3">
+                      <Terminal className="w-4 h-4 text-emerald-400" />
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono">
+                        {item.genAiPipeline.title}
+                      </h4>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2.5">
+                      {item.genAiPipeline.steps.map((st, sIdx) => (
+                        <div key={sIdx} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1 flex flex-col justify-between">
+                          <span className="text-[11px] font-bold text-emerald-400 font-mono">{st.step}</span>
+                          <p className="text-[10px] text-zinc-400 leading-relaxed">{st.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Popular OCR Tools Matrix */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                    Which Tools Can Be Used for OCR?
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.ocrTools.map((tool, tIdx) => (
+                      <div key={tIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                        <div className="text-xs font-bold text-amber-300 font-mono">{tool.name}</div>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">{tool.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Interview FAQs */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    Frequently Asked OCR Interview Questions
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.faqs.map((faq, fIdx) => (
+                      <div key={fIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <h5 className="text-xs font-bold text-cyan-300 font-mono">{faq.q}</h5>
+                        <p className="text-xs text-zinc-400 leading-relaxed">{faq.a}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Document AI Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

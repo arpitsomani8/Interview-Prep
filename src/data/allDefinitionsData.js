@@ -45,7 +45,8 @@ export const definitionBookmarks = [
   { id: "text-image-search", label: "Text / Image Search" },
   { id: "denoising", label: "Denoising" },
   { id: "mcp", label: "MCP" },
-  { id: "blockchain", label: "Blockchain" }
+  { id: "blockchain", label: "Blockchain" },
+  { id: "ocr", label: "OCR" }
 ];
 
 export const definitionsData = [
@@ -2325,5 +2326,78 @@ print("Block 1 Current Hash: ", hash_1)`,
       explanation: "Each block includes the previous block's SHA-256 hash. If any past data is altered, its hash changes, breaking all subsequent links and alerting the network to tampering."
     },
     takeaway: "Immutability is guaranteed by cryptographic hashing and decentralized consensus, ensuring trustless auditability without a single central authority."
+  },
+  {
+    id: "ocr",
+    title: "OCR (Optical Character Recognition)",
+    badge: "Document AI & Text Extraction",
+    summary: "OCR stands for Optical Character Recognition. It is a technology that extracts text from images, scanned documents, photographs, and PDFs.",
+    coreDefinition: "OCR extracts text from visual input, converting pixels of characters and words into machine-readable digital text.",
+    technologyComparison: [
+      {
+        tech: "OCR",
+        job: "Extract text from images",
+        example: "Read an invoice number from a scanned PDF"
+      },
+      {
+        tech: "Computer vision",
+        job: "Understand visual content",
+        example: "Detect a damaged parcel using YOLO"
+      },
+      {
+        tech: "LLM",
+        job: "Understand and generate language",
+        example: "Summarize an invoice or answer questions about it"
+      },
+      {
+        tech: "RAG",
+        job: "Retrieve relevant information and use it to ground an LLM's answer",
+        example: "Answer questions using thousands of extracted invoices"
+      }
+    ],
+    genAiPipeline: {
+      title: "How to Use OCR in a GenAI Project (Enterprise Invoice Processing)",
+      steps: [
+        { step: "1. Document Upload", desc: "A user uploads an invoice PDF or image." },
+        { step: "2. OCR Extraction", desc: "OCR extracts raw text and spatial coordinates from the document." },
+        { step: "3. Text Preprocessing", desc: "Python cleans, normalizes, and packages the extracted content." },
+        { step: "4. LLM Structuring", desc: "An LLM converts it into structured JSON, such as invoice number, vendor, date, and total." },
+        { step: "5. Business Validation", desc: "Validation logic checks the extracted fields against business rules." },
+        { step: "6. Database Persistence", desc: "The backend stores the validated invoice in a database." }
+      ]
+    },
+    ocrTools: [
+      {
+        name: "Tesseract + pytesseract",
+        desc: "Open-source, useful for a basic Python implementation and on-premise pipelines."
+      },
+      {
+        name: "PaddleOCR",
+        desc: "Deep-learning-based OCR toolkit with high accuracy on multi-lingual and rotated text."
+      },
+      {
+        name: "Azure AI Document Intelligence",
+        desc: "Managed document extraction and structured field recognition with prebuilt models."
+      },
+      {
+        name: "Amazon Textract",
+        desc: "Managed OCR and document analysis on AWS with table and form-key extraction."
+      }
+    ],
+    faqs: [
+      {
+        q: "Is OCR a type of AI?",
+        a: "OCR is a technology, not one specific AI algorithm. Modern OCR systems often use machine learning and deep learning."
+      },
+      {
+        q: "What is the difference between OCR and NLP?",
+        a: "OCR extracts text from visual input. NLP processes and understands language after text is available."
+      },
+      {
+        q: "Can an LLM replace OCR?",
+        a: "Some multimodal LLMs can read text directly from images. However, dedicated OCR engines or document-AI systems may be better for high-volume extraction, precise text positioning, and cost-efficient processing."
+      }
+    ],
+    takeaway: "Dedicated OCR extracts text cheaply and accurately at scale; LLMs provide contextual reasoning and schema normalization. Combining both yields robust Document AI pipelines."
   }
 ];
