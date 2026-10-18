@@ -8203,6 +8203,216 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 78: Data Drift & Model Drift */}
+            {item.id === 'data-model-drift' && (
+              <div className="space-y-6">
+                {/* Header / Intro Callout */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                      <Sliders className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Production ML Monitoring & Reliability</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-800">
+                      MLOps • Drift Detection
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-amber-800/40 shadow-xl space-y-2">
+                    <p className="text-xs sm:text-sm text-amber-200 font-sans leading-relaxed font-semibold">
+                      {item.summary}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Core Definitions: Data Drift vs Model Drift Split Cards */}
+                {item.coreDefinitions && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Data Drift Card */}
+                    <div className="p-5 rounded-2xl bg-zinc-950 border border-blue-900/50 hover:border-blue-800 transition flex flex-col justify-between space-y-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <h5 className="text-sm font-bold text-blue-300 font-mono">
+                            {item.coreDefinitions.dataDrift.term}
+                          </h5>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
+                            {item.coreDefinitions.dataDrift.math}
+                          </span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-black border border-blue-950">
+                          <p className="text-xs text-blue-100 font-medium font-sans leading-relaxed">
+                            {item.coreDefinitions.dataDrift.definition}
+                          </p>
+                        </div>
+                        <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
+                          {item.coreDefinitions.dataDrift.explanation}
+                        </p>
+
+                        <div className="space-y-1.5 pt-2 border-t border-zinc-900">
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
+                            Root Causes:
+                          </span>
+                          <ul className="space-y-1">
+                            {item.coreDefinitions.dataDrift.causes.map((c, cIdx) => (
+                              <li key={cIdx} className="text-[11px] text-zinc-400 font-sans flex items-start gap-1.5">
+                                <span className="text-blue-400 mt-0.5">•</span>
+                                <span>{c}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="space-y-1.5 pt-2 border-t border-zinc-900">
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
+                            Statistical Detection Tests:
+                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {item.coreDefinitions.dataDrift.detectionMetrics.map((m, mIdx) => (
+                              <span key={mIdx} className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-blue-300 border border-zinc-800">
+                                {m}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-black/60 border border-zinc-900 text-[11px] text-zinc-400 font-sans italic">
+                        <strong className="text-blue-400 font-mono not-italic">Example: </strong>
+                        {item.coreDefinitions.dataDrift.example}
+                      </div>
+                    </div>
+
+                    {/* Model Drift Card */}
+                    <div className="p-5 rounded-2xl bg-zinc-950 border border-purple-900/50 hover:border-purple-800 transition flex flex-col justify-between space-y-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <h5 className="text-sm font-bold text-purple-300 font-mono">
+                            {item.coreDefinitions.modelDrift.term}
+                          </h5>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                            {item.coreDefinitions.modelDrift.math}
+                          </span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-black border border-purple-950">
+                          <p className="text-xs text-purple-100 font-medium font-sans leading-relaxed">
+                            {item.coreDefinitions.modelDrift.definition}
+                          </p>
+                        </div>
+                        <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
+                          {item.coreDefinitions.modelDrift.explanation}
+                        </p>
+
+                        <div className="space-y-1.5 pt-2 border-t border-zinc-900">
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
+                            Root Causes:
+                          </span>
+                          <ul className="space-y-1">
+                            {item.coreDefinitions.modelDrift.causes.map((c, cIdx) => (
+                              <li key={cIdx} className="text-[11px] text-zinc-400 font-sans flex items-start gap-1.5">
+                                <span className="text-purple-400 mt-0.5">•</span>
+                                <span>{c}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="space-y-1.5 pt-2 border-t border-zinc-900">
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
+                            Performance Degradation Indicators:
+                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {item.coreDefinitions.modelDrift.detectionMetrics.map((m, mIdx) => (
+                              <span key={mIdx} className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-purple-300 border border-zinc-800">
+                                {m}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-black/60 border border-zinc-900 text-[11px] text-zinc-400 font-sans italic">
+                        <strong className="text-purple-400 font-mono not-italic">Example: </strong>
+                        {item.coreDefinitions.modelDrift.example}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Head-to-Head Comparison Table */}
+                {item.comparisonMatrix && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Data Drift vs. Model (Concept) Drift: Side-by-Side Comparison</span>
+                    </h4>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead className="bg-black border-b border-zinc-800 font-mono text-[11px] text-zinc-400">
+                          <tr>
+                            <th className="p-3.5 w-1/4">Dimension</th>
+                            <th className="p-3.5 w-3/8 text-blue-300">Data Drift (Covariate Shift)</th>
+                            <th className="p-3.5 w-3/8 text-purple-300">Model Drift (Concept Drift)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900 text-zinc-300">
+                          {item.comparisonMatrix.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3.5 font-bold font-mono text-zinc-300 text-[11px]">
+                                {row.dimension}
+                              </td>
+                              <td className="p-3.5 text-blue-200/90 leading-relaxed">
+                                {row.dataDrift}
+                              </td>
+                              <td className="p-3.5 text-purple-200/90 leading-relaxed">
+                                {row.modelDrift}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Production Mitigation Playbook */}
+                {item.productionMitigationPlaybook && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Production Mitigation & Retraining Playbook</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.productionMitigationPlaybook.map((play, pIdx) => (
+                        <div key={pIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-black text-emerald-400 border border-emerald-950">
+                                {play.tag}
+                              </span>
+                            </div>
+                            <h5 className="text-xs font-bold text-zinc-200 font-mono">
+                              {play.strategy}
+                            </h5>
+                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                              {play.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

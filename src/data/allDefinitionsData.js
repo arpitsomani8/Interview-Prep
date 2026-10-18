@@ -74,7 +74,8 @@ export const definitionBookmarks = [
   { id: "gpu-cuda", label: "GPU / CUDA" },
   { id: "ai-fairness-auditing", label: "AI Fairness / Auditing" },
   { id: "automl", label: "AutoML" },
-  { id: "redis", label: "Redis" }
+  { id: "redis", label: "Redis" },
+  { id: "data-model-drift", label: "Data / Model Drift" }
 ];
 
 export const definitionsData = [
@@ -4966,5 +4967,101 @@ def health_check():
       { mechanism: "Replication & Clustering", desc: "Master-replica asynchronous replication, Redis Sentinel for automatic failover, and Redis Cluster for horizontal sharding." }
     ],
     takeaway: "Redis serves as the critical acceleration layer across modern architectures: keeping hot data in memory for <1ms latency, buffering workloads via message queues, and shielding downstream databases and LLM APIs from high-concurrency traffic."
+  },
+  {
+    id: "data-model-drift",
+    title: "Data Drift & Model Drift — Production ML Monitoring & Reliability",
+    badge: "MLOps & Model Monitoring",
+    summary: "Data drift occurs when the characteristics or distribution of incoming data change compared with the training set. Model drift occurs when real-world relationships evolve, causing predictive performance and accuracy to degrade over time.",
+    coreDefinitions: {
+      dataDrift: {
+        term: "Data Drift (Feature Drift / Covariate Shift)",
+        math: "P(X) changes while P(Y|X) remains unchanged",
+        definition: "Data drift occurs when the characteristics or distribution of incoming data change compared with the data a model was trained or validated on.",
+        explanation: "The input data distribution shifts over time, even if the real-world relationship between inputs and outputs has not altered. Can be detected immediately without waiting for ground truth labels.",
+        causes: [
+          "Changes in user demographics or consumer behavior trends",
+          "Hardware or sensor upgrades (e.g. higher camera resolutions, new phone models)",
+          "Data pipeline bugs, missing values, or altered schema transformations",
+          "Seasonality, macro-economic events, or geographical expansion"
+        ],
+        detectionMetrics: [
+          "Population Stability Index (PSI)",
+          "Kolmogorov-Smirnov (KS) Test",
+          "Wasserstein Distance / Earth Mover's Distance",
+          "Jensen-Shannon (JS) Divergence"
+        ],
+        example: "A retail model trained on winter apparel queries receives sudden surges of swimwear and sandal queries in May, or camera images arrive with different lighting conditions."
+      },
+      modelDrift: {
+        term: "Model Drift (Concept Drift / Performance Degradation)",
+        math: "P(Y|X) changes, with or without P(X) shift",
+        definition: "Model drift occurs when the statistical relationship between input features and target predictions changes over time, causing the trained model's predictive performance and accuracy to degrade in production.",
+        explanation: "External real-world rules or ground truths change, so identical inputs no longer produce the same correct outputs. Requires ground truth labels or feedback to confirm accuracy decline.",
+        causes: [
+          "Competitor price changes or sudden regulatory shifts",
+          "Fraud patterns evolving to bypass existing detection logic",
+          "Economic inflation or changes in customer purchasing power",
+          "Shifts in medical or fashion definitions over long time horizons"
+        ],
+        detectionMetrics: [
+          "Accuracy, Precision, Recall, and F1-Score degradation",
+          "Receiver Operating Characteristic Area Under Curve (ROC-AUC) drop",
+          "Mean Absolute Error (MAE) / Root Mean Squared Error (RMSE) increase",
+          "Customer override rates and human review escalation surges"
+        ],
+        example: "A fraud detection model trained before an economic shift: transactions that previously looked fraudulent now represent legitimate emergency spending, causing precision to plummet."
+      }
+    },
+    comparisonMatrix: [
+      {
+        dimension: "Core Concept",
+        dataDrift: "Input distribution P(X) changes over time",
+        modelDrift: "Relationship between inputs and target P(Y|X) changes"
+      },
+      {
+        dimension: "Requires Ground Truth Labels?",
+        dataDrift: "No (Unsupervised: compare incoming inference features against training baseline)",
+        modelDrift: "Yes (Supervised: requires actual delayed outcomes or verified feedback)"
+      },
+      {
+        dimension: "Detection Timing",
+        dataDrift: "Immediate / Leading indicator (flagged at ingestion or inference time)",
+        modelDrift: "Lagging indicator (only measured after actual labels are collected)"
+      },
+      {
+        dimension: "Detection Methods",
+        dataDrift: "PSI, KS-Test, Wasserstein Distance, Chi-Square test",
+        modelDrift: "Drop in Accuracy, F1-Score, ROC-AUC, increase in Log-Loss/RMSE"
+      },
+      {
+        dimension: "Primary Fix",
+        dataDrift: "Update data preprocessing, retrain model with representative new data",
+        modelDrift: "Re-architect features, retrain with recent labels, update target definitions"
+      }
+    ],
+    productionMitigationPlaybook: [
+      {
+        strategy: "Continuous Monitoring & Alerts",
+        desc: "Deploy automated drift monitoring (e.g., Evidently AI, AWS SageMaker Model Monitor, Great Expectations) to compute drift scores on hourly or daily batches.",
+        tag: "Telemetry"
+      },
+      {
+        strategy: "Automated Retraining Pipelines",
+        desc: "Trigger CI/CD retraining workflows (via Airflow DAGs or Vertex AI Pipelines) when PSI or error rates cross predefined alert thresholds.",
+        tag: "MLOps"
+      },
+      {
+        strategy: "Shadow Deployment & Champion-Challenger",
+        desc: "Evaluate freshly retrained challenger models in shadow mode against production traffic before promoting them to active endpoints.",
+        tag: "Safe Rollout"
+      },
+      {
+        strategy: "Fallback Heuristics & Human-in-the-Loop",
+        desc: "When severe drift is flagged, route low-confidence predictions to manual review queues or conservative rule-based fallbacks.",
+        tag: "Resilience"
+      }
+    ],
+    takeaway: "Data drift alerts you that incoming data has changed (leading indicator, no labels required), while model drift proves that your model's real-world predictive accuracy has decayed (lagging indicator, requires ground truth). Robust MLOps monitors both to trigger safe, automated retraining before business metrics suffer."
   }
 ];
