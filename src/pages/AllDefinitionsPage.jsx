@@ -13,7 +13,8 @@ import {
   Terminal,
   Globe,
   Bug,
-  ShieldCheck 
+  ShieldCheck,
+  Sliders
 } from 'lucide-react';
 
 export default function AllDefinitionsPage() {
@@ -751,6 +752,131 @@ export default function AllDefinitionsPage() {
                     </div>
                   ))}
                 </div>
+
+                {/* How do you tune RAG retrieval in production? */}
+                {item.tuningRagRetrieval && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-3 gap-2">
+                      <div className="flex items-center gap-2">
+                        <Sliders className="w-4 h-4 text-cyan-400" />
+                        <div>
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                            {item.tuningRagRetrieval.question}
+                          </h4>
+                          <p className="text-[11px] text-zinc-400 font-sans mt-0.5">
+                            {item.tuningRagRetrieval.subtitle}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono text-cyan-300 uppercase bg-cyan-950/40 px-2.5 py-1 rounded border border-cyan-800/40 shrink-0 self-start sm:self-auto">
+                        5 Retrieval Controls
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                      {item.tuningRagRetrieval.steps.map((st, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className={`p-4 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition flex flex-col justify-between space-y-3 ${
+                            sIdx === 2 ? 'md:col-span-2 lg:col-span-1' : ''
+                          }`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 font-mono text-[10px] text-cyan-300 font-bold uppercase">
+                                {st.step}
+                              </span>
+                              <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                                {st.title}
+                              </h5>
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {st.summary}
+                            </p>
+
+                            {/* Tradeoff bullets */}
+                            {st.bullets && (
+                              <ul className="space-y-1.5 pt-1 text-[11px] text-zinc-400">
+                                {st.bullets.map((bullet, bIdx) => (
+                                  <li key={bIdx} className="flex items-start gap-1.5">
+                                    <span className="text-cyan-400 mt-0.5">•</span>
+                                    <span>{bullet}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+
+                            {/* Code snippet for metadata */}
+                            {st.codeSnippet && (
+                              <div className="pt-1">
+                                <pre className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-[10px] text-cyan-200 overflow-x-auto leading-relaxed">
+                                  {st.codeSnippet}
+                                </pre>
+                              </div>
+                            )}
+
+                            {/* Reranker pipeline flow */}
+                            {st.flow && (
+                              <div className="p-2 rounded bg-cyan-950/30 border border-cyan-800/40 font-mono text-[10px] text-cyan-200 font-semibold">
+                                {st.flow}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Caution / note */}
+                          {st.caution && (
+                            <div className="text-[10px] font-mono text-amber-300/90 pt-2 border-t border-zinc-900 leading-relaxed">
+                              ⚠️ {st.caution}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* How do you measure retrieval quality? */}
+                {item.retrievalQualityMetrics && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-amber-400" />
+                        <div>
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                            {item.retrievalQualityMetrics.question}
+                          </h4>
+                          <p className="text-[11px] text-zinc-400 font-sans mt-0.5">
+                            {item.retrievalQualityMetrics.setup}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono text-amber-300 uppercase bg-amber-950/40 px-2.5 py-1 rounded border border-amber-800/40 shrink-0 self-start sm:self-auto">
+                        Benchmark Metrics
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.retrievalQualityMetrics.metrics.map((m, mIdx) => (
+                        <div
+                          key={mIdx}
+                          className="p-3.5 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition space-y-1.5 flex flex-col justify-between"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-amber-300 font-mono">{m.name}</span>
+                              {m.fullName && (
+                                <span className="text-[9px] font-mono text-zinc-500 uppercase">{m.fullName}</span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-zinc-300 leading-relaxed pt-1.5 font-sans">
+                              {m.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* 5 Pipeline Pillars */}
                 <div className="space-y-2.5">

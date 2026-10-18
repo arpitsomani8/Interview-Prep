@@ -430,6 +430,83 @@ def predict_damage(data: ParcelData):
         a: "RAG retrieves information to help generate an answer. An agent can use RAG as one tool while also planning steps and calling other tools to accomplish a goal."
       }
     ],
+    tuningRagRetrieval: {
+      question: "How do you tune RAG retrieval in production?",
+      subtitle: "Chunk size, top-k, metadata filters, hybrid search, and reranking are the main production retrieval controls.",
+      steps: [
+        {
+          step: "Step 1",
+          title: "Tune chunk size",
+          summary: "Try several candidate sizes, such as 128, 256, and 512 tokens, with suitable overlap. These are experimental starting points, not universal best values.",
+          bullets: [
+            "Smaller chunks can improve precision but lose context.",
+            "Larger chunks can preserve context but return irrelevant text along with the answer.",
+            "Measure performance on a fixed set of representative questions."
+          ]
+        },
+        {
+          step: "Step 2",
+          title: "Retrieve top-k chunks",
+          summary: "top-k is how many candidate chunks you retrieve for a query. If k = 5, the retriever returns its five highest-ranked candidates.",
+          bullets: [
+            "A very small k can miss useful evidence.",
+            "A very large k can introduce noise, increase cost, and consume the LLM's context window.",
+            "Compare candidate values such as 3, 5, and 10, and measure whether the correct evidence is included."
+          ]
+        },
+        {
+          step: "Step 3",
+          title: "Apply metadata filters",
+          summary: "Filters can restrict retrieval to the right department, current policy version, tenant, or document type. Enforce access-control filters on the server; don't trust a user to specify their own permissions.",
+          codeSnippet: `metadata = {
+    "document_id": "POLICY-101",
+    "department": "warehouse",
+    "policy_version": "2026-10",
+    "page": 4
+}`
+        },
+        {
+          step: "Step 4",
+          title: "Use hybrid search",
+          summary: "Hybrid search combines two complementary retrieval modalities:",
+          bullets: [
+            "Lexical retrieval: Looks for matching words or terms, such as BM25.",
+            "Semantic retrieval: Compares embedding vectors to find similar meanings."
+          ]
+        },
+        {
+          step: "Step 5",
+          title: "Add reranking",
+          summary: "A reranker examines the query and retrieved candidates together, then reorders candidates by relevance.",
+          flow: "Typical flow: Retrieve 20 candidates → rerank them → pass the best 3–5 to the LLM",
+          caution: "This may improve precision, but adds computation and latency. Evaluate it against a baseline rather than assuming it always helps."
+        }
+      ]
+    },
+    retrievalQualityMetrics: {
+      question: "How do you measure retrieval quality?",
+      setup: "Prepare a test set with questions and the chunks that contain the correct evidence.",
+      metrics: [
+        {
+          name: "Recall@k",
+          description: "What proportion of relevant chunks are included in the top-k results?"
+        },
+        {
+          name: "Precision@k",
+          description: "What proportion of the top-k results are relevant?"
+        },
+        {
+          name: "MRR",
+          fullName: "Mean Reciprocal Rank",
+          description: "How high does the first relevant result rank?"
+        },
+        {
+          name: "nDCG",
+          fullName: "Normalized Discounted Cumulative Gain",
+          description: "How good is the overall ranking, potentially accounting for graded relevance?"
+        }
+      ]
+    },
     pipelinePillars: [
       {
         pillar: "A. Chunking",
