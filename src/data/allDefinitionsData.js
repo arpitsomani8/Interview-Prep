@@ -39,7 +39,8 @@ export const definitionBookmarks = [
   { id: "langchain-langgraph", label: "LangChain / LangGraph" },
   { id: "normalization-scaling", label: "Normalization / Scaling" },
   { id: "boosting", label: "Boosting" },
-  { id: "nlp-general-flow", label: "NLP General Flow" }
+  { id: "nlp-general-flow", label: "NLP General Flow" },
+  { id: "aws-azure", label: "AWS / Azure in AI/ML" }
 ];
 
 export const definitionsData = [
@@ -1918,5 +1919,72 @@ print("Class probabilities:", model.predict_proba(new_parcel)[0])`,
       { area: "Calibration", why: "Are predicted probabilities reliable enough for threshold-based routing?" }
     ],
     engineeringWisdom: "I wouldn't claim a Transformer is better without testing. If TF-IDF meets the requirements, keeping it may be the better engineering decision."
+  },
+  {
+    id: "aws-azure",
+    title: "AWS & Azure in AI/ML Applications",
+    badge: "Cloud Architecture & ML Infrastructure",
+    summary: "Where exactly do we use AWS or Azure in an AI/ML application? The cloud is not the AI model itself. It provides infrastructure to store data, run models, expose APIs, control access, monitor performance, and scale the application.",
+    corePrinciple: "The cloud is not the AI model itself. It provides infrastructure to store data, run models, expose APIs, control access, monitor performance, and scale the application.",
+    architectureLifecycle: [
+      { step: "1. Warehouse camera / application", desc: "Uploads a parcel image from the inspection conveyor belt." },
+      { step: "2. Cloud storage", desc: "S3 or Azure Blob Storage stores the image with appropriate access policies." },
+      { step: "3. AI/ML inference service", desc: "YOLO detects visible damage; a separate ML model may estimate risk." },
+      { step: "4. Backend API + database", desc: "Save predictions, confidence scores, and inspection status." },
+      { step: "5. Dashboard and alerts", desc: "Operations team reviews flagged parcels in real time." }
+    ],
+    awsServices: [
+      { name: "Amazon S3", role: "Store images and datasets" },
+      { name: "Amazon SageMaker", role: "Train and deploy models" },
+      { name: "AWS Lambda", role: "Event-driven processing" },
+      { name: "Amazon EC2", role: "Run application servers" },
+      { name: "Amazon CloudWatch", role: "Monitor operations" }
+    ],
+    awsAdditionalServices: "Other useful AWS services include IAM for permissions, SQS for asynchronous job queues, API Gateway for managed API entry points, and managed databases for storing application results.",
+    azureServices: [
+      {
+        name: "Azure Blob Storage",
+        desc: "Store parcel images, datasets, and model artifacts. The backend can upload images and retrieve them through appropriately secured access."
+      },
+      {
+        name: "Azure AI Vision",
+        desc: "Use supported image-analysis capabilities such as image descriptions or OCR where suitable. For precise parcel-damage localization, verify the service capability or deploy a compatible custom detector such as YOLO."
+      },
+      {
+        name: "Azure OpenAI",
+        desc: "Use a supported deployed language or multimodal model to summarize inspection results, explain findings, or answer questions using company policies. It is not a substitute for validating visual detection accuracy."
+      },
+      {
+        name: "Azure Machine Learning",
+        desc: "Manage model training, experiments, model registration, and deployment workflows for supported ML workloads."
+      },
+      {
+        name: "Azure Functions",
+        desc: "Run event-driven code, such as responding to a storage event or triggering an inspection workflow. For sustained or GPU-intensive inference, use an appropriate hosting option instead."
+      }
+    ],
+    azureAdditionalServices: "Other relevant Azure services include Azure Container Apps or Azure Kubernetes Service for containerized workloads, Azure Monitor for telemetry, Microsoft Entra ID for identity, and Azure Key Vault for secrets.",
+    boto3Example: {
+      title: "Hands-On S3 Image Upload (Boto3 SDK)",
+      envSetup: '$env:S3_BUCKET="your-bucket-name"',
+      runCmd: "python upload_image.py",
+      filename: "upload_image.py",
+      code: `import os
+import boto3
+
+bucket_name = os.environ["S3_BUCKET"]
+image_path = "parcel.jpg"
+
+s3 = boto3.client("s3")
+
+s3.upload_file(
+    image_path,
+    bucket_name,
+    "incoming/parcel.jpg"
+)
+
+print("Image uploaded successfully")`,
+      takeaway: "S3 upload decouples camera image ingestion from synchronous ML inference, enabling scalable event-driven queues."
+    }
   }
 ];
