@@ -1126,6 +1126,90 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 20: Optimization */}
+            {item.id === 'optimization' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Distinction: Scaling vs Optimization */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                    <div className="text-xs font-bold text-amber-400 font-mono uppercase">What is Scaling?</div>
+                    <p className="text-xs text-zinc-300 leading-relaxed">{item.coreDistinction.scaling}</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                    <div className="text-xs font-bold text-cyan-400 font-mono uppercase">What is Optimization?</div>
+                    <p className="text-xs text-zinc-300 leading-relaxed">{item.coreDistinction.optimization}</p>
+                  </div>
+                </div>
+
+                {/* A. Optimizing Traditional ML */}
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                      A. Optimizing a Traditional ML Model Pipeline
+                    </h4>
+                    <span className="text-[10px] font-mono text-zinc-500">Latency Reduction</span>
+                  </div>
+                  <p className="text-xs text-zinc-400 italic">
+                    {item.traditionalMlOptimization.scenario}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+                    {item.traditionalMlOptimization.strategies.map((strat, sIdx) => (
+                      <div key={sIdx} className="p-3 rounded-lg bg-black border border-zinc-800 space-y-1">
+                        <div className="text-xs font-bold text-white font-mono">{strat.name}</div>
+                        <div className="text-[11px] text-zinc-400 leading-relaxed">{strat.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* B. Optimizing RAG Table */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                    B. Optimizing RAG: Diagnostic Problem vs Solution Matrix
+                  </h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                      <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                        <tr>
+                          <th className="p-3 border-b border-zinc-800 text-rose-400 font-bold w-1/3">Observed Problem</th>
+                          <th className="p-3 border-b border-zinc-800 text-emerald-400 font-bold">Engineering Solution</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/80 bg-black/60">
+                        {item.ragOptimizationTable.map((row, rIdx) => (
+                          <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="p-3 font-semibold text-zinc-200">{row.problem}</td>
+                            <td className="p-3 text-cyan-200/90 leading-relaxed">{row.solution}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Production Metrics Checklist */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-900/40 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-300 font-mono">
+                      Production Metrics & Observability Checklist
+                    </h4>
+                    <span className="text-[10px] font-mono text-zinc-500">6 Critical KPIs</span>
+                  </div>
+                  <p className="text-xs text-zinc-400">
+                    For an enterprise production system, monitor and alarm on these metrics continuously:
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+                    {item.productionMetricsChecklist.map((chk, cIdx) => (
+                      <div key={cIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+                        <div className="text-xs font-bold text-amber-300 font-mono">{chk.metric}</div>
+                        <div className="text-[11px] text-zinc-400 leading-relaxed">{chk.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

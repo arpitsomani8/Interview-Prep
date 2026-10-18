@@ -17,7 +17,8 @@ export const definitionBookmarks = [
   { id: "predictive-modeling", label: "Predictive Modeling" },
   { id: "production-databases", label: "Production Databases" },
   { id: "classical-ml", label: "Classical ML" },
-  { id: "fine-tuning", label: "Fine-Tuning" }
+  { id: "fine-tuning", label: "Fine-Tuning" },
+  { id: "optimization", label: "Optimization" }
 ];
 
 export const definitionsData = [
@@ -825,5 +826,59 @@ def ask_question(data: Question):
       }
     ],
     goldenRule: "Fundamental Distinction: RAG does not itself update the model's learned weights. It supplies external reference context dynamically at inference time."
+  },
+  {
+    id: "optimization",
+    title: "Optimization & Production Scaling",
+    badge: "Performance & Cost Engineering",
+    summary: "Scaling means supporting more data, users, and requests without unacceptable cost or latency. Optimization means improving speed, quality, memory usage, or cost.",
+    coreDistinction: {
+      scaling: "Supporting more data, concurrent users, and query volume without unacceptable cost spikes or latency degradation.",
+      optimization: "Improving execution speed, response quality, RAM/VRAM footprint, and hardware cost per request."
+    },
+    traditionalMlOptimization: {
+      scenario: "Suppose a parcel-risk prediction API takes 500 milliseconds per request. You can optimize it via:",
+      strategies: [
+        { name: "Feature Engineering", desc: "Remove irrelevant or noisy features, address multicollinearity, and enhance data quality." },
+        { name: "Hyperparameter Tuning", desc: "Systematically explore settings (e.g. tree depth, regularizations) using rigorous cross-validation." },
+        { name: "Model Selection", desc: "Compare Logistic Regression, Random Forest, and XGBoost using an identical evaluation methodology." },
+        { name: "Inference Optimization", desc: "Minimize redundant preprocessing, batch concurrent requests where feasible, and profile code bottlenecks." },
+        { name: "Deployment Architecture", desc: "Load the model artifact once upon application startup (FastAPI lifespan) instead of reloading weights per request." }
+      ]
+    },
+    ragOptimizationTable: [
+      {
+        problem: "Retrieval returns irrelevant passages",
+        solution: "Improve chunking strategies, upgrade embedding models, apply strict metadata pre-filters, and adopt hybrid search."
+      },
+      {
+        problem: "Answers take too long to generate",
+        solution: "Profile embedding latency, vector search latency, and LLM generation latency separately to isolate bottlenecks."
+      },
+      {
+        problem: "Too much text is sent to the LLM",
+        solution: "Tune top-k retrieval count, eliminate redundant chunks, and set similarity threshold cutoffs."
+      },
+      {
+        problem: "Too expensive per request",
+        solution: "Implement semantic caching for repeated queries (e.g. Redis), and route simple queries to smaller models."
+      },
+      {
+        problem: "Vector search is slow",
+        solution: "Add or tune Approximate Nearest Neighbor (ANN) indexes (e.g. HNSW parameters) and optimize DB memory limits."
+      },
+      {
+        problem: "Answers are inaccurate or hallucinated",
+        solution: "Evaluate retrieval relevance, add a Cross-Encoder reranking stage, tighten prompt context, and test for unsupported claims."
+      }
+    ],
+    productionMetricsChecklist: [
+      { metric: "p50 & p95 Latency", desc: "Measure median and tail response latencies to satisfy real-time customer SLAs." },
+      { metric: "RPS & Error Rate", desc: "Track request throughput capacity and percentage of 4xx/5xx failures or timeouts." },
+      { metric: "Cost Per Request", desc: "Calculate token consumption and infrastructure compute cost per incoming transaction." },
+      { metric: "Retrieval Precision & Recall", desc: "Benchmark whether the search system consistently surfaces true relevant policy passages." },
+      { metric: "Answer Faithfulness & Citation Accuracy", desc: "Verify that model responses are directly grounded in retrieved context with accurate references." },
+      { metric: "Model Performance Drift", desc: "Monitor classification metric stability and data distribution shifts over long operational windows." }
+    ]
   }
 ];
