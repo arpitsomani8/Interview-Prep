@@ -71,7 +71,8 @@ export const definitionBookmarks = [
   { id: "caching", label: "Caching" },
   { id: "backend-architecture", label: "Backend Architecture" },
   { id: "onnx", label: "ONNX" },
-  { id: "gpu-cuda", label: "GPU / CUDA" }
+  { id: "gpu-cuda", label: "GPU / CUDA" },
+  { id: "ai-fairness-auditing", label: "AI Fairness / Auditing" }
 ];
 
 export const definitionsData = [
@@ -4771,5 +4772,66 @@ def health_check():
       }
     ],
     takeaway: "The GPU provides raw parallel hardware cores, CUDA acts as the programming interface and runtime enabling code to execute across those cores, and cuDNN delivers pre-optimized algorithmic primitives for deep neural networks."
+  },
+  {
+    id: "ai-fairness-auditing",
+    title: "AI Fairness & Auditing — Governance, Ethics & Compliance",
+    badge: "Responsible AI & Production Governance",
+    summary: "AI fairness ensures an AI system does not produce unjustified or disadvantageous outcomes for particular groups, while AI auditing verifies reliability, fairness, explainability, security, and compliance.",
+    fairnessDefinition: "AI fairness means ensuring that an AI system does not produce unjustified or systematically disadvantageous outcomes for particular groups.",
+    auditingDefinition: "AI auditing is the process of checking whether an AI system is reliable, fair, explainable, secure, and compliant with applicable requirements.",
+    checklistQuestion: "What is an AI audit checklist?",
+    checklist: [
+      {
+        pillar: "Fairness",
+        question: "Are outcomes or errors disproportionately affecting a group?",
+        accent: "text-emerald-400",
+        badge: "Algorithmic Parity",
+        detail: "Audit disparate impact across demographic sub-groups, protected attributes, or customer cohorts to prevent biased classification or exclusion."
+      },
+      {
+        pillar: "Accuracy",
+        question: "Does the model perform well on representative test data?",
+        accent: "text-cyan-400",
+        badge: "Test Representativeness",
+        detail: "Validate precision, recall, and error distributions on out-of-distribution and real-world stratified datasets rather than synthetic baselines."
+      },
+      {
+        pillar: "Explainability",
+        question: "Can important factors behind a decision be examined?",
+        accent: "text-blue-400",
+        badge: "Interpretability",
+        detail: "Use feature attribution techniques (SHAP, LIME) or inspect retrieval traces and prompt chains to ensure non-opaque decisions."
+      },
+      {
+        pillar: "Privacy",
+        question: "Is personal data handled appropriately?",
+        accent: "text-purple-400",
+        badge: "Data Sovereignty",
+        detail: "Ensure strict compliance with GDPR, HIPAA, and CCPA, verifying PII anonymization, tenant isolation, and zero unauthorized training retention."
+      },
+      {
+        pillar: "Security",
+        question: "Can users manipulate inputs or access restricted information?",
+        accent: "text-rose-400",
+        badge: "Threat Mitigation",
+        detail: "Defend against prompt injection, jailbreaks, data poisoning, adversarial input manipulation, and privilege escalation."
+      },
+      {
+        pillar: "Reliability",
+        question: "Does performance remain acceptable after deployment?",
+        accent: "text-amber-400",
+        badge: "Production Stability",
+        detail: "Monitor data drift, concept drift, p95 latencies, timeout rates, and model confidence degradation over prolonged production runs."
+      },
+      {
+        pillar: "Governance",
+        question: "Are responsibilities, limitations, and approvals documented?",
+        accent: "text-indigo-400",
+        badge: "Accountability & Policy",
+        detail: "Maintain comprehensive model cards, human-in-the-loop review boundaries, documented limitations, and executive sign-off audit trails."
+      }
+    ],
+    takeaway: "Deploying AI responsibly requires moving beyond technical accuracy: systematic AI auditing audits fairness parity, explainability, privacy boundaries, threat resistance, production reliability, and documented governance."
   }
 ];

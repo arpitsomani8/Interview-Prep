@@ -7725,6 +7725,135 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 75: AI Fairness / Auditing */}
+            {item.id === 'ai-fairness-auditing' && (
+              <div className="space-y-6">
+                {/* Core Definitions: Fairness & Auditing */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Responsible AI Foundations</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950/70 text-rose-300 border border-rose-800">
+                      Ethics & Compliance
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Fairness Card */}
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-bold font-mono text-emerald-400">
+                          AI Fairness
+                        </span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black text-emerald-300 border border-zinc-800">
+                          Parity & Equity
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                        {item.fairnessDefinition}
+                      </p>
+                    </div>
+
+                    {/* Auditing Card */}
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-bold font-mono text-cyan-400">
+                          AI Auditing
+                        </span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black text-cyan-300 border border-zinc-800">
+                          Verification Process
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                        {item.auditingDefinition}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* What is an AI audit checklist? */}
+                {item.checklist && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.checklistQuestion}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        7 Core Pillars
+                      </span>
+                    </div>
+
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                          <tr>
+                            <th className="py-3 px-4 font-semibold text-zinc-300 w-1/4">Audit Pillar</th>
+                            <th className="py-3 px-4 font-semibold text-emerald-400">Key Audit Question</th>
+                            <th className="py-3 px-4 font-semibold text-zinc-300">Engineering Audit Focus</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.checklist.map((chk, cIdx) => (
+                            <tr key={cIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-3.5 px-4 font-mono font-bold text-white whitespace-nowrap">
+                                <span className={chk.accent}>{chk.pillar}</span>
+                                <div className="text-[10px] font-normal text-zinc-500 font-mono mt-0.5">
+                                  {chk.badge}
+                                </div>
+                              </td>
+                              <td className="py-3.5 px-4 font-semibold text-zinc-100">
+                                {chk.question}
+                              </td>
+                              <td className="py-3.5 px-4 text-zinc-400 text-xs">
+                                {chk.detail}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Responsive Grid Cards for Mobile */}
+                    <div className="grid grid-cols-1 md:hidden gap-3">
+                      {item.checklist.map((chk, cIdx) => (
+                        <div
+                          key={cIdx}
+                          className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className={`text-sm font-bold font-mono ${chk.accent}`}>
+                                {chk.pillar}
+                              </span>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-zinc-300 border border-zinc-800">
+                                {chk.badge}
+                              </span>
+                            </div>
+                            <div className="text-xs font-semibold text-zinc-200 font-sans">
+                              {chk.question}
+                            </div>
+                            <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
+                              {chk.detail}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
