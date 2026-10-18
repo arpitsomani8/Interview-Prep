@@ -1,6 +1,6 @@
 import React from 'react';
 import { introData } from '../data/introData';
-import { Sparkles, ArrowRight, ShieldCheck, CheckCircle2, Layers, Cpu, Eye, BookOpen } from 'lucide-react';
+import { Sparkles, ArrowRight, CheckCircle2, Layers, Cpu, Eye, BookOpen } from 'lucide-react';
 
 export default function IntroPage({ setActiveTab }) {
   const getTabIcon = (id) => {
