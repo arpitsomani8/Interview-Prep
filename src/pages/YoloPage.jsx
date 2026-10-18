@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { yoloData } from '../data/yoloData';
-import { Eye, Bookmark, ArrowUp, ShieldCheck, MessageSquareQuote } from 'lucide-react';
+import { Eye, Bookmark, ArrowUp, ShieldCheck, MessageSquareQuote, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function YoloPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
@@ -13,28 +13,30 @@ export default function YoloPage() {
     }
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setActiveBookmark(null);
+  const scrollToBookmarks = () => {
+    const el = document.getElementById('bookmarks-bar');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-8">
+    <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
       {/* Title */}
-      <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-semibold uppercase tracking-wider">
-          <Eye className="w-3.5 h-3.5" />
+      <div className="space-y-2">
+        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-[11px] font-semibold uppercase tracking-wider">
+          <Eye className="w-3 h-3" />
           <span>Project 3 Master Blueprint</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
           {yoloData.title}
         </h1>
       </div>
 
       {/* Target Resume Bullet Point */}
-      <div className="rounded-2xl bg-[#0a0a0c] border border-emerald-500/30 p-6 shadow-xl">
-        <div className="text-xs uppercase tracking-wider text-emerald-400 font-bold mb-2 flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+      <div className="rounded-2xl bg-[#0a0a0c] border border-cyan-500/30 p-6 shadow-xl">
+        <div className="text-xs uppercase tracking-wider text-cyan-400 font-bold mb-2 flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-cyan-400" />
           <span>Target Resume Bullet Point to Defend</span>
         </div>
         <p className="text-base sm:text-lg text-zinc-100 font-medium italic">
@@ -47,174 +49,169 @@ export default function YoloPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm uppercase tracking-wider">
             <MessageSquareQuote className="w-5 h-5" />
-            <span>Executive 90-Second Interview Defense Script (Word-for-Word)</span>
+            <span>Executive 90-Second Interview Defense Script (Edge Computer Vision Pipeline)</span>
           </div>
           <span className="text-xs px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
             Timing: 90s
           </span>
         </div>
-        <blockquote className="text-sm sm:text-base text-zinc-300 leading-relaxed italic border-l-4 border-indigo-500 pl-4 py-1">
+        <blockquote className="text-sm sm:text-base text-zinc-200 leading-relaxed italic border-l-4 border-indigo-500 pl-4 py-1 whitespace-pre-line">
           {yoloData.executiveScript}
         </blockquote>
       </div>
 
-      {/* Metrics Banner */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {yoloData.metrics.map((m, idx) => (
-          <div key={idx} className="rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-4 text-center space-y-1">
-            <div className="text-xs text-zinc-400 font-medium">{m.metric}</div>
-            <div className="text-xl sm:text-2xl font-black text-cyan-400">{m.val}</div>
-            <div className="text-[11px] text-zinc-400">{m.context}</div>
+      {/* Real-World User Example & High-Level Execution Flow */}
+      <div className="rounded-2xl bg-[#0a0a0c] border border-amber-500/30 p-6 sm:p-8 space-y-6 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-semibold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Real-World Execution Trace</span>
+            </div>
+            <h2 className="text-base sm:text-lg font-bold text-white tracking-tight flex flex-wrap items-center gap-2">
+              <span>Incident Trigger:</span>
+              <span className="text-amber-400 font-mono text-xs sm:text-sm">{yoloData.userExample.query}</span>
+            </h2>
           </div>
-        ))}
+          <span className="text-xs font-mono text-zinc-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800 self-start sm:self-auto">
+            Latency: {yoloData.userExample.latency}
+          </span>
+        </div>
+
+        <p className="text-sm text-zinc-300 leading-relaxed">
+          {yoloData.userExample.description}
+        </p>
+
+        {/* Clean Line-by-Line Execution Flow */}
+        <div className="rounded-xl bg-zinc-950/80 border border-zinc-800 divide-y divide-zinc-800/80 overflow-hidden">
+          {yoloData.userExample.steps.map((st) => (
+            <div
+              key={st.step}
+              className="p-4 sm:p-5 flex flex-col md:flex-row md:items-start gap-3 md:gap-5 hover:bg-zinc-900/30 transition"
+            >
+              <div className="flex items-center gap-2.5 md:w-56 shrink-0">
+                <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                  Step {st.step}
+                </span>
+                <span className="text-sm font-bold text-white tracking-tight">
+                  {st.stage}
+                </span>
+              </div>
+              <div className="flex-1 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                {st.text}
+              </div>
+              <div className="text-[11px] font-mono text-zinc-400 bg-zinc-900 px-2.5 py-1 rounded border border-zinc-800 shrink-0 self-start">
+                {st.system}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Final Output & Audit Logging Showcase */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2">
+          {/* Diverter Action Response */}
+          <div className="rounded-xl bg-zinc-950 border border-zinc-800 p-5 space-y-2.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span>PLC Diverter Action & Physical Response</span>
+            </div>
+            <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed bg-black/50 p-3.5 rounded-lg border border-zinc-800/80 italic">
+              "{yoloData.userExample.sampleOutput.diverterAction}"
+            </p>
+          </div>
+
+          {/* On-Premises PostgreSQL Record */}
+          <div className="rounded-xl bg-zinc-950 border border-zinc-800 p-5 space-y-2.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span>On-Premises PostgreSQL Record & Damage Claim</span>
+            </div>
+            <div className="text-xs font-mono bg-black/50 p-3.5 rounded-lg border border-zinc-800/80 space-y-1 text-zinc-300">
+              <div><span className="text-zinc-500">Inspection ID:</span> <span className="text-white font-bold">{yoloData.userExample.sampleOutput.inspectionRecord.inspection_id}</span></div>
+              <div><span className="text-zinc-500">Conveyor:</span> {yoloData.userExample.sampleOutput.inspectionRecord.conveyor_line}</div>
+              <div><span className="text-zinc-500">Defect:</span> <span className="text-amber-400 font-bold">{yoloData.userExample.sampleOutput.inspectionRecord.defect_class}</span></div>
+              <div><span className="text-zinc-500">Latency:</span> {yoloData.userExample.sampleOutput.inspectionRecord.inference_latency} ({yoloData.userExample.sampleOutput.inspectionRecord.diverter_latency})</div>
+              <div><span className="text-zinc-500">Claim:</span> <span className="text-cyan-400">{yoloData.userExample.sampleOutput.inspectionRecord.carrier_claim}</span></div>
+              <div><span className="text-zinc-500">Status:</span> <span className="text-emerald-400 font-bold">{yoloData.userExample.sampleOutput.inspectionRecord.database_status}</span></div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Bookmarks Bar */}
-      <div className="sticky top-20 z-40 bg-black/95 backdrop-blur-md rounded-2xl border border-zinc-800 p-4 shadow-xl">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-300">
+      {/* Bookmarked Technical Concepts & Interview Defense */}
+      <div id="bookmarks-bar" className="space-y-6 pt-2">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-400">
             <Bookmark className="w-4 h-4 text-cyan-400" />
-            <span>Page Bookmarks (On-Page Only)</span>
+            <span>Bookmarked Technical Concepts & Interview Defense</span>
           </div>
-          <button onClick={scrollToTop} className="flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer">
-            <ArrowUp className="w-3.5 h-3.5" />
-            <span>Top</span>
-          </button>
+          <p className="text-sm text-zinc-400">
+            Click any concept bookmark below to jump directly to its technical breakdown and interview defense rationale:
+          </p>
+
+          {/* Clickable Bookmark Badges */}
+          <div className="flex flex-wrap gap-2.5 pt-1">
+            {yoloData.bookmarkedConcepts.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToId(item.id)}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 border cursor-pointer ${
+                  activeBookmark === item.id
+                    ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/10'
+                    : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:border-cyan-500/50 hover:bg-zinc-800 hover:text-white'
+                }`}
+              >
+                <Bookmark className={`w-3.5 h-3.5 ${activeBookmark === item.id ? 'text-cyan-400 fill-cyan-400' : 'text-cyan-400'}`} />
+                <span>{item.title}</span>
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {['core-problem', 'data-reality', 'model-selection', 'edge-opt', 'pipeline-steps', 'db-reality', 'chunking', 'multimodal', 'ocr', 'tradeoffs-table'].map((id) => (
-            <button
-              key={id}
-              onClick={() => scrollToId(id)}
-              className={`text-xs px-3 py-1.5 rounded-lg border transition cursor-pointer ${
-                activeBookmark === id
-                  ? 'bg-cyan-500 text-black font-bold border-cyan-400'
-                  : 'bg-[#121214] text-zinc-300 border-zinc-800 hover:bg-zinc-800 hover:text-white'
+
+        {/* Detailed Concept Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {yoloData.bookmarkedConcepts.map((item) => (
+            <div
+              key={item.id}
+              id={item.id}
+              className={`scroll-mt-24 rounded-2xl bg-[#0a0a0c] p-6 sm:p-7 space-y-4 shadow-xl transition flex flex-col justify-between border ${
+                activeBookmark === item.id
+                  ? 'border-cyan-500 shadow-cyan-500/10'
+                  : 'border-zinc-800 hover:border-zinc-700'
               }`}
             >
-              {id.replace('-', ' ').toUpperCase()}
-            </button>
-          ))}
-        </div>
-      </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] uppercase font-mono px-2.5 py-1 rounded-md bg-zinc-900 text-cyan-300 border border-zinc-800 font-semibold">
+                    {item.badge}
+                  </span>
+                  <button
+                    onClick={scrollToBookmarks}
+                    className="text-xs font-mono text-zinc-500 hover:text-cyan-400 transition flex items-center gap-1 cursor-pointer"
+                    title="Back to Bookmarks"
+                  >
+                    <span>Top</span>
+                    <ArrowUp className="w-3 h-3" />
+                  </button>
+                </div>
+                <h3 className="text-xl font-bold text-white tracking-tight">
+                  {item.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-cyan-400/90 font-medium italic bg-cyan-950/20 border border-cyan-900/40 rounded-lg p-2.5">
+                  {item.summary}
+                </p>
+              </div>
 
-      {/* 1. Core Problem */}
-      <div id="core-problem" className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 sm:p-8 space-y-4">
-        <h3 className="text-xl font-bold text-white">{yoloData.coreProblem.title}</h3>
-        <div className="space-y-3">
-          {yoloData.coreProblem.points.map((pt, i) => (
-            <div key={i} className="text-sm sm:text-base text-zinc-300">
-              <strong className="text-cyan-300 font-semibold">{pt.label}: </strong>
-              <span>{pt.text}</span>
+              <ul className="space-y-2.5 pt-3 border-t border-zinc-800/80">
+                {item.details.map((detail, dIdx) => (
+                  <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
+                    <span className="text-cyan-400 font-bold mt-0.5">•</span>
+                    <span>{detail}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* 2. Data Reality */}
-      <div id="data-reality" className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 sm:p-8 space-y-4">
-        <h3 className="text-xl font-bold text-white">{yoloData.dataReality.title}</h3>
-        <div className="space-y-3">
-          {yoloData.dataReality.points.map((pt, i) => (
-            <div key={i} className="text-sm sm:text-base text-zinc-300">
-              <strong className="text-cyan-300 font-semibold">{pt.label}: </strong>
-              <span>{pt.text}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 3. Model Selection */}
-      <div id="model-selection" className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 sm:p-8 space-y-4">
-        <h3 className="text-xl font-bold text-white">{yoloData.modelSelection.title}</h3>
-        <div className="space-y-3">
-          {yoloData.modelSelection.points.map((pt, i) => (
-            <div key={i} className="text-sm sm:text-base text-zinc-300">
-              <strong className="text-cyan-300 font-semibold">{pt.label}: </strong>
-              <span>{pt.text}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 4. Edge Optimization */}
-      <div id="edge-opt" className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 sm:p-8 space-y-4">
-        <h3 className="text-xl font-bold text-white">{yoloData.edgeOptimization.title}</h3>
-        <div className="space-y-3">
-          {yoloData.edgeOptimization.points.map((pt, i) => (
-            <div key={i} className="text-sm sm:text-base text-zinc-300">
-              <strong className="text-cyan-300 font-semibold">{pt.label}: </strong>
-              <span>{pt.text}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 5. Pipeline Steps */}
-      <div id="pipeline-steps" className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 space-y-4">
-        <h3 className="text-xl font-bold text-white">5. End-to-End Real-Time Pipeline Steps</h3>
-        <div className="space-y-3">
-          {yoloData.pipelineSteps.map((s, i) => (
-            <div key={i} className="text-sm sm:text-base text-zinc-300">
-              <strong className="text-cyan-300 font-semibold">Step {s.step}: {s.title} — </strong>
-              <span>{s.desc}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 6. DB Reality */}
-      <div id="db-reality" className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 space-y-3">
-        <h3 className="text-xl font-bold text-white">{yoloData.databaseReality.title}</h3>
-        <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-line">{yoloData.databaseReality.text}</p>
-      </div>
-
-      {/* 7. Chunking */}
-      <div id="chunking" className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 space-y-3">
-        <h3 className="text-xl font-bold text-white">{yoloData.chunkingDecision.title}</h3>
-        <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-line">{yoloData.chunkingDecision.text}</p>
-      </div>
-
-      {/* 8. Multimodal */}
-      <div id="multimodal" className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 space-y-3">
-        <h3 className="text-xl font-bold text-white">{yoloData.multimodalTriage.title}</h3>
-        <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-line">{yoloData.multimodalTriage.text}</p>
-      </div>
-
-      {/* 9. OCR */}
-      <div id="ocr" className="scroll-mt-36 rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-6 space-y-3">
-        <h3 className="text-xl font-bold text-white">{yoloData.ocrKillerFeature.title}</h3>
-        <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-line">{yoloData.ocrKillerFeature.text}</p>
-      </div>
-
-      {/* 10. Trade-Offs Table */}
-      <div id="tradeoffs-table" className="scroll-mt-36 space-y-6 pt-6 border-t border-zinc-800">
-        <div>
-          <h2 className="text-2xl font-bold text-white">10. Architecture Trade-Offs Matrix</h2>
-          <p className="text-sm text-zinc-400">Head-to-head architectural rationale against industry alternatives</p>
-        </div>
-
-        <div className="overflow-x-auto rounded-2xl border border-zinc-800 shadow-xl">
-          <table className="w-full text-left border-collapse text-xs sm:text-sm">
-            <thead>
-              <tr className="bg-black border-b border-zinc-800 text-zinc-400">
-                <th className="p-4 font-semibold">Architecture Dimension</th>
-                <th className="p-4 font-semibold text-cyan-400 bg-cyan-950/20">Our Solution (YOLO + DeepSparse)</th>
-                <th className="p-4 font-semibold">Alternative 1: Faster R-CNN on GPU</th>
-                <th className="p-4 font-semibold">Alternative 2: ResNet on Cloud</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-800/60 bg-[#0a0a0c] text-zinc-300">
-              {yoloData.tradeoffsTable.map((row, idx) => (
-                <tr key={idx} className="hover:bg-zinc-800/30 transition">
-                  <td className="p-4 font-medium text-white">{row.dim}</td>
-                  <td className="p-4 font-bold text-cyan-300 bg-cyan-950/20">{row.ours}</td>
-                  <td className="p-4 text-zinc-400">{row.alt1}</td>
-                  <td className="p-4 text-zinc-400">{row.alt2}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

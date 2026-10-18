@@ -1,103 +1,165 @@
 export const yoloData = {
-  title: "Real-Time Computer Vision Pipeline for Logistics Anomaly Detection",
-  resumeBullet: "Delivered a real-time computer vision pipeline for anomaly detection using YOLO and DeepSparse",
+  title: "Real-Time Computer Vision Pipeline | Edge Conveyor Defect Inspection",
+  resumeBullet: "Delivered a real-time computer vision pipeline for conveyor parcel defect detection using YOLO, DeepSparse CPU inference, and on-premises PostgreSQL, achieving sub-25ms end-to-end latency and zero edge GPU dependency.",
 
-  coreProblem: {
-    title: "1. The Core Business Problem (Why We Built This)",
-    points: [
-      { label: "High-Throughput Logistics Reality", text: "Regional parcel hubs process 5,000 to 12,000 packages per hour on conveyor belts traveling at 1.5 to 2.5 meters per second." },
-      { label: "Human Inspection Bottleneck", text: "Operators physically cannot inspect every carton at line speed. Visual fatigue causes missed crushed boxes, open flaps, and unlabeled cartons, leading to downstream sorter jams, product damage, and carrier claims costing millions." },
-      { label: "The 4 Operational Categories", text: "1. Damaged Parcels ('torn'): Crushed cartons, punctured sidewalls, dented corners, ripped cardboard. 2. Open Packaging ('open'): Unsealed top flaps, popped or cut tape. 3. Missing Labels ('no_label'): Plain corrugated boxes missing barcodes/waybills. 4. Normal Parcels ('intact'): Structurally sealed cartons with valid labels." },
-      { label: "The Engineering Objective", text: "An overhead vision inspection gate that identifies passing parcels, outputs bounding coordinates, and triggers pneumatic diverter arms in <30 milliseconds to route defective cartons to a rework siding." }
-    ]
+  executiveScript: `In this project, our distribution center was sorting over 8,000 packages an hour across automated high-speed conveyor belts traveling at up to 2.5 meters per second. Manual human inspection was completely unviable at this line speed—operator eye fatigue caused unsealed flaps, crushed cartons, and missing shipping labels to slip downstream, causing conveyor jams, damaged goods, and millions in carrier damage disputes.
+
+I delivered an end-to-end computer vision inspection gate that detects carton anomalies and triggers pneumatic diverter arms in under 25 milliseconds to push defective boxes to a rework siding.
+
+Here is how our system works in simple terms:
+
+First, on data and annotation: Public datasets like COCO don't have our warehouse's cardboard textures, tape branding, or lighting. We created an in-house few-shot dataset of 40 real parcel images—10 per class: intact normal cartons, torn/crushed boxes, open flap packaging, and cartons with missing labels. We annotated them in-house in standard YOLO format. To train a high-accuracy detector without overfitting on 40 samples, we used transfer learning from COCO, froze the backbone feature extractors in early epochs, and applied domain augmentations like mosaic stitching and lighting jitter.
+
+Second, for model selection and edge optimization: We chose single-stage YOLO over Faster R-CNN because two-stage detectors take 80 to 120ms—at 2 m/s, the box would travel 25 cm past the diverter arm before inference even finished! To avoid spending $150,000 putting expensive $8,000 GPUs on dusty warehouse floors, we converted our model to ONNX and deployed with DeepSparse by Neural Magic. DeepSparse uses weight pruning (zeroing out 75% of redundant weights) and 8-bit quantization with AVX-512 CPU acceleration, cutting inference time on standard x86 CPUs from 65ms down to just 14 milliseconds.
+
+Third, for 100% offline reliability: The sorting facility cannot stop if the internet lags. We kept our dedicated PostgreSQL database entirely on-premises over the local LAN. When a parcel passes, bounding boxes and defect classifications are logged in under 1 millisecond. Simultaneously, the system fires a Modbus PLC signal in 4 milliseconds to extend the pneumatic arm and divert the defective carton.
+
+Finally, for automated claims and SOP triage: Once a damaged carton is diverted to the rework siding, our multimodal pipeline extracts the defect image crop, matches it against chunked warehouse Standard Operating Procedures (SOPs), and passes it to a Vision LLM (GPT-4o or local LLaMA Vision) to produce an instant damage incident ticket and automated carrier claim draft.`,
+
+  userExample: {
+    query: "Overhead Camera Frame #8492 on Conveyor Line 04 (Carton traveling at 2.0 m/s)",
+    latency: "< 25ms (End-to-End Camera-to-Pneumatic Diverter)",
+    description: "End-to-end execution flow showing how an overhead industrial camera captures a high-speed carton, runs DeepSparse CPU inference in 14ms, and fires a PLC pneumatic diverter before logging to local PostgreSQL.",
+    steps: [
+      {
+        step: "01",
+        stage: "Photoelectric Trigger & Capture",
+        system: "GigE Vision Camera (Basler)",
+        text: "A through-beam photoelectric sensor detects the package entering the vision gate at 2.0 m/s; an industrial Basler GigE camera captures a 1920x1080 frame in 2ms."
+      },
+      {
+        step: "02",
+        stage: "Letterbox Preprocessing",
+        system: "Edge Python Pipeline",
+        text: "The frame is resized to 640x640 with minimal symmetric gray padding (RGB 114, 114, 114) and normalized to float32 [0.0, 1.0] in 1.8ms."
+      },
+      {
+        step: "03",
+        stage: "DeepSparse Sparse CPU Inference",
+        system: "DeepSparse Engine (8-core CPU)",
+        text: "DeepSparse executes the pruned, quantized YOLO model using AVX-512 vector instructions on commodity CPU, completing forward pass in 14.2ms with zero GPU."
+      },
+      {
+        step: "04",
+        stage: "Vectorized NMS Post-Processing",
+        system: "NumPy / C++ NMS Kernel",
+        text: "Applies Non-Maximum Suppression with IoU threshold 0.45, discarding background proposals and confirming a 'torn' crushed sidewall defect with 0.94 confidence."
+      },
+      {
+        step: "05",
+        stage: "Modbus PLC Diverter Activation",
+        system: "Industrial PLC & Pneumatic Arm",
+        text: "The edge gateway sends a low-latency Modbus/TCP pulse in 4ms; the pneumatic diverter arm extends and safely routes the defective carton onto the rework siding."
+      },
+      {
+        step: "06",
+        stage: "Local SQL Log & Multimodal Triage",
+        system: "PostgreSQL & Vision LLM (GPT-4o)",
+        text: "Logs an immutable record to on-premises PostgreSQL in < 1ms, while the defect crop is sent to GPT-4o with warehouse SOPs to draft an instant carrier claim."
+      }
+    ],
+    sampleOutput: {
+      diverterAction: "DEFECT DETECTED: Torn/Crushed Sidewall (Confidence: 0.94). Bounding Box: [x1: 184, y1: 290, x2: 440, y2: 610]. PLC Modbus Signal: Sent in 22.4ms. Pneumatic Diverter Gate: ACTIVATED (Carton routed to Rework Siding 02).",
+      inspectionRecord: {
+        inspection_id: "INSP_9421_CONV04",
+        conveyor_line: "Line 04 (Speed: 2.0 m/s)",
+        defect_class: "torn (Damaged Sidewall)",
+        inference_latency: "14.2ms on CPU (DeepSparse)",
+        diverter_latency: "22.4ms total (Met < 30ms limit)",
+        carrier_claim: "Drafted via GPT-4o (Claim #CLM_8820: Packaging crushed by carrier)",
+        database_status: "LOGGED_IN_LOCAL_POSTGRESQL"
+      }
+    }
   },
 
-  dataReality: {
-    title: "2. The Data Reality & In-House Annotation (The 40-Image Constraint)",
-    points: [
-      { label: "Data Scarcity", text: "Public datasets (COCO/ImageNet) do not match a company's specific cardboard cartons, tape branding, or warehouse lighting. We faced a real-world cold-start constraint: exactly 10 images per category (40 images total)." },
-      { label: "In-House Annotation", text: "We labeled them ourselves using industrial annotation tools (Roboflow / LabelImg / CVAT) exporting to standard YOLO normalized text format: <class_id> <x_center> <y_center> <width> <height> (0: intact, 1: open, 2: torn, 3: no_label)." },
-      { label: "Transfer Learning from COCO", text: "Initialized weights from YOLOv8 pre-trained on COCO (1.5M instances). The backbone already possessed mature feature extractors for edges, corners, cardboard textures, and 3D geometry." },
-      { label: "Backbone Freezing", text: "Backbone feature layers were frozen in early epochs to preserve general spatial representations while only the decoupled detection head was tuned on defect features." },
-      { label: "Aggressive Domain Augmentations", text: "Mosaic 4-image stitching, affine transformations (+-10 deg rotation for conveyor jitter), HSV color shifts (+-25% for fluctuating warehouse lighting), and random scaling (0.8x to 1.2x)." }
-    ]
-  },
-
-  modelSelection: {
-    title: "3. Model Architecture Selection: Why YOLO (and Why Not Others)",
-    points: [
-      { label: "Why YOLO (You Only Look Once)", text: "Single-stage, anchor-free detector formulating detection as direct regression from pixels to bounding coordinates and class probabilities in a single forward pass. Sub-15ms latency easily meets the 30 FPS conveyor deadline." },
-      { label: "Why NOT Faster R-CNN (Two-Stage)", text: "RPN + RoI pooling creates 80ms–150ms latency. At 2 m/s, the package travels 30 cm past the diverter arm before inference finishes." },
-      { label: "Why NOT SSD", text: "Rigid anchor grids struggle on irregular carton defects (long ripped tape or corner crushing) and suffer lower mAP compared to YOLO's decoupled heads." },
-      { label: "Why NOT Pure Classification (ResNet/ViT)", text: "Classifiers only output a whole-image tag; they cannot output spatial coordinates ([x1, y1, x2, y2]) needed to guide robotic arms, diverter gates, or zoom cameras." }
-    ]
-  },
-
-  edgeOptimization: {
-    title: "4. Edge Inference Optimization: Why DeepSparse (Neural Magic)",
-    points: [
-      { label: "The Warehouse Hardware Dilemma", text: "Equipping 20 to 50 sorting chutes with $8,000 enterprise GPUs is cost-prohibitive ($150,000+ per hub) and creates thermal/dust hazards on the warehouse floor." },
-      { label: "What is DeepSparse", text: "An inference engine by Neural Magic that runs deep neural networks on commodity x86 CPUs (Intel Xeon / AMD EPYC) at GPU speeds." },
-      { label: "Weight Sparsity & Pruning", text: "Prunes redundant weights (70–80% zero weights) without losing detection accuracy." },
-      { label: "AVX-512 & VNNI Acceleration", text: "DeepSparse compiles the execution graph to skip operations on zero weights directly on CPU vector instruction sets." },
-      { label: "Cache-Friendly Kernels", text: "Keeps working feature maps inside CPU L1/L2 cache, eliminating memory bandwidth bottlenecks." },
-      { label: "Latency Benchmark", text: "Standard PyTorch YOLO on CPU: ~65ms -> DeepSparse on 8-core CPU: ~14ms." },
-      { label: "Export Pipeline", text: "PyTorch -> ONNX (Opset 12/14) -> DeepSparse Engine (deepsparse.Pipeline)." }
-    ]
-  },
-
-  pipelineSteps: [
-    { step: "1. Camera Acquisition", text: "Industrial Basler/FLIR GigE Vision camera triggered by photoelectric through-beam sensor as carton enters portal." },
-    { step: "2. Letterbox Preprocessing", text: "Resizes 1920x1080 frame to 640x640 with minimal symmetric gray padding (RGB: 114, 114, 114), normalized to [0.0, 1.0] float32 in NCHW order." },
-    { step: "3. DeepSparse Forward Pass", text: "Generates output tensor [1, 8, 8400] (8400 candidate anchor boxes x 4 coordinates + 4 class probabilities) in 14.2ms." },
-    { step: "4. Vectorized NMS Filtering", text: "Discards proposals with confidence < 0.40 and suppresses redundant overlapping boxes with IoU > 0.45." },
-    { step: "5. PLC Diverter Trigger", text: "If an anomaly (torn, open, no_label) is detected with confidence >= 0.50, fires Modbus/TCP or GPIO signal in <25ms to activate pneumatic diverter arm." }
-  ],
-
-  databaseReality: {
-    title: "6. Database Reality: Keeping Our On-Premises PostgreSQL Server (NO Cloud)",
-    text: "Logistics sorting facilities must operate with 100% autonomous local reliability. A conveyor moving 8,000 packages/hour cannot halt because of an internet outage or cloud API throttle. All relational records reside on the warehouse's dedicated on-premises PostgreSQL server over a local connection pool (asyncpg / psycopg2). Every inspected carton logs an immutable record in conveyor_inspections: inspection_id (UUID), timestamp, conveyor_line_id, detected_anomaly, confidence_score, bbox_coordinates (JSONB), action_taken, and diverter_latency_ms. Local LAN latency is <1ms, guaranteeing zero cloud lag."
-  },
-
-  chunkingDecision: {
-    title: "7. Warehouse SOPs & Text Chunking Decision",
-    text: "Warehouses operate under formal multi-page Standard Operating Procedure (SOP) manuals (OS&D - Over, Short, and Damaged guidelines, HazMat containment, repackaging standards). Unlike short 50-word catalog records, these required chunking using RecursiveCharacterTextSplitter with chunk_size=400-500 characters and 50-character overlap. Overlap is critical because rules contain condition-action pairs: 'If the carton is torn AND hazardous contents are suspected, DO NOT open. Immediately notify HazMat lead.' Without overlap, splitting could sever the condition from the safety action. Chunks are tagged with category, severity (CRITICAL/WARNING), and action_type."
-  },
-
-  multimodalTriage: {
-    title: "8. Multimodal Embeddings & LLM Copilot (GPT / Llama)",
-    text: "Diverting a box is only step one. Operators on the siding must decide: Can this box be re-taped? Does it require an insurance claim? Defect crop images and SOP text chunks are embedded into a shared 512-dimensional metric space using CLIP ViT-B/32 with strict L2-normalization. The pipeline extracts the defect crop, vector search retrieves the Top-3 closest SOP rules, and a Vision LLM (GPT-4o or local Llama 3.2 Vision) produces a structured JSON incident report in <1.2 seconds: root-cause assessment, operator repackaging steps, and an automated carrier claim draft."
-  },
-
-  ocrKillerFeature: {
-    title: "9. Future Aspect & Killer Feature: High-Speed OCR Waybill & Barcode Extraction",
-    text: "When a box is marked no_label or has a torn barcode, sorters halt and the carton sits in dead-letter limbo. We integrated high-speed OCR (PaddleOCR / Tesseract / Industrial Barcode Reader) to scan 1D barcodes (Code 128), 2D DataMatrix, carrier names (FedEx, UPS, DHL), and postal codes. If a label is partially torn, OCR reconstructs the tracking number from surviving text fragments. Extracted tracking IDs and destination hubs are appended to PostgreSQL logs and vector metadata, allowing supervisors to search incidents by carrier, supplier, or tracking number."
-  },
-
-  tradeoffsTable: [
-    { dimension: "Inference Latency", yolo: "14ms – 18ms (Real-Time)", alt1: "70ms – 120ms (Too Slow)", alt2: "200ms – 400ms (Network Lag)" },
-    { dimension: "Edge Hardware Cost", yolo: "$0 GPU Cost (Standard x86 CPU)", alt1: "$5,000 – $10,000 GPU per line", alt2: "High recurring cloud API bills" },
-    { dimension: "Spatial Coordinates", yolo: "Pixel-accurate bounding boxes", alt1: "Accurate bounding boxes", alt2: "NONE (Whole-image tag only)" },
-    { dimension: "Conveyor Speed Support", yolo: "Up to 2.5 m/s (70 FPS)", alt1: "Struggles above 1.0 m/s", alt2: "Fails real-time diverter deadline" },
-    { dimension: "Network Reliability", yolo: "100% Offline Local LAN", alt1: "Local hardware dependent", alt2: "Line crashes if internet drops" }
-  ],
-
-  metrics: [
-    { metric: "Inference Latency", value: "14.2 ms", detail: "Per frame on standard 8-core Intel Xeon CPU using DeepSparse" },
-    { metric: "Detection Accuracy", value: "92.4% mAP@50", detail: "Across all 4 packaging states despite 40-image few-shot cold start" },
-    { metric: "End-to-End Reaction", value: "22.8 ms", detail: "Frame acquisition -> Letterbox -> DeepSparse -> NMS -> Modbus PLC trigger (<30ms deadline)" },
-    { metric: "Infrastructure Savings", value: ">$150,000", detail: "Eliminated dedicated edge GPUs across a 20-line sorting facility" }
-  ],
-
-  executiveScript: `In this project, our distribution center was processing over 8,000 packages an hour across automated high-speed conveyor belts. Manual visual inspection was failing because operator eye fatigue led to undetected crushed cartons, unsealed boxes, and missing shipping labels slipping downstream—causing conveyor jams, damaged contents, and costly carrier disputes.
-
-I delivered an end-to-end real-time computer vision pipeline to inspect cartons at conveyor speed and trigger pneumatic diverter gates in under 25 milliseconds.
-
-We started with a clean, few-shot industrial dataset of 40 real parcel images—exactly 10 per category: intact normal cartons, torn/damaged boxes, open flap packaging, and cartons with missing labels. We annotated every image in-house in standard YOLO normalized coordinate format. To train a robust detector on 40 samples without overfitting, we leveraged transfer learning from COCO pre-trained weights, initially froze the backbone, and applied aggressive domain-specific mosaic and affine augmentations to simulate conveyor vibration and warehouse lighting variations.
-
-For model selection, we chose YOLO over Faster R-CNN because two-stage detectors take 80 to 120ms, which is far too slow for conveyor belts moving at 2 meters per second. To deploy this without burning budget on expensive $8,000 enterprise GPUs at every sorting chute, we converted the trained model to ONNX and deployed it using DeepSparse by Neural Magic. DeepSparse utilizes 8-bit quantization and weight pruning to execute sparse neural networks directly on standard x86 CPUs with AVX-512 acceleration, slashing CPU latency down to 14 milliseconds.
-
-All inspection telemetry, anomaly bounding coordinates, and diverter actions are written directly to our on-premises PostgreSQL server over a local connection pool—we kept our relational database on-prem to guarantee zero cloud latency and 100% offline uptime.
-
-When an anomaly is diverted, our multimodal copilot retrieves warehouse SOP rules chunked with character overlap and passes the defect crop to a Vision LLM (GPT / Llama) to produce immediate root-cause incident tickets and repackaging guidelines. As an additional killer feature, we integrated high-speed OCR to scan shipping waybills, so if a label is damaged or unreadable, we reconstruct the tracking number and destination hub in real time.`
+  bookmarkedConcepts: [
+    {
+      id: "deepsparse",
+      title: "DeepSparse",
+      badge: "Sparse CPU Inference Engine",
+      summary: "Inference runtime from Neural Magic that executes pruned and quantized neural networks on standard x86 CPUs at GPU speeds.",
+      details: [
+        "AVX-512 Acceleration: Compiles execution graphs to skip zero-valued weights entirely, executing directly on Intel Xeon / AMD EPYC vector instruction sets.",
+        "Zero GPU Requirement: Slashes edge hardware costs by over $150,000 across a 20-line sorting facility by eliminating dedicated $8,000 edge GPUs.",
+        "Latency Drop: Reduces PyTorch YOLO CPU inference time from 65ms down to 14.2ms, easily meeting the 30 FPS conveyor inspection deadline."
+      ]
+    },
+    {
+      id: "docker",
+      title: "Docker",
+      badge: "Edge Containerization",
+      summary: "Lightweight container packaging for the complete vision pipeline, ensuring identical execution on ruggedized industrial warehouse IPCs.",
+      details: [
+        "Multi-Stage Builds: Strips heavy build tools, OpenCV compilation caches, and tests, keeping the final edge container image under 300MB.",
+        "Hardware Device Passthrough: Seamlessly binds industrial camera USB/GigE network adapters and serial PLC Modbus controllers into the isolated container.",
+        "Offline Resiliency: The container runs completely self-contained on the local warehouse network without requiring external internet access."
+      ]
+    },
+    {
+      id: "fastapi",
+      title: "FastAPI",
+      badge: "Local Edge API & Telemetry",
+      summary: "High-performance asynchronous local gateway coordinating camera capture, telemetry streaming, and database logging.",
+      details: [
+        "Asynchronous Event Loop: Handles high-throughput inspection telemetry and async database insertion without blocking the real-time inference thread.",
+        "Pydantic Input Validation: Validates PLC sensor triggers and conveyor speed telemetry in < 1ms to ensure clean operational logs.",
+        "Local WebSocket Streaming: Streams live 60fps bounding-box video feeds to warehouse floor operator dashboards with sub-10ms display latency."
+      ]
+    },
+    {
+      id: "gpt-vision",
+      title: "GPT-4o / LLaMA Vision",
+      badge: "Multimodal SOP Reasoning",
+      summary: "Vision-language model evaluating defect crops against warehouse Standard Operating Procedures to generate automated damage claims.",
+      details: [
+        "Automated Incident Tickets: Inspects the high-resolution crop of the damaged carton, assesses structural severity, and generates an operator repackaging checklist.",
+        "Carrier Claim Generation: Drafts an insurance damage claim letter in 1.2 seconds, citing the carrier waybill and the specific package damage type.",
+        "Offline Fallback: In high-security or offline environments, a local quantized LLaMA 3.2 Vision model runs locally on the edge workstation."
+      ]
+    },
+    {
+      id: "latency",
+      title: "Latency (Real-Time Edge Budget)",
+      badge: "Sub-30ms Reaction Deadline",
+      summary: "The strict end-to-end timing budget required to inspect parcels moving at 2.0 to 2.5 meters per second.",
+      details: [
+        "The Physics Constraint: At 2.0 m/s, a package travels 2 centimeters every 10ms. A 100ms detector (like Faster R-CNN) means the box travels 20 cm past the diverter arm before detecting!",
+        "End-to-End Breakdown: Camera trigger (2ms) + Letterboxing (2ms) + DeepSparse (14.2ms) + NMS (2ms) + Modbus PLC signal (4ms) = 24.2ms total.",
+        "Guaranteed Safety Margin: Finishing in 24.2ms leaves an 8ms safety cushion before the 30ms physical diverter deadline, guaranteeing zero missed diverts."
+      ]
+    },
+    {
+      id: "postgresql-onprem",
+      title: "PostgreSQL (On-Premises)",
+      badge: "Autonomous Local Database",
+      summary: "Dedicated on-premises relational database logging all inspection telemetry and defect coordinates with zero cloud dependency.",
+      details: [
+        "Zero Cloud Dependency: Warehouses cannot halt if an internet connection drops. All relational records reside on a local industrial server over LAN.",
+        "Sub-Millisecond Insertion: Fast local connection pools (asyncpg) record bounding boxes, conveyor line IDs, and confidence scores in < 1ms.",
+        "Immutable Audit Trail: Provides forensic proof of carton condition at departure, defending against false shipping carrier damage claims."
+      ]
+    },
+    {
+      id: "pruning",
+      title: "Pruning & Sparsity",
+      badge: "Model Compression",
+      summary: "Technique of removing redundant weights from a neural network to accelerate execution on CPU vector registers.",
+      details: [
+        "70%–80% Weight Sparsity: Eliminates near-zero weights from convolutional layers, converting dense matrix math into sparse calculations.",
+        "Zero Accuracy Drop: Fine-tuning the pruned network with knowledge distillation preserves over 92% mAP across all 4 carton anomaly classes.",
+        "DeepSparse Synergy: Standard runtimes treat zeros as regular numbers; DeepSparse compiles the graph to physically skip multiplying zero weights."
+      ]
+    },
+    {
+      id: "yolo",
+      title: "YOLO (You Only Look Once)",
+      badge: "Single-Stage Object Detector",
+      summary: "State-of-the-art anchor-free object detection architecture predicting bounding boxes and class probabilities in a single forward pass.",
+      details: [
+        "Single-Stage Speed: Directly regresses from pixels to bounding box coordinates ([x1, y1, x2, y2]) in one forward pass, avoiding slow two-stage Region Proposal Networks.",
+        "Few-Shot Adaptation: Pre-trained on COCO (1.5M images) and fine-tuned on 40 warehouse carton images using backbone freezing to prevent overfitting.",
+        "Decoupled Detection Heads: Separates classification and bounding regression into distinct heads, significantly boosting mAP on torn flaps and tape tears."
+      ]
+    }
+  ]
 };
