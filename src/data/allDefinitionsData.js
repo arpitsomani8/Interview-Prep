@@ -378,6 +378,13 @@ def predict_damage(data: ParcelData):
         }
       ]
     },
+    withVsWithoutRag: {
+      title: "With RAG vs. Without RAG",
+      withoutRag: "The LLM answers using its learned parameters and the current conversation or prompt. It may lack current or private company information.",
+      withRag: "The application retrieves relevant external information and adds it to the prompt. The model can use those sources to answer questions grounded in that information.",
+      weightNote: "RAG normally does not change the LLM's learned weights. It supplies extra information at inference time.",
+      failureModes: "RAG can still fail if retrieval is poor, the documents are outdated, or the LLM misinterprets the retrieved context. RAG does not automatically eliminate hallucinations."
+    },
     keyPrinciple: "RAG doesn't guarantee a correct answer. Retrieval can miss relevant information, and the model can still misinterpret its context, so we need evaluation and safeguards. Key point: RAG generally does not retrain or fine-tune the LLM. It supplies relevant information at inference time.",
     ragPipelineOverview: {
       title: "Understand the RAG Pipeline",

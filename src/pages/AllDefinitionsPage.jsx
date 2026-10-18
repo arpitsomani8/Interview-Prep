@@ -654,6 +654,63 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* With RAG vs. Without RAG */}
+                {item.withVsWithoutRag && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          {item.withVsWithoutRag.title}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-400 uppercase bg-black/60 px-2.5 py-1 rounded border border-zinc-800">
+                        Knowledge Grounding
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {/* Without RAG */}
+                      <div className="p-4 rounded-xl bg-black border border-rose-900/40 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-rose-400"></span>
+                          <h5 className="text-xs font-bold text-rose-300 font-mono uppercase tracking-wide">
+                            Without RAG
+                          </h5>
+                        </div>
+                        <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                          {item.withVsWithoutRag.withoutRag}
+                        </p>
+                      </div>
+
+                      {/* With RAG */}
+                      <div className="p-4 rounded-xl bg-black border border-emerald-900/40 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                          <h5 className="text-xs font-bold text-emerald-300 font-mono uppercase tracking-wide">
+                            With RAG
+                          </h5>
+                        </div>
+                        <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                          {item.withVsWithoutRag.withRag}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Weight & Failure Mode Insights */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                      <div className="p-3 rounded-lg bg-cyan-950/20 border border-cyan-800/30 text-[11px] text-cyan-200/90 leading-relaxed font-mono">
+                        <strong className="text-cyan-400 uppercase font-sans font-bold">Weights Isolation: </strong>
+                        {item.withVsWithoutRag.weightNote}
+                      </div>
+                      <div className="p-3 rounded-lg bg-amber-950/20 border border-amber-800/30 text-[11px] text-amber-200/95 leading-relaxed font-mono">
+                        <strong className="text-amber-400 uppercase font-sans font-bold">Failure Mode Caution: </strong>
+                        {item.withVsWithoutRag.failureModes}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Understand the RAG Pipeline */}
                 {item.ragPipelineOverview && (
                   <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800/90 shadow-xl">
