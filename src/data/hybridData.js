@@ -8,7 +8,7 @@ The core business challenge was that different enterprise clients have completel
 
 Here is how our architecture works in simple terms:
 
-First, for data storage and tenant isolation, we use PostgreSQL as our core relational database. To keep tenant isolation clean and completely foolproof, we maintain a dedicated database for each tenant (for example, db_fintech_corp and db_ecommerce_inc). This stores the tenant's incoming records, historical data, trained model metadata, and audit logs with zero chance of data leaking between clients.
+First, for data storage and tenant isolation, we use PostgreSQL as our core relational database. To keep tenant isolation clean and completely foolproof, we maintain a dedicated database for each tenant (for example, db_fintech_corp and db_ecommerce_inc). This stores the tenant's incoming records, historical data, trained model metadata, and audit logs with zero chance of data leaking between clients. We don't need complex runtime dynamic schema generation—instead, each tenant has their own clean relational tables, while Pydantic v2 is used within FastAPI purely for fast, bulletproof request validation (checking data types, required fields, and boundary constraints before anything touches the database or models).
 
 Second, each tenant's compliance guidelines and policy manuals are kept on secure local storage. Their exact file paths (like /policies/fintech_corp/fraud_v1.pdf) and version details are registered directly in the tenant's PostgreSQL database. For vector search, we use Pinecone Serverless, where text embeddings of these policies are strictly partitioned by tenant namespace (namespace=tenant_id).
 
@@ -32,9 +32,9 @@ Finally, during real-time inference, our validator calculates Z-scores (|x - μ|
       },
       {
         step: "02",
-        stage: "Schema Validation & Volume Check",
-        system: "PostgreSQL & Validator",
-        text: "The incoming JSON payload is validated against the tenant's relational table schema in db_fintech_corp, and the system queries total historical records to choose the right AI path."
+        stage: "Pydantic v2 Validation & Row Count",
+        system: "FastAPI (Pydantic v2) & PostgreSQL",
+        text: "FastAPI uses Pydantic v2 to strictly validate incoming payload types, bounds, and required fields in <1ms. It then queries db_fintech_corp to verify the tenant's total historical row count."
       },
       {
         step: "03",
@@ -105,6 +105,7 @@ Finally, during real-time inference, our validator calculates Z-scores (|x - μ|
       details: [
         "Dedicated Database Per Tenant: Each enterprise client operates on their own PostgreSQL database (e.g. db_fintech_corp), eliminating any possibility of data cross-contamination.",
         "Header-Based Routing: Every API request requires an X-Tenant-ID header, which automatically directs connection pools to that client's dedicated database.",
+        "Pydantic v2 Request Validation: FastAPI uses standard Pydantic models to strictly validate field types, bounds, and required keys in under 1ms before queries hit the database.",
         "Local Policy Registration: Policy documents are saved on secure local disks, with file paths and metadata tracked in the tenant's PostgreSQL database."
       ]
     },
