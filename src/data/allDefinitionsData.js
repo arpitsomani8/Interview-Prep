@@ -4358,7 +4358,47 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`,
         explanation: "-p 8000:8000 maps host port 8000 to container port 8000, routing incoming localhost requests to the container."
       }
     ],
-    takeaway: "Docker guarantees production consistency by packaging the Python runtime, dependencies, API code, and ML model weights into an immutable image. Caching pip layers prior to copying code speeds up CI/CD build cycles."
+    packageModelApi: {
+      title: "Package (Model + API) it with Docker",
+      desc: "This creates a runnable container image containing the API and saved model."
+    },
+    deploymentOptionsIntro: {
+      title: "Deploy it",
+      subtitle: "You have several options depending on the model and traffic."
+    },
+    deploymentOptions: [
+      {
+        option: "Virtual machine",
+        whenToConsider: "Simple service with infrastructure you manage",
+        accent: "text-amber-400",
+        badge: "Self-Managed (EC2 / Azure VM)"
+      },
+      {
+        option: "AWS SageMaker AI endpoint",
+        whenToConsider: "Managed ML inference deployment",
+        accent: "text-emerald-400",
+        badge: "Managed ML Endpoint"
+      },
+      {
+        option: "AWS ECS or Azure Container Apps",
+        whenToConsider: "Managed containerized API",
+        accent: "text-cyan-400",
+        badge: "Container PaaS"
+      },
+      {
+        option: "Kubernetes",
+        whenToConsider: "More complex services needing cluster orchestration and scaling",
+        accent: "text-blue-400",
+        badge: "Cluster Orchestration"
+      },
+      {
+        option: "Serverless container or function",
+        whenToConsider: "Suitable workloads with variable traffic and compatible execution limits",
+        accent: "text-purple-400",
+        badge: "Serverless Compute"
+      }
+    ],
+    takeaway: "Docker guarantees production consistency by packaging the Python runtime, dependencies, API code, and ML model weights into an immutable image. Caching pip layers prior to copying code speeds up CI/CD build cycles, and deployment choices range from simple VMs to managed ML endpoints or Kubernetes clusters depending on operational complexity and traffic volume."
   },
   {
     id: "cicd",

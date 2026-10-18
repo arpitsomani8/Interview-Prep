@@ -6782,6 +6782,94 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
+                {/* Packaging & Deployment Strategy */}
+                {item.packageModelApi && (
+                  <div className="space-y-4">
+                    {/* Package (Model + API) Callout */}
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.packageModelApi.title}</span>
+                        </h4>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                          Production Image
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.packageModelApi.desc}
+                      </p>
+                    </div>
+
+                    {/* Deploy It - Options Table & Grid */}
+                    {item.deploymentOptions && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>{item.deploymentOptionsIntro.title}</span>
+                          </h4>
+                          <span className="text-[10px] font-mono text-zinc-400">
+                            {item.deploymentOptionsIntro.subtitle}
+                          </span>
+                        </div>
+
+                        {/* Desktop Table */}
+                        <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                          <table className="w-full text-left text-xs">
+                            <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                              <tr>
+                                <th className="py-3 px-4 font-semibold text-zinc-300 w-1/3">Deployment Option</th>
+                                <th className="py-3 px-4 font-semibold text-emerald-400">When to consider it</th>
+                                <th className="py-3 px-4 font-semibold text-zinc-400">Infrastructure Paradigm</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800/80 font-sans">
+                              {item.deploymentOptions.map((opt, oIdx) => (
+                                <tr key={oIdx} className="hover:bg-zinc-900/40 transition">
+                                  <td className="py-3.5 px-4 font-mono font-bold text-white whitespace-nowrap">
+                                    <span className={opt.accent}>{opt.option}</span>
+                                  </td>
+                                  <td className="py-3.5 px-4 font-medium text-zinc-200">
+                                    {opt.whenToConsider}
+                                  </td>
+                                  <td className="py-3.5 px-4">
+                                    <span className="inline-block px-2 py-0.5 text-[10px] font-mono rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                                      {opt.badge}
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Mobile Cards */}
+                        <div className="grid grid-cols-1 md:hidden gap-3">
+                          {item.deploymentOptions.map((opt, oIdx) => (
+                            <div
+                              key={oIdx}
+                              className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5"
+                            >
+                              <div className="flex items-center justify-between gap-1">
+                                <span className={`text-xs font-bold font-mono ${opt.accent}`}>
+                                  {opt.option}
+                                </span>
+                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-black text-zinc-300 border border-zinc-800">
+                                  {opt.badge}
+                                </span>
+                              </div>
+                              <p className="text-xs text-zinc-200 leading-relaxed font-sans">
+                                {opt.whenToConsider}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Production Takeaway: </strong>
