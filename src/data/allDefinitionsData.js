@@ -63,7 +63,8 @@ export const definitionBookmarks = [
   { id: "time-space-complexity", label: "Time/Space Complexity" },
   { id: "uvicorn", label: "Uvicorn" },
   { id: "async-sync", label: "Async vs. Sync" },
-  { id: "load-balancing", label: "Load Balancing" }
+  { id: "load-balancing", label: "Load Balancing" },
+  { id: "docker", label: "Docker" }
 ];
 
 export const definitionsData = [
@@ -4131,5 +4132,74 @@ tracemalloc.stop()`,
       goldenRule: "Test realistic payloads and concurrency, not just repeated tiny requests on a development laptop."
     },
     takeaway: "Load balancing distributes incoming requests across multiple service replicas to prevent bottlenecks and downtime. Concurrently, load testing with tools like Locust, k6, or JMeter measures true production stability and p95 latency under realistic payloads and concurrency."
+  },
+  {
+    id: "docker",
+    title: "Docker & Containerization for ML APIs",
+    badge: "Containerization & Reproducibility",
+    summary: "Docker packages your application and dependencies into an image so it can run consistently in different environments.",
+    coreConcept: "Docker packages your application and dependencies into an image so it can run consistently in different environments.",
+    dockerfileCode: `FROM python:3.12-slim
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY main.py .
+COPY parcel_model.joblib .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`,
+    dockerfileDirectives: [
+      {
+        directive: "FROM python:3.12-slim",
+        purpose: "Base Image",
+        desc: "Uses a lightweight, debian-slim Python base image to keep container image small and secure."
+      },
+      {
+        directive: "WORKDIR /app",
+        purpose: "Working Directory",
+        desc: "Sets the execution context path inside the container for all subsequent commands."
+      },
+      {
+        directive: "COPY requirements.txt .",
+        purpose: "Layer Caching",
+        desc: "Copies only requirements first so Docker can cache installed packages across app code modifications."
+      },
+      {
+        directive: "RUN pip install --no-cache-dir",
+        purpose: "Dependency Installation",
+        desc: "Installs dependencies without storing pip caches, keeping image layers lightweight."
+      },
+      {
+        directive: "COPY main.py . & model.joblib",
+        purpose: "Artifact Copy",
+        desc: "Copies application code and the serialized ML model file into the image filesystem."
+      },
+      {
+        directive: "EXPOSE 8000",
+        purpose: "Port Metadata",
+        desc: "Declares that the container listens on port 8000 at runtime."
+      },
+      {
+        directive: 'CMD ["uvicorn", ...]',
+        purpose: "Entrypoint Execution",
+        desc: "Runs Uvicorn bound to 0.0.0.0 to accept external requests from host and reverse proxies."
+      }
+    ],
+    cliCommands: [
+      {
+        title: "Build the Docker Image",
+        cmd: "docker build -t parcel-api .",
+        explanation: "-t parcel-api tags the image name; the trailing dot (.) specifies the current directory as build context."
+      },
+      {
+        title: "Run the Docker Container",
+        cmd: "docker run -p 8000:8000 parcel-api",
+        explanation: "-p 8000:8000 maps host port 8000 to container port 8000, routing incoming localhost requests to the container."
+      }
+    ],
+    takeaway: "Docker guarantees production consistency by packaging the Python runtime, dependencies, API code, and ML model weights into an immutable image. Caching pip layers prior to copying code speeds up CI/CD build cycles."
   }
 ];

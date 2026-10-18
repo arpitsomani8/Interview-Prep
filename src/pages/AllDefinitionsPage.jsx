@@ -6404,6 +6404,143 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 67: Docker */}
+            {item.id === 'docker' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Concept Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl space-y-2">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                    <div className="flex items-center gap-2">
+                      <Terminal className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                        Containerization Principle
+                      </h4>
+                    </div>
+                    <span className="text-[10px] font-mono text-cyan-300 uppercase bg-cyan-950/40 px-2.5 py-0.5 rounded border border-cyan-800/40">
+                      Immutable Environment
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans font-medium">
+                    {item.coreConcept}
+                  </p>
+                </div>
+
+                {/* Dockerfile & Directives Breakdown */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <FileCode className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>A Simple FastAPI Dockerfile</span>
+                  </h4>
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                    {/* Code Block */}
+                    <div className="lg:col-span-6 rounded-xl overflow-hidden border border-zinc-800 bg-black flex flex-col justify-between">
+                      <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>Dockerfile</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-dockerfile', item.dockerfileCode)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-dockerfile' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Dockerfile</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed h-full">
+                        {item.dockerfileCode}
+                      </pre>
+                    </div>
+
+                    {/* Directives Breakdown */}
+                    <div className="lg:col-span-6 space-y-2">
+                      {item.dockerfileDirectives.map((dir, dIdx) => (
+                        <div
+                          key={dIdx}
+                          className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800/80 hover:border-zinc-700 transition space-y-1"
+                        >
+                          <div className="flex items-center justify-between">
+                            <code className="text-[11px] font-mono text-cyan-300 font-bold">
+                              {dir.directive}
+                            </code>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-800">
+                              {dir.purpose}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                            {dir.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Build and Run CLI Commands */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                    <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Build and Run Commands</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {item.cliCommands.map((cmdItem, cIdx) => (
+                      <div
+                        key={cIdx}
+                        className="rounded-xl overflow-hidden border border-zinc-800 bg-black flex flex-col justify-between"
+                      >
+                        <div>
+                          <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                            <span className="text-xs font-bold text-white font-mono">
+                              {cmdItem.title}
+                            </span>
+                            <button
+                              onClick={() => handleCopyCode(`code-cmd-${cIdx}`, cmdItem.cmd)}
+                              className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                            >
+                              {copiedId === `code-cmd-${cIdx}` ? (
+                                <>
+                                  <Check className="w-3 h-3 text-emerald-400" />
+                                  <span>Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3 h-3" />
+                                  <span>Copy</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                          <div className="p-3.5 bg-zinc-950/50 border-b border-zinc-800/80">
+                            <code className="text-xs font-mono text-cyan-300 font-bold block">
+                              $ {cmdItem.cmd}
+                            </code>
+                          </div>
+                        </div>
+                        <div className="p-3 text-[11px] text-zinc-400 font-sans leading-relaxed bg-black">
+                          {cmdItem.explanation}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Production Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
