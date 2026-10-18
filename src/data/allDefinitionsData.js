@@ -60,7 +60,8 @@ export const definitionBookmarks = [
   { id: "tuple", label: "Tuple" },
   { id: "pandas", label: "Pandas" },
   { id: "python", label: "Python" },
-  { id: "time-space-complexity", label: "Time/Space Complexity" }
+  { id: "time-space-complexity", label: "Time/Space Complexity" },
+  { id: "uvicorn", label: "Uvicorn" }
 ];
 
 export const definitionsData = [
@@ -3981,5 +3982,70 @@ tracemalloc.stop()`,
       }
     ],
     takeaway: "Algorithmic complexity sets theoretical scalability, but empirical profiling reveals real-world bottlenecks. Rigorous pre-deployment validation across all 9 dimensions ensures both computational efficiency and high retrieval quality in production."
+  },
+  {
+    id: "uvicorn",
+    title: "Uvicorn — Modern Python ASGI Server",
+    badge: "ASGI Web Server & Runtime",
+    summary: "Uvicorn is an ASGI (Asynchronous Server Gateway Interface) web server implementation for Python. It provides high-performance asynchronous networking to run frameworks like FastAPI and Starlette.",
+    question: "What is uvicorn[standard]?",
+    keyPoints: [
+      {
+        title: "ASGI Web Server",
+        detail: "Uvicorn is an ASGI server that runs applications such as FastAPI."
+      },
+      {
+        title: "[standard] Dependencies",
+        detail: "[standard] requests Uvicorn's optional standard dependencies, which can include faster event-loop or HTTP parsing components and other conveniences."
+      },
+      {
+        title: "FastAPI Layer",
+        detail: "FastAPI defines your API endpoints and request handling."
+      },
+      {
+        title: "Pydantic Validation Layer",
+        detail: "Pydantic validates the incoming data."
+      }
+    ],
+    stackBreakdown: [
+      {
+        component: "Uvicorn",
+        role: "ASGI Web Server",
+        badge: "Networking & Transport",
+        accent: "text-cyan-400",
+        desc: "Listens for incoming HTTP/WebSocket connections, manages async concurrency, and routes ASGI requests to the application callable."
+      },
+      {
+        component: "uvicorn[standard]",
+        role: "High-Speed Dependencies",
+        badge: "C-Speed Enhancements",
+        accent: "text-amber-400",
+        desc: "Installs uvloop (fast libuv-based event loop replacing default asyncio) and httptools (fast C-based HTTP parser derived from Node.js)."
+      },
+      {
+        component: "FastAPI",
+        role: "Application Framework",
+        badge: "Routing & Logic",
+        accent: "text-emerald-400",
+        desc: "Defines API routes, path operations, dependency injection, and automatically generates interactive Swagger/OpenAPI documentation."
+      },
+      {
+        component: "Pydantic",
+        role: "Data Validation & Typing",
+        badge: "Schema Enforcement",
+        accent: "text-purple-400",
+        desc: "Parses, coerces, and validates incoming JSON request payloads against Python type hints with clear validation error reports."
+      }
+    ],
+    commandExample: {
+      cli: "uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+      details: [
+        { flag: "main", meaning: "Refers to the Python file main.py containing application code." },
+        { flag: "app", meaning: "Refers to the FastAPI instance created with app = FastAPI()." },
+        { flag: "--reload", meaning: "Enables hot-reloading for local development when source code changes." },
+        { flag: "--host 0.0.0.0", meaning: "Binds server across all network interfaces for container/Docker access." }
+      ]
+    },
+    takeaway: "In the modern Python API stack: Uvicorn powers the asynchronous ASGI server runtime, [standard] equips C-speed event loops (uvloop) and HTTP parsing (httptools), FastAPI defines routes and handlers, and Pydantic guarantees strict runtime type validation."
   }
 ];

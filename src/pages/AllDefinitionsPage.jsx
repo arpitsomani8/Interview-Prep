@@ -6003,6 +6003,129 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 64: Uvicorn */}
+            {item.id === 'uvicorn' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Question & Key Points Banner */}
+                <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-3 gap-2">
+                    <div className="flex items-center gap-2">
+                      <Terminal className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                        {item.question}
+                      </h4>
+                    </div>
+                    <span className="text-[10px] font-mono text-cyan-300 uppercase bg-cyan-950/40 px-2.5 py-1 rounded border border-cyan-800/40 shrink-0 self-start sm:self-auto">
+                      Modern Async Python Stack
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    {item.keyPoints.map((kp, kIdx) => (
+                      <div
+                        key={kIdx}
+                        className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-cyan-400 shrink-0"></span>
+                          <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                            {kp.title}
+                          </h5>
+                        </div>
+                        <p className="text-xs text-zinc-300 leading-relaxed font-sans pl-4">
+                          {kp.detail}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Modern API Stack Breakdown */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>How the Layers Work Together in Production</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                    {item.stackBreakdown.map((layer, lIdx) => (
+                      <div
+                        key={lIdx}
+                        className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2.5 hover:border-zinc-700 transition flex flex-col justify-between"
+                      >
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <h5 className={`text-xs font-bold font-mono uppercase ${layer.accent}`}>
+                              {layer.component}
+                            </h5>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                              {layer.badge}
+                            </span>
+                          </div>
+                          <span className="text-[11px] font-mono text-white block font-semibold">
+                            {layer.role}
+                          </span>
+                          <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
+                            {layer.desc}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* CLI Command Example */}
+                {item.commandExample && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Run Uvicorn in Production / Development</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-uvicorn', item.commandExample.cli)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-uvicorn' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Command</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-4 bg-zinc-950/60 border-b border-zinc-800/80">
+                      <code className="text-xs font-mono text-cyan-300 font-bold block overflow-x-auto">
+                        $ {item.commandExample.cli}
+                      </code>
+                    </div>
+                    <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-black">
+                      {item.commandExample.details.map((d, dIdx) => (
+                        <div key={dIdx} className="space-y-1">
+                          <code className="text-[11px] font-mono text-amber-300 bg-zinc-900 px-1.5 py-0.5 rounded border border-zinc-800">
+                            {d.flag}
+                          </code>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-1">
+                            {d.meaning}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Production Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
