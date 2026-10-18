@@ -6272,6 +6272,138 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 66: Load Balancing & Load Testing */}
+            {item.id === 'load-balancing' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Dual Focus: Load Balancing & Load Testing */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Load Balancing Card */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 space-y-3 shadow-xl flex flex-col justify-between">
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                        <div className="flex items-center gap-2">
+                          <Sliders className="w-4 h-4 text-cyan-400" />
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                            Load Balancing
+                          </h4>
+                        </div>
+                        <span className="text-[10px] font-mono text-cyan-300 uppercase bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800/40">
+                          Traffic Distribution
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-200 font-semibold font-sans">
+                        {item.loadBalancingConcept.definition}
+                      </p>
+                      <div className="p-3 rounded-xl bg-black border border-zinc-800 space-y-2">
+                        <div className="flex items-center gap-1.5 text-xs font-mono text-cyan-300">
+                          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                          <span>Architecture Example:</span>
+                        </div>
+                        <div className="p-2.5 rounded bg-zinc-950 border border-zinc-800/80 text-xs font-mono text-zinc-300">
+                          {item.loadBalancingConcept.example}
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 pt-1">
+                          {['API Replica #1', 'API Replica #2', 'API Replica #3'].map((rep, rIdx) => (
+                            <div key={rIdx} className="p-2 rounded bg-cyan-950/20 border border-cyan-800/30 text-center font-mono text-[10px] text-cyan-200">
+                              {rep}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <ul className="space-y-1.5 pt-2 text-[11px] text-zinc-400 border-t border-zinc-900 font-sans">
+                      {item.loadBalancingConcept.benefits.map((b, bIdx) => (
+                        <li key={bIdx} className="flex items-start gap-1.5">
+                          <span className="text-cyan-400 mt-0.5">•</span>
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Load Testing & p95 Latency Card */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-amber-800/40 space-y-3 shadow-xl flex flex-col justify-between">
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                        <div className="flex items-center gap-2">
+                          <Terminal className="w-4 h-4 text-amber-400" />
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                            Load Testing & Metrics
+                          </h4>
+                        </div>
+                        <span className="text-[10px] font-mono text-amber-300 uppercase bg-amber-950/40 px-2 py-0.5 rounded border border-amber-800/40">
+                          Capacity Validation
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-200 font-semibold font-sans">
+                        {item.loadTestingConcept.definition}
+                      </p>
+
+                      {/* p95 Latency Box */}
+                      <div className="p-3.5 rounded-xl bg-black border border-amber-900/50 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold font-mono text-amber-400 uppercase tracking-wide">
+                            {item.loadTestingConcept.p95Latency.term}
+                          </span>
+                          <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                            95th Percentile
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-200 leading-relaxed font-sans font-medium">
+                          {item.loadTestingConcept.p95Latency.definition}
+                        </p>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed font-sans pt-1 border-t border-zinc-900">
+                          {item.loadTestingConcept.p95Latency.significance}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Realistic Testing Warning */}
+                    <div className="p-3 rounded-xl bg-rose-950/20 border border-rose-800/30 text-[11px] text-rose-200/90 leading-relaxed font-mono">
+                      <strong className="text-rose-400 uppercase font-sans font-bold block mb-0.5">Testing Mandate:</strong>
+                      {item.loadTestingConcept.goldenRule}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Load Testing Tools Table/Grid */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Industry Load Testing Tools</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    {item.loadTestingConcept.tools.map((tool, tIdx) => (
+                      <div
+                        key={tIdx}
+                        className="p-4 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition space-y-2 flex flex-col justify-between"
+                      >
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                              {tool.name}
+                            </h5>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {tool.type}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans pt-1">
+                            {tool.desc}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Production Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

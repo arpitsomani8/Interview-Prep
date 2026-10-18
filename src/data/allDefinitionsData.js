@@ -62,7 +62,8 @@ export const definitionBookmarks = [
   { id: "python", label: "Python" },
   { id: "time-space-complexity", label: "Time/Space Complexity" },
   { id: "uvicorn", label: "Uvicorn" },
-  { id: "async-sync", label: "Async vs. Sync" }
+  { id: "async-sync", label: "Async vs. Sync" },
+  { id: "load-balancing", label: "Load Balancing" }
 ];
 
 export const definitionsData = [
@@ -4088,5 +4089,47 @@ tracemalloc.stop()`,
       }
     },
     takeaway: "Synchronous code waits sequentially, while asynchronous code yields control during I/O to handle concurrent requests. For database operations, vector queries order records geometrically with operators like `<=>` using HNSW/IVFFlat indexes, whereas standard relational queries filter columns with WHERE clauses using B-tree indexes."
+  },
+  {
+    id: "load-balancing",
+    title: "Load Balancing & Production Load Testing",
+    badge: "Scalability, Concurrency & SRE",
+    summary: "Load balancing distributes network or application traffic across multiple servers, while load testing evaluates how the system behaves and measures latency percentiles under heavy concurrent user demand.",
+    loadBalancingConcept: {
+      definition: "Distributing requests across multiple service instances.",
+      example: "Three API replicas share incoming traffic.",
+      benefits: [
+        "Prevents any single API replica from becoming a performance bottleneck.",
+        "Ensures high availability: unhealthy instances are automatically taken out of rotation.",
+        "Enables seamless horizontal autoscaling (scaling pods/containers out as traffic surges)."
+      ]
+    },
+    loadTestingConcept: {
+      definition: "Load testing checks how your application behaves when many users or requests arrive.",
+      p95Latency: {
+        term: "p95 Latency",
+        definition: "p95 latency is the time within which 95% of measured requests complete.",
+        significance: "Tail latency (p95 / p99) reflects real user pain points that simple averages hide."
+      },
+      tools: [
+        {
+          name: "Locust",
+          type: "Python Asynchronous",
+          desc: "Define user behavior with pure Python scripts; highly scalable and developer-friendly."
+        },
+        {
+          name: "k6",
+          type: "Go Runtime / JS",
+          desc: "Ultra-fast, modern load testing engine written in Go with test suites scripted in JavaScript."
+        },
+        {
+          name: "Apache JMeter",
+          type: "Enterprise Standard",
+          desc: "Battle-tested tool for multi-protocol stress testing, parameterization, and distributed load generation."
+        }
+      ],
+      goldenRule: "Test realistic payloads and concurrency, not just repeated tiny requests on a development laptop."
+    },
+    takeaway: "Load balancing distributes incoming requests across multiple service replicas to prevent bottlenecks and downtime. Concurrently, load testing with tools like Locust, k6, or JMeter measures true production stability and p95 latency under realistic payloads and concurrency."
   }
 ];
