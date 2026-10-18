@@ -9102,6 +9102,140 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 84: Lexical Search */}
+            {item.id === 'lexical-search' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Search className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Keyword Matching & Sparse Information Retrieval</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-800">
+                      TF-IDF • BM25 • Sparse Vectors
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-900/40 shadow-xl space-y-3">
+                    <p className="text-xs sm:text-sm text-cyan-200 font-sans leading-relaxed font-semibold">
+                      {item.coreDefinition}
+                    </p>
+                    <div className="p-3 rounded-xl bg-black border border-cyan-950 flex items-start gap-3">
+                      <span className="text-cyan-400 font-bold text-base leading-none mt-0.5">📊</span>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.tfidfExplanation}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4 Sparse Vector & Term Weighting Pillars */}
+                {item.sparseVectorMechanics && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-amber-400" />
+                        <span>TF-IDF & Sparse Vector Mechanics</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Mathematical Formulation
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {item.sparseVectorMechanics.map((mech, mIdx) => (
+                        <div
+                          key={mIdx}
+                          className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition flex flex-col justify-between space-y-3"
+                        >
+                          <div className="space-y-2">
+                            <h5 className="text-xs font-bold font-mono text-amber-300">
+                              {mech.component}
+                            </h5>
+                            <div className="p-2 rounded bg-black border border-zinc-900">
+                              <code className="text-[10px] font-mono text-zinc-300 break-words">
+                                {mech.formula}
+                              </code>
+                            </div>
+                            <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                              {mech.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Lexical vs. Semantic Head-to-Head Table */}
+                {item.lexicalVsSemantic && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Lexical Search vs. Semantic Search: Side-by-Side</span>
+                    </h4>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead className="bg-black border-b border-zinc-800 font-mono text-[11px] text-zinc-400">
+                          <tr>
+                            <th className="p-3.5 w-1/4">Dimension</th>
+                            <th className="p-3.5 w-3/8 text-cyan-300">Lexical Search (TF-IDF / BM25)</th>
+                            <th className="p-3.5 w-3/8 text-purple-300">Semantic Search (Dense Embeddings)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900 text-zinc-300">
+                          {item.lexicalVsSemantic.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3.5 font-bold font-mono text-zinc-300 text-[11px]">
+                                {row.dimension}
+                              </td>
+                              <td className="p-3.5 text-cyan-200/90 leading-relaxed">
+                                {row.lexical}
+                              </td>
+                              <td className="p-3.5 text-purple-200/90 leading-relaxed">
+                                {row.semantic}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Hybrid Search Callout Box */}
+                {item.hybridSearchSynergy && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-black border border-purple-900/50 space-y-2.5">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-purple-400" />
+                      <h5 className="text-xs font-bold text-purple-300 font-mono uppercase tracking-wider">
+                        {item.hybridSearchSynergy.headline}
+                      </h5>
+                    </div>
+                    <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                      {item.hybridSearchSynergy.desc}
+                    </p>
+                    <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800">
+                      <code className="text-[11px] font-mono text-purple-200">
+                        {item.hybridSearchSynergy.equation}
+                      </code>
+                    </div>
+                    <p className="text-[11px] text-emerald-400 font-mono font-medium">
+                      ✓ {item.hybridSearchSynergy.takeaway}
+                    </p>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

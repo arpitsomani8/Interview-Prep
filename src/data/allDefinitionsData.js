@@ -80,7 +80,8 @@ export const definitionBookmarks = [
   { id: "paged-attention", label: "PagedAttention" },
   { id: "multi-agent-orchestration", label: "Multi-Agent Orchestration" },
   { id: "coherence", label: "Coherence" },
-  { id: "chunking", label: "Chunking" }
+  { id: "chunking", label: "Chunking" },
+  { id: "lexical-search", label: "Lexical Search" }
 ];
 
 export const definitionsData = [
@@ -5375,5 +5376,64 @@ def health_check():
       }
     ],
     takeaway: "Chunking directly determines the quality ceiling of any RAG pipeline: chunks that are too large dilute vector embedding precision, while chunks that are too small amputate critical context. Optimal systems tune chunk size and overlap to match the document layout and query specificity."
+  },
+  {
+    id: "lexical-search",
+    title: "Lexical Search — TF-IDF, BM25 & Sparse Vector Retrieval",
+    badge: "Keyword Search & Information Retrieval",
+    summary: "Lexical search finds documents by matching words or terms in the user's query against words in the documents. Master TF-IDF sparse vectors, BM25 ranking, vocabulary mismatch, and hybrid search synergy.",
+    coreDefinition: "Lexical search finds documents by matching words or terms in the user's query against words in the documents.",
+    tfidfExplanation: "A common lexical-search technique is TF-IDF, which represents documents as vectors based on vocabulary terms. Most vocabulary terms do not occur in any particular document, so most vector values are zero. That makes the representation sparse.",
+    sparseVectorMechanics: [
+      {
+        component: "TF (Term Frequency)",
+        formula: "TF(t, d) = count(t in d) / total_words(d)",
+        desc: "Measures how frequently term t appears in document d. Higher occurrence indicates stronger topical relevance within that document."
+      },
+      {
+        component: "IDF (Inverse Document Frequency)",
+        formula: "IDF(t, D) = log(total_docs / docs_containing_t)",
+        desc: "Dampens common words (e.g. 'the', 'is', 'with') and heavily weights rare, highly discriminative keywords (e.g. 'FastAPI', 'YOLO', 'quantization')."
+      },
+      {
+        component: "Sparse Representation",
+        formula: "Vector length = |Vocabulary| (e.g. 50,000+ dimensions)",
+        desc: "Because a single document only contains a few hundred unique words out of a 50,000+ word dictionary, >99% of vector values are exactly zero."
+      },
+      {
+        component: "BM25 (Best Matching 25)",
+        formula: "Refined non-linear TF-IDF with document length normalization",
+        desc: "The industry-standard production algorithm (Elasticsearch, OpenSearch) that prevents long documents from unfairly dominating relevance scores."
+      }
+    ],
+    lexicalVsSemantic: [
+      {
+        dimension: "Matching Mechanism",
+        lexical: "Exact keyword and n-gram overlap in inverted indexes (TF-IDF / BM25)",
+        semantic: "Cosine distance / dot product in continuous dense embedding space (e.g. 1536-dim vectors)"
+      },
+      {
+        dimension: "Representation Type",
+        lexical: "Sparse vectors (high-dimensional, mostly zeroes)",
+        semantic: "Dense vectors (fixed-dimensional, all non-zero floating point numbers)"
+      },
+      {
+        dimension: "Top Strengths",
+        lexical: "Exact matches, product SKUs, part numbers, error codes, legal clauses, zero inference latency",
+        semantic: "Synonym matching, conceptual understanding, multilingual queries, cross-lingual retrieval"
+      },
+      {
+        dimension: "Core Vulnerability",
+        lexical: "Vocabulary Mismatch Problem (fails if user searches 'couch' but document says 'sofa')",
+        semantic: "Out-of-domain hallucinations, misses exact serial numbers or rare acronyms, GPU cost"
+      }
+    ],
+    hybridSearchSynergy: {
+      headline: "Why Production RAG Uses Hybrid Search (Lexical + Semantic)",
+      desc: "Neither lexical nor semantic search alone is sufficient for enterprise production. Production systems run both in parallel and fuse rankings using Reciprocal Rank Fusion (RRF).",
+      equation: "RRF_Score(d) = Σ [ 1 / (60 + rank_dense(d)) + 1 / (60 + rank_sparse(d)) ]",
+      takeaway: "Ensures exact product codes (via BM25) and conceptual queries (via dense embeddings) are both retrieved accurately."
+    },
+    takeaway: "Lexical search (TF-IDF / BM25) represents documents as sparse vectors based on exact vocabulary terms. While semantic dense vectors capture high-level conceptual meaning, lexical search is indispensable for exact keywords, part numbers, and acronyms—making Hybrid Search the gold standard for enterprise RAG."
   }
 ];
