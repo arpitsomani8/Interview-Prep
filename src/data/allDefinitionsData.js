@@ -119,7 +119,8 @@ export const definitionBookmarks = [
   { id: "entropy", label: "Entropy" },
   { id: "gini-impurity", label: "Gini Impurity" },
   { id: "information-gain", label: "Information Gain" },
-  { id: "outlier-detection", label: "Outlier Detection" }
+  { id: "outlier-detection", label: "Outlier Detection" },
+  { id: "imputation", label: "Imputation" }
 ];
 
 export const definitionsData = [
@@ -9234,5 +9235,93 @@ print(validate_parcel_prompt(2.3))
 print(validate_parcel_prompt(95.0))`
     },
     takeaway: "Outlier detection acts as a vital observability and safety guardrail around generative AI systems. By filtering nonsensical inputs (e.g. 95.0kg parcel data), tracking semantic embedding drift, and catching silent RAG retrieval degradations, anomaly detection ensures downstream LLMs generate factually reliable outputs without burning excessive tokens on garbage data."
+  },
+  {
+    id: "imputation",
+    title: "Imputation (Missing Value Strategies & Data Preprocessing)",
+    badge: "Missing Data Engineering, Leakage Prevention & Scikit-Learn Pipelines",
+    summary: "Imputation means filling in missing values in a dataset. Master the 5 common imputation methods: Mean imputation, Median imputation, Mode imputation, Constant imputation, and Model-based imputation.",
+    coreDefinition: "Imputation means filling in missing values in a dataset.",
+    methodsHeading: "Common imputation methods:",
+    imputationMethods: [
+      {
+        name: "Mean imputation",
+        definition: "Fill a missing number with the average.",
+        sklearnClass: "SimpleImputer(strategy='mean')",
+        bestFor: "Normally distributed numerical features without extreme outliers.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        name: "Median imputation",
+        definition: "Fill it with the middle value; often a better choice when data contains extreme values.",
+        sklearnClass: "SimpleImputer(strategy='median')",
+        bestFor: "Skewed continuous numerical distributions or datasets containing severe outliers.",
+        accent: "text-blue-400",
+        border: "border-blue-800/50"
+      },
+      {
+        name: "Mode imputation",
+        definition: "Use the most frequent value, often for categorical data.",
+        sklearnClass: "SimpleImputer(strategy='most_frequent')",
+        bestFor: "Categorical columns or discrete integers with dominant modes.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        name: "Constant imputation",
+        definition: "Fill with a fixed value, such as 'Unknown' for a category.",
+        sklearnClass: "SimpleImputer(strategy='constant', fill_value='Unknown')",
+        bestFor: "Flagging missingness explicitly (e.g. 'Unknown', -1, or 0) when missingness itself carries signal (MNAR).",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      },
+      {
+        name: "Model-based imputation",
+        definition: "Predict missing values using other columns.",
+        sklearnClass: "KNNImputer(n_neighbors=5) / IterativeImputer (MICE)",
+        bestFor: "Multivariate feature interactions where correlations across existing columns can estimate missing values.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      }
+    ],
+    leakageWarning: {
+      headline: "Golden Rule: Preventing Data Leakage During Imputation",
+      rule: "ALWAYS compute imputation statistics (mean, median, mode) strictly on the TRAINING set only (fit on X_train), then transform both X_train and X_test. Fitting on the entire dataset leaks future test distribution metadata into training, yielding overly optimistic cross-validation scores."
+    },
+    codeExample: {
+      title: "Scikit-Learn Imputation Pipeline (Leakage-Safe)",
+      language: "python",
+      code: `import numpy as np
+import pandas as pd
+from sklearn.impute import SimpleImputer, KNNImputer
+
+# Sample data with missing values (NaN)
+data = {
+    'age': [25.0, np.nan, 29.0, 31.0, 95.0],      # Numerical with outlier
+    'salary': [50000.0, 60000.0, np.nan, 80000.0, 75000.0],
+    'department': ['Sales', 'IT', 'IT', np.nan, 'HR'] # Categorical
+}
+df = pd.DataFrame(data)
+
+# 1. Median Imputation for skewed numerical features
+median_imp = SimpleImputer(strategy='median')
+df['age_imputed'] = median_imp.fit_transform(df[['age']])
+
+# 2. Mode Imputation for categorical features
+mode_imp = SimpleImputer(strategy='most_frequent')
+df['department_mode'] = mode_imp.fit_transform(df[['department']])
+
+# 3. Constant Imputation for missing indicators
+const_imp = SimpleImputer(strategy='constant', fill_value='Unknown')
+df['department_const'] = const_imp.fit_transform(df[['department']])
+
+# 4. Model-Based KNN Imputation
+knn_imp = KNNImputer(n_neighbors=2)
+df_knn = knn_imp.fit_transform(df[['age_imputed', 'salary']])
+
+print(df[['age_imputed', 'department_mode', 'department_const']])`
+    },
+    takeaway: "Imputation transforms incomplete raw data into dense feature matrices ready for machine learning algorithms. While simple mean/median imputers provide fast computational baselines, always use median for skewed data with outliers, mode or constant for categories, and encapsulate transformations inside Scikit-Learn Pipelines to prevent data leakage between train and test splits."
   }
 ];

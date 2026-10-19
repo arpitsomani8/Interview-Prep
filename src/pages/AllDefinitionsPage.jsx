@@ -16110,6 +16110,124 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 123: Imputation */}
+            {item.id === 'imputation' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Data Preprocessing & Cleaning</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Missing Value Handling
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Imputation
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Common Imputation Methods Grid */}
+                {item.imputationMethods && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.methodsHeading}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        5 Strategies
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.imputationMethods.map((m, mIdx) => (
+                        <div key={mIdx} className={`p-4 rounded-xl bg-black border ${m.border} space-y-2 hover:border-zinc-700 transition flex flex-col justify-between`}>
+                          <div className="space-y-1.5">
+                            <h5 className={`text-xs font-bold font-mono ${m.accent}`}>
+                              {m.name}
+                            </h5>
+                            <p className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                              {m.definition}
+                            </p>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900 space-y-1">
+                            <code className="text-[10px] font-mono text-cyan-300 bg-zinc-950 px-1.5 py-0.5 rounded border border-zinc-800 block overflow-x-auto">
+                              {m.sklearnClass}
+                            </code>
+                            <p className="text-[11px] text-zinc-400 font-sans leading-tight pt-1">
+                              Best for: {m.bestFor}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Data Leakage Golden Rule Callout */}
+                {item.leakageWarning && (
+                  <div className="p-4 rounded-xl bg-rose-950/20 border border-rose-800/50 space-y-2">
+                    <span className="text-xs font-bold font-mono text-rose-400 uppercase flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-rose-400" />
+                      <span>{item.leakageWarning.headline}</span>
+                    </span>
+                    <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                      {item.leakageWarning.rule}
+                    </p>
+                  </div>
+                )}
+
+                {/* 4. Interactive Scikit-Learn Python Code Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>imputation_pipeline.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-imputation', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-imputation' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
