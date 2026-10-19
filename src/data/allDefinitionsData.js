@@ -146,7 +146,8 @@ export const definitionBookmarks = [
   { id: "expectation", label: "Expectation" },
   { id: "variance", label: "Variance" },
   { id: "bias-weight", label: "Bias & Weights" },
-  { id: "flip-flop-latch", label: "Flip-Flop vs. Latch" }
+  { id: "flip-flop-latch", label: "Flip-Flop vs. Latch" },
+  { id: "underfitting-overfitting", label: "Underfitting & Overfitting" }
 ];
 
 export const definitionsData = [
@@ -11980,5 +11981,120 @@ module d_latch (
 endmodule`
     },
     takeaway: "The fundamental distinction between flip-flops and latches lies in timing control. A latch is level-sensitive and remains transparent throughout the active enable duration, making it prone to glitches and race conditions if unconstrained. In contrast, a flip-flop is edge-triggered—sampling input data instantaneously at the clock transition and isolating subsequent input changes—forming the foundation of synchronous digital pipelines and modern processor registers."
+  },
+  {
+    id: "underfitting-overfitting",
+    title: "Underfitting vs. Overfitting (Model Generalization & Diagnosis)",
+    badge: "Machine Learning Generalization, Regularization & Validation Strategy",
+    summary: "Underfitting: The model is too simple to learn the underlying pattern. It performs poorly on both training and test data. Overfitting: The model learns the training data too closely, including noise. It performs well on training data but poorly on unseen data. Good fit: The model learns useful patterns and predicts reasonably well on new routes.",
+    coreDefinition: "Underfitting: The model is too simple to learn the underlying pattern. It performs poorly on both training and test data. Overfitting: The model learns the training data too closely, including noise. It performs well on training data but poorly on unseen data. Good fit: The model learns useful patterns and predicts reasonably well on new routes.",
+    threeStates: [
+      {
+        state: "Underfitting",
+        definition: "The model is too simple to learn the underlying pattern. It performs poorly on both training and test data.",
+        trainingPerf: "Poor (High training loss / error)",
+        validationPerf: "Poor (High validation loss / error)",
+        gap: "Narrow gap (Both unacceptable)",
+        badge: "High Bias / Under-parameterized",
+        accent: "text-amber-400",
+        border: "border-amber-800/50",
+        bg: "bg-amber-950/20"
+      },
+      {
+        state: "Good fit",
+        definition: "The model learns useful patterns and predicts reasonably well on new routes.",
+        trainingPerf: "Good (Low training loss)",
+        validationPerf: "Good (Low validation loss)",
+        gap: "Small & Acceptable Generalization Gap",
+        badge: "Optimal Generalization",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50",
+        bg: "bg-emerald-950/20"
+      },
+      {
+        state: "Overfitting",
+        definition: "The model learns the training data too closely, including noise. It performs well on training data but poorly on unseen data.",
+        trainingPerf: "Good / Excellent (Near-zero error)",
+        validationPerf: "Poor (High error on unseen distributions)",
+        gap: "Wide Divergence (Memorization gap)",
+        badge: "High Variance / Noise Memorization",
+        accent: "text-rose-400",
+        border: "border-rose-800/50",
+        bg: "bg-rose-950/20"
+      }
+    ],
+    solveUnderfitting: {
+      question: "How do you solve underfitting?",
+      subtitle: "The model isn't learning enough from the data.",
+      steps: [
+        "1. Use a more expressive model, such as a decision tree instead of an overly simple linear model.",
+        "2. Add useful features, such as traffic, distance, and weather.",
+        "3. Reduce excessive regularization.",
+        "4. Train longer if the learning process has not converged.",
+        "5. Check data quality and whether the features contain enough information."
+      ]
+    },
+    solveOverfitting: {
+      question: "How do you solve overfitting?",
+      subtitle: "The model is learning patterns that don't generalize.",
+      steps: [
+        "1. Collect more representative training data or use appropriate data augmentation.",
+        "2. Simplify the model or reduce unnecessary features.",
+        "3. Add regularization, such as L1 or L2.",
+        "4. Use early stopping based on validation performance.",
+        "5. Use dropout for suitable neural networks.",
+        "6. Use cross-validation and check for data leakage."
+      ],
+      importantNote: "A random train/test split is not always appropriate. For time-series data, split chronologically; for grouped data, prevent related records from leaking across splits."
+    },
+    identifyUnderfittingVsOverfitting: {
+      question: "How do you identify whether a model is underfitting or overfitting?",
+      headline: "A strong answer:",
+      verbatimAnswer: "I compare training and validation performance. If both are poor, I investigate underfitting, feature quality, and optimization. If training performance is good but validation performance is much worse, I investigate overfitting, data leakage, regularization, and the quality of the validation split."
+    },
+    codeExample: {
+      title: "Diagnosing Learning Curves: Underfitting vs. Overfitting vs. Good Fit in Python",
+      language: "python",
+      code: `import numpy as np
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import Ridge
+from sklearn.metrics import mean_squared_error
+
+# 1. Synthetic delivery route dataset (e.g. non-linear transit time vs. parcel volume)
+np.random.seed(42)
+X_train = np.sort(np.random.rand(30, 1) * 10, axis=0)
+y_train = np.sin(X_train).ravel() + np.random.normal(0, 0.2, 30)
+
+X_val = np.sort(np.random.rand(20, 1) * 10, axis=0)
+y_val = np.sin(X_val).ravel() + np.random.normal(0, 0.2, 20)
+
+def evaluate_model(degree, alpha, name):
+    pipe = make_pipeline(PolynomialFeatures(degree), Ridge(alpha=alpha))
+    pipe.fit(X_train, y_train)
+    
+    train_err = mean_squared_error(y_train, pipe.predict(X_train))
+    val_err = mean_squared_error(y_val, pipe.predict(X_val))
+    
+    # Diagnosis heuristic:
+    if train_err > 0.4 and val_err > 0.4:
+        diag = "UNDERFITTING: Both train and val error are high (model too simple)"
+    elif train_err < 0.05 and val_err > 0.30:
+        diag = "OVERFITTING: Train error low, val error high (memorized noise)"
+    else:
+        diag = "GOOD FIT: Balanced low error on both train and unseen validation data"
+        
+    print(f"[{name}] Train MSE: {train_err:.4f} | Val MSE: {val_err:.4f} -> {diag}")
+
+# 1. Underfitting: Degree 1 Linear Regression (Cannot capture curve)
+evaluate_model(degree=1, alpha=1.0, name="Linear Model")
+
+# 2. Overfitting: Degree 15 Polynomial without regularization (Memorizes noise)
+evaluate_model(degree=15, alpha=0.0, name="High-Degree Poly")
+
+# 3. Good Fit: Degree 4 Polynomial with L2 Ridge Penalty
+evaluate_model(degree=4, alpha=0.5, name="Regularized Poly")`
+    },
+    takeaway: "Model generalization is governed by diagnosing the gap between training and validation loss curves. When both losses are high, the model is underfitting and requires greater expressiveness, richer features, or reduced regularization. When training loss is low but validation loss spikes, the model is overfitting and must be constrained via regularization (L1/L2, dropout), data augmentation, early stopping, and leak-free split validation."
   }
 ];

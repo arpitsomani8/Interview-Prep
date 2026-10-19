@@ -20901,6 +20901,204 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 150: Underfitting vs. Overfitting */}
+            {item.id === 'underfitting-overfitting' && (
+              <div className="space-y-6">
+                {/* 1. Core Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Model Generalization & Validation Strategy</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Generalization
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Underfitting vs. Overfitting
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.summary}
+                  </p>
+                </div>
+
+                {/* 2. Three States: Underfitting, Good Fit, Overfitting */}
+                {item.threeStates && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>The 3 Generalization Regimes</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Performance Diagnosis
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.threeStates.map((st, sIdx) => (
+                        <div key={sIdx} className={`p-4 rounded-xl bg-black border ${st.border} space-y-3 flex flex-col justify-between hover:border-zinc-700 transition`}>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${st.accent} uppercase block`}>
+                                {st.state}
+                              </span>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {st.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-white font-medium font-sans leading-relaxed">
+                              {st.definition}
+                            </p>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900 space-y-1 text-[11px] font-sans">
+                            <div className="flex justify-between items-center">
+                              <span className="text-zinc-500 font-mono">Train Perf:</span>
+                              <span className="text-zinc-300 font-medium">{st.trainingPerf}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-zinc-500 font-mono">Test/Val Perf:</span>
+                              <span className="text-zinc-300 font-medium">{st.validationPerf}</span>
+                            </div>
+                            <div className="flex justify-between items-center pt-1 border-t border-zinc-900/60">
+                              <span className="text-zinc-500 font-mono">Error Gap:</span>
+                              <span className={`font-mono text-[10px] font-semibold ${st.accent}`}>{st.gap}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Solutions Side-by-Side: Solve Underfitting vs Solve Overfitting */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Solve Underfitting */}
+                  {item.solveUnderfitting && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 space-y-3">
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                        <span className="text-xs sm:text-sm font-bold font-mono text-amber-400 uppercase flex items-center gap-2">
+                          <Terminal className="w-4 h-4 text-amber-400" />
+                          <span>{item.solveUnderfitting.question}</span>
+                        </span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                          Increase Capacity
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-400 font-mono">
+                        {item.solveUnderfitting.subtitle}
+                      </p>
+                      <div className="space-y-1.5 pt-1">
+                        {item.solveUnderfitting.steps.map((step, uIdx) => (
+                          <div key={uIdx} className="p-2.5 rounded-lg bg-black border border-zinc-800 text-xs text-zinc-200 font-sans leading-relaxed">
+                            {step}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Solve Overfitting */}
+                  {item.solveOverfitting && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-rose-800/40 space-y-3">
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                        <span className="text-xs sm:text-sm font-bold font-mono text-rose-400 uppercase flex items-center gap-2">
+                          <AlertTriangle className="w-4 h-4 text-rose-400" />
+                          <span>{item.solveOverfitting.question}</span>
+                        </span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
+                          Constrain Model
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-400 font-mono">
+                        {item.solveOverfitting.subtitle}
+                      </p>
+                      <div className="space-y-1.5 pt-1">
+                        {item.solveOverfitting.steps.map((step, oIdx) => (
+                          <div key={oIdx} className="p-2.5 rounded-lg bg-black border border-zinc-800 text-xs text-zinc-200 font-sans leading-relaxed">
+                            {step}
+                          </div>
+                        ))}
+                      </div>
+                      {item.solveOverfitting.importantNote && (
+                        <div className="p-3 rounded-xl bg-black border border-rose-900/60 text-xs text-rose-200/90 font-mono leading-relaxed mt-2">
+                          <strong className="text-rose-400 uppercase">Important Split Rule: </strong>
+                          {item.solveOverfitting.importantNote}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* 4. Interview-Ready Answer: How to identify whether underfitting or overfitting */}
+                {item.identifyUnderfittingVsOverfitting && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Shield className="w-4 h-4 text-cyan-400" />
+                        <span>{item.identifyUnderfittingVsOverfitting.question}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                        Interview Script
+                      </span>
+                    </div>
+                    <div className="p-4 rounded-xl bg-black border border-cyan-900/50 space-y-2">
+                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-300 block">
+                        {item.identifyUnderfittingVsOverfitting.headline}
+                      </span>
+                      <blockquote className="text-xs sm:text-sm text-zinc-100 font-sans leading-relaxed font-medium pl-3 border-l-2 border-cyan-500">
+                        “{item.identifyUnderfittingVsOverfitting.verbatimAnswer}”
+                      </blockquote>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Interactive Python Diagnosis Code Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>diagnose_generalization.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-underfitting-overfitting', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-underfitting-overfitting' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
