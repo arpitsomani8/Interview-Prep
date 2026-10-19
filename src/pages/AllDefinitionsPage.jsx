@@ -22304,6 +22304,64 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
+            {/* Universal EDA & Technical Definition Card Renderer for items with details/code */}
+            {item.details && !['confidence-score', 'vector-database', 'quantization'].includes(item.id) && (
+              <div className="space-y-4 pt-1">
+                {/* 5-Stage Core Pipeline Overview (for EDA Master Blueprint) */}
+                {item.pipelineOverview && (
+                  <div className="rounded-xl bg-black/60 border border-cyan-500/30 p-4 sm:p-5 space-y-3 shadow-lg">
+                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-400">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Core End-to-End EDA Workflow (5 Stages)</span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-1">
+                      {item.pipelineOverview.map((stage) => (
+                        <div key={stage.step} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+                          <span className="text-[10px] font-mono font-bold text-cyan-400 px-1.5 py-0.5 rounded bg-cyan-950/40 border border-cyan-800/40">
+                            STAGE {stage.step}
+                          </span>
+                          <h4 className="text-xs font-bold text-white mt-1.5">{stage.name}</h4>
+                          <p className="text-[11px] font-mono text-zinc-400 leading-relaxed">{stage.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Bulleted Detail Points */}
+                <ul className="space-y-2.5 pt-2 border-t border-zinc-800/80">
+                  {item.details.map((detail, dIdx) => (
+                    <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
+                      <span className="text-cyan-400 font-bold mt-0.5 text-base leading-none">•</span>
+                      <span>{detail}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Python Implementation Box with Copy Button */}
+                {item.code && (
+                  <div className="mt-3 pt-3 border-t border-zinc-800/80 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Python Implementation:</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(item.id, item.code)}
+                        className="text-[10px] font-mono text-zinc-400 hover:text-cyan-300 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 flex items-center gap-1 transition cursor-pointer"
+                      >
+                        {copiedId === item.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                        <span>{copiedId === item.id ? 'Copied' : 'Copy Code'}</span>
+                      </button>
+                    </div>
+                    <pre className="text-[11px] font-mono text-cyan-200/90 bg-black/90 border border-zinc-800/90 p-3.5 rounded-xl overflow-x-auto leading-relaxed shadow-inner">
+                      {item.code}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            )}
+
           </div>
         ))}
       </div>

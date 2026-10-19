@@ -1,168 +1,744 @@
 export const definitionBookmarks = [
-  { id: "fashion-360-visualization", label: "360° Fashion Visualization" },
-  { id: "acceptance-criteria", label: "Acceptance Criteria" },
-  { id: "activation-functions", label: "Activation Functions" },
-  { id: "adapters", label: "Adapters" },
-  { id: "agentic-ai", label: "Agentic AI" },
-  { id: "agentic-workflow", label: "Agentic Workflow" },
-  { id: "ai-evaluation", label: "AI Evaluation" },
-  { id: "ai-fairness-auditing", label: "AI Fairness / Auditing" },
-  { id: "ai-model", label: "AI Model" },
-  { id: "ai-assisted-coding-tools", label: "AI-Assisted Coding Tools" },
-  { id: "ann-cnn", label: "ANN vs. CNN" },
-  { id: "async-sync", label: "Async vs. Sync" },
-  { id: "auth-authorization", label: "Authentication & Authorization" },
-  { id: "automl", label: "AutoML" },
-  { id: "aws-azure", label: "AWS / Azure in AI/ML" },
-  { id: "azure-ai-vision", label: "Azure AI Vision" },
-  { id: "azure-openai", label: "Azure OpenAI" },
-  { id: "backend-architecture", label: "Backend Architecture" },
-  { id: "bagging", label: "Bagging" },
-  { id: "bert", label: "BERT" },
-  { id: "bias-weight", label: "Bias & Weights" },
-  { id: "blockchain", label: "Blockchain" },
-  { id: "boosting", label: "Boosting" },
-  { id: "caching", label: "Caching" },
-  { id: "central-limit-theorem", label: "Central Limit Theorem" },
-  { id: "centroid", label: "Centroid" },
-  { id: "chunking", label: "Chunking" },
-  { id: "cicd", label: "CI/CD" },
-  { id: "classical-ml", label: "Classical ML" },
-  { id: "clip", label: "CLIP" },
-  { id: "coco-dataset", label: "COCO Dataset" },
-  { id: "coding-best-practices", label: "Coding Best Practices" },
-  { id: "coherence", label: "Coherence" },
-  { id: "confidence-score", label: "Confidence Score" },
-  { id: "connect-gpt-fastapi", label: "Connect GPT to FastAPI" },
-  { id: "connect-gpt-flask", label: "Connect GPT to Flask" },
-  { id: "cot-chain-of-thought", label: "COT / Chain of Thought" },
-  { id: "cross-encoder", label: "Cross-Encoder" },
-  { id: "custom-model-fastapi", label: "Custom Model with FastAPI" },
-  { id: "data-model-drift", label: "Data / Model Drift" },
-  { id: "debugging", label: "Debugging" },
-  { id: "deepsparse", label: "DeepSparse" },
-  { id: "denoising", label: "Denoising" },
-  { id: "dense-sparse", label: "Dense vs. Sparse" },
-  { id: "design-patterns", label: "Design Patterns" },
-  { id: "diffusion-model", label: "Diffusion Model" },
-  { id: "docker", label: "Docker" },
-  { id: "early-stopping", label: "Early Stopping" },
-  { id: "edge-cases", label: "Edge Cases" },
-  { id: "eigenvector-pca", label: "Eigenvectors & PCA" },
-  { id: "elastic-net", label: "Elastic Net" },
-  { id: "embedding", label: "Embedding" },
-  { id: "entropy", label: "Entropy" },
-  { id: "expectation", label: "Expectation" },
-  { id: "faiss", label: "FAISS" },
-  { id: "feature-cross", label: "Feature Cross" },
-  { id: "fine-tuning", label: "Fine-Tuning" },
-  { id: "flip-flop-latch", label: "Flip-Flop vs. Latch" },
-  { id: "frontier-llms", label: "Frontier LLMs (OpenAI, Claude, Gemini)" },
-  { id: "gaussian-distribution", label: "Gaussian Distribution" },
-  { id: "genai-vs-traditional-ai", label: "GenAI vs Traditional AI" },
-  { id: "gini-impurity", label: "Gini Impurity" },
-  { id: "gpt-llama", label: "GPT / LLaMA" },
-  { id: "gpu-cuda", label: "GPU / CUDA" },
-  { id: "gradient-descent", label: "Gradient Descent" },
-  { id: "hallucination", label: "Hallucination" },
-  { id: "imputation", label: "Imputation" },
-  { id: "inference", label: "Inference" },
-  { id: "information-gain", label: "Information Gain" },
-  { id: "iqr", label: "IQR & Binning" },
-  { id: "joblib", label: "Joblib" },
-  { id: "kmeans", label: "K-means Clustering" },
-  { id: "knn", label: "KNN" },
-  { id: "kubernetes", label: "Kubernetes" },
-  { id: "labeled-unlabeled-data", label: "Labeled vs Unlabeled Data" },
-  { id: "langchain-langgraph", label: "LangChain / LangGraph" },
-  { id: "learning-rate-epochs", label: "Learning Rate & Epochs" },
-  { id: "lemmatization", label: "Lemmatization" },
-  { id: "lexical-search", label: "Lexical Search" },
-  { id: "llm", label: "LLM" },
-  { id: "load-balancing", label: "Load Balancing" },
-  { id: "log-loss", label: "Log Loss" },
-  { id: "log-transform", label: "Log Transformation" },
-  { id: "logits", label: "Logits" },
-  { id: "lora", label: "LoRA" },
-  { id: "map-evaluation", label: "mAP (Mean Average Precision)" },
-  { id: "data-visualization", label: "Matplotlib & Seaborn" },
-  { id: "mcp", label: "MCP" },
-  { id: "mitigation", label: "Mitigation Strategies" },
-  { id: "machine-learning-types", label: "ML Types & RLHF" },
-  { id: "model-choice", label: "Model Choice" },
-  { id: "multi-agent-orchestration", label: "Multi-Agent Orchestration" },
-  { id: "multi-tenant", label: "Multi-Tenant" },
-  { id: "ngram-bigram", label: "n-gram / Bigram" },
-  { id: "nlp-general-flow", label: "NLP General Flow" },
-  { id: "normalization-scaling", label: "Normalization / Scaling" },
-  { id: "numpy", label: "NumPy" },
-  { id: "ocr", label: "OCR" },
-  { id: "onion-architecture", label: "Onion Architecture" },
-  { id: "onnx", label: "ONNX" },
-  { id: "oop-concepts", label: "OOP Concepts" },
-  { id: "openai-vs-azure-ai", label: "OpenAI vs Azure AI" },
-  { id: "optimization", label: "Optimization" },
-  { id: "outlier-detection", label: "Outlier Detection" },
-  { id: "paged-attention", label: "PagedAttention" },
-  { id: "pandas", label: "Pandas" },
-  { id: "pipeline", label: "Pipeline" },
-  { id: "polling", label: "Polling & Response Consistency" },
-  { id: "powertransformer", label: "PowerTransformer" },
-  { id: "confusion-matrix-precision-recall", label: "Precision, Recall & Accuracy" },
-  { id: "predictive-modeling", label: "Predictive Modeling" },
-  { id: "production-ai-playbook", label: "Production AI Playbook & Trade-offs" },
-  { id: "production-check", label: "Production Check" },
-  { id: "production-databases", label: "Production Databases" },
-  { id: "production-handling", label: "Production Handling" },
-  { id: "prompt-engineering", label: "Prompt Engineering" },
-  { id: "pruning", label: "Pruning" },
-  { id: "pydantic", label: "Pydantic" },
-  { id: "python", label: "Python" },
-  { id: "qlora", label: "QLoRA" },
-  { id: "quantization", label: "Quantization" },
-  { id: "r2-score", label: "R² Score" },
-  { id: "rag", label: "RAG" },
-  { id: "random-forest", label: "Random Forest" },
-  { id: "random-variable", label: "Random Variable" },
-  { id: "ranking-reranking", label: "Ranking / Reranking" },
-  { id: "ranking-and-reranking", label: "Ranking & Reranking" },
-  { id: "react-pattern", label: "ReAct" },
-  { id: "redis", label: "Redis" },
-  { id: "regression-vs-classification", label: "Regression vs Classification" },
-  { id: "regularization", label: "Regularization" },
-  { id: "reinforcement-learning", label: "Reinforcement Learning" },
-  { id: "rest-api-vs-fastapi", label: "REST API vs FastAPI" },
-  { id: "system-scaling", label: "Scaling" },
-  { id: "scikit-learn", label: "Scikit-Learn" },
-  { id: "security-and-error-handling", label: "Security & Error Handling" },
-  { id: "self-attention", label: "Self-Attention" },
-  { id: "sft-peft", label: "SFT / PEFT" },
-  { id: "similarity-semantic-search", label: "Similarity / Semantic Search" },
-  { id: "stemming", label: "Stemming" },
-  { id: "strands", label: "Strands Agents SDK" },
-  { id: "temperature", label: "Temperature" },
-  { id: "tensor", label: "Tensor & TensorFlow" },
-  { id: "testing", label: "Testing" },
-  { id: "text-image-search", label: "Text / Image Search" },
-  { id: "tf-idf", label: "TF-IDF" },
-  { id: "throughput-latency", label: "Throughput / Latency" },
-  { id: "time-space-complexity", label: "Time/Space Complexity" },
-  { id: "tokenization", label: "Tokenization" },
-  { id: "top-k-top-p", label: "Top-K / Top-P" },
-  { id: "transformer", label: "Transformer" },
-  { id: "tree-algorithms", label: "Tree Algorithms" },
-  { id: "tuple", label: "Tuple" },
-  { id: "underfitting-overfitting", label: "Underfitting & Overfitting" },
-  { id: "update-deployed-model", label: "Update a Deployed Model" },
-  { id: "uvicorn", label: "Uvicorn" },
-  { id: "variance", label: "Variance" },
-  { id: "vector-database", label: "Vector Database" },
-  { id: "vision-foundation-model", label: "Vision Model" },
-  { id: "which-is-better", label: "Which is Better?" },
-  { id: "xgboost", label: "XGBoost" },
-  { id: "yolo", label: "YOLO" },
-  { id: "z-score", label: "Z-score" },
-  { id: "zero-shot-few-shot", label: "Zero-shot / Few-shot" }
+  {
+    "id": "fashion-360-visualization",
+    "label": "360° Fashion Visualization"
+  },
+  {
+    "id": "acceptance-criteria",
+    "label": "Acceptance Criteria"
+  },
+  {
+    "id": "activation-functions",
+    "label": "Activation Functions"
+  },
+  {
+    "id": "adapters",
+    "label": "Adapters"
+  },
+  {
+    "id": "agentic-ai",
+    "label": "Agentic AI"
+  },
+  {
+    "id": "agentic-workflow",
+    "label": "Agentic Workflow"
+  },
+  {
+    "id": "ai-evaluation",
+    "label": "AI Evaluation"
+  },
+  {
+    "id": "ai-fairness-auditing",
+    "label": "AI Fairness / Auditing"
+  },
+  {
+    "id": "ai-model",
+    "label": "AI Model"
+  },
+  {
+    "id": "ai-assisted-coding-tools",
+    "label": "AI-Assisted Coding Tools"
+  },
+  {
+    "id": "ann-cnn",
+    "label": "ANN vs. CNN"
+  },
+  {
+    "id": "anova",
+    "label": "ANOVA & Kruskal-Wallis"
+  },
+  {
+    "id": "async-sync",
+    "label": "Async vs. Sync"
+  },
+  {
+    "id": "auth-authorization",
+    "label": "Authentication & Authorization"
+  },
+  {
+    "id": "automl",
+    "label": "AutoML"
+  },
+  {
+    "id": "aws-azure",
+    "label": "AWS / Azure in AI/ML"
+  },
+  {
+    "id": "azure-ai-vision",
+    "label": "Azure AI Vision"
+  },
+  {
+    "id": "azure-openai",
+    "label": "Azure OpenAI"
+  },
+  {
+    "id": "backend-architecture",
+    "label": "Backend Architecture"
+  },
+  {
+    "id": "bagging",
+    "label": "Bagging"
+  },
+  {
+    "id": "bert",
+    "label": "BERT"
+  },
+  {
+    "id": "bias-weight",
+    "label": "Bias & Weights"
+  },
+  {
+    "id": "binning",
+    "label": "Binning (Discretization)"
+  },
+  {
+    "id": "bivariate",
+    "label": "Bivariate Analysis"
+  },
+  {
+    "id": "blockchain",
+    "label": "Blockchain"
+  },
+  {
+    "id": "boosting",
+    "label": "Boosting"
+  },
+  {
+    "id": "box-cox",
+    "label": "Box-Cox Transformation"
+  },
+  {
+    "id": "caching",
+    "label": "Caching"
+  },
+  {
+    "id": "cardinality",
+    "label": "Cardinality (df.nunique())"
+  },
+  {
+    "id": "central-limit-theorem",
+    "label": "Central Limit Theorem"
+  },
+  {
+    "id": "centroid",
+    "label": "Centroid"
+  },
+  {
+    "id": "chunking",
+    "label": "Chunking"
+  },
+  {
+    "id": "cicd",
+    "label": "CI/CD"
+  },
+  {
+    "id": "class-imbalance",
+    "label": "Class Imbalance"
+  },
+  {
+    "id": "classical-ml",
+    "label": "Classical ML"
+  },
+  {
+    "id": "clip",
+    "label": "CLIP"
+  },
+  {
+    "id": "coco-dataset",
+    "label": "COCO Dataset"
+  },
+  {
+    "id": "coding-best-practices",
+    "label": "Coding Best Practices"
+  },
+  {
+    "id": "coherence",
+    "label": "Coherence"
+  },
+  {
+    "id": "confidence-score",
+    "label": "Confidence Score"
+  },
+  {
+    "id": "connect-gpt-fastapi",
+    "label": "Connect GPT to FastAPI"
+  },
+  {
+    "id": "connect-gpt-flask",
+    "label": "Connect GPT to Flask"
+  },
+  {
+    "id": "cot-chain-of-thought",
+    "label": "COT / Chain of Thought"
+  },
+  {
+    "id": "cross-encoder",
+    "label": "Cross-Encoder"
+  },
+  {
+    "id": "custom-model-fastapi",
+    "label": "Custom Model with FastAPI"
+  },
+  {
+    "id": "data-model-drift",
+    "label": "Data / Model Drift"
+  },
+  {
+    "id": "data-cleaning",
+    "label": "Data Cleaning & Preprocessing"
+  },
+  {
+    "id": "debugging",
+    "label": "Debugging"
+  },
+  {
+    "id": "deepsparse",
+    "label": "DeepSparse"
+  },
+  {
+    "id": "denoising",
+    "label": "Denoising"
+  },
+  {
+    "id": "dense-sparse",
+    "label": "Dense vs. Sparse"
+  },
+  {
+    "id": "design-patterns",
+    "label": "Design Patterns"
+  },
+  {
+    "id": "diffusion-model",
+    "label": "Diffusion Model"
+  },
+  {
+    "id": "docker",
+    "label": "Docker"
+  },
+  {
+    "id": "early-stopping",
+    "label": "Early Stopping"
+  },
+  {
+    "id": "eda",
+    "label": "EDA (13-Step Core Pipeline)"
+  },
+  {
+    "id": "edge-cases",
+    "label": "Edge Cases"
+  },
+  {
+    "id": "eigenvector-pca",
+    "label": "Eigenvectors & PCA"
+  },
+  {
+    "id": "elastic-net",
+    "label": "Elastic Net"
+  },
+  {
+    "id": "embedding",
+    "label": "Embedding"
+  },
+  {
+    "id": "entropy",
+    "label": "Entropy"
+  },
+  {
+    "id": "expectation",
+    "label": "Expectation"
+  },
+  {
+    "id": "f1-score",
+    "label": "F1-Score (Precision & Recall)"
+  },
+  {
+    "id": "faiss",
+    "label": "FAISS"
+  },
+  {
+    "id": "feature-cross",
+    "label": "Feature Cross"
+  },
+  {
+    "id": "feature-engineering",
+    "label": "Feature Engineering (6 Pillars)"
+  },
+  {
+    "id": "fine-tuning",
+    "label": "Fine-Tuning"
+  },
+  {
+    "id": "flagging",
+    "label": "Flagging (Indicator Features)"
+  },
+  {
+    "id": "flip-flop-latch",
+    "label": "Flip-Flop vs. Latch"
+  },
+  {
+    "id": "frontier-llms",
+    "label": "Frontier LLMs (OpenAI, Claude, Gemini)"
+  },
+  {
+    "id": "gaussian-distribution",
+    "label": "Gaussian Distribution"
+  },
+  {
+    "id": "genai-vs-traditional-ai",
+    "label": "GenAI vs Traditional AI"
+  },
+  {
+    "id": "gini-impurity",
+    "label": "Gini Impurity"
+  },
+  {
+    "id": "gpt-llama",
+    "label": "GPT / LLaMA"
+  },
+  {
+    "id": "gpu-cuda",
+    "label": "GPU / CUDA"
+  },
+  {
+    "id": "gradient-descent",
+    "label": "Gradient Descent"
+  },
+  {
+    "id": "hallucination",
+    "label": "Hallucination"
+  },
+  {
+    "id": "histogram",
+    "label": "Histogram (Frequency Distribution)"
+  },
+  {
+    "id": "imputation",
+    "label": "Imputation"
+  },
+  {
+    "id": "inference",
+    "label": "Inference"
+  },
+  {
+    "id": "information-gain",
+    "label": "Information Gain"
+  },
+  {
+    "id": "iqr",
+    "label": "IQR & Binning"
+  },
+  {
+    "id": "joblib",
+    "label": "Joblib"
+  },
+  {
+    "id": "kmeans",
+    "label": "K-means Clustering"
+  },
+  {
+    "id": "kde",
+    "label": "KDE (Kernel Density Estimation)"
+  },
+  {
+    "id": "knn",
+    "label": "KNN"
+  },
+  {
+    "id": "kubernetes",
+    "label": "Kubernetes"
+  },
+  {
+    "id": "labeled-unlabeled-data",
+    "label": "Labeled vs Unlabeled Data"
+  },
+  {
+    "id": "langchain-langgraph",
+    "label": "LangChain / LangGraph"
+  },
+  {
+    "id": "learning-rate-epochs",
+    "label": "Learning Rate & Epochs"
+  },
+  {
+    "id": "lemmatization",
+    "label": "Lemmatization"
+  },
+  {
+    "id": "lexical-search",
+    "label": "Lexical Search"
+  },
+  {
+    "id": "llm",
+    "label": "LLM"
+  },
+  {
+    "id": "load-balancing",
+    "label": "Load Balancing"
+  },
+  {
+    "id": "log-loss",
+    "label": "Log Loss"
+  },
+  {
+    "id": "log-transform",
+    "label": "Log Transformation"
+  },
+  {
+    "id": "logits",
+    "label": "Logits"
+  },
+  {
+    "id": "lora",
+    "label": "LoRA"
+  },
+  {
+    "id": "map-evaluation",
+    "label": "mAP (Mean Average Precision)"
+  },
+  {
+    "id": "data-visualization",
+    "label": "Matplotlib & Seaborn"
+  },
+  {
+    "id": "mcp",
+    "label": "MCP"
+  },
+  {
+    "id": "mitigation",
+    "label": "Mitigation Strategies"
+  },
+  {
+    "id": "machine-learning-types",
+    "label": "ML Types & RLHF"
+  },
+  {
+    "id": "model-choice",
+    "label": "Model Choice"
+  },
+  {
+    "id": "modified-z-score",
+    "label": "Modified Z-Score"
+  },
+  {
+    "id": "multi-agent-orchestration",
+    "label": "Multi-Agent Orchestration"
+  },
+  {
+    "id": "multi-tenant",
+    "label": "Multi-Tenant"
+  },
+  {
+    "id": "multivariate",
+    "label": "Multivariate Analysis"
+  },
+  {
+    "id": "ngram-bigram",
+    "label": "n-gram / Bigram"
+  },
+  {
+    "id": "nlp-general-flow",
+    "label": "NLP General Flow"
+  },
+  {
+    "id": "normalization-scaling",
+    "label": "Normalization / Scaling"
+  },
+  {
+    "id": "numpy",
+    "label": "NumPy"
+  },
+  {
+    "id": "ocr",
+    "label": "OCR"
+  },
+  {
+    "id": "onion-architecture",
+    "label": "Onion Architecture"
+  },
+  {
+    "id": "onnx",
+    "label": "ONNX"
+  },
+  {
+    "id": "oop-concepts",
+    "label": "OOP Concepts"
+  },
+  {
+    "id": "openai-vs-azure-ai",
+    "label": "OpenAI vs Azure AI"
+  },
+  {
+    "id": "optimization",
+    "label": "Optimization"
+  },
+  {
+    "id": "outlier-detection",
+    "label": "Outlier Detection"
+  },
+  {
+    "id": "overfitting",
+    "label": "Overfitting (High Variance)"
+  },
+  {
+    "id": "paged-attention",
+    "label": "PagedAttention"
+  },
+  {
+    "id": "pandas",
+    "label": "Pandas"
+  },
+  {
+    "id": "pipeline",
+    "label": "Pipeline"
+  },
+  {
+    "id": "polling",
+    "label": "Polling & Response Consistency"
+  },
+  {
+    "id": "powertransformer",
+    "label": "PowerTransformer"
+  },
+  {
+    "id": "confusion-matrix-precision-recall",
+    "label": "Precision, Recall & Accuracy"
+  },
+  {
+    "id": "predictive-modeling",
+    "label": "Predictive Modeling"
+  },
+  {
+    "id": "production-ai-playbook",
+    "label": "Production AI Playbook & Trade-offs"
+  },
+  {
+    "id": "production-check",
+    "label": "Production Check"
+  },
+  {
+    "id": "production-databases",
+    "label": "Production Databases"
+  },
+  {
+    "id": "production-handling",
+    "label": "Production Handling"
+  },
+  {
+    "id": "prompt-engineering",
+    "label": "Prompt Engineering"
+  },
+  {
+    "id": "pruning",
+    "label": "Pruning"
+  },
+  {
+    "id": "pydantic",
+    "label": "Pydantic"
+  },
+  {
+    "id": "python",
+    "label": "Python"
+  },
+  {
+    "id": "qlora",
+    "label": "QLoRA"
+  },
+  {
+    "id": "quantization",
+    "label": "Quantization"
+  },
+  {
+    "id": "r2-score",
+    "label": "R² Score"
+  },
+  {
+    "id": "rag",
+    "label": "RAG"
+  },
+  {
+    "id": "random-forest",
+    "label": "Random Forest"
+  },
+  {
+    "id": "random-variable",
+    "label": "Random Variable"
+  },
+  {
+    "id": "ranking-reranking",
+    "label": "Ranking / Reranking"
+  },
+  {
+    "id": "ranking-and-reranking",
+    "label": "Ranking & Reranking"
+  },
+  {
+    "id": "react-pattern",
+    "label": "ReAct"
+  },
+  {
+    "id": "redis",
+    "label": "Redis"
+  },
+  {
+    "id": "regression-vs-classification",
+    "label": "Regression vs Classification"
+  },
+  {
+    "id": "regularization",
+    "label": "Regularization"
+  },
+  {
+    "id": "reinforcement-learning",
+    "label": "Reinforcement Learning"
+  },
+  {
+    "id": "rest-api-vs-fastapi",
+    "label": "REST API vs FastAPI"
+  },
+  {
+    "id": "system-scaling",
+    "label": "Scaling"
+  },
+  {
+    "id": "scikit-learn",
+    "label": "Scikit-Learn"
+  },
+  {
+    "id": "security-and-error-handling",
+    "label": "Security & Error Handling"
+  },
+  {
+    "id": "self-attention",
+    "label": "Self-Attention"
+  },
+  {
+    "id": "sft-peft",
+    "label": "SFT / PEFT"
+  },
+  {
+    "id": "similarity-semantic-search",
+    "label": "Similarity / Semantic Search"
+  },
+  {
+    "id": "skewed-data",
+    "label": "Skewed Data (Left, Normal, Right)"
+  },
+  {
+    "id": "stemming",
+    "label": "Stemming"
+  },
+  {
+    "id": "strands",
+    "label": "Strands Agents SDK"
+  },
+  {
+    "id": "temperature",
+    "label": "Temperature"
+  },
+  {
+    "id": "tensor",
+    "label": "Tensor & TensorFlow"
+  },
+  {
+    "id": "testing",
+    "label": "Testing"
+  },
+  {
+    "id": "text-image-search",
+    "label": "Text / Image Search"
+  },
+  {
+    "id": "tf-idf",
+    "label": "TF-IDF"
+  },
+  {
+    "id": "throughput-latency",
+    "label": "Throughput / Latency"
+  },
+  {
+    "id": "time-space-complexity",
+    "label": "Time/Space Complexity"
+  },
+  {
+    "id": "tokenization",
+    "label": "Tokenization"
+  },
+  {
+    "id": "top-k-top-p",
+    "label": "Top-K / Top-P"
+  },
+  {
+    "id": "transformer",
+    "label": "Transformer"
+  },
+  {
+    "id": "tree-algorithms",
+    "label": "Tree Algorithms"
+  },
+  {
+    "id": "trimming",
+    "label": "Trimming vs Capping"
+  },
+  {
+    "id": "tuple",
+    "label": "Tuple"
+  },
+  {
+    "id": "underfitting",
+    "label": "Underfitting (High Bias)"
+  },
+  {
+    "id": "underfitting-overfitting",
+    "label": "Underfitting & Overfitting"
+  },
+  {
+    "id": "univariate",
+    "label": "Univariate Analysis"
+  },
+  {
+    "id": "update-deployed-model",
+    "label": "Update a Deployed Model"
+  },
+  {
+    "id": "uvicorn",
+    "label": "Uvicorn"
+  },
+  {
+    "id": "variance",
+    "label": "Variance"
+  },
+  {
+    "id": "vector-database",
+    "label": "Vector Database"
+  },
+  {
+    "id": "vision-foundation-model",
+    "label": "Vision Model"
+  },
+  {
+    "id": "which-is-better",
+    "label": "Which is Better?"
+  },
+  {
+    "id": "xgboost",
+    "label": "XGBoost"
+  },
+  {
+    "id": "yeo-johnson",
+    "label": "Yeo-Johnson Transformation"
+  },
+  {
+    "id": "yolo",
+    "label": "YOLO"
+  },
+  {
+    "id": "z-score",
+    "label": "Z-score"
+  },
+  {
+    "id": "zero-shot-few-shot",
+    "label": "Zero-shot / Few-shot"
+  }
 ];
 
 export const definitionsData = [
@@ -12944,5 +13520,294 @@ similarities = np.dot(normalized_embeddings, query_norm.T)  # Shape: (10000, 1)`
       }
     ],
     takeaway: "Decision trees require zero feature normalization, effortlessly handle mixed numerical/categorical data, and naturally capture non-linear feature interactions. However, single trees overfit rapidly, which is why ensemble tree algorithms (Random Forests and XGBoost) dominate tabular machine learning."
-  }
+  },
+  {
+    "id": "anova",
+    "title": "ANOVA & Kruskal-Wallis",
+    "badge": "Statistical Hypothesis Testing",
+    "summary": "Parametric and non-parametric tests to determine if numerical feature means differ significantly across categories.",
+    "details": [
+        "One-Way ANOVA: Tests if the mean of a continuous numerical variable differs significantly across 3 or more categorical groups (e.g. Salary differences across Engineering, Sales, and HR).",
+        "Assumptions of ANOVA: Requires normal distribution within each group and homogeneity of variance (homoscedasticity).",
+        "Kruskal-Wallis Test: Non-parametric alternative to ANOVA used when data is skewed or sample sizes are small; compares group medians and ranks instead of means."
+    ],
+    "code": "# One-Way ANOVA in Python\nfrom scipy import stats\nf_stat, p_val = stats.f_oneway(group_tech, group_sales, group_hr)\n# If p_val < 0.05, statistically significant mean difference exists."
+},
+  {
+    "id": "binning",
+    "title": "Binning (Discretization)",
+    "badge": "Feature Transformation",
+    "summary": "Converting continuous numerical variables into discrete categorical intervals (bins).",
+    "details": [
+        "Why Use It: When exact numerical values don't matter (e.g. Age groups: 0-18, 19-35, 36-60, 60+), and to prevent tree-based models from overfitting on small spikes in continuous numbers.",
+        "Approach A (pd.cut): Creates custom, user-defined fixed-width bins based on domain logic.",
+        "Approach B (pd.qcut): Quantile-based equal-frequency binning where each bin contains an equal number of records.",
+        "Trade-Off: Introduces loss of fine-grained numerical precision in exchange for noise reduction."
+    ],
+    "code": "# Custom-defined bins\ndf['age_group'] = pd.cut(df['age'], bins=[0, 18, 35, 60, 100], labels=['Youth', 'Young Adult', 'Adult', 'Senior'])\n# Equal-frequency quantile binning\ndf['income_decile'] = pd.qcut(df['income'], q=4, labels=['Q1', 'Q2', 'Q3', 'Q4'])"
+},
+  {
+    "id": "bivariate",
+    "title": "Bivariate Analysis",
+    "badge": "Relationship Discovery",
+    "summary": "Analyzing the empirical relationship, association, or correlation between two features.",
+    "details": [
+        "Numerical vs Numerical: Analyzed via Scatter plots and Line plots. Quantified using Pearson correlation (r) for linear relations and Spearman rank correlation (rho) for monotonic non-linear relations.",
+        "Categorical vs Numerical: Analyzed using Grouped Boxplots and Violin plots. Statistically tested using Two-Sample t-test (for 2 categories) or One-Way ANOVA / Kruskal-Wallis (for > 2 categories).",
+        "Categorical vs Categorical: Analyzed via Cross-tabulation (contingency tables) and Stacked Bar charts. Statistically tested using Chi-Square test (chi^2) and Cramer's V for association strength."
+    ],
+    "code": "# Numerical vs Numerical correlation\ndf[['income', 'credit_score']].corr(method='spearman')\n# Categorical vs Numerical groupby\ndf.groupby('department')['salary'].agg(['mean', 'median', 'std'])\n# Categorical vs Categorical cross-tab\npd.crosstab(df['gender'], df['churn'], normalize='index')"
+},
+  {
+    "id": "box-cox",
+    "title": "Box-Cox Transformation",
+    "badge": "Power Transformation",
+    "summary": "Parametric power transformation converting non-normal positive data into an approximately normal distribution.",
+    "details": [
+        "The Formula: Applies y^(lambda) based on parameter lambda, automatically optimized using Maximum Likelihood Estimation (MLE).",
+        "Critical Flaw: Strictly requires all values to be positive (x > 0). It immediately crashes if any values are 0 or negative.",
+        "Modern Replacement: If your feature contains zeros or negative values (e.g. net profit, temperature, account balances), use Yeo-Johnson instead."
+    ],
+    "code": "from scipy import stats\n# Only works if x > 0\ntransformed_data, fitted_lambda = stats.boxcox(df[df['positive_col'] > 0]['positive_col'])"
+},
+  {
+    "id": "cardinality",
+    "title": "Cardinality (df.nunique())",
+    "badge": "Feature Diagnostics",
+    "summary": "Measuring the count of unique values in each column to detect uninformative or problematic features.",
+    "details": [
+        "Zero Variance (nunique == 1): Columns where every row has the identical constant value (e.g. country = 'India' in domestic dataset). These carry zero predictive signal and should be dropped immediately.",
+        "High Cardinality Identifiers (nunique == len(df)): Primary keys, user IDs, or transaction UUIDs. These cause catastrophic overfitting in tree models and must be removed from modeling.",
+        "Categorical Downcasting: Features with low cardinality (nunique < 20) should be converted from string object to pandas 'category' dtype to reduce memory usage by 70–80%."
+    ],
+    "code": "# Check unique values across all columns\nunique_counts = df.nunique()\n# Drop constant columns with zero variance\nconstant_cols = [c for c in df.columns if df[c].nunique() <= 1]\ndf.drop(columns=constant_cols, inplace=True)"
+},
+  {
+    "id": "class-imbalance",
+    "title": "Class Imbalance",
+    "badge": "Target Distribution",
+    "summary": "When target classes in a classification problem are heavily unequal (e.g. 99% legitimate transactions vs 1% fraud).",
+    "details": [
+        "The Accuracy Trap: Plain accuracy is dangerously misleading. A dummy model predicting 'legit' 100% of the time achieves 99% accuracy but catches zero fraud.",
+        "Imbalance Ratio (IR): Ratio of majority to minority count. Mild (1:1 to 3:1), Moderate (4:1 to 10:1), Extreme (10:1 to 1000:1).",
+        "Evaluation Metrics: Must switch to Precision, Recall, F1-Score, and PR-AUC (Precision-Recall Curve). PR-AUC is far superior to ROC-AUC on imbalanced targets.",
+        "Stratified Splitting: Always use StratifiedKFold to guarantee that training and testing splits maintain identical minority class proportions."
+    ],
+    "code": "# Check class distribution and ratio\ncounts = df['target'].value_counts()\nprops = df['target'].value_counts(normalize=True) * 100\nimbalance_ratio = counts.iloc[0] / counts.iloc[1]\nprint(f'Imbalance Ratio: {imbalance_ratio:.2f} : 1')"
+},
+  {
+    "id": "data-cleaning",
+    "title": "Data Cleaning & Missing Data",
+    "badge": "Data Preprocessing",
+    "summary": "Systematic remediation of missing values, duplicate records, inconsistent categories, and type mismatches.",
+    "details": [
+        "Missing Data Rules: < 5% missing is safe to median/mode impute or drop; 5%–30% requires careful imputation (KNN / Iterative Imputer); > 50% should be dropped or turned into a binary missing indicator.",
+        "Handling Duplicates: Duplicate rows artificially inflate training metrics, cause data leakage across train/test splits, and bias models toward repeated rows. Drop with df.drop_duplicates().",
+        "Inconsistent Categories: Standardize string casing (e.g. 'NY' vs 'New York', 'apple' vs 'Apple'), strip whitespace, and group rare long-tail classes into 'Other'.",
+        "Pandas Gotcha: In pandas, missing integer columns are automatically cast to float64 because NaN is natively a float."
+    ],
+    "code": "# Missing value percentage\nmissing_pct = (df.isna().mean() * 100).sort_values(ascending=False)\n# Median imputation for skewed numeric columns\ndf['income'] = df['income'].fillna(df['income'].median())\n# Drop duplicates\ndf.drop_duplicates(inplace=True)"
+},
+  {
+    "id": "eda",
+    "title": "EDA (13-Step Core Pipeline & 5-Stage Architecture)",
+    "badge": "Foundational Process",
+    "summary": "The critical initial process of analyzing, visualizing, and understanding data characteristics before any modeling begins.",
+    "details": [
+        "Step 01 to 04: Load data (df.head(), df.shape, df.info()), inspect dtypes, calculate missing values %, and check for duplicate rows.",
+        "Step 05 to 07: Check cardinality (df.nunique()), categorical value counts, and summary statistics (df.describe(include='all')).",
+        "Step 08 to 10: Inspect distributions (Histogram & KDE), identify outliers (Boxplot & IQR), and compute correlation matrices.",
+        "Step 11 to 13: Analyze features vs target, remediate missing/corrupted values, and engineer useful features for machine learning."
+    ],
+    "code": "# 13-step fast inspection snippet\nprint('Shape:', df.shape)\nprint('Data types:\\n', df.dtypes.value_counts())\nprint('Missing:\\n', df.isna().sum()[df.isna().sum() > 0])\nprint('Summary Statistics:\\n', df.describe(include='all'))",
+    "pipelineOverview": [
+        {
+            "step": "01",
+            "name": "Ingestion & Overview",
+            "desc": "df.head(), df.shape, df.info(), df.dtypes"
+        },
+        {
+            "step": "02",
+            "name": "Data Quality Check",
+            "desc": "Missing values (df.isna().sum()), duplicate rows, data entry errors"
+        },
+        {
+            "step": "03",
+            "name": "Univariate Analysis",
+            "desc": "Histograms, KDE plots, boxplots, central tendency & skewness"
+        },
+        {
+            "step": "04",
+            "name": "Bivariate / Multivariate",
+            "desc": "Correlation matrix, grouped boxplots, ANOVA, Chi-Square, pairplots"
+        },
+        {
+            "step": "05",
+            "name": "Cleaning & Feature Eng",
+            "desc": "Imputation, IQR/Z-score capping, log/Yeo-Johnson transforms, encoding"
+        }
+    ]
+},
+  {
+    "id": "f1-score",
+    "title": "F1-Score (Precision & Recall)",
+    "badge": "Evaluation Metric",
+    "summary": "Harmonic mean of Precision and Recall, providing a balanced metric on imbalanced datasets.",
+    "details": [
+        "Precision: 'When the model predicts positive, how often is it right?' Precision = TP / (TP + FP). Critical when false positives are costly (e.g. spam filters).",
+        "Recall (Sensitivity): 'Out of all actual positive cases, how many did the model catch?' Recall = TP / (TP + FN). Critical when false negatives are dangerous (e.g. disease screening, fraud detection).",
+        "F1-Score Formula: 2 * (Precision * Recall) / (Precision + Recall). Uses harmonic mean because it heavily penalizes extreme imbalances between precision and recall."
+    ],
+    "code": "from sklearn.metrics import classification_report, f1_score\nf1 = f1_score(y_true, y_pred, average='weighted')\nprint(classification_report(y_true, y_pred))"
+},
+  {
+    "id": "feature-engineering",
+    "title": "Feature Engineering (6 Pillars)",
+    "badge": "Pattern Amplification",
+    "summary": "The art and science of extracting, transforming, combining, and creating new predictive signals from raw data.",
+    "details": [
+        "Pillar 1 (Numerical Operations): Ratios, differences, and log/power scaling (e.g. debt_to_income = debt / income).",
+        "Pillar 2 (Categorical Encodings): One-Hot Encoding for nominal variables, Ordinal Encoding for ranked variables, and Target Encoding for high-cardinality features.",
+        "Pillar 3 (Datetime Extraction): Extracting year, month, day of week, hour, is_weekend, and elapsed days since last activity.",
+        "Pillar 4 (Domain Ratios): Industry-specific metrics (e.g. price_per_sqft, loan_to_value_ratio, click_through_rate).",
+        "Pillar 5 (Interaction & Aggregation): Grouping historical records (e.g. customer average spend, rolling 7-day transaction velocity).",
+        "Pillar 6 (Text & String Extraction): Extracting word counts, text length, regex matches, and uppercase character ratios."
+    ],
+    "code": "# Feature Engineering examples\ndf['debt_to_income'] = df['total_debt'] / (df['income'] + 1)\ndf['transaction_hour'] = pd.to_datetime(df['timestamp']).dt.hour\ndf['is_weekend'] = pd.to_datetime(df['timestamp']).dt.dayofweek.isin([5, 6]).astype(int)"
+},
+  {
+    "id": "flagging",
+    "title": "Flagging (Indicator Features)",
+    "badge": "Feature Engineering",
+    "summary": "Creating a binary indicator feature (0 or 1) that explicitly flags special conditions, outliers, or missingness.",
+    "details": [
+        "Why Flag Outliers: In fraud detection or risk analysis, extreme transaction amounts are not errors—they are valuable predictive signals. Creating 'is_high_outlier = 1' alerts tree models explicitly.",
+        "Missingness Flags: Creating 'income_is_missing = 1' before imputing median ensures the model doesn't lose the information that the customer chose not to report income.",
+        "Model Transparency: Allows tree-based and linear models to learn separate coefficients or split branches specifically for anomalous edge cases."
+    ],
+    "code": "# Outlier indicator feature\ndf['is_high_spend_outlier'] = (df['amount'] > upper_bound).astype(int)\n# Missingness indicator feature\ndf['age_was_missing'] = df['age'].isna().astype(int)"
+},
+  {
+    "id": "histogram",
+    "title": "Histogram (Frequency Distribution)",
+    "badge": "Distribution Visualization",
+    "summary": "Visualizing the frequency distribution of numerical features across discrete bins to spot shape, modality, and isolated clusters.",
+    "details": [
+        "Bin Partitioning: Divides continuous numerical data into discrete bins and counts frequencies, revealing modality (unimodal, bimodal), central mass, spread, and gaps.",
+        "Cluster Inspection: Identifies where the primary mass of data is clustered (e.g. 5k to 20k), followed by empty stretches and isolated outlier bars above 50k+.",
+        "Model Prerequisite: Used in initial EDA to inspect if numerical features are approximately symmetric and bell-shaped, as required by Linear Regression, PCA, and Neural Networks."
+    ],
+    "code": "import matplotlib.pyplot as plt\n# Pure histogram with discrete frequency bins\nplt.hist(df['salary'], bins=30, color='#06b6d4', edgecolor='black')\nplt.xlabel('Salary Range')\nplt.ylabel('Count')\nplt.title('Salary Histogram (Frequency Clusters)')"
+},
+  {
+    "id": "kde",
+    "title": "KDE (Kernel Density Estimation)",
+    "badge": "Continuous Density Smoothing",
+    "summary": "Non-parametric smoothing technique estimating the continuous Probability Density Function (PDF) of a random variable.",
+    "details": [
+        "Gaussian Smoothing: Smooths discrete histogram bars by placing a continuous Gaussian kernel over each data point and summing them up into a continuous curve.",
+        "Bandwidth Parameter (h): Controls smoothness. A small bandwidth causes excessive noise and jagged curves (undersmoothing); a large bandwidth washes out important bimodal peaks (oversmoothing).",
+        "Why Overlay KDE: Unveils true underlying multi-modal distribution patterns that discrete histogram bin boundaries can conceal or distort."
+    ],
+    "code": "import seaborn as sns\n# KDE plot showing smooth probability density curve\nsns.kdeplot(df['salary'], color='#22d3ee', fill=True, bw_adjust=0.8)\nplt.title('Salary Continuous Probability Density (KDE)')"
+},
+  {
+    "id": "modified-z-score",
+    "title": "Modified Z-Score",
+    "badge": "Robust Standardization",
+    "summary": "Outlier detection method utilizing Median and Median Absolute Deviation (MAD), designed specifically for skewed data.",
+    "details": [
+        "The Problem with Standard Z-Score: Extreme outliers massively inflate standard deviation (sigma) and pull the mean (mu), causing masking where real outliers appear normal.",
+        "The Formula: Modified Z = 0.6745 * (X - Median) / MAD, where MAD = Median(|X - Median|).",
+        "Threshold: Any observation with |Modified Z| > 3.5 is flagged as an outlier.",
+        "Why 0.6745: This constant ensures MAD estimates standard deviation under a normal Gaussian distribution."
+    ],
+    "code": "import numpy as np\nmedian = df['revenue'].median()\nmad = np.median(np.abs(df['revenue'] - median))\nmodified_z = 0.6745 * (df['revenue'] - median) / (mad + 1e-8)\noutliers = df[np.abs(modified_z) > 3.5]"
+},
+  {
+    "id": "multivariate",
+    "title": "Multivariate Analysis",
+    "badge": "Complex Patterns & Confounders",
+    "summary": "Analyzing relationships across 3 or more variables simultaneously to detect confounders, interactions, and multicollinearity.",
+    "details": [
+        "Techniques: Pairplots, Scatter plots with Hue/Size/Style encodings, and full correlation heatmaps.",
+        "VIF (Variance Inflation Factor): Diagnoses multicollinearity between independent predictors. VIF > 5-10 indicates severe redundancy.",
+        "Dimensionality Reduction: Unsupervised techniques like PCA (Principal Component Analysis) and t-SNE / UMAP for visualizing high-dimensional manifolds.",
+        "Simpson's Paradox: A statistical phenomenon where a trend observed in combined data completely reverses when data is segmented into subgroups."
+    ],
+    "code": "from statsmodels.stats.outliers_influence import variance_inflation_factor\n# Calculate VIF for multicollinearity\nvif_data = pd.DataFrame()\nvif_data['Feature'] = X.columns\nvif_data['VIF'] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]"
+},
+  {
+    "id": "overfitting",
+    "title": "Overfitting (High Variance / Low Bias)",
+    "badge": "Generalization Failure",
+    "summary": "When a model memorizes training noise and random fluctuations instead of the true underlying population distribution.",
+    "details": [
+        "Symptom: Near-zero training error accompanied by high test/validation loss; extreme divergence between train and validation learning curves.",
+        "Root Causes: High model capacity (excessive tree depth, too many neural weights, high polynomial degrees) relative to small dataset size; presence of noisy unhandled outliers.",
+        "Remedies: L1/L2 regularization, early stopping, tree pruning (max_depth, min_samples_split), dropout, k-fold cross-validation, and feature selection to reduce noise dimensions."
+    ],
+    "code": "# Diagnose overfitting via cross-validation scores\nfrom sklearn.model_selection import validation_curve\ntrain_scores, val_scores = validation_curve(model, X, y, param_name='max_depth', param_range=range(1, 15), cv=5)\n# If train_score keeps rising to 1.0 while val_score degrades, overfitting is occurring."
+},
+  {
+    "id": "underfitting",
+    "title": "Underfitting (High Bias / Low Variance)",
+    "badge": "Model Incapacity",
+    "summary": "When a model is too simplistic to capture the fundamental mathematical patterns and relationships present in the data.",
+    "details": [
+        "Symptom: High error on both training set and test/validation sets; flat learning curves failing to converge to an acceptable loss threshold.",
+        "Root Causes: Inadequate model complexity (e.g. attempting to fit a linear regression on non-linear or polynomial patterns); over-regularization; insufficient features.",
+        "Remedies: Increase model complexity (e.g. switch from linear model to gradient boosted trees), engineer interaction terms and polynomial features, and decrease regularization penalties (e.g. lower L1/L2 alpha)."
+    ],
+    "code": "# Diagnose underfitting: both train and validation metrics are unacceptably poor\ntrain_loss = evaluate(model, X_train, y_train)\nval_loss = evaluate(model, X_val, y_val)\nif train_loss > unacceptable_threshold:\n    print('Model lacks capacity to learn patterns: Underfitting.')"
+},
+  {
+    "id": "skewed-data",
+    "title": "Skewed Data (Left, Normal, Right)",
+    "badge": "Distribution Shape",
+    "summary": "Asymmetrical distribution of numerical data where values trail off toward one of the tails.",
+    "details": [
+        "Left Skew (Negative Skew): Mean < Median < Mode. Tail extends toward the left. Example: University graduation exam scores (most score 80–100%, very few get 0–10%).",
+        "Symmetric / Normal: Mean = Median = Mode. Bell-shaped distribution centered evenly. Example: Adult human heights.",
+        "Right Skew (Positive Skew): Mode < Median < Mean. Tail extends toward the right. Example: Household incomes (most earn $5k–$20k, but a few earn $1M+ which pulls the mean upward).",
+        "Why It Matters: Skewness invalidates standard Z-scores and reduces the predictive performance of linear models, distance metrics (KNN), and PCA."
+    ],
+    "code": "# Check skewness metric (0 = symmetric, > 1 = heavy right skew, < -1 = heavy left skew)\nskew_val = df['income'].skew()\nprint(f'Skewness: {skew_val:.2f}')"
+},
+  {
+    "id": "trimming",
+    "title": "Trimming vs Capping (Winsorization)",
+    "badge": "Outlier Remediation",
+    "summary": "The two primary mathematical techniques for handling numerical outliers in dataset features.",
+    "details": [
+        "Trimming (Dropping): Removing outlier rows completely. Safe only when outliers represent verified data entry corruption (e.g. Age = 999). In small datasets, trimming causes harmful loss of sample diversity.",
+        "Capping (Winsorization / Clipping): Replaces extreme values outside bounds with the upper and lower thresholds (e.g. Q3 + 1.5*IQR or mu + 3*sigma). Protects models without losing a single row.",
+        "Recommendation: For tabular machine learning, capping is almost always preferred over trimming because it preserves sample size."
+    ],
+    "code": "# Capping using pandas clip\nlower_limit = df['price'].quantile(0.01)\nupper_limit = df['price'].quantile(0.99)\ndf['winsorized_price'] = df['price'].clip(lower=lower_limit, upper=upper_limit)"
+},
+  {
+    "id": "univariate",
+    "title": "Univariate Analysis",
+    "badge": "Single-Feature Inspection",
+    "summary": "Analyzing one single variable at a time to examine its central tendency, dispersion, and distribution anomalies.",
+    "details": [
+        "Continuous Numerical Features: Measures of central tendency (Mean, Median, Mode), measures of dispersion (Variance, Standard Deviation, IQR, Range), shape (Skewness, Kurtosis), visualized via Histograms, KDE, and Boxplots.",
+        "Categorical Features: Frequency and relative proportions (df.value_counts(normalize=True)), mode (most frequent class), visualized via Countplots and Bar charts.",
+        "Objective: Establishes a clean baseline profile for every individual column before exploring inter-feature interactions."
+    ],
+    "code": "# Summary for numerical column\nprint('Mean:', df['age'].mean(), '| Median:', df['age'].median())\nprint('IQR:', df['age'].quantile(0.75) - df['age'].quantile(0.25))\n# Frequency for categorical column\nprint(df['department'].value_counts())"
+},
+  {
+    "id": "yeo-johnson",
+    "title": "Yeo-Johnson Transformation",
+    "badge": "Universal Power Transform",
+    "summary": "Advanced power transformation that stabilizes variance and normalizes skewed data containing zero or negative numbers.",
+    "details": [
+        "Overcoming Box-Cox: Box-Cox only supports positive values (x > 0). Yeo-Johnson supports all real numbers (positive, zero, and negative values).",
+        "Automated Parameter Optimization: Automatically searches for the optimal lambda using Maximum Likelihood Estimation (MLE) to maximize normality.",
+        "Algorithm Protection: Prevents large-scale numerical features with zeros or negatives from dominating distance-based algorithms like KNN, K-Means, and gradient descent."
+    ],
+    "code": "from sklearn.preprocessing import PowerTransformer\n# Automatically selects Yeo-Johnson by default\npt = PowerTransformer(method='yeo-johnson')\ndf['transformed_profit'] = pt.fit_transform(df[['net_profit']])"
+}
 ];
