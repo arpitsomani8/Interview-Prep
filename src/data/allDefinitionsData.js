@@ -130,7 +130,8 @@ export const definitionBookmarks = [
   { id: "acceptance-criteria", label: "Acceptance Criteria" },
   { id: "eigenvector-pca", label: "Eigenvectors & PCA" },
   { id: "tensor", label: "Tensor & TensorFlow" },
-  { id: "security-and-error-handling", label: "Security & Error Handling" }
+  { id: "security-and-error-handling", label: "Security & Error Handling" },
+  { id: "cross-encoder", label: "Cross-Encoder" }
 ];
 
 export const definitionsData = [
@@ -10178,5 +10179,89 @@ async def inspect_parcel(query: ParcelQuery, caller_context: dict) -> dict:
         return {"status": "error", "message": "Internal service error", "code": 500}`
     },
     takeaway: "In enterprise AI architectures and MCP deployments, security cannot rely on LLM alignment alone. Hard security boundaries—strict authentication, tenant-isolated authorization, schema-validated inputs, least-privilege database roles, aggressive timeouts, sanitized error responses, and prompt-injection defenses—must be enforced deterministically in the code layer."
+  },
+  {
+    id: "cross-encoder",
+    title: "Cross-Encoder (RAG Reranking & Joint Query-Document Attention)",
+    badge: "Two-Stage Retrieval, Full Cross-Attention & Precision Scoring",
+    summary: "A cross-encoder is a model that takes a query and a candidate document together and predicts how relevant that document is to the query. It's commonly used to rerank search results in RAG.",
+    coreDefinition: "A cross-encoder is a model that takes a query and a candidate document together and predicts how relevant that document is to the query.",
+    ragApplication: "It's commonly used to rerank search results in RAG.",
+    comparisonTable: [
+      {
+        feature: "Architecture",
+        biEncoder: "Separate encoders: E(query) and E(doc)",
+        crossEncoder: "Single encoder: E(query + doc jointly)"
+      },
+      {
+        feature: "Attention Mechanism",
+        biEncoder: "Self-attention within query only, and doc only (no interaction during encoding)",
+        crossEncoder: "Full cross-attention across all tokens of query and candidate document simultaneously"
+      },
+      {
+        feature: "Speed & Scalability",
+        biEncoder: "Ultra-fast (<10ms). Pre-computes doc vectors; searches millions via vector index (ANN)",
+        crossEncoder: "Computationally expensive. Must process query-doc pairs through the full transformer at runtime"
+      },
+      {
+        feature: "Retrieval Role in RAG",
+        biEncoder: "Stage 1 Candidate Retrieval (pulls top 50–100 candidates from millions)",
+        crossEncoder: "Stage 2 Reranking (scores top 50–100 candidates to select the top 3–5 most relevant)"
+      },
+      {
+        feature: "Accuracy / Precision",
+        biEncoder: "Moderate precision (coarse semantic alignment)",
+        crossEncoder: "State-of-the-art precision (captures subtle nuances, negations, and term dependencies)"
+      }
+    ],
+    twoStagePipeline: [
+      {
+        stage: "Stage 1: Fast Candidate Retrieval",
+        tool: "Bi-Encoder / Hybrid Search (BM25 + Vector)",
+        latency: "~5–15 ms",
+        throughput: "Millions of documents filtered to Top 50–100 chunks",
+        accent: "text-blue-400"
+      },
+      {
+        stage: "Stage 2: Cross-Encoder Reranking",
+        tool: "Cross-Encoder (e.g. BAAI/bge-reranker-large, ms-marco-MiniLM)",
+        latency: "~20–50 ms",
+        throughput: "Top 50–100 pairs scored jointly to pick Top 3–5 chunks for LLM context",
+        accent: "text-amber-400"
+      }
+    ],
+    codeExample: {
+      title: "RAG Reranking with Sentence-Transformers CrossEncoder in Python",
+      language: "python",
+      code: `from sentence_transformers import CrossEncoder
+
+# 1. Initialize a pretrained Cross-Encoder model
+reranker = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+
+query = "What is the policy for shipping damaged parcels?"
+
+# Candidate documents retrieved from Stage 1 (Vector DB search)
+candidates = [
+    "General corporate travel expense guidelines and lodging reimbursement limits.",
+    "Parcels with exterior crush damage must be quarantined and photographed within 2 hours.",
+    "Annual paid leave accrual schedules and holiday calendars for regional logistics staff.",
+    "Customer refund procedures for lost packages and delayed transit tracking notifications."
+]
+
+# 2. Pair query with each candidate: [ [query, doc1], [query, doc2], ... ]
+pairs = [[query, doc] for doc in candidates]
+
+# 3. Predict relevance scores via full cross-attention
+scores = reranker.predict(pairs)
+
+# 4. Sort and select top reranked chunks
+ranked_results = sorted(zip(candidates, scores), key=lambda x: x[1], reverse=True)
+
+print(f"Query: {query}\n")
+print("Reranked Results (Highest to Lowest Relevance):")
+for rank, (doc, score) in enumerate(ranked_results, 1):
+    print(f"  [{rank}] Score: {score:.4f} | {doc[:75]}...")`
+    },
+    takeaway: "While bi-encoders enable scalable vector search over millions of documents via independent embeddings, cross-encoders achieve peak semantic accuracy by processing query and candidate tokens together through all Transformer attention layers. In production RAG, using cross-encoders as a Stage-2 reranker yields optimal retrieval quality without sacrificing overall system latency."
   }
 ];
