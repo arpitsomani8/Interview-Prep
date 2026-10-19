@@ -1222,6 +1222,96 @@ export default function AllDefinitionsPage() {
                         </div>
                       </div>
                     </div>
+
+                    {/* What will you do if a RAG system fails in production? (Step-by-step troubleshooting) */}
+                    {item.ragFailure.stepByStepTroubleshooting && (
+                      <div className="space-y-3 pt-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                          <h5 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                            <Bug className="w-3.5 h-3.5 text-rose-400" />
+                            <span>{item.ragFailure.productionFailureQuestion || "What will you do if a RAG system fails in production?"}</span>
+                          </h5>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 shrink-0 self-start sm:self-auto">
+                            Step-by-Step Troubleshooting
+                          </span>
+                        </div>
+
+                        {/* Desktop Table View */}
+                        <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                          <table className="w-full text-left text-xs">
+                            <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                              <tr>
+                                <th className="py-3 px-4 font-semibold text-rose-300 w-1/3">Failure</th>
+                                <th className="py-3 px-4 font-semibold text-emerald-400">What I would do</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800/80 font-sans">
+                              {item.ragFailure.stepByStepTroubleshooting.table.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                  <td className="py-3.5 px-4 font-mono font-bold text-white align-top">
+                                    <div className="space-y-1">
+                                      <span className={row.accent}>{row.failure}</span>
+                                      <span className="block text-[9px] font-mono text-zinc-500 uppercase">{row.badge}</span>
+                                    </div>
+                                  </td>
+                                  <td className="py-3.5 px-4 text-zinc-300 text-xs leading-relaxed align-top">
+                                    {row.whatIWouldDo}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Responsive Mobile Cards */}
+                        <div className="grid grid-cols-1 gap-3 md:hidden">
+                          {item.ragFailure.stepByStepTroubleshooting.table.map((row, rIdx) => (
+                            <div key={rIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2">
+                              <div className="flex items-center justify-between gap-2">
+                                <h6 className={`text-xs font-bold font-mono ${row.accent}`}>
+                                  {row.failure}
+                                </h6>
+                                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                  {row.badge}
+                                </span>
+                              </div>
+                              <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-900 text-xs text-zinc-300 leading-relaxed font-sans">
+                                <strong className="text-emerald-400 font-mono block mb-0.5">What I would do:</strong>
+                                <span>{row.whatIWouldDo}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* What if the system must keep serving users? (Graceful Degradation) */}
+                    {item.ragFailure.gracefulDegradationSteps && (
+                      <div className="space-y-3 p-4 sm:p-5 rounded-xl bg-black border border-cyan-900/50">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-2.5">
+                          <h5 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                            <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>{item.ragFailure.servingContinuityQuestion || "What if the system must keep serving users?"}</span>
+                          </h5>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 shrink-0 self-start sm:self-auto">
+                            Serving Continuity
+                          </span>
+                        </div>
+
+                        <p className="text-xs sm:text-sm text-cyan-200 font-semibold font-mono">
+                          {item.ragFailure.gracefulDegradationIntro}
+                        </p>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1">
+                          {item.ragFailure.gracefulDegradationSteps.map((step, sIdx) => (
+                            <div key={sIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800/80 text-xs text-zinc-300 flex items-start gap-2.5 leading-relaxed">
+                              <span className="text-cyan-400 font-bold font-mono mt-0.5">✓</span>
+                              <span>{step}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

@@ -853,6 +853,57 @@ print(f"Indexed {len(chunks)} chunks.")`,
           title: "Automated Drift & Error Alerts",
           desc: "Alert when average cosine similarity drops below threshold, when 429/5xx rates increase, or when user thumbs-down / citation mismatch rates spike."
         }
+      ],
+      productionFailureQuestion: "What will you do if a RAG system fails in production?",
+      stepByStepTroubleshooting: {
+        title: "Step-by-step troubleshooting",
+        table: [
+          {
+            failure: "Retriever returns no documents",
+            whatIWouldDo: "Check the query, filters, embedding model, index health, and whether documents were indexed correctly.",
+            badge: "Zero Chunks Returned",
+            accent: "text-amber-400"
+          },
+          {
+            failure: "Relevant documents aren't retrieved",
+            whatIWouldDo: "Tune chunk size and overlap, improve query formulation, combine keyword and vector search, or add reranking.",
+            badge: "Recall Failure",
+            accent: "text-orange-400"
+          },
+          {
+            failure: "LLM returns an incorrect answer",
+            whatIWouldDo: "Check context quality, prompt instructions, citations, and grounding. Evaluate against known questions.",
+            badge: "Grounding & Accuracy",
+            accent: "text-purple-400"
+          },
+          {
+            failure: "LLM API times out or is unavailable",
+            whatIWouldDo: "Apply timeouts, bounded retries, circuit breakers, and a controlled fallback.",
+            badge: "API Outage / Latency",
+            accent: "text-rose-400"
+          },
+          {
+            failure: "Vector database is unavailable",
+            whatIWouldDo: "Use a healthy replica or approved alternative search path if available; otherwise return a graceful error.",
+            badge: "Index Unavailable",
+            accent: "text-red-400"
+          },
+          {
+            failure: "Responses become too slow or expensive",
+            whatIWouldDo: "Measure retrieval and generation latency separately; optimize context length, caching, model choice, and concurrency.",
+            badge: "Cost & SLA Breach",
+            accent: "text-cyan-400"
+          }
+        ]
+      },
+      servingContinuityQuestion: "What if the system must keep serving users?",
+      gracefulDegradationIntro: "I would implement graceful degradation:",
+      gracefulDegradationSteps: [
+        "1. Retry transient errors with a limited retry policy and backoff.",
+        "2. Switch to a healthy model or retrieval service if a tested fallback exists.",
+        "3. If reliable evidence cannot be retrieved, return a clear message rather than inventing an answer.",
+        "4. Monitor error rates, latency, retrieval quality, token usage, and answer quality.",
+        "5. Fix the root cause and run regression tests before restoring normal operation."
       ]
     }
   },
