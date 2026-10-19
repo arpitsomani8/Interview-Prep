@@ -124,7 +124,8 @@ export const definitionBookmarks = [
   { id: "z-score", label: "Z-score" },
   { id: "iqr", label: "IQR & Binning" },
   { id: "feature-cross", label: "Feature Cross" },
-  { id: "powertransformer", label: "PowerTransformer" }
+  { id: "powertransformer", label: "PowerTransformer" },
+  { id: "regression-vs-classification", label: "Regression vs Classification" }
 ];
 
 export const definitionsData = [
@@ -9631,5 +9632,97 @@ transformed_df = pd.DataFrame(
 print(transformed_df)`
     },
     takeaway: "PowerTransformer solves extreme right/left variance skew by estimating an optimal parameter (lambda) per feature to stabilize variance and minimize heteroscedasticity. By converting heavy-tailed attributes (such as transaction amounts or logistics delivery costs) into zero-mean, unit-variance Gaussian bell curves, it boosts gradient convergence and predictive performance for linear estimators, ridge regression, and neural architectures."
+  },
+  {
+    id: "regression-vs-classification",
+    title: "Regression vs Classification (Supervised Machine Learning Paradigms)",
+    badge: "Continuous Predictions vs Discrete Categories & Logistic Classification",
+    summary: "Regression is a supervised machine learning technique used to predict a numerical value. Classification is a supervised machine learning technique used to predict a category or class. Unlike regression, the output is a label rather than a numerical measurement. Despite its name, Logistic Regression is commonly used for classification because it estimates class probabilities.",
+    regressionSection: {
+      title: "Regression",
+      definition: "Regression is a supervised machine learning technique used to predict a numerical value.",
+      algorithmsIntro: "Common algorithms include Linear Regression, Decision Tree Regression, Random Forest Regression, and XGBoost Regression.",
+      algorithms: ["Linear Regression", "Decision Tree Regression", "Random Forest Regression", "XGBoost Regression"],
+      targetNature: "Continuous Real Numbers (e.g. Price, Temperature, Delivery Time, Revenue)",
+      evalMetrics: ["RMSE (Root Mean Squared Error)", "MAE (Mean Absolute Error)", "R² Score", "MAPE"],
+      accent: "text-amber-400",
+      border: "border-amber-800/50"
+    },
+    classificationSection: {
+      title: "Classification",
+      definition: "Classification is a supervised machine learning technique used to predict a category or class.",
+      outputContrast: "Unlike regression, the output is a label rather than a numerical measurement.",
+      algorithmsIntro: "Common algorithms include Logistic Regression, Decision Trees, Random Forest, Support Vector Machines, and XGBoost Classifier.",
+      algorithms: ["Logistic Regression", "Decision Trees", "Random Forest", "Support Vector Machines", "XGBoost Classifier"],
+      targetNature: "Discrete Categorical Classes (e.g. Spam / Not Spam, Defect / OK, Churn / Retain)",
+      evalMetrics: ["Accuracy", "Precision & Recall", "F1-Score", "ROC-AUC", "Log Loss"],
+      accent: "text-cyan-400",
+      border: "border-cyan-800/50"
+    },
+    logisticRegressionDeepDive: {
+      heading: "The Logistic Regression Paradox (Name vs Function)",
+      verbatimNote: "despite its name, Logistic Regression is commonly used for classification, because it estimates class probabilities.",
+      explanation: "While its mathematical core uses a linear combination of weights (z = w^T x + b), it passes the output through the Sigmoid activation function σ(z) = 1 / (1 + e^(-z)) to produce bounded probabilities between 0 and 1. A decision threshold (typically 0.5) converts this continuous probability into a discrete classification label."
+    },
+    comparisonMatrix: [
+      {
+        attribute: "Primary Goal",
+        regression: "Predict a continuous numerical quantity",
+        classification: "Predict a discrete category or label"
+      },
+      {
+        attribute: "Target Variable (y)",
+        regression: "Continuous Real Numbers (y ∈ ℝ)",
+        classification: "Discrete Classes (y ∈ {0, 1} or {C₁, C₂, ... Cₖ})"
+      },
+      {
+        attribute: "Output Type",
+        regression: "Numerical measurement (scalar)",
+        classification: "Class label or class probability distribution"
+      },
+      {
+        attribute: "Core Algorithms",
+        regression: "Linear Regression, Decision Tree Regressor, RF Regressor, XGBoost Regressor",
+        classification: "Logistic Regression, Decision Tree Classifier, Random Forest, SVM, XGBoost Classifier"
+      },
+      {
+        attribute: "Loss Functions",
+        regression: "Mean Squared Error (L2), Mean Absolute Error (L1), Huber",
+        classification: "Binary Cross-Entropy (Log Loss), Categorical Cross-Entropy, Hinge Loss"
+      },
+      {
+        attribute: "Standard Evaluation",
+        regression: "RMSE, MAE, R², MSE",
+        classification: "Accuracy, Precision, Recall, F1-Score, ROC-AUC"
+      }
+    ],
+    codeExample: {
+      title: "Regression vs. Classification in Scikit-Learn",
+      language: "python",
+      code: `import numpy as np
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.metrics import mean_squared_error, accuracy_score
+
+# Feature: [Engine Size, Vehicle Weight]
+X_train = np.array([[1.5, 1200], [2.0, 1500], [3.5, 2200], [4.0, 2500]])
+
+# 1. REGRESSION TASK: Predict Numerical Value (Fuel Economy in MPG)
+y_reg = np.array([35.2, 28.4, 18.1, 14.8])  # Continuous float values
+reg_model = LinearRegression()
+reg_model.fit(X_train, y_reg)
+pred_reg = reg_model.predict([[2.5, 1800]])
+print(f"Regression Prediction (Continuous MPG): {pred_reg[0]:.2f}")
+
+# 2. CLASSIFICATION TASK: Predict Class Label (0 = Low Emission, 1 = High Emission)
+y_clf = np.array([0, 0, 1, 1])  # Discrete categories
+# Despite its name, Logistic Regression is used for classification!
+clf_model = LogisticRegression()
+clf_model.fit(X_train, y_clf)
+pred_class = clf_model.predict([[2.5, 1800]])
+pred_prob = clf_model.predict_proba([[2.5, 1800]])
+print(f"Classification Prediction (Class Label): {pred_class[0]}")
+print(f"Estimated Class Probabilities [Class 0, Class 1]: {np.round(pred_prob[0], 2)}")`
+    },
+    takeaway: "The distinction between regression and classification is fundamentally determined by the mathematical nature of the target label (y): continuous numeric measurements versus discrete categorical classes. While both share tree and ensemble foundations (e.g. Random Forest and XGBoost), their optimization loss functions, evaluation metrics, and final decision boundaries differ fundamentally—with models like Logistic Regression bridging the gap by estimating continuous class probabilities to assign discrete labels."
   }
 ];
