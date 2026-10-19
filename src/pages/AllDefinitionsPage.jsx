@@ -16270,6 +16270,233 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
+            {/* Item: ETL (Extract, Transform, Load) */}
+            {item.id === 'etl' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Data Pipeline Architecture</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Core Pipeline Pattern
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    ETL (Extract, Transform, Load) & Modern Data Engineering
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. The 3 Pipeline Stages: Extract, Transform, Load */}
+                {item.stages && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Workflow className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>The 3 Core Pipeline Stages</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-400 border border-zinc-700">
+                        E → T → L Execution Flow
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-1">
+                      {item.stages.map((stg, stgIdx) => (
+                        <div
+                          key={stgIdx}
+                          className={`p-5 rounded-2xl bg-zinc-950 border ${stg.border} space-y-3.5 hover:border-zinc-600 transition flex flex-col justify-between shadow-lg`}
+                        >
+                          <div className="space-y-3">
+                            <div className="flex items-start justify-between gap-2 border-b border-zinc-800/80 pb-2.5">
+                              <div>
+                                <h5 className={`text-sm font-bold font-mono ${stg.accent}`}>
+                                  {stg.stage}
+                                </h5>
+                                <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
+                                  Stage {stgIdx + 1} of 3
+                                </span>
+                              </div>
+                              <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 ${stg.accent}`}>
+                                {stg.acronym}
+                              </span>
+                            </div>
+
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-bold font-mono uppercase text-zinc-400">Sources / Engines</span>
+                              <p className="text-xs text-zinc-300 leading-relaxed font-mono bg-black/60 p-2 rounded border border-zinc-900">
+                                {stg.sources}
+                              </p>
+                            </div>
+
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-bold font-mono uppercase text-zinc-400">Mechanism & Processing</span>
+                              <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                                {stg.mechanism}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t border-zinc-800/80">
+                            <span className="text-[10px] font-bold font-mono uppercase text-emerald-400 block mb-1">
+                              Production Best Practice
+                            </span>
+                            <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                              {stg.bestPractice}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. ETL vs ELT Comparison Table */}
+                {item.etlVsEltComparison && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Architectural Paradigm Shift: ETL vs. ELT</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Modern Cloud Data
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs font-mono">
+                        <thead className="bg-zinc-900/90 text-zinc-300 border-b border-zinc-800 uppercase tracking-wider text-[11px]">
+                          <tr>
+                            <th className="p-3 font-semibold text-zinc-400">Dimension</th>
+                            <th className="p-3 font-semibold text-purple-400">Traditional ETL</th>
+                            <th className="p-3 font-semibold text-emerald-400">Modern ELT (Cloud Warehouses + dbt)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/70">
+                          {item.etlVsEltComparison.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-bold text-zinc-300 whitespace-nowrap bg-zinc-950/40">{row.dimension}</td>
+                              <td className="p-3 text-purple-200/90">{row.etl}</td>
+                              <td className="p-3 text-emerald-200/90 font-medium">{row.elt}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Batch vs Streaming ETL */}
+                {item.batchVsStreaming && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Execution Paradigm: Batch vs. Streaming ETL</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        Latency & Throughput
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.batchVsStreaming.map((bs, bsIdx) => (
+                        <div key={bsIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 hover:border-zinc-700 transition">
+                          <div className="flex items-center justify-between">
+                            <h5 className="text-xs font-bold font-mono text-cyan-400">
+                              {bs.type}
+                            </h5>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {bs.latency}
+                            </span>
+                          </div>
+                          <div className="text-[11px] font-mono text-amber-300 bg-zinc-950 p-2 rounded border border-zinc-900">
+                            <strong>Frequency:</strong> {bs.frequency}
+                          </div>
+                          <div className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            <strong className="text-zinc-400 font-mono text-[11px] block">Standard Tool Ecosystem:</strong>
+                            {bs.tools}
+                          </div>
+                          <p className="text-xs text-zinc-400 font-sans leading-relaxed pt-1 border-t border-zinc-900">
+                            <strong className="text-emerald-400 text-[10px] font-mono uppercase block">Primary Use Case:</strong>
+                            {bs.useCase}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Critical Production Pitfalls & Solutions */}
+                {item.productionPitfalls && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 shadow-lg">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Critical Production Engineering Pitfalls</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Interview Focus
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+                      {item.productionPitfalls.map((pt, pIdx) => (
+                        <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition flex flex-col justify-between">
+                          <div className="space-y-1.5">
+                            <h5 className="text-xs font-bold font-mono text-rose-400 flex items-center gap-1.5">
+                              <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                              <span>{pt.title}</span>
+                            </h5>
+                            <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                              {pt.hazard}
+                            </p>
+                          </div>
+                          <div className="p-2.5 rounded bg-emerald-950/30 border border-emerald-900/50 text-[11px] font-mono text-emerald-300 mt-2">
+                            <strong className="block text-emerald-400 text-[10px] uppercase mb-0.5">Production Solution:</strong>
+                            {pt.solution}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Production Python Implementation Box with Copy Button */}
+                {item.code && (
+                  <div className="mt-3 pt-3 border-t border-zinc-800/80 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Production Python ETL Pipeline (Extract, Cleanse, PII Mask, DLQ & Upsert):</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(item.id, item.code)}
+                        className="text-[10px] font-mono text-zinc-400 hover:text-cyan-300 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 flex items-center gap-1 transition cursor-pointer"
+                      >
+                        {copiedId === item.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                        <span>{copiedId === item.id ? 'Copied' : 'Copy Code'}</span>
+                      </button>
+                    </div>
+                    <pre className="text-[11px] font-mono text-cyan-200/90 bg-black/90 border border-zinc-800/90 p-3.5 rounded-xl overflow-x-auto leading-relaxed shadow-inner">
+                      {item.code}
+                    </pre>
+                  </div>
+                )}
+
+                {/* 7. Architecture Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
             {/* Item 120: Gini Impurity */}
             {item.id === 'gini-impurity' && (
               <div className="space-y-6">

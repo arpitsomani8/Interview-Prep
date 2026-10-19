@@ -248,6 +248,10 @@ export const definitionBookmarks = [
     "label": "Entropy"
   },
   {
+    "id": "etl",
+    "label": "ETL (Extract, Transform, Load)"
+  },
+  {
     "id": "expectation",
     "label": "Expectation"
   },
@@ -9952,6 +9956,116 @@ print("Half & Half (p=0.5): ", calculate_entropy(p_half_half), "bit")
 # Half & Half (p=0.5):  1.0 bit`
     },
     takeaway: "Entropy formalizes uncertainty in information theory and guides decision tree splitting algorithms (ID3, C4.5). Splits that maximize Information Gain produce children nodes with minimal entropy (approaching 0 bits), partitioning the feature space into homogeneous, pure class subsets."
+  },
+  {
+    id: "etl",
+    title: "ETL (Extract, Transform, Load) & Modern Data Pipelines",
+    badge: "Data Engineering, MLOps & Production Pipelines",
+    summary: "The foundational data engineering paradigm for ingesting raw data from heterogeneous sources (Extract), cleaning, validating, and structuring it into business or ML schemas (Transform), and writing it into analytical data warehouses or feature stores (Load).",
+    coreDefinition: "ETL (Extract, Transform, Load) is the automated data integration pipeline pattern that ingests raw, disparate data from source systems (OLTP databases, APIs, event streams), cleanses, enriches, and validates it according to business logic or ML feature contracts, and loads the structured output into a target analytical store (OLAP warehouse, data lake, or feature store).",
+    stages: [
+      {
+        stage: "1. Extract (Ingestion)",
+        acronym: "E",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/60",
+        sources: "OLTP DBs (Postgres, MySQL), REST APIs, Kafka Streams, S3 Cloud Storage, Webhooks",
+        mechanism: "Connects to upstream source systems and captures raw records. Supports Full Ingestion (complete table dump) or Incremental Ingestion (Change Data Capture / CDC via database WAL logs, timestamps, or watermarking) to minimize source database compute overhead.",
+        bestPractice: "Decouple extraction from source OLTP systems using read-replicas and asynchronous Change Data Capture (e.g. Debezium, Airbyte) to avoid locking transactional tables."
+      },
+      {
+        stage: "2. Transform (Compute & Cleanse)",
+        acronym: "T",
+        accent: "text-purple-400",
+        border: "border-purple-800/60",
+        sources: "Engines: Apache Spark, Ray, Polars, DuckDB, Pandas, dbt",
+        mechanism: "The heavy computational core where business logic is executed: data cleaning (deduplication, null imputation, outlier filtering), schema type coercion, PII masking/hashing, foreign key joins, aggregations, and ML feature normalization.",
+        bestPractice: "Enforce strict schema contracts (Pydantic, Great Expectations) and route malformed records to a Dead Letter Queue (DLQ) without crashing the entire batch."
+      },
+      {
+        stage: "3. Load (Storage & Serving)",
+        acronym: "L",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/60",
+        sources: "Targets: Snowflake, BigQuery, Databricks Delta Lake, Apache Iceberg, Feast Feature Store",
+        mechanism: "Writes processed, analytical-ready records into the target storage layer. Employs Append-Only, Upsert/Merge (SCD Type 1 & Type 2), or atomic partition swaps to guarantee transactional consistency.",
+        bestPractice: "Guarantee Idempotency: Repeated execution of the load step with the same payload must leave the database in the exact same state with zero duplicate rows."
+      }
+    ],
+    etlVsEltComparison: [
+      {
+        dimension: "Transformation Engine",
+        etl: "Dedicated compute cluster (Spark, Airflow workers) *before* loading",
+        elt: "Target warehouse MPP compute engine (Snowflake, BigQuery, dbt) *after* loading"
+      },
+      {
+        dimension: "Data Stored in Warehouse",
+        etl: "Only cleansed, structured, aggregated analytical data",
+        elt: "Complete raw historical data + transformed analytical views"
+      },
+      {
+        dimension: "Data Privacy & Compliance",
+        etl: "High (Sensitive PII scrubbed/masked before crossing network/storage boundary)",
+        elt: "Requires warehouse-level role-based column masking and access policies"
+      },
+      {
+        dimension: "Flexibility & Schema Agility",
+        etl: "Rigid (Changing transformation requires re-extracting raw historical data)",
+        elt: "High (Raw data preserved; re-transform anytime via SQL/dbt without re-extraction)"
+      },
+      {
+        dimension: "Scalability & Latency",
+        etl: "Bottlenecked by transformation worker memory and network hops",
+        elt: "Massively parallel (leveraging cloud MPP serverless warehouse compute)"
+      },
+      {
+        dimension: "Best Fit Scenarios",
+        etl: "Strict on-prem PII laws, legacy data warehouses, complex heavy non-SQL ML transforms",
+        elt: "Modern Cloud Data Warehouses (Snowflake, BigQuery), agile BI teams, dbt workflows"
+      }
+    ],
+    batchVsStreaming: [
+      {
+        type: "Batch ETL",
+        frequency: "Scheduled Intervals (Hourly, Nightly, Daily)",
+        latency: "Minutes to Hours",
+        tools: "Apache Airflow, Prefect, Dagster, Apache Spark, AWS Glue",
+        useCase: "Financial reconciliation, historical analytics, monthly ML model retrain datasets."
+      },
+      {
+        type: "Streaming / Real-Time ETL",
+        frequency: "Continuous Event-Driven",
+        latency: "Milliseconds to Seconds",
+        tools: "Apache Kafka, Apache Flink, Spark Streaming, Redpanda, Materialize",
+        useCase: "Fraud detection, dynamic pricing, real-time recommendation feature stores, IoT anomaly alerts."
+      }
+    ],
+    productionPitfalls: [
+      {
+        title: "Idempotency Failures",
+        hazard: "Retrying a failed Airflow task inserts duplicate transactions or double-counts financial metrics.",
+        solution: "Use deterministic primary keys, UPSERT / MERGE statements, or delete-then-insert within atomic transactions."
+      },
+      {
+        title: "Silent Schema Drift",
+        hazard: "Upstream engineering team renames a column or alters data types (e.g. integer to string), causing downstream pipeline crash.",
+        solution: "Implement Schema Contracts with validation libraries (Pydantic, Great Expectations) and Dead Letter Queues (DLQ)."
+      },
+      {
+        title: "Out-of-Order Events & Late Data",
+        hazard: "Network latency causes event logs from 10:00 to arrive at 10:45, distorting hourly aggregations.",
+        solution: "Use Watermarking and allowed lateness windows in streaming engines (Flink, Spark Streaming) to accept late-arriving records."
+      }
+    ],
+    details: [
+      "Extract: Pulls heterogeneous raw data from OLTP relational tables, NoSQL documents, REST APIs, or Kafka event topics.",
+      "Transform: Executes schema validation, PII masking, type coercion, business aggregations, and feature engineering.",
+      "Load: Writes clean data into analytical data warehouses (Snowflake, BigQuery) or ML Feature Stores (Feast, Hopsworks).",
+      "ETL vs. ELT: Modern cloud pipelines favor ELT (loading raw data first and using dbt/SQL) due to decoupled cloud storage and compute.",
+      "Idempotency: Core engineering requirement ensuring pipeline retries never create duplicate records or corrupted state."
+    ],
+    code: "import sqlite3\nimport hashlib\nfrom datetime import datetime\nfrom typing import List, Dict, Any, Tuple\n\n# =====================================================================\n# 1. EXTRACT: Ingest raw records from upstream source (API / DB / Stream)\n# =====================================================================\ndef extract_raw_orders() -> List[Dict[str, Any]]:\n    \"\"\"Simulates pulling raw, messy order logs from external sources.\"\"\"\n    return [\n        {\"order_id\": \"ORD-101\", \"user_email\": \"alice@gmail.com\", \"amount\": \"149.50\", \"status\": \"delivered\", \"created_at\": \"2026-10-18T10:00:00\"},\n        {\"order_id\": \"ORD-102\", \"user_email\": \"bob@corp.io\", \"amount\": \"-25.00\", \"status\": \"pending\", \"created_at\": \"2026-10-18T10:15:00\"},   # Invalid negative amount\n        {\"order_id\": \"ORD-103\", \"user_email\": \"charlie@yahoo.com\", \"amount\": \"89.00\", \"status\": \"delivered\", \"created_at\": \"corrupted_timestamp\"}, # Malformed date\n        {\"order_id\": \"ORD-101\", \"user_email\": \"alice@gmail.com\", \"amount\": \"149.50\", \"status\": \"delivered\", \"created_at\": \"2026-10-18T10:00:00\"},  # Duplicate upstream record\n        {\"order_id\": \"ORD-104\", \"user_email\": \"diana@outlook.com\", \"amount\": \"320.00\", \"status\": \"shipped\", \"created_at\": \"2026-10-18T11:00:00\"}\n    ]\n\n# =====================================================================\n# 2. TRANSFORM: Cleansing, PII Masking, Schema Validation, & Feature Derivation\n# =====================================================================\ndef mask_pii(email: str) -> str:\n    \"\"\"Hash sensitive PII before analytical storage for GDPR/CCPA compliance.\"\"\"\n    return hashlib.sha256(email.encode('utf-8')).hexdigest()[:12]\n\ndef transform_records(raw_records: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:\n    clean_records = []\n    dead_letter_queue = []  # Quarantine corrupted records for inspection\n    seen_ids = set()\n\n    for item in raw_records:\n        oid = item.get(\"order_id\")\n        \n        # Deduplication check within current micro-batch\n        if oid in seen_ids:\n            continue\n        seen_ids.add(oid)\n\n        try:\n            # 1. Type Casting & Bounds Validation\n            amount = float(item[\"amount\"])\n            if amount <= 0:\n                raise ValueError(f\"Amount must be positive, got: {amount}\")\n\n            # 2. Datetime Parsing & ISO Coercion\n            parsed_date = datetime.fromisoformat(item[\"created_at\"])\n\n            # 3. PII Masking & Derived Feature Engineering\n            clean_records.append({\n                \"order_id\": oid,\n                \"user_hash\": mask_pii(item[\"user_email\"]),\n                \"amount\": amount,\n                \"status\": item[\"status\"].lower().strip(),\n                \"created_at\": parsed_date.strftime(\"%Y-%m-%d %H:%M:%S\"),\n                \"is_high_value\": 1 if amount >= 200.0 else 0  # Analytical / ML feature\n            })\n\n        except Exception as err:\n            # Route corrupt records to Dead-Letter Queue without crashing the pipeline\n            dead_letter_queue.append({\"raw_record\": item, \"error\": str(err)})\n\n    return clean_records, dead_letter_queue\n\n# =====================================================================\n# 3. LOAD: Idempotent Warehouse Storage (SQLite / DuckDB / Snowflake)\n# =====================================================================\ndef load_to_warehouse(records: List[Dict[str, Any]], db_path: str = \":memory:\"):\n    conn = sqlite3.connect(db_path)\n    cursor = conn.cursor()\n\n    # Create analytical target table\n    cursor.execute(\"\"\"\n        CREATE TABLE IF NOT EXISTS fact_orders (\n            order_id TEXT PRIMARY KEY,\n            user_hash TEXT NOT NULL,\n            amount REAL NOT NULL,\n            status TEXT NOT NULL,\n            created_at TEXT NOT NULL,\n            is_high_value INTEGER NOT NULL\n        )\n    \"\"\")\n\n    # Idempotent Upsert (INSERT OR REPLACE) guarantees zero duplicates on pipeline retries\n    cursor.executemany(\"\"\"\n        INSERT OR REPLACE INTO fact_orders (order_id, user_hash, amount, status, created_at, is_high_value)\n        VALUES (:order_id, :user_hash, :amount, :status, :created_at, :is_high_value)\n    \"\"\", records)\n\n    conn.commit()\n    cursor.execute(\"SELECT COUNT(*) FROM fact_orders\")\n    total_loaded = cursor.fetchone()[0]\n    conn.close()\n    return total_loaded\n\n# --- Pipeline Orchestration Execution ---\nif __name__ == \"__main__\":\n    print(\"[ETL Pipeline] Stage 1: Extracting raw data from sources...\")\n    raw = extract_raw_orders()\n    print(f\" -> Extracted {len(raw)} raw records.\")\n\n    print(\"[ETL Pipeline] Stage 2: Transforming, masking PII, & validating schema...\")\n    clean, dlq = transform_records(raw)\n    print(f\" -> Valid clean records: {len(clean)}\")\n    print(f\" -> Quarantined to DLQ: {len(dlq)} records. Details: {[d['error'] for d in dlq]}\")\n\n    print(\"[ETL Pipeline] Stage 3: Loading idempotently into analytical warehouse...\")\n    loaded_count = load_to_warehouse(clean)\n    print(f\" -> Warehouse fact_orders total active rows: {loaded_count}\")",
+    takeaway: "In modern AI and data systems, model performance is constrained by data quality. A production ETL/ELT pipeline must be idempotent, schema-validated, and observable—guaranteeing that raw transactional data is continuously transformed into clean, reliable features for analytics and real-time model inference."
   },
   {
     id: "gini-impurity",
