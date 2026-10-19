@@ -107,7 +107,8 @@ export const definitionBookmarks = [
   { id: "machine-learning-types", label: "ML Types & RLHF" },
   { id: "hallucination", label: "Hallucination" },
   { id: "ranking-and-reranking", label: "Ranking & Reranking" },
-  { id: "dense-sparse", label: "Dense vs. Sparse" }
+  { id: "dense-sparse", label: "Dense vs. Sparse" },
+  { id: "which-is-better", label: "Which is Better?" }
 ];
 
 export const definitionsData = [
@@ -8296,5 +8297,97 @@ top_passages = [doc for doc, score in ranked_results[:5]]`
 # Dense search captures semantic query: "how to troubleshoot payment failure"`
     },
     takeaway: "Neither sparse nor dense retrieval alone is sufficient for production RAG. Sparse search (BM25) guarantees precision on exact serial numbers, acronyms, and error codes where embeddings fail; dense search captures contextual semantics and synonyms where exact keywords miss. Combining both in Hybrid Search via Reciprocal Rank Fusion (RRF) yields the industry standard for enterprise search accuracy."
+  },
+  {
+    id: "which-is-better",
+    title: "Model Selection: More vs. Less Training Data (Which is Better?)",
+    badge: "Evaluation Framework, Data Quality & Business Objectives",
+    summary: "Two models: one has less training data, the other has more. Which is better? How to decide which model is better: Data quality (Are the examples accurate, relevant, diverse, and representative?), Validation performance (Compare both models on the same unseen validation data.), and Business requirements (For spam detection, compare spam recall, precision, false positives, and the cost of missing spam.).",
+    coreDefinition: "Two models: one has less training data, the other has more. Which is better? More data is not automatically better—data quality, identical validation benchmarking, and business cost asymmetries decide the winning model.",
+    interviewQuestion: "Two models: one has less training data, the other has more. Which is better?",
+    decisionFramework: {
+      headline: "How to decide which model is better",
+      pillars: [
+        {
+          pillar: "Data quality",
+          question: "Are the examples accurate, relevant, diverse, and representative?",
+          explanation: "More data containing noisy labels, duplicates, outdated patterns, or sampling bias can degrade performance compared to a smaller, curated, high-integrity dataset.",
+          accent: "text-amber-400",
+          border: "border-amber-800/50",
+          badge: "Quality Over Quantity"
+        },
+        {
+          pillar: "Validation performance",
+          question: "Compare both models on the same unseen validation data.",
+          explanation: "Never compare training losses. Evaluate both candidate models on a strictly held-out, golden validation and test benchmark that mirrors production distribution.",
+          accent: "text-blue-400",
+          border: "border-blue-800/50",
+          badge: "Strict Golden Benchmark"
+        },
+        {
+          pillar: "Business requirements",
+          question: "For spam detection, compare spam recall, precision, false positives, and the cost of missing spam.",
+          explanation: "Model metrics must align with domain risk. For spam detection, a false positive (flagging an urgent business email as spam) is far more damaging than a false negative.",
+          accent: "text-rose-400",
+          border: "border-rose-800/50",
+          badge: "Cost-Weighted ROI"
+        }
+      ]
+    },
+    spamCaseStudy: {
+      headline: "Concrete Example: Spam Detection Metric Breakdown",
+      metrics: [
+        {
+          name: "Spam Recall",
+          formula: "TP / (TP + FN)",
+          meaning: "Percentage of total incoming spam correctly intercepted.",
+          accent: "text-cyan-400"
+        },
+        {
+          name: "Precision",
+          formula: "TP / (TP + FP)",
+          meaning: "Percentage of flagged emails that are genuinely spam.",
+          accent: "text-emerald-400"
+        },
+        {
+          name: "False Positives (FP)",
+          formula: "Legitimate email sent to spam",
+          meaning: "High cost error: Critical invoice or customer email lost.",
+          accent: "text-rose-400"
+        },
+        {
+          name: "Cost of Missing Spam (FN)",
+          formula: "Spam reaches user inbox",
+          meaning: "Moderate annoyance vs. phishing security risk.",
+          accent: "text-amber-400"
+        }
+      ]
+    },
+    codeExample: {
+      title: "Asymmetric Cost-Weighted Model Evaluation in Python",
+      language: "python",
+      code: `def evaluate_model_business_cost(y_true, y_pred, cost_fp=50.0, cost_fn=1.0):
+    """
+    Computes business loss where false positives are 50x costlier than false negatives.
+    e.g., in spam filtering: blocking an important contract vs. letting spam through.
+    """
+    from sklearn.metrics import confusion_matrix, precision_score, recall_score
+    
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    precision = precision_score(y_true, y_pred)
+    recall = recall_score(y_true, y_pred)
+    
+    total_business_cost = (fp * cost_fp) + (fn * cost_fn)
+    return {
+        "precision": round(precision, 4),
+        "recall": round(recall, 4),
+        "false_positives": fp,
+        "false_negatives": fn,
+        "total_cost": total_business_cost
+    }
+
+# Model A (10k clean samples) might yield lower cost than Model B (1M noisy samples)`
+    },
+    takeaway: "In production ML engineering, dataset volume is a secondary signal. A model trained on less data often outperforms a model trained on more data if the smaller dataset has superior labeling hygiene, lack of distribution drift, and fewer contradictory samples. The definitive choice always rests on equal-footing validation benchmarks and domain-specific business cost functions."
   }
 ];
