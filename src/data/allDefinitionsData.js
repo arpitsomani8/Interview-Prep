@@ -144,7 +144,8 @@ export const definitionBookmarks = [
   { id: "production-ai-playbook", label: "Production AI Playbook & Trade-offs" },
   { id: "random-variable", label: "Random Variable" },
   { id: "expectation", label: "Expectation" },
-  { id: "variance", label: "Variance" }
+  { id: "variance", label: "Variance" },
+  { id: "bias-weight", label: "Bias & Weights" }
 ];
 
 export const definitionsData = [
@@ -11640,5 +11641,118 @@ scaled_var = np.var(3 * weights, ddof=1)
 print(f"Var(3 * X): {scaled_var:.4f} == 9 * Var(X): {9 * sample_var:.4f}")`
     },
     takeaway: "Variance quantifies the uncertainty or volatility of a system. By squaring deviations, it eliminates zero cancellation and heavily penalizes large outliers. In machine learning, balancing model variance against bias is the central dogma of generalizable artificial intelligence."
+  },
+  {
+    id: "bias-weight",
+    title: "Bias, Weights & The Bias–Variance Trade-off (Systematic Error vs. Model Sensitivity)",
+    badge: "Machine Learning Foundations & Optimization",
+    summary: "Bias describes systematic error—when a model consistently misses the true pattern. High bias indicates underfitting, while high variance indicates overfitting. Learned weights control feature importance, while bias shifts activation thresholds.",
+    coreDefinition: "Bias describes systematic error—when a model consistently misses the true pattern. High bias: Model is too simple; often underfits. Low bias: Model can represent more complex patterns, though low bias alone does not guarantee good generalization.",
+    biasLevels: [
+      {
+        level: "High Bias",
+        definition: "Model is too simple; often underfits.",
+        consequence: "The model makes strong erroneous assumptions about data (e.g. fitting a straight line to exponential churn curves). It performs poorly on both training and test data.",
+        indicator: "High Training Error + High Validation Error",
+        remedy: "Increase model complexity, add feature interactions, decrease regularization, train longer or use non-linear models.",
+        accent: "text-rose-400",
+        border: "border-rose-800/50"
+      },
+      {
+        level: "Low Bias",
+        definition: "Model can represent more complex patterns, though low bias alone does not guarantee good generalization.",
+        consequence: "The model is sufficiently expressive to capture subtle non-linear boundaries. However, without regularization, low bias can degenerate into memorizing noise (overfitting).",
+        indicator: "Low Training Error",
+        remedy: "Pair with cross-validation and regularizers (L1/L2, dropout, early stopping) to curb runaway variance.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      }
+    ],
+    tradeoffSection: {
+      title: "Bias is also a term in the bias–variance trade-off:",
+      bulletPoints: [
+        {
+          term: "Bias",
+          desc: "Relates to systematic modeling error."
+        },
+        {
+          term: "Variance",
+          desc: "Relates to how sensitive the trained model is to changes in its training data."
+        }
+      ],
+      coreQuestion: "What is the difference between bias and variance in ML?",
+      coreAnswer: "High bias commonly indicates underfitting, while high variance commonly indicates overfitting. We aim to balance both to generalize well to unseen data.",
+      mathematicalDecomposition: "Expected Test Error = Bias^2 + Variance + Irreducible Error (sigma^2)"
+    },
+    weightsSection: {
+      headline: "Weights (Learned Feature Coefficients)",
+      definition: "A weight is a learned parameter that controls how strongly an input feature contributes to a model's prediction.",
+      roleInArchitecture: "In linear models and neural networks (y = W*x + b):",
+      breakdown: [
+        {
+          element: "Weights (W / w_i)",
+          meaning: "Controls the slope, strength, and direction of each input feature. Positive weights increase prediction likelihood; negative weights suppress it; zero weights imply feature irrelevance.",
+          badge: "Feature Importance / Slope"
+        },
+        {
+          element: "Bias Term (b)",
+          meaning: "A learned intercept that shifts the activation threshold independently of all inputs. Without bias b, the decision hyperplane would be permanently anchored through the origin (0, 0).",
+          badge: "Activation Offset / Intercept"
+        }
+      ]
+    },
+    comparisonMatrix: [
+      {
+        attribute: "Core Concept",
+        bias: "Systematic error from oversimplified assumptions",
+        variance: "Random error from excessive sensitivity to training samples"
+      },
+      {
+        attribute: "Manifestation",
+        bias: "Underfitting (fails to learn patterns)",
+        variance: "Overfitting (memorizes noise and flukes)"
+      },
+      {
+        attribute: "Training Error",
+        bias: "High training error",
+        variance: "Near-zero / very low training error"
+      },
+      {
+        attribute: "Test Error",
+        bias: "High test error (matches training error)",
+        variance: "High test error (huge gap with training error)"
+      },
+      {
+        attribute: "Fix Strategies",
+        bias: "Deeper networks, more features, less regularization",
+        variance: "More data, data augmentation, L1/L2 penalty, dropout, pruning"
+      }
+    ],
+    codeExample: {
+      title: "Demonstrating Weights, Bias Term, and Underfitting vs. Overfitting in Python",
+      language: "python",
+      code: `import numpy as np
+from sklearn.linear_model import LinearRegression
+
+# 1. Weights and Bias in a Simple Linear Neuron: y = W*x + b
+X = np.array([[10], [20], [30], [40]])  # Input feature: e.g. parcel volume (liters)
+y = np.array([2.5, 4.5, 6.5, 8.5])       # Target: delivery fee ($)
+
+model = LinearRegression()
+model.fit(X, y)
+
+weight = model.coef_[0]    # W (Slope)
+bias = model.intercept_    # b (Intercept)
+
+print(f"Learned Weight (W): {weight:.4f} -> Controls feature contribution per liter")
+print(f"Learned Bias   (b): {bias:.4f} -> Base fee when volume = 0 liters")
+print(f"Prediction formula: Fee = {weight:.2f} * Volume + {bias:.2f}")
+
+# 2. Bias-Variance Diagnosis Rule of Thumb:
+# High Bias  (Underfitting): Train Loss = 0.45, Val Loss = 0.48 -> Model too simple!
+# High Var   (Overfitting) : Train Loss = 0.02, Val Loss = 0.52 -> Huge generalization gap!
+# Optimal Generalization   : Train Loss = 0.08, Val Loss = 0.09 -> Balanced tradeoff!`
+    },
+    takeaway: "In machine learning, weights represent the learned importance of individual input features, while the bias parameter offsets the activation boundary. At the architectural level, balancing systematic bias against dataset variance is essential for achieving models that generalize robustly to production traffic."
   }
 ];
