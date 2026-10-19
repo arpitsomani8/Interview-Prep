@@ -145,7 +145,8 @@ export const definitionBookmarks = [
   { id: "random-variable", label: "Random Variable" },
   { id: "expectation", label: "Expectation" },
   { id: "variance", label: "Variance" },
-  { id: "bias-weight", label: "Bias & Weights" }
+  { id: "bias-weight", label: "Bias & Weights" },
+  { id: "flip-flop-latch", label: "Flip-Flop vs. Latch" }
 ];
 
 export const definitionsData = [
@@ -4900,6 +4901,12 @@ tracemalloc.stop()`,
     badge: "Containerization & Reproducibility",
     summary: "Docker packages your application and dependencies into an image so it can run consistently in different environments.",
     coreConcept: "Docker packages your application and dependencies into an image so it can run consistently in different environments.",
+    verbatimCoreTerms: [
+      { term: "Docker image", definition: "the packaged application." },
+      { term: "Container", definition: "a running instance created from that image." },
+      { term: "Docker", definition: "builds images and runs containers." },
+      { term: "Kubernetes or a managed container platform", definition: "helps orchestrate, scale, and manage containerized applications." }
+    ],
     containerization: {
       definition: "Containerization is packaging an application and its dependencies into a container so it can run consistently across different environments.",
       scenario: "Imagine your ML model works on your laptop but fails on a production server because the Python version or installed libraries are different.",
@@ -10929,6 +10936,21 @@ async def submit_inspection(image_url: str, bg_tasks: BackgroundTasks):
     bg_tasks.add_task(async_yolo_inspection_worker, task_id, image_url)
     return {"task_id": task_id, "status": "queued", "message": "Inspection running asynchronously"}`
     },
+    scaleChatbotToMillions: {
+      question: "How would you scale a chatbot to millions of users?",
+      coreDistinction: "First, distinguish between millions of registered users and millions of simultaneous requests. The second requires substantially more capacity. Design around measured concurrency, request rate, response latency, and provider limits.",
+      keyDecisionsTitle: "Key engineering decisions",
+      matrix: [
+        { challenge: "Sudden traffic spikes", solution: "Horizontal autoscaling, load balancing, and rate limits", accent: "text-amber-400" },
+        { challenge: "Slow LLM responses", solution: "Streaming, timeouts, suitable model selection, and latency monitoring", accent: "text-blue-400" },
+        { challenge: "Provider rate limits", solution: "Bounded retries with backoff, concurrency controls, and queues where appropriate", accent: "text-purple-400" },
+        { challenge: "Repeated queries", solution: "Carefully scoped semantic or exact-match caching", accent: "text-emerald-400" },
+        { challenge: "Conversation history", solution: "Durable storage keyed by user and conversation, with access controls", accent: "text-cyan-400" },
+        { challenge: "Millions of stored documents", solution: "Object storage plus an appropriately indexed database or vector store", accent: "text-indigo-400" },
+        { challenge: "Excessive cost", solution: "Token budgets, context reduction, caching, and routing to smaller models when appropriate", accent: "text-rose-400" },
+        { challenge: "Service failures", solution: "Health checks, circuit breakers, graceful degradation, and tested recovery procedures", accent: "text-teal-400" }
+      ]
+    },
     takeaway: "True system scalability in production AI combines multiple complementary patterns: horizontal stateless APIs behind a load balancer, asynchronous message queues to decouple bursty image uploads from compute-heavy YOLO/LLM inference, and autoscaling policies to dynamically adapt GPU clusters to incoming queue depth."
   },
   {
@@ -11189,6 +11211,28 @@ Candidate Answer: {sample['model_answer']}"""
 # Deterministic judge call: Temperature = 0.0, JSON response schema
 # Calibration verification: Compare judge's output score against human annotated ground truth label.`
     },
+    practicalEvalsSuite: {
+      abTesting: {
+        title: "A/B testing",
+        definition: "Compare two versions on representative traffic or a controlled experiment.",
+        example: "Compare prompt A with prompt B to see whether the newer prompt improves correct invoice extraction.",
+        measureList: [
+          "Exact field accuracy",
+          "Human correction rate",
+          "End-to-end completion rate",
+          "Latency and cost per document"
+        ]
+      },
+      automatedEvaluations: {
+        title: "Automated evaluations",
+        definition: "Run a repeatable test suite against a labeled dataset or golden dataset.",
+        example: "For example, prepare 500 representative invoices with verified ground-truth values, run the extraction pipeline, and compare predicted fields against the expected values."
+      },
+      evaluationRubrics: {
+        title: "Evaluation rubrics",
+        definition: "A rubric defines what a good output means and how it will be scored. A rubric defines the criteria used to judge the output."
+      }
+    },
     takeaway: "Robust AI systems cannot rely on ad-hoc gut checks. By combining LLM-as-a-Judge for semantic fidelity, Trajectory Evals for multi-step agent actions, calibrated Golden Datasets in CI/CD, and continuous online production telemetry, engineering teams can iterate safely without silent regressions."
   },
   {
@@ -11361,6 +11405,52 @@ Candidate Answer: {sample['model_answer']}"""
       ],
       workerFlowTitle: "When a store worker takes a new photo, it goes through the same process:",
       pipelineFlow: "Photo → Azure AI Vision → Vector (1,024-d) → Azure AI Search (HNSW) → Closest Matches"
+    },
+    agentsValueSection: {
+      question: "Where can AI agents create real value?",
+      thesis: "Agents are useful when a task requires multiple steps, decisions, or tool calls—not merely when a chatbot needs to answer a question.",
+      useCases: [
+        { domain: "Document processing", action: "Extract information, validate fields, compare documents, and route exceptions for review.", accent: "text-amber-400" },
+        { domain: "Customer support", action: "Retrieve policies, check order status, draft responses, and escalate unresolved cases.", accent: "text-blue-400" },
+        { domain: "Operations and monitoring", action: "Investigate alerts, collect evidence from approved tools, summarize likely causes, and recommend next steps.", accent: "text-emerald-400" }
+      ]
+    },
+    outputFailureAndValidation: {
+      title: "Where does the output break, and what should be checked?",
+      mindset: "A useful production mindset is to investigate failure systematically rather than simply changing the prompt.",
+      checks: [
+        {
+          category: "Document type creates risk",
+          details: "Scanned or blurry PDFs, handwritten forms, multi-page invoices, complex tables, charts, and inconsistent templates can break extraction or lose important context.",
+          badge: "Ingestion Risk",
+          accent: "text-rose-400"
+        },
+        {
+          category: "Fields need validation",
+          details: "Required IDs, dates, amounts, currency, addresses, status codes, and cross-field relationships. Validate data types, allowed values, ranges, and consistency with authoritative records.",
+          badge: "Deterministic Rules",
+          accent: "text-cyan-400"
+        },
+        {
+          category: "Cases should go to review",
+          details: "Missing critical fields, conflicting sources, low-quality images, unsupported document types, uncertain classifications, policy exceptions, or high-impact decisions.",
+          badge: "Human-in-the-Loop",
+          accent: "text-amber-400"
+        },
+        {
+          category: "Choices that reduce rework",
+          details: "Use a strict output schema, deterministic business validation, provenance for extracted values, idempotent processing, and a review queue before committing sensitive changes.",
+          badge: "Production Safeguards",
+          accent: "text-emerald-400"
+        }
+      ]
+    },
+    humanJudgmentAlignment: {
+      question: "How can you leverage AI in alignment with your experience and expertise to enhance and retain human judgment?",
+      badge: "Interview-Ready Response",
+      thesis: "I see AI as a decision-support tool rather than a replacement for human judgment. I would use AI to automate repetitive tasks, summarize information, identify patterns, and generate recommendations. My engineering expertise would be used to validate the outputs, enforce business rules, and determine when a decision requires human approval.",
+      workflowExample: "For example, in a document-processing workflow, AI could extract information from an invoice and flag inconsistencies. Deterministic validation would check the amounts and required fields, while a human reviewer would handle ambiguous or high-impact cases. I would also use reviewer corrections to identify recurring errors and improve the system through measurable evaluations.",
+      conclusion: "The goal is to improve human productivity without allowing an unverified model output to become an unquestioned decision."
     },
     takeaway: "In production AI engineering, success is defined by trade-off awareness, resiliency architecture, and empirical observability. Teams must design for peak surges with asynchronous queues, guard against API outages with bounded circuit breakers, enforce rigorous task-based evaluation over fluency, and deploy specialized vector search indexes (such as 1,024-d HNSW graphs) for high-performance multimodal applications."
   },
@@ -11796,5 +11886,99 @@ print(f"Prediction formula: Fee = {weight:.2f} * Volume + {bias:.2f}")
 # Optimal Generalization   : Train Loss = 0.08, Val Loss = 0.09 -> Balanced tradeoff!`
     },
     takeaway: "In machine learning, weights represent the learned importance of individual input features, while the bias parameter offsets the activation boundary. At the architectural level, balancing systematic bias against dataset variance is essential for achieving models that generalize robustly to production traffic."
+  },
+  {
+    id: "flip-flop-latch",
+    title: "Flip-Flop vs. Latch (Digital Logic Sequential Storage Elements)",
+    badge: "Hardware Architecture, Clock Triggering & Sequential Circuits",
+    summary: "Flip-flop: A flip-flop is generally edge-triggered. It samples the input at a specified clock edge and holds the output between triggering edges. Latch: A latch is level-sensitive. While its enable signal is active, the output can follow the input. When disabled, it retains its stored value.",
+    coreDefinition: "A latch can remain transparent for an interval while enabled; a flip-flop captures data at a clock edge.",
+    verbatimCore: [
+      {
+        term: "Flip-flop",
+        definition: "A flip-flop is generally edge-triggered. It samples the input at a specified clock edge and holds the output between triggering edges.",
+        trigger: "Edge-triggered (Rising 0→1 or Falling 1→0 clock edge)",
+        behavior: "Samples input exclusively at the transition instant; completely immune to input changes while clock is static high or low.",
+        transparency: "Opaque (Never transparent)",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        term: "Latch",
+        definition: "A latch is level-sensitive. While its enable signal is active, the output can follow the input. When disabled, it retains its stored value.",
+        trigger: "Level-sensitive (Active high enable = 1 or active low enable = 0)",
+        behavior: "Continuously tracks input data as long as enable is held active; locks/freezes the current value when enable drops low.",
+        transparency: "Transparent during active enable window",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      }
+    ],
+    keyInsight: "A latch can remain transparent for an interval while enabled; a flip-flop captures data at a clock edge.",
+    comparisonTable: [
+      {
+        parameter: "Triggering Mechanism",
+        flipFlop: "Edge-triggered (samples on 0→1 or 1→0 clock edge)",
+        latch: "Level-sensitive (active throughout enable window)"
+      },
+      {
+        parameter: "Data Transparency",
+        flipFlop: "Opaque: Output changes only at clock edge; holds steady otherwise",
+        latch: "Transparent: Output directly tracks input while enable = 1"
+      },
+      {
+        parameter: "Timing & Glitch Susceptibility",
+        flipFlop: "Glitch-immune: Ignores intermediate glitches between clock pulses",
+        latch: "Glitch-sensitive: Any input glitch propagates to output while enabled"
+      },
+      {
+        parameter: "Hardware Complexity",
+        flipFlop: "Higher gate count: Typically constructed from Master-Slave latch pair",
+        latch: "Lower gate count: Fewer transistors and smaller silicon area"
+      },
+      {
+        parameter: "Timing Analysis (STA)",
+        flipFlop: "Easier static timing analysis: Governed by setup and hold times per cycle",
+        latch: "Complex timing analysis: Can cause race conditions and timing loops"
+      },
+      {
+        parameter: "Typical Use Cases",
+        flipFlop: "Synchronous state machines (FSM), CPU registers, pipelines",
+        latch: "Asynchronous memory cells, clock gating cells, low-power latched buffers"
+      }
+    ],
+    codeExample: {
+      title: "Verilog Hardware Description: D Flip-Flop vs. Transparent D Latch",
+      language: "verilog",
+      code: `// 1. Edge-Triggered D Flip-Flop (Synchronous Sequential Logic)
+module d_flip_flop (
+    input  wire clk,      // Clock signal
+    input  wire reset_n,  // Active-low asynchronous reset
+    input  wire d,        // Data input
+    output reg  q         // Stored output
+);
+    // Samples input ONLY on the rising edge of clk:
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n)
+            q <= 1'b0;
+        else
+            q <= d;       // Holds between clock edges (Opaque)
+    end
+endmodule
+
+// 2. Level-Sensitive Transparent D Latch (Combinational Feedback)
+module d_latch (
+    input  wire enable,   // Enable level signal
+    input  wire d,        // Data input
+    output reg  q         // Stored output
+);
+    // Evaluates whenever enable or d changes:
+    always @(*) begin
+        if (enable)
+            q = d;        // Transparent: output continuously follows input while enable is HIGH
+        // When enable is LOW, q implicitly retains its previous state (Inferred Latch)
+    end
+endmodule`
+    },
+    takeaway: "The fundamental distinction between flip-flops and latches lies in timing control. A latch is level-sensitive and remains transparent throughout the active enable duration, making it prone to glitches and race conditions if unconstrained. In contrast, a flip-flop is edge-triggered—sampling input data instantaneously at the clock transition and isolating subsequent input changes—forming the foundation of synchronous digital pipelines and modern processor registers."
   }
 ];

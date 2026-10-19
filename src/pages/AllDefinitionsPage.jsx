@@ -7509,6 +7509,22 @@ export default function AllDefinitionsPage() {
             {/* Item 67: Docker */}
             {item.id === 'docker' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Verbatim Core Definitions: Image, Container, Docker, Kubernetes */}
+                {item.verbatimCoreTerms && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {item.verbatimCoreTerms.map((term, tIdx) => (
+                      <div key={tIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-cyan-500/40 transition">
+                        <span className="text-xs font-mono font-bold text-cyan-400 uppercase block">
+                          {term.term}:
+                        </span>
+                        <p className="text-xs text-zinc-200 font-medium font-sans">
+                          {term.definition}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 {/* Core Concept Banner & Laptop vs Production Challenge */}
                 <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl space-y-3">
                   <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -18876,6 +18892,53 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* 3.1 Scaling a Chatbot to Millions of Users */}
+                {item.scaleChatbotToMillions && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-blue-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-blue-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-blue-400" />
+                        <span>{item.scaleChatbotToMillions.question}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 font-semibold">
+                        High Concurrency
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-black border border-zinc-800 text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
+                      {item.scaleChatbotToMillions.coreDistinction}
+                    </div>
+
+                    <div className="space-y-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono block">
+                        {item.scaleChatbotToMillions.keyDecisionsTitle}
+                      </span>
+                      <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                        <table className="w-full text-left text-xs font-sans">
+                          <thead className="bg-zinc-900/90 text-zinc-400 font-mono text-[11px] border-b border-zinc-800 uppercase">
+                            <tr>
+                              <th className="py-2.5 px-3">Challenge</th>
+                              <th className="py-2.5 px-3">Solution</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-900 bg-black">
+                            {item.scaleChatbotToMillions.matrix.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-zinc-900/50 transition">
+                                <td className={`py-2.5 px-3 font-semibold font-mono ${row.accent}`}>
+                                  {row.challenge}
+                                </td>
+                                <td className="py-2.5 px-3 text-zinc-300 leading-relaxed">
+                                  {row.solution}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* 4. Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
@@ -19318,6 +19381,86 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* 5.1 Practical Evaluation Methodologies (A/B Testing, Automated Evals, Rubrics) */}
+                {item.practicalEvalsSuite && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-purple-400" />
+                        <span>A/B Testing, Automated Evaluations & Rubrics</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
+                        Field Testing
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {/* A/B Testing */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between hover:border-purple-500/40 transition">
+                        <div className="space-y-2">
+                          <span className="text-xs font-bold font-mono text-purple-300 uppercase block">
+                            {item.practicalEvalsSuite.abTesting.title}
+                          </span>
+                          <p className="text-xs text-white font-medium font-sans leading-relaxed">
+                            {item.practicalEvalsSuite.abTesting.definition}
+                          </p>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            <strong className="text-zinc-300">Example: </strong>
+                            {item.practicalEvalsSuite.abTesting.example}
+                          </p>
+                        </div>
+                        <div className="pt-2 border-t border-zinc-900 space-y-1">
+                          <span className="text-[10px] font-mono uppercase text-amber-400 font-bold block">
+                            Measure:
+                          </span>
+                          <ul className="text-[11px] text-zinc-300 space-y-0.5 list-disc pl-4 font-sans">
+                            {item.practicalEvalsSuite.abTesting.measureList.map((m, mIdx) => (
+                              <li key={mIdx}>{m}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+
+                      {/* Automated evaluations */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between hover:border-cyan-500/40 transition">
+                        <div className="space-y-2">
+                          <span className="text-xs font-bold font-mono text-cyan-300 uppercase block">
+                            {item.practicalEvalsSuite.automatedEvaluations.title}
+                          </span>
+                          <p className="text-xs text-white font-medium font-sans leading-relaxed">
+                            {item.practicalEvalsSuite.automatedEvaluations.definition}
+                          </p>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            <strong className="text-zinc-300">Golden Dataset: </strong>
+                            {item.practicalEvalsSuite.automatedEvaluations.example}
+                          </p>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-cyan-950/20 border border-cyan-800/30 text-[10px] font-mono text-cyan-200">
+                          CI/CD automated regression gate comparing predictions to ground-truth values.
+                        </div>
+                      </div>
+
+                      {/* Evaluation rubrics */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between hover:border-emerald-500/40 transition">
+                        <div className="space-y-2">
+                          <span className="text-xs font-bold font-mono text-emerald-300 uppercase block">
+                            {item.practicalEvalsSuite.evaluationRubrics.title}
+                          </span>
+                          <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-100 font-sans leading-relaxed font-medium">
+                            “{item.practicalEvalsSuite.evaluationRubrics.definition}”
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            A rubric defines the criteria used to judge the output, preventing subjective variance and establishing consistent scoring guidelines.
+                          </p>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-800/30 text-[10px] font-mono text-emerald-300">
+                          Clear scoring thresholds: 1 (hallucination) to 5 (flawless grounded answer).
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* 6. Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
@@ -19681,6 +19824,114 @@ export default function AllDefinitionsPage() {
                         <span className="p-1 px-2 rounded bg-zinc-900 text-emerald-300 border border-zinc-800">
                           {item.visualSearchCaseStudy.pipelineFlow}
                         </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6.1 Where can AI agents create real value? */}
+                {item.agentsValueSection && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-amber-400" />
+                        <span>{item.agentsValueSection.question}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-semibold">
+                        High-ROI Tasks
+                      </span>
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-zinc-200 font-medium font-sans leading-relaxed">
+                      {item.agentsValueSection.thesis}
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {item.agentsValueSection.useCases.map((uc, uIdx) => (
+                        <div key={uIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-amber-500/40 transition">
+                          <span className={`text-xs font-mono font-bold uppercase block ${uc.accent}`}>
+                            {uc.domain}
+                          </span>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {uc.action}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6.2 Where does the output break, and what should be checked? */}
+                {item.outputFailureAndValidation && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-rose-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                        <AlertTriangle className="w-4 h-4 text-rose-400" />
+                        <span>{item.outputFailureAndValidation.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-semibold">
+                        Systematic Triage
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 font-mono">
+                      <strong className="text-rose-400 uppercase">Mindset: </strong>
+                      {item.outputFailureAndValidation.mindset}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.outputFailureAndValidation.checks.map((chk, cIdx) => (
+                        <div key={cIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
+                          <div className="flex items-center justify-between">
+                            <span className={`text-xs font-mono font-bold uppercase ${chk.accent}`}>
+                              {chk.category}
+                            </span>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {chk.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {chk.details}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6.3 Leveraging AI to Enhance and Retain Human Judgment */}
+                {item.humanJudgmentAlignment && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Shield className="w-4 h-4 text-cyan-400" />
+                        <span>{item.humanJudgmentAlignment.question}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                        {item.humanJudgmentAlignment.badge}
+                      </span>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-black border border-cyan-900/50 space-y-3">
+                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-300 block">
+                        Core Philosophy:
+                      </span>
+                      <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans font-medium">
+                        {item.humanJudgmentAlignment.thesis}
+                      </p>
+
+                      <div className="p-3.5 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1.5">
+                        <span className="text-[11px] font-mono text-amber-400 uppercase font-bold block">
+                          Document-Processing Workflow Example:
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {item.humanJudgmentAlignment.workflowExample}
+                        </p>
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-cyan-950/20 border border-cyan-800/40 text-xs font-mono text-cyan-200">
+                        <strong className="text-cyan-400 uppercase">Key Objective: </strong>
+                        {item.humanJudgmentAlignment.conclusion}
                       </div>
                     </div>
                   </div>
@@ -20500,6 +20751,152 @@ export default function AllDefinitionsPage() {
                 {/* 7. Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 149: Flip-Flop vs. Latch */}
+            {item.id === 'flip-flop-latch' && (
+              <div className="space-y-6">
+                {/* 1. Core Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Digital Sequential Logic & Clock Triggering</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Edge vs. Level
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Flip-Flop vs. Latch
+                  </h3>
+                  <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-100 font-medium font-sans leading-relaxed">
+                    <strong>Fundamental Law: </strong>{item.coreDefinition}
+                  </div>
+                </div>
+
+                {/* 2. Verbatim Definitions: Flip-Flop vs Latch */}
+                {item.verbatimCore && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Core Behavioral Distinctions</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Storage Mechanics
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.verbatimCore.map((elem, eIdx) => (
+                        <div key={eIdx} className={`p-4 rounded-xl bg-black border ${elem.border} space-y-2.5 flex flex-col justify-between hover:border-cyan-500/30 transition`}>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${elem.accent} uppercase block`}>
+                                {elem.term}
+                              </span>
+                              <span className="text-[10px] font-mono text-zinc-400 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800">
+                                {elem.trigger}
+                              </span>
+                            </div>
+                            <p className="text-xs text-white font-medium font-sans leading-relaxed">
+                              {elem.definition}
+                            </p>
+                            <p className="text-[11px] text-zinc-300 font-sans leading-relaxed pt-1 border-t border-zinc-900">
+                              <strong className="text-zinc-400 font-mono">Sampling Action: </strong>
+                              {elem.behavior}
+                            </p>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900 text-[10px] font-mono text-zinc-400 flex items-center justify-between">
+                            <span className="text-zinc-500 uppercase">Transparency:</span>
+                            <span className="text-zinc-300 font-semibold">{elem.transparency}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Detailed Parameter Comparison Matrix */}
+                {item.comparisonTable && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Architectural Comparison Matrix</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Hardware Trade-offs
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono text-[11px] border-b border-zinc-800 uppercase">
+                          <tr>
+                            <th className="py-2.5 px-3">Parameter</th>
+                            <th className="py-2.5 px-3 text-amber-400">Flip-Flop (Edge-Triggered)</th>
+                            <th className="py-2.5 px-3 text-cyan-400">Latch (Level-Sensitive)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900 font-sans text-zinc-300 bg-black">
+                          {item.comparisonTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-semibold text-white whitespace-nowrap">{row.parameter}</td>
+                              <td className="py-2.5 px-3 text-zinc-300">{row.flipFlop}</td>
+                              <td className="py-2.5 px-3 text-zinc-300">{row.latch}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Interactive Verilog HDL Code Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>flipflop_vs_latch.v</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-flip-flop-latch', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-flip-flop-latch' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Hardware Takeaway: </strong>
                   {item.takeaway}
                 </div>
               </div>
