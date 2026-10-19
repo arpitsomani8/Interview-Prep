@@ -10112,6 +10112,163 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 88: Top-K & Top-P */}
+            {item.id === 'top-k-top-p' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Decoding Strategies & Probabilistic Sampling</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-800">
+                      Generation Controls
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Top-K Card */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-blue-900/40 shadow-xl space-y-2">
+                      <div className="flex items-center justify-between">
+                        <h5 className="text-xs font-bold text-blue-400 font-mono uppercase tracking-wide">
+                          Top-K Sampling
+                        </h5>
+                        <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
+                          Fixed Candidate Pool
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.topKDefinition}
+                      </p>
+                    </div>
+
+                    {/* Top-P Card */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-purple-900/40 shadow-xl space-y-2">
+                      <div className="flex items-center justify-between">
+                        <h5 className="text-xs font-bold text-purple-400 font-mono uppercase tracking-wide">
+                          Top-P Sampling (Nucleus)
+                        </h5>
+                        <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                          Dynamic Probability Mass
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.topPDefinition}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Top-K vs. Top-P Comparison Table */}
+                {item.comparisonRows && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.comparisonTitle || "Top-K vs. Top-P"}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Side-by-Side Comparison
+                      </span>
+                    </div>
+
+                    {/* Desktop Table */}
+                    <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                          <tr>
+                            <th className="py-3 px-4 font-semibold text-zinc-400 w-1/4">Aspect</th>
+                            <th className="py-3 px-4 font-semibold text-blue-400 w-3/8">Top-K</th>
+                            <th className="py-3 px-4 font-semibold text-purple-400 w-3/8">Top-P</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.comparisonRows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-3.5 px-4 font-mono font-bold text-white align-top">
+                                {row.feature}
+                              </td>
+                              <td className="py-3.5 px-4 align-top space-y-1">
+                                <span className="font-semibold text-zinc-200 block">{row.topK}</span>
+                                <span className="text-[11px] text-zinc-400 block font-mono">{row.topKDetail}</span>
+                              </td>
+                              <td className="py-3.5 px-4 align-top space-y-1">
+                                <span className="font-semibold text-zinc-200 block">{row.topP}</span>
+                                <span className="text-[11px] text-zinc-400 block font-mono">{row.topPDetail}</span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Mobile View */}
+                    <div className="grid grid-cols-1 gap-3 md:hidden">
+                      {item.comparisonRows.map((row, rIdx) => (
+                        <div key={rIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                          <h6 className="text-xs font-bold text-amber-300 font-mono uppercase">
+                            {row.feature}
+                          </h6>
+                          <div className="p-2.5 rounded-lg bg-zinc-950 border border-blue-900/40 space-y-1">
+                            <span className="text-[10px] font-mono text-blue-400 uppercase font-bold block">Top-K:</span>
+                            <span className="text-xs text-zinc-200 font-semibold block">{row.topK}</span>
+                            <span className="text-[11px] text-zinc-400 block font-mono">{row.topKDetail}</span>
+                          </div>
+                          <div className="p-2.5 rounded-lg bg-zinc-950 border border-purple-900/40 space-y-1">
+                            <span className="text-[10px] font-mono text-purple-400 uppercase font-bold block">Top-P:</span>
+                            <span className="text-xs text-zinc-200 font-semibold block">{row.topP}</span>
+                            <span className="text-[11px] text-zinc-400 block font-mono">{row.topPDetail}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Temperature, Top-K, Top-P Interaction */}
+                {item.temperatureInteraction && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.temperatureInteraction.title}</span>
+                      </h5>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        Inference Pipeline
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg bg-black border border-zinc-900 text-[11px] font-mono text-cyan-300">
+                      {item.temperatureInteraction.pipeline}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                      {item.temperatureInteraction.practicalGuidance.map((g, gIdx) => (
+                        <div key={gIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                          <span className="text-xs font-bold text-amber-300 font-mono block">
+                            • {g.useCase}
+                          </span>
+                          <span className="text-xs text-emerald-400 font-mono block font-semibold">
+                            {g.recommendation}
+                          </span>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {g.why}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

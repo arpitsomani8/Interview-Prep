@@ -84,7 +84,8 @@ export const definitionBookmarks = [
   { id: "lexical-search", label: "Lexical Search" },
   { id: "pipeline", label: "Pipeline" },
   { id: "clip", label: "CLIP" },
-  { id: "production-handling", label: "Production Handling" }
+  { id: "production-handling", label: "Production Handling" },
+  { id: "top-k-top-p", label: "Top-K / Top-P" }
 ];
 
 export const definitionsData = [
@@ -6025,5 +6026,54 @@ def health_check():
       }
     ],
     takeaway: "Production AI systems require defensive engineering. Transient network glitches warrant bounded jittered retries; capacity limits and outages demand circuit breakers and tested multi-provider failovers; malformed outputs require strict schema validation and safe abstention; and permanent errors must fail fast rather than waste resources on blind retries."
+  },
+  {
+    id: "top-k-top-p",
+    title: "Top-K & Top-P Sampling — LLM Decoding & Generation Controls",
+    badge: "Decoding Strategies & Probabilistic Sampling",
+    summary: "Top-K keeps only the K tokens with the highest probability at each generation step. Top-P (nucleus sampling) keeps the smallest set of highest-probability tokens whose cumulative probability reaches the specified threshold.",
+    topKDefinition: "Top-K keeps only the K tokens with the highest probability at each generation step. The model samples from that restricted set.",
+    topPDefinition: "Top-P keeps the smallest set of highest-probability tokens whose cumulative probability reaches the specified threshold.",
+    comparisonTitle: "Top-K vs. Top-P",
+    comparisonRows: [
+      {
+        feature: "Candidate Count",
+        topK: "Keeps a fixed maximum number of candidates",
+        topP: "Keeps a variable number of candidates",
+        topKDetail: "Hard cutoff regardless of probability mass distribution",
+        topPDetail: "Dynamic threshold scaling based on prediction confidence"
+      },
+      {
+        feature: "Example Rule",
+        topK: "always consider at most 10 tokens",
+        topP: "consider enough tokens to reach 90% cumulative probability",
+        topKDetail: "Example: always consider at most 10 tokens (k = 10)",
+        topPDetail: "Example: consider enough tokens to reach 90% cumulative probability (p = 0.90)"
+      },
+      {
+        feature: "Behavior & Adaptation",
+        topK: "Simpler fixed-size restriction",
+        topP: "Adapts the candidate set to the probability distribution",
+        topKDetail: "Static ceiling: may keep low-probability junk when model is confident, or truncate valid options when model is uncertain",
+        topPDetail: "Adaptive nucleus: shrinks candidate pool when one token is dominant; expands candidate pool when multiple tokens are viable"
+      }
+    ],
+    temperatureInteraction: {
+      title: "Decoding Pipeline: Temperature, Top-K, and Top-P",
+      pipeline: "Unnormalized Logits -> Temperature Scaling (z / T) -> Softmax Probabilities -> Top-K Truncation -> Top-P Nucleus Filtering -> Final Token Sampling",
+      practicalGuidance: [
+        {
+          useCase: "Factual, Code & RAG Policy Tasks",
+          recommendation: "Temperature = 0.0 – 0.2, Top-P = 1.0 (or greedy argmax)",
+          why: "Minimizes randomness, guarantees deterministic reproducible outputs, and eliminates hallucinated edge cases."
+        },
+        {
+          useCase: "Conversational & Summarization Tasks",
+          recommendation: "Temperature = 0.7, Top-P = 0.90 – 0.95, Top-K = 40 – 50",
+          why: "Produces fluent, diverse natural language while pruning the long tail of improbable, nonsensical words."
+        }
+      ]
+    },
+    takeaway: "Top-K enforces a strict, static candidate ceiling (e.g., consider at most 10 tokens), whereas Top-P (nucleus sampling) dynamically adjusts candidate pool size to achieve a cumulative probability threshold (e.g., 90%). In production generative AI systems, Top-P is the industry standard for adaptive quality control, often combined with low temperature for factual grounding."
   }
 ];
