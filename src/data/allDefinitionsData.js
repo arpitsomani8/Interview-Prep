@@ -91,7 +91,8 @@ export const definitionBookmarks = [
   { id: "zero-shot-few-shot", label: "Zero-shot / Few-shot" },
   { id: "lora", label: "LoRA" },
   { id: "bert", label: "BERT" },
-  { id: "stemming", label: "Stemming" }
+  { id: "stemming", label: "Stemming" },
+  { id: "lemmatization", label: "Lemmatization" }
 ];
 
 export const definitionsData = [
@@ -6843,5 +6844,77 @@ for w in words:
 # feet         | feet               | foot      <-- Lemmatization handles irregular plurals!`
     },
     takeaway: "Stemming reduces words to crude root stems using rapid rule-based chopping without guaranteeing valid dictionary entries (e.g. 'studies' → 'studi'). In production, stemming is prized for ultra-fast inverted index token grouping in search engines (BM25, Elasticsearch), whereas lemmatization is preferred when linguistic correctness and grammatical meaning must be preserved."
+  },
+  {
+    id: "lemmatization",
+    title: "Lemmatization (Dictionary Base Form & Morphological Analysis)",
+    badge: "NLP Morphological Analysis, POS Disambiguation & Linguistic Canonicalization",
+    summary: "Lemmatization converts a word to its dictionary base form, called a lemma, using linguistic information. Unlike simple stemming, lemmatization attempts to produce a valid base word. It may need the word's grammatical role and context to do this correctly.",
+    coreDefinition: "Lemmatization converts a word to its dictionary base form, called a lemma, using linguistic information. Unlike simple stemming, lemmatization attempts to produce a valid base word. It may need the word's grammatical role and context to do this correctly.",
+    lemmaTable: [
+      { originalWord: "playing", lemma: "play", pos: "Verb (VBG)", note: "Converts inflected present participle to base infinitive verb." },
+      { originalWord: "studies", lemma: "study", pos: "Verb / Noun", note: "Unlike stemming ('studi'), lemmatization always outputs a real dictionary lemma." },
+      { originalWord: "better", lemma: "good", pos: "Adjective (a)", note: "Irregular comparative form mapped to root adjective via vocabulary lookup." },
+      { originalWord: "corpora", lemma: "corpus", pos: "Noun (plural)", note: "Irregular Latin plural mapped correctly to singular base lemma." }
+    ],
+    contextualRule: {
+      headline: "Context & Grammatical Role Dependency",
+      statement: "Unlike simple stemming, lemmatization attempts to produce a valid base word. It may need the word's grammatical role and context to do this correctly.",
+      examples: [
+        {
+          sentence: "“The stripes on the tiger are beautiful.”",
+          word: "stripes",
+          pos: "Noun",
+          lemma: "stripe",
+          explanation: "Analyzed as a plural noun; base form is the singular noun 'stripe'."
+        },
+        {
+          sentence: "“He stripes the paint onto the wall.”",
+          word: "stripes",
+          pos: "Verb",
+          lemma: "strip",
+          explanation: "Analyzed as a 3rd-person singular present verb; base form is the infinitive verb 'strip'."
+        }
+      ]
+    },
+    whyItMatters: [
+      {
+        title: "1. Guaranteed Dictionary Integrity",
+        desc: "Guarantees that downstream models, tokenizers, or knowledge graph lookups receive real, syntactically valid vocabulary entries.",
+        accent: "text-emerald-400"
+      },
+      {
+        title: "2. Handles Irregular Morphologies",
+        desc: "Stemming fails on irregular verbs ('went' → 'went', 'feet' → 'feet'), whereas lemmatization resolves them ('went' → 'go', 'feet' → 'foot').",
+        accent: "text-cyan-400"
+      },
+      {
+        title: "3. Semantic Preservation for LLM Prompts",
+        desc: "Preserves natural grammatical meaning when condensing customer support tickets, search queries, or policy documents.",
+        accent: "text-amber-400"
+      }
+    ],
+    codeExample: {
+      title: "Context-Aware Lemmatization with SpaCy & NLTK",
+      language: "python",
+      code: `import spacy
+
+# Load SpaCy pipeline with full dependency parser and POS tagger
+nlp = spacy.load("en_core_web_sm")
+
+doc = nlp("The meeting was productive, but he is meeting her right now.")
+
+print(f"{'Token':<12} | {'POS Tag':<10} | {'Lemma':<10}")
+print("-" * 38)
+
+for token in doc:
+    if token.text.lower() == "meeting":
+        print(f"{token.text:<12} | {token.pos_:<10} | {token.lemma_:<10}")
+
+# Output:
+# meeting      | NOUN       | meeting   <-- Kept as noun lemma 'meeting'
+# meeting      | VERB       | meet      <-- Lemmatized to base verb 'meet'!`
+    },
+    takeaway: "Lemmatization uses morphological dictionaries and Part-of-Speech context to convert words into genuine dictionary lemmas (e.g. 'playing' → 'play', 'studies' → 'study'). While computationally heavier than heuristic stemming, lemmatization ensures 100% dictionary validity and semantic preservation across downstream NLP and LLM pipelines."
   }
 ];
