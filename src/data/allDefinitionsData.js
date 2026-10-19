@@ -96,7 +96,8 @@ export const definitionBookmarks = [
   { id: "ngram-bigram", label: "n-gram / Bigram" },
   { id: "react-pattern", label: "ReAct" },
   { id: "cot-chain-of-thought", label: "COT / Chain of Thought" },
-  { id: "bagging", label: "Bagging" }
+  { id: "bagging", label: "Bagging" },
+  { id: "knn", label: "KNN" }
 ];
 
 export const definitionsData = [
@@ -7311,5 +7312,94 @@ print(f"OOB Validation Accuracy: {bagging_model.oob_score_:.4f}")
 print(f"Test Set Accuracy:       {bagging_model.score(X_test, y_test):.4f}")`
     },
     takeaway: "Bagging (Bootstrap Aggregating) trains multiple high-variance base models in parallel on bootstrapped subsets and averages their predictions. By combining independent trees, Bagging dramatically lowers variance and prevents overfitting, forming the mathematical foundation for Random Forests."
+  },
+  {
+    id: "knn",
+    title: "KNN Algorithm (K-Nearest Neighbors)",
+    badge: "Instance-Based Non-Parametric Learning, Metric Spaces & Lazy Learning",
+    summary: "KNN predicts the class or value of a new data point by looking at its K nearest training examples. For example, suppose you want to classify an email as spam or normal. KNN looks for similar labeled emails and uses their labels to make a prediction. Advantages: Simple, intuitive, no explicit model-fitting optimization, and useful for small datasets. Limitations: Prediction can be expensive on large datasets; performance depends on distance choice, scaling, and the value of K. Irrelevant or high-dimensional features can make distances less meaningful.",
+    coreDefinition: "KNN algorithm (K-Nearest Neighbors). KNN predicts the class or value of a new data point by looking at its K nearest training examples.",
+    realWorldExample: {
+      headline: "Intuitive Example",
+      content: "For example, suppose you want to classify an email as spam or normal. KNN looks for similar labeled emails and uses their labels to make a prediction."
+    },
+    stepByStepAlgorithm: [
+      {
+        step: "1. Choose K",
+        desc: "Choose K, the number of neighbors to consider."
+      },
+      {
+        step: "2. Calculate Distance",
+        desc: "Calculate the distance between the new data point and each training example."
+      },
+      {
+        step: "3. Sort & Select",
+        desc: "Sort examples by distance and select the nearest K."
+      },
+      {
+        step: "4. Classify or Regress",
+        desc: "For classification, use the majority class among those neighbors. For regression, typically average their target values."
+      },
+      {
+        step: "5. Return Prediction",
+        desc: "Return the predicted class or value."
+      }
+    ],
+    pseudocode: `INPUT: Training data X, labels y, new point x, number K
+FOR each training example:
+    Calculate distance from x to the example
+Sort examples by distance
+Select the K nearest examples
+IF classification:
+    Predict the majority label
+IF regression:
+    Predict the average target value
+RETURN prediction`,
+    codeExample: {
+      title: "KNN Pipeline with StandardScaler in scikit-learn",
+      language: "python",
+      code: `from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+
+model = make_pipeline(
+    StandardScaler(),
+    KNeighborsClassifier(n_neighbors=5)
+)
+
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)`
+    },
+    advantagesAndLimitations: {
+      advantages: [
+        "Simple, intuitive, and mathematically transparent.",
+        "No explicit model-fitting optimization phase (zero training time / lazy learning).",
+        "Useful for small datasets and rapid baseline benchmarking."
+      ],
+      limitations: [
+        "Prediction can be expensive on large datasets (calculates distances against all training points).",
+        "Performance depends on distance choice, scaling, and the value of K.",
+        "Irrelevant or high-dimensional features can make distances less meaningful (Curse of Dimensionality)."
+      ]
+    },
+    engineeringInsights: [
+      {
+        title: "Why Feature Scaling is Strictly Mandatory",
+        desc: "Because KNN computes distances in geometric space (Euclidean ||x - y||_2), unscaled features with large numerical magnitudes (e.g. Salary in $100,000s) will completely dominate small features (e.g. Age in 10s). StandardScaler ensures equal feature weighting.",
+        accent: "text-amber-400"
+      },
+      {
+        title: "Choosing K: Bias-Variance Tradeoff",
+        desc: "Small K (e.g. K=1) has low bias but high variance (extremely sensitive to noise). Large K has high bias but low variance (smoother decision boundaries, but can over-smooth distinct local clusters). Odd K avoids ties in binary classification.",
+        accent: "text-cyan-400"
+      },
+      {
+        title: "Production Scaling: KD-Trees & Ball-Trees",
+        desc: "Brute-force O(N) search per query is unviable on large datasets. Production KNN uses spatial partitioning trees (KD-Trees, Ball-Trees) or approximate nearest neighbors (HNSW, FAISS) to prune distant space.",
+        accent: "text-purple-400"
+      }
+    ],
+    takeaway: "KNN is a non-parametric, instance-based lazy learner that predicts targets using majority vote or averaging across K nearest neighbors in a metric distance space. In production, feature normalization via StandardScaler is mandatory, and spatial indexing structures (KD-Trees, Ball-Trees) are required to accelerate query latency."
   }
 ];

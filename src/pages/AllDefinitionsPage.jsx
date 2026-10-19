@@ -12701,6 +12701,182 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 100: KNN (K-Nearest Neighbors) */}
+            {item.id === 'knn' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Core Definition</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Instance-Based Learning
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Real-World Example Banner */}
+                {item.realWorldExample && (
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 shadow-sm">
+                    <span className="text-xs font-bold font-mono text-amber-400 uppercase tracking-wide">
+                      {item.realWorldExample.headline}
+                    </span>
+                    <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                      {item.realWorldExample.content}
+                    </p>
+                  </div>
+                )}
+
+                {/* 3. Step-by-Step Algorithm */}
+                {item.stepByStepAlgorithm && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>KNN Algorithm — Step by Step</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        Execution Pipeline
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3 pt-1">
+                      {item.stepByStepAlgorithm.map((st, sIdx) => (
+                        <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition flex flex-col justify-between">
+                          <span className="text-xs font-bold font-mono text-cyan-300">
+                            {st.step}
+                          </span>
+                          <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                            {st.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Pseudocode & Code Example Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Pseudocode Box */}
+                  {item.pseudocode && (
+                    <div className="space-y-2 p-4 rounded-2xl bg-zinc-950 border border-zinc-800">
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                          <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                          <span>KNN Pseudocode</span>
+                        </h4>
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                          Logic Flow
+                        </span>
+                      </div>
+                      <pre className="p-3 rounded-xl bg-black border border-zinc-900 text-xs font-mono text-amber-200/90 whitespace-pre-wrap leading-relaxed overflow-x-auto">
+                        {item.pseudocode}
+                      </pre>
+                    </div>
+                  )}
+
+                  {/* scikit-learn Pipeline Box */}
+                  {item.codeExample && (
+                    <div className="space-y-2 p-4 rounded-2xl bg-zinc-950 border border-zinc-800">
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.codeExample.title}</span>
+                        </h4>
+                        <button
+                          onClick={() => handleCopyCode('code-knn', item.codeExample.code)}
+                          className="flex items-center gap-1 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-knn' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-3 rounded-xl bg-black border border-zinc-900 text-xs font-mono text-emerald-300 whitespace-pre-wrap leading-relaxed overflow-x-auto">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+
+                {/* 5. Advantages & Limitations */}
+                {item.advantagesAndLimitations && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-2xl bg-zinc-950 border border-emerald-900/40 space-y-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <span>Advantages</span>
+                      </h4>
+                      <ul className="space-y-2">
+                        {item.advantagesAndLimitations.advantages.map((adv, aIdx) => (
+                          <li key={aIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                            <span className="text-emerald-400 font-bold mt-0.5">✓</span>
+                            <span>{adv}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-zinc-950 border border-rose-900/40 space-y-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                        <AlertTriangle className="w-4 h-4 text-rose-400" />
+                        <span>Limitations & Bottlenecks</span>
+                      </h4>
+                      <ul className="space-y-2">
+                        {item.advantagesAndLimitations.limitations.map((lim, lIdx) => (
+                          <li key={lIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                            <span className="text-rose-400 font-bold mt-0.5">⚠️</span>
+                            <span>{lim}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Production Engineering Insights */}
+                {item.engineeringInsights && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Sliders className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Production Engineering Considerations</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.engineeringInsights.map((eng, eIdx) => (
+                        <div key={eIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition">
+                          <h5 className={`text-xs font-bold font-mono ${eng.accent}`}>
+                            {eng.title}
+                          </h5>
+                          <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                            {eng.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
