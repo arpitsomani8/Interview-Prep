@@ -16721,6 +16721,152 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 127: PowerTransformer */}
+            {item.id === 'powertransformer' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Scikit-Learn Preprocessing & Gaussian Transforms</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Power Transformations
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    PowerTransformer
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Usefulness Banner */}
+                <div className="p-4 rounded-2xl bg-zinc-950 border border-amber-800/50 space-y-2 shadow-xl">
+                  <span className="text-xs font-bold font-mono text-amber-400 uppercase flex items-center gap-2">
+                    <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                    <span>When To Apply</span>
+                  </span>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-medium font-sans leading-relaxed">
+                    {item.usefulness}
+                  </p>
+                </div>
+
+                {/* 3. Supported Transformations (Yeo-Johnson vs Box-Cox) */}
+                {item.transformations && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.transformationsHeading}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        2 Methods
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.transformations.map((t, tIdx) => (
+                        <div key={tIdx} className={`p-4 rounded-xl bg-black border ${t.border} space-y-2 hover:border-zinc-700 transition flex flex-col justify-between`}>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono ${t.accent}`}>
+                                {t.name}
+                              </h5>
+                              <span className="text-[10px] font-mono text-zinc-400">{t.valueSupport}</span>
+                            </div>
+                            <p className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
+                              {t.definition}
+                            </p>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900">
+                            <code className="text-[10px] font-mono text-cyan-300 bg-zinc-950 px-1.5 py-0.5 rounded border border-zinc-800 block overflow-x-auto">
+                              {t.paramSyntax}
+                            </code>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Parameter Estimation Note */}
+                    <div className="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800 font-mono text-xs text-zinc-300 leading-relaxed">
+                      <strong className="text-amber-300">Note: </strong>
+                      {item.parameterEstimationNote}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Why Use It? Grid */}
+                {item.whyUseReasons && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.whyUseHeading}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Benefits
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {item.whyUseReasons.map((reason, rIdx) => (
+                        <div key={rIdx} className="p-4 rounded-xl bg-black border border-zinc-800 flex items-start gap-2.5">
+                          <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                          <span className="text-xs text-zinc-200 font-sans leading-relaxed">{reason}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Interactive Python Code Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>powertransformer_example.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-powertransformer', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-powertransformer' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

@@ -123,7 +123,8 @@ export const definitionBookmarks = [
   { id: "imputation", label: "Imputation" },
   { id: "z-score", label: "Z-score" },
   { id: "iqr", label: "IQR & Binning" },
-  { id: "feature-cross", label: "Feature Cross" }
+  { id: "feature-cross", label: "Feature Cross" },
+  { id: "powertransformer", label: "PowerTransformer" }
 ];
 
 export const definitionsData = [
@@ -9573,5 +9574,62 @@ print(df[['device_x_region', 'cart_tier_x_prime']])
 print("Interaction Terms:\\n", poly.get_feature_names_out(['cart_value', 'is_prime']))`
     },
     takeaway: "Feature crosses encode domain interactions directly into the representation space, providing linear models with the ability to learn nonlinear decision boundaries at minimal latency. In every applied machine learning system, the business objective strictly dictates the label (y), while prediction-time validity strictly governs feature (X) eligibility to avoid catastrophic target leakage."
+  },
+  {
+    id: "powertransformer",
+    title: "PowerTransformer (Gaussian Standardization & Skewness Reduction)",
+    badge: "Scikit-Learn Preprocessing, Yeo-Johnson & Box-Cox Transforms",
+    summary: "PowerTransformer is a preprocessing tool in scikit-learn that transforms numerical features to make their distributions more Gaussian-like (closer to a normal distribution). It supports Yeo–Johnson and Box–Cox methods to reduce skewness in delivery costs, incomes, or transaction amounts.",
+    coreDefinition: "PowerTransformer is a preprocessing tool in scikit-learn that transforms numerical features to make their distributions more Gaussian-like (closer to a normal distribution).",
+    usefulness: "It is useful when numerical data is heavily skewed, such as delivery costs, income, transaction amounts, or shipment weights.",
+    transformationsHeading: "It supports two transformations:",
+    transformations: [
+      {
+        name: "Yeo–Johnson",
+        definition: "Can handle positive, zero, and negative values.",
+        paramSyntax: "PowerTransformer(method='yeo-johnson')",
+        valueSupport: "Any Real Numbers: (-∞, +∞)",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        name: "Box–Cox",
+        definition: "Requires strictly positive values.",
+        paramSyntax: "PowerTransformer(method='box-cox')",
+        valueSupport: "Strictly Positive Only: x > 0",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      }
+    ],
+    parameterEstimationNote: "The transformation estimates a parameter from the training data to reduce skewness. It does not guarantee that every feature becomes perfectly normally distributed.",
+    whyUseHeading: "Why use it?",
+    whyUseReasons: [
+      "Reduce skewness.",
+      "Sometimes improve the performance of models sensitive to feature distributions.",
+      "Help certain linear models and statistical methods work with more suitable feature distributions."
+    ],
+    codeExample: {
+      title: "Scikit-Learn PowerTransformer (Yeo-Johnson) Example",
+      language: "python",
+      code: `import pandas as pd
+from sklearn.preprocessing import PowerTransformer
+
+df = pd.DataFrame({
+    "delivery_cost": [100, 110, 120, 130, 150, 2000],
+    "distance": [5, 8, 10, 12, 15, 100]
+})
+
+transformer = PowerTransformer(method="yeo-johnson")
+
+transformed = transformer.fit_transform(df)
+
+transformed_df = pd.DataFrame(
+    transformed,
+    columns=df.columns
+)
+
+print(transformed_df)`
+    },
+    takeaway: "PowerTransformer solves extreme right/left variance skew by estimating an optimal parameter (lambda) per feature to stabilize variance and minimize heteroscedasticity. By converting heavy-tailed attributes (such as transaction amounts or logistics delivery costs) into zero-mean, unit-variance Gaussian bell curves, it boosts gradient convergence and predictive performance for linear estimators, ridge regression, and neural architectures."
   }
 ];
