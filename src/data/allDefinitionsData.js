@@ -102,7 +102,8 @@ export const definitionBookmarks = [
   { id: "gradient-descent", label: "Gradient Descent" },
   { id: "design-patterns", label: "Design Patterns" },
   { id: "tokenization", label: "Tokenization" },
-  { id: "sft-peft", label: "SFT / PEFT" }
+  { id: "sft-peft", label: "SFT / PEFT" },
+  { id: "reinforcement-learning", label: "Reinforcement Learning" }
 ];
 
 export const definitionsData = [
@@ -7847,5 +7848,94 @@ peft_model.print_trainable_parameters()
 # Output: trainable params: 6.8M || all params: 8.03B || trainable%: 0.0847%`
     },
     takeaway: "SFT defines the training objective (learning from prompt-response examples), whereas PEFT defines the parameter efficiency mechanism (updating small adapters rather than all weights). In production, combining SFT with PEFT (via LoRA or QLoRA) provides the accuracy of full fine-tuning with a fraction of the GPU VRAM cost."
+  },
+  {
+    id: "reinforcement-learning",
+    title: "Reinforcement Learning (RL) & Agent-Environment Dynamics",
+    badge: "Trial-and-Error Learning, Policy Optimization & Reward Maximization",
+    summary: "Reinforcement Learning (RL) is a machine-learning approach in which an agent learns to choose actions by receiving rewards or penalties from its environment. Imagine teaching a robot to navigate a warehouse: It takes an action, such as moving forward; The environment returns a result; It gets a reward for reaching the destination or a penalty for hitting an obstacle; Over many attempts, it learns a policy for choosing actions. The goal is generally to maximize cumulative reward, not simply to predict a correct label.",
+    coreDefinition: "Reinforcement Learning (RL) is a machine-learning approach in which an agent learns to choose actions by receiving rewards or penalties from its environment.",
+    warehouseAnalogy: {
+      headline: "Intuitive Scenario: Warehouse Robot Navigation",
+      intro: "Imagine teaching a robot to navigate a warehouse.",
+      steps: [
+        {
+          step: "1. Action Execution",
+          content: "It takes an action, such as moving forward.",
+          desc: "The agent (robot) inspects its current state and executes a discrete or continuous action in the environment.",
+          accent: "text-blue-400"
+        },
+        {
+          step: "2. Environmental Feedback",
+          content: "The environment returns a result.",
+          desc: "The world dynamics transition the robot to a new state (new coordinates, sensor distances, obstacle readings).",
+          accent: "text-amber-400"
+        },
+        {
+          step: "3. Reward or Penalty",
+          content: "It gets a reward for reaching the destination or a penalty for hitting an obstacle.",
+          desc: "Scalar reinforcement signal (+100 for delivered goods, -50 for collision, -1 for step latency).",
+          accent: "text-rose-400"
+        },
+        {
+          step: "4. Policy Convergence",
+          content: "Over many attempts, it learns a policy for choosing actions.",
+          desc: "Iterative trial-and-error updates parameters (via Q-learning, PPO, or Actor-Critic) mapping states to optimal actions π*(s).",
+          accent: "text-emerald-400"
+        }
+      ]
+    },
+    primaryObjective: {
+      statement: "The goal is generally to maximize cumulative reward, not simply to predict a correct label.",
+      distinction: "Unlike Supervised Learning (which minimizes static prediction errors against fixed target labels y_i), RL optimizes long-term sequential return G_t = Σ(γ^k · r_{t+k+1}) under exploration-exploitation tradeoffs and delayed feedback."
+    },
+    mdpFramework: [
+      {
+        component: "Agent",
+        meaning: "The learner and decision-maker (e.g. the robot, game agent, or LLM policy).",
+        accent: "text-cyan-400"
+      },
+      {
+        component: "Environment",
+        meaning: "The external world the agent interacts with (e.g. the physical warehouse, simulator, or human evaluator).",
+        accent: "text-amber-400"
+      },
+      {
+        component: "Policy (π)",
+        meaning: "The mapping from observed states to actions π(a|s). The learned decision engine of the agent.",
+        accent: "text-purple-400"
+      },
+      {
+        component: "Reward Function (R)",
+        meaning: "The scalar feedback signal that incentivizes desirable outcomes and penalizes catastrophic errors.",
+        accent: "text-emerald-400"
+      }
+    ],
+    codeExample: {
+      title: "Canonical Agent-Environment Step Loop in Python (Gymnasium)",
+      language: "python",
+      code: `import gymnasium as gym
+
+# 1. Initialize environment (e.g., warehouse navigation simulator)
+env = gym.make("FrozenLake-v1", is_slippery=False)
+state, info = env.reset()
+
+total_cumulative_reward = 0
+terminated = False
+
+while not terminated:
+    # 2. Agent chooses action based on policy pi(s)
+    action = env.action_space.sample()  # Exploration: e.g. move forward
+    
+    # 3. Environment returns next state, scalar reward, and termination status
+    next_state, reward, terminated, truncated, info = env.step(action)
+    
+    # 4. Accumulate rewards towards long-term goal
+    total_cumulative_reward += reward
+    state = next_state
+
+print(f"Episode Finished! Cumulative Reward: {total_cumulative_reward}")`
+    },
+    takeaway: "Reinforcement Learning optimizes sequential decision-making through environmental interaction. Unlike supervised learning where correct answers are immediately provided, RL agents navigate exploration vs. exploitation to maximize cumulative future reward over time—powering autonomous robotics, game AI (AlphaGo), and LLM alignment (RLHF / PPO)."
   }
 ];
