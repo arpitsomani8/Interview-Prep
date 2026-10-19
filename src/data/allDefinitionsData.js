@@ -136,7 +136,8 @@ export const definitionBookmarks = [
   { id: "mitigation", label: "Mitigation Strategies" },
   { id: "central-limit-theorem", label: "Central Limit Theorem" },
   { id: "strands", label: "Strands Agents SDK" },
-  { id: "oop-concepts", label: "OOP Concepts" }
+  { id: "oop-concepts", label: "OOP Concepts" },
+  { id: "system-scaling", label: "Scaling" }
 ];
 
 export const definitionsData = [
@@ -10695,5 +10696,85 @@ def process_parcel_image(inspector: BaseInspector, img: bytes):
     return inspector.inspect(img)`
     },
     takeaway: "In enterprise AI engineering, applying OOP principles transforms fragile scripting into resilient microservices. Abstraction shields REST/gRPC endpoints from model complexity; Polymorphism enables seamless A/B swapping of detection backends (YOLO vs CLIP); Inheritance standardizes metrics and error handling; and Encapsulation guards GPU memory lifecycle."
+  },
+  {
+    id: "system-scaling",
+    title: "Scaling (Infrastructure, Throughput & Resilient High-Load Serving)",
+    badge: "System Architecture, Distributed Computing & Load Management",
+    summary: "Scaling means supporting more requests without unacceptable latency or failure rates. Master the 5 fundamental scaling strategies: Vertical scaling, Horizontal scaling, Asynchronous processing, Load balancing, and Autoscaling.",
+    coreDefinition: "Scaling means supporting more requests without unacceptable latency or failure rates.",
+    scalingStrategies: [
+      {
+        name: "Vertical scaling",
+        desc: "Give a server more CPU, RAM, or GPU resources.",
+        analogy: "Scale Up: Upgrading an instance from 8 vCPUs to 32 vCPUs or swapping an NVIDIA T4 for an A100/H100.",
+        tradeoff: "Simple setup with zero distributed coordination; but reaches hardware ceilings and introduces a single point of failure.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        name: "Horizontal scaling",
+        desc: "Run multiple application instances.",
+        analogy: "Scale Out: Adding 5 or 20 identical container replicas behind a common routing gateway.",
+        tradeoff: "Virtually unlimited ceiling and high fault tolerance; requires stateless API design and shared caches/databases.",
+        accent: "text-blue-400",
+        border: "border-blue-800/50"
+      },
+      {
+        name: "Asynchronous processing",
+        desc: "Accept an inspection request, put it on a queue, and process it in the background.",
+        analogy: "Queue-Worker Decoupling: FastAPI pushes image metadata to AWS SQS / Redis Celery, returning 202 Accepted immediately.",
+        tradeoff: "Absorbs spiky traffic surges without dropping requests; requires polling or WebSocket/webhooks for status notification.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        name: "Load balancing",
+        desc: "Distribute incoming requests among healthy instances.",
+        analogy: "Traffic Director: AWS ALB / NGINX evaluates health checks and routes traffic via round-robin, least connections, or IP hash.",
+        tradeoff: "Eliminates hot spots and bypasses dead nodes; adds slight network hop overhead and requires proper health check thresholds.",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      },
+      {
+        name: "Autoscaling",
+        desc: "Increase or reduce replicas based on traffic or resource usage.",
+        analogy: "Dynamic Elasticity: Kubernetes HPA or AWS Auto Scaling Groups automatically spins up replicas on GPU utilization > 75% or queue backlog.",
+        tradeoff: "Minimizes idle cloud costs while maintaining strict SLAs; must manage cold-start latency (pulling large model weights).",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      }
+    ],
+    codeExample: {
+      title: "Asynchronous Scalable Task Processing with Background Worker Pattern",
+      language: "python",
+      code: `from fastapi import FastAPI, BackgroundTasks, status
+import uuid
+
+app = FastAPI(title="Scalable Inspection Microservice")
+
+# In-memory status store (backed by Redis in production cluster)
+task_store = {}
+
+def async_yolo_inspection_worker(task_id: str, image_url: str):
+    """Asynchronous background worker: decouples heavy GPU inference from HTTP request."""
+    # 1. Downloads image from S3 / Blob Storage
+    # 2. Runs YOLO batch inference on GPU
+    # 3. Saves inspection findings to PostgreSQL
+    task_store[task_id] = {"status": "completed", "defects_found": 1, "box": [12, 40, 180, 220]}
+
+@app.post("/inspect", status_code=status.HTTP_202_ACCEPTED)
+async def submit_inspection(image_url: str, bg_tasks: BackgroundTasks):
+    """
+    Asynchronous processing pattern:
+    Accepts request immediately, enqueues background processing,
+    and returns HTTP 202 Accepted to prevent API timeouts under heavy load.
+    """
+    task_id = str(uuid.uuid4())
+    task_store[task_id] = {"status": "queued"}
+    bg_tasks.add_task(async_yolo_inspection_worker, task_id, image_url)
+    return {"task_id": task_id, "status": "queued", "message": "Inspection running asynchronously"}`
+    },
+    takeaway: "True system scalability in production AI combines multiple complementary patterns: horizontal stateless APIs behind a load balancer, asynchronous message queues to decouple bursty image uploads from compute-heavy YOLO/LLM inference, and autoscaling policies to dynamically adapt GPU clusters to incoming queue depth."
   }
 ];
