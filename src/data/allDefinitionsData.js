@@ -83,7 +83,8 @@ export const definitionBookmarks = [
   { id: "chunking", label: "Chunking" },
   { id: "lexical-search", label: "Lexical Search" },
   { id: "pipeline", label: "Pipeline" },
-  { id: "clip", label: "CLIP" }
+  { id: "clip", label: "CLIP" },
+  { id: "production-handling", label: "Production Handling" }
 ];
 
 export const definitionsData = [
@@ -5917,5 +5918,61 @@ def health_check():
       trainingMechanism: "During pre-training on 400M internet (image, text) pairs, CLIP computes an N x N similarity matrix. It maximizes cosine similarity along the diagonal (matching image-text pairs) while minimizing similarity for off-diagonal pairs using symmetric cross-entropy loss."
     },
     takeaway: "CLIP bridges computer vision and natural language by mapping both modalities into a unified metric vector space. Rather than predicting fixed discrete classes, CLIP learns visual concepts from free-form text, enabling instant zero-shot image classification, natural-language visual search, and seamless integration into modern multimodal AI pipelines."
+  },
+  {
+    id: "production-handling",
+    title: "Production Handling — Resiliency Strategies for LLMs & AI Systems",
+    badge: "Production SRE, Fallback Architecture & Fault Tolerance",
+    summary: "Production handling strategy: Set timeouts and jittered retries for transient errors, respect rate limits with circuit breakers and secondary models, validate output schemas and abstain when ungrounded, and alert on repeated failures.",
+    coreStrategyHeadline: "Production handling strategy",
+    strategies: [
+      {
+        scenario: "Timeout or temporary network error",
+        badge: "Transient Latency",
+        accent: "text-amber-400",
+        border: "border-amber-800/50",
+        action: "Set a timeout and retry a limited number of times with exponential backoff and jitter.",
+        detail: "Prevents unbounded thread blocking. Pairing per-request timeouts (e.g. 5–8s TTFT) with randomized jitter prevents retrying clients from synchronizing into a catastrophic thundering herd."
+      },
+      {
+        scenario: "Rate limit or provider outage",
+        badge: "Capacity & Availability",
+        accent: "text-rose-400",
+        border: "border-rose-800/50",
+        action: "Respect retry instructions, apply a circuit breaker, and route to a secondary provider or model if configured and tested.",
+        detail: "Parses 'Retry-After' HTTP headers directly. Trips a circuit breaker when consecutive failures cross threshold to avoid wasting compute, routing traffic to backup endpoints (e.g., Azure OpenAI -> AWS Bedrock / vLLM)."
+      },
+      {
+        scenario: "Invalid or low-quality response",
+        badge: "Contract & Grounding",
+        accent: "text-purple-400",
+        border: "border-purple-800/50",
+        action: "Validate the output schema, verify claims against retrieved evidence where possible, and abstain when the answer cannot be supported.",
+        detail: "Enforces strict Pydantic/JSON schema parsing. For ungrounded or ambiguous responses, safe refusal or abstention ('I do not have sufficient policy data to answer this') is strictly preferred over hallucinating."
+      },
+      {
+        scenario: "Repeated failures",
+        badge: "Observability & Alerting",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50",
+        action: "Alert the team, track error and latency metrics, inspect traces, and use a tested fallback or return a controlled error.",
+        detail: "Emits high-priority alerts to on-call engineers via PagerDuty/Slack, captures distributed trace spans (OpenTelemetry/LangSmith), and falls back gracefully to deterministic rule-based responses."
+      }
+    ],
+    crucialEngineeringRules: [
+      {
+        title: "Do Not Blindly Retry Every Failure",
+        badge: "Permanent Error Guard",
+        accent: "text-rose-400",
+        desc: "A crucial point: do not blindly retry every failure. Invalid credentials, invalid requests, and other permanent errors generally need correction rather than repeated retries."
+      },
+      {
+        title: "Fallback Models Require Independent Validation",
+        badge: "Model Drift & Safety",
+        accent: "text-amber-400",
+        desc: "A fallback model also needs testing. A smaller or cheaper model may have different capabilities, output formats, and safety behavior."
+      }
+    ],
+    takeaway: "Production AI systems require defensive engineering. Transient network glitches warrant bounded jittered retries; capacity limits and outages demand circuit breakers and tested multi-provider failovers; malformed outputs require strict schema validation and safe abstention; and permanent errors must fail fast rather than waste resources on blind retries."
   }
 ];

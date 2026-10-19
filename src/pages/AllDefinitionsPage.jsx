@@ -9917,6 +9917,111 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 87: Production Handling */}
+            {item.id === 'production-handling' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
+                      <span>{item.coreStrategyHeadline || "Production handling strategy"}</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950/70 text-rose-300 border border-rose-800">
+                      SRE & Fault Tolerance
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-rose-900/40 shadow-xl space-y-2">
+                    <p className="text-xs sm:text-sm text-rose-200 font-sans leading-relaxed font-semibold">
+                      {item.summary}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 4 Core Scenarios & Strategies */}
+                {item.strategies && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Production Failure Scenarios & Targeted Actions</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        4 Failure Playbooks
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.strategies.map((strat, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className={`p-4 sm:p-5 rounded-2xl bg-black border ${strat.border || 'border-zinc-800'} hover:border-zinc-700 transition flex flex-col justify-between space-y-3`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <h5 className={`text-xs font-bold font-mono ${strat.accent}`}>
+                                • {strat.scenario}
+                              </h5>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                                {strat.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-200 font-sans font-semibold leading-relaxed">
+                              {strat.action}
+                            </p>
+                          </div>
+
+                          <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-900 text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {strat.detail}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Crucial Engineering Rules */}
+                {item.crucialEngineeringRules && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Crucial Engineering Guardrails</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Must-Know Principles
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.crucialEngineeringRules.map((rule, rIdx) => (
+                        <div key={rIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <h6 className={`text-xs font-bold font-mono ${rule.accent}`}>
+                              {rule.title}
+                            </h6>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {rule.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {rule.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
