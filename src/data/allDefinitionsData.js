@@ -139,7 +139,8 @@ export const definitionBookmarks = [
   { id: "oop-concepts", label: "OOP Concepts" },
   { id: "system-scaling", label: "Scaling" },
   { id: "centroid", label: "Centroid" },
-  { id: "polling", label: "Polling & Response Consistency" }
+  { id: "polling", label: "Polling & Response Consistency" },
+  { id: "ai-evaluation", label: "AI Evaluation" }
 ];
 
 export const definitionsData = [
@@ -10957,5 +10958,86 @@ def poll_inference_task(job_id: str, max_timeout: int = 60) -> dict:
     raise TimeoutError(f"Job {job_id} did not finish within {max_timeout}s.")`
     },
     takeaway: "In enterprise AI applications, polling allows long-running multimodal or RAG inference jobs to proceed asynchronously without HTTP request timeouts. To eliminate conflicting answers in customer-facing chatbots, teams must layer temperature pinning, semantic caching, pre-approved verified answers, and explicit quote grounding."
+  },
+  {
+    id: "ai-evaluation",
+    title: "AI Evaluation (The Three Pillars, Calibration & Offline vs Online Lifecycle)",
+    badge: "LLM-as-a-Judge, Trajectory Evals & Production Golden Datasets",
+    summary: "The three pillars of AI evaluation: LLM-as-a-Judge, Agent & Trajectory Evals, and Evals in Production. Ensure reliability via calibrated offline test suites and online production observability.",
+    coreDefinition: "The three pillars of AI evaluation establish rigorous quality benchmarks across generation correctness, agent execution trajectories, and post-deployment production performance. Calibration ensures automated judges align with human ground truth.",
+    pillars: [
+      {
+        number: "1",
+        title: "LLM-as-a-Judge",
+        question: "Is the answer good, correct, relevant, and supported by evidence?",
+        description: "An LLM-as-a-Judge approach uses one language model to evaluate the output of another model against explicit criteria.",
+        details: "Pointwise scoring is useful for tracking quality over time. Pairwise comparison is useful when comparing prompts, models, or retrieval strategies.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        number: "2",
+        title: "Agent & Trajectory Evals",
+        question: "Did the agent choose the right tools, follow the right steps, and complete the task?",
+        description: "Evaluates multi-step decision chains, tool call parameter accuracy, intermediate reasoning validity, and recovery from environmental errors.",
+        details: "Checks loop prevention, state transitions, tool redundancy, and whether final outcome matches customer intent.",
+        accent: "text-blue-400",
+        border: "border-blue-800/50"
+      },
+      {
+        number: "3",
+        title: "Evals in Production",
+        question: "Does the system continue to work reliably, efficiently, and safely after deployment?",
+        description: "Maintains real-world reliability through continuous monitoring, p95 latency tracking, failure rate alerting, and sampling live traffic.",
+        details: "Combines synthetic regression suites with user feedback loops (thumbs up/down) and privacy-compliant audit traces.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      }
+    ],
+    goldenDatasetInfo: "A golden dataset is a curated collection of representative questions, expected outcomes, source documents, and evaluation criteria.",
+    calibrationInfo: "Calibration means checking whether the judge's scores and decisions agree with a trusted reference—typically human-reviewed examples or deterministic ground truth.",
+    lifecycleEvals: [
+      {
+        stage: "Offline evaluation — before release",
+        desc: "Run a fixed test suite against a proposed model, prompt, or retrieval change. Compare quality, latency, cost, and safety with the current version.",
+        timing: "Pre-deployment CI/CD gate",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        stage: "Online evaluation — after release",
+        desc: "Monitor actual request failures, latency, user feedback, retrieval quality, and sampled answer quality. Use privacy-appropriate logging and review.",
+        timing: "Post-deployment production runtime",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      }
+    ],
+    codeExample: {
+      title: "LLM-as-a-Judge Calibration & Pointwise Evaluation Harness",
+      language: "python",
+      code: `import json
+
+# Golden dataset sample: question, ground truth context, candidate answer
+sample = {
+    "question": "What is the return window for defective parcels?",
+    "context": "Company policy clause 4.2: Damaged or defective items can be returned within 30 days.",
+    "model_answer": "You can return defective parcels within 30 days of delivery.",
+}
+
+# Calibration prompt for LLM-as-a-Judge
+judge_system_prompt = """You are an impartial AI judge. Evaluate the candidate model answer based strictly on the provided context.
+Output JSON with:
+1. 'grounded': true/false (Is answer supported by context?)
+2. 'score': integer 1-5 (5 = perfectly accurate and complete)
+3. 'reasoning': short justification."""
+
+judge_user_prompt = f"""Context: {sample['context']}
+Question: {sample['question']}
+Candidate Answer: {sample['model_answer']}"""
+
+# Deterministic judge call: Temperature = 0.0, JSON response schema
+# Calibration verification: Compare judge's output score against human annotated ground truth label.`
+    },
+    takeaway: "Robust AI systems cannot rely on ad-hoc gut checks. By combining LLM-as-a-Judge for semantic fidelity, Trajectory Evals for multi-step agent actions, calibrated Golden Datasets in CI/CD, and continuous online production telemetry, engineering teams can iterate safely without silent regressions."
   }
 ];
