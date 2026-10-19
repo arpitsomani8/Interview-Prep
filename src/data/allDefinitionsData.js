@@ -98,7 +98,8 @@ export const definitionBookmarks = [
   { id: "cot-chain-of-thought", label: "COT / Chain of Thought" },
   { id: "bagging", label: "Bagging" },
   { id: "knn", label: "KNN" },
-  { id: "random-forest", label: "Random Forest" }
+  { id: "random-forest", label: "Random Forest" },
+  { id: "gradient-descent", label: "Gradient Descent" }
 ];
 
 export const definitionsData = [
@@ -7489,5 +7490,92 @@ print(classification_report(y_test, predictions))`
       }
     ],
     takeaway: "Random Forest combines bootstrap aggregating (Bagging) with random feature subsampling at each decision split. By forcing trees to consider different features, it de-correlates individual models, dramatically lowering ensemble variance while preserving low bias."
+  },
+  {
+    id: "gradient-descent",
+    title: "Gradient Descent Optimization & Learning Rate Dynamics",
+    badge: "Continuous Optimization, Loss Surfaces & Backpropagation",
+    summary: "A gradient tells you how a function changes with respect to its input variables. For a function with multiple variables, it contains the partial derivatives with respect to each variable. Gradient descent is an optimization algorithm that updates model parameters in the direction that reduces the loss. We subtract the gradient because the gradient points in the direction of greatest local increase, so moving in the opposite direction can reduce the loss.",
+    coreDefinition: "Gradient descent is an optimization algorithm that updates model parameters in the direction that reduces the loss. A gradient tells you how a function changes with respect to its input variables. For a function with multiple variables, it contains the partial derivatives with respect to each variable.",
+    whySubtractGradient: "We subtract the gradient because the gradient points in the direction of greatest local increase, so moving in the opposite direction can reduce the loss.",
+    mathFormula: {
+      formula: "θ_{t+1} = θ_t - η · ∇_θ L(θ)",
+      explanation: "Where θ represents model parameters (weights and biases), η is the learning rate step size, and ∇_θ L(θ) is the vector of partial derivatives of the objective loss function with respect to θ."
+    },
+    learningRateQuestion: {
+      question: "What if the learning rate is wrong?",
+      scenarios: [
+        {
+          rate: "Too large",
+          effect: "Updates may overshoot the minimum or become unstable.",
+          symptom: "Exploding loss, numerical NaN / Inf overflow, oscillation, or divergence far away from the global or local minimum.",
+          accent: "text-rose-400",
+          border: "border-rose-900/50",
+          badge: "Overshooting / Divergence"
+        },
+        {
+          rate: "Too small",
+          effect: "Training may be very slow.",
+          symptom: "Tiny updates that crawl across flat plateaus, requiring excessive epochs to converge and getting trapped in shallow local sub-optimal saddles.",
+          accent: "text-amber-400",
+          border: "border-amber-900/50",
+          badge: "Slow Convergence"
+        },
+        {
+          rate: "Reasonable",
+          effect: "The loss may decrease steadily, though behavior depends on the model and loss surface.",
+          symptom: "Smooth, monotonic decay of the training loss curve, settling cleanly near a stable local minimum or basin of attraction.",
+          accent: "text-emerald-400",
+          border: "border-emerald-900/50",
+          badge: "Optimal Step Size"
+        }
+      ]
+    },
+    threeVariants: [
+      {
+        name: "Batch Gradient Descent (BGD)",
+        batchSize: "Entire Dataset (N samples)",
+        pros: "Exact gradient computation; smooth convergence curve.",
+        cons: "Extremely slow per step and infeasible for datasets that do not fit in memory.",
+        accent: "text-blue-400"
+      },
+      {
+        name: "Stochastic Gradient Descent (SGD)",
+        batchSize: "1 Sample at a time",
+        pros: "High stochastic noise helps bounce out of shallow local minima; immediate updates.",
+        cons: "High variance and violent oscillations make exact convergence near the optimum erratic.",
+        accent: "text-amber-400"
+      },
+      {
+        name: "Mini-Batch Gradient Descent",
+        batchSize: "Small batch (32, 64, 128, 256)",
+        pros: "Standard in deep learning; combines stability of batch with speed of vectorized SIMD/GPU tensor cores.",
+        cons: "Introduces batch size hyperparameter to tune alongside learning rate.",
+        accent: "text-emerald-400"
+      }
+    ],
+    codeExample: {
+      title: "Gradient Descent Optimization Loop in PyTorch",
+      language: "python",
+      code: `import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Define model, loss criterion, and optimizer
+model = nn.Linear(in_features=10, out_features=1)
+criterion = nn.MSELoss()
+
+# SGD with a tuned learning rate (eta = 0.01)
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+
+for epoch in range(num_epochs):
+    for batch_X, batch_y in dataloader:
+        optimizer.zero_grad()               # Reset parameter gradients
+        predictions = model(batch_X)       # Forward pass
+        loss = criterion(predictions, batch_y) # Compute scalar loss
+        loss.backward()                     # Backprop: compute gradients ∇_θ L
+        optimizer.step()                    # Update parameters: θ = θ - η * ∇_θ L`
+    },
+    takeaway: "Gradient descent iteratively adjusts parameters in the opposite direction of the loss gradient (-∇_θ L). Finding a reasonable learning rate (η) prevents disastrous overshooting when too large and endless training lag when too small. In production deep learning, Mini-Batch Gradient Descent paired with adaptive optimizers (AdamW) delivers the best compromise between vectorization speed and optimization stability."
   }
 ];
