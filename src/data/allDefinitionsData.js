@@ -141,7 +141,8 @@ export const definitionBookmarks = [
   { id: "centroid", label: "Centroid" },
   { id: "polling", label: "Polling & Response Consistency" },
   { id: "ai-evaluation", label: "AI Evaluation" },
-  { id: "production-ai-playbook", label: "Production AI Playbook & Trade-offs" }
+  { id: "production-ai-playbook", label: "Production AI Playbook & Trade-offs" },
+  { id: "random-variable", label: "Random Variable" }
 ];
 
 export const definitionsData = [
@@ -11317,5 +11318,105 @@ Candidate Answer: {sample['model_answer']}"""
       pipelineFlow: "Photo → Azure AI Vision → Vector (1,024-d) → Azure AI Search (HNSW) → Closest Matches"
     },
     takeaway: "In production AI engineering, success is defined by trade-off awareness, resiliency architecture, and empirical observability. Teams must design for peak surges with asynchronous queues, guard against API outages with bounded circuit breakers, enforce rigorous task-based evaluation over fluency, and deploy specialized vector search indexes (such as 1,024-d HNSW graphs) for high-performance multimodal applications."
+  },
+  {
+    id: "random-variable",
+    title: "Random Variable (Discrete vs. Continuous Distributions & Statistical Foundations)",
+    badge: "Probability Theory & Machine Learning Foundations",
+    summary: "A random variable is a variable whose value depends on the outcome of a random experiment. Understand the fundamental mathematical distinction between discrete (countable) and continuous (uncountable range) random variables in data science and machine learning.",
+    coreDefinition: "A random variable is a variable whose value depends on the outcome of a random experiment. There are two main types: Discrete and Continuous.",
+    mainTypes: [
+      {
+        type: "Discrete Random Variable",
+        definition: "Takes countable values, such as 0, 1, 2, 3 defects.",
+        mathDescription: "Mapped to discrete sample spaces. Probabilities are governed by a Probability Mass Function (PMF): P(X = x) where the sum of all P(X = x) equals 1.",
+        examples: ["Number of defects on a conveyor belt (0, 1, 2...)", "Customer churn indicator (0 = retained, 1 = churned)", "Daily website API request count"],
+        distributions: ["Bernoulli", "Binomial", "Poisson", "Geometric"],
+        accent: "text-amber-400",
+        border: "border-amber-800/50",
+        badge: "Countable Values"
+      },
+      {
+        type: "Continuous Random Variable",
+        definition: "Takes values over a range, such as parcel weight or delivery time.",
+        mathDescription: "Mapped to infinite real intervals. Probabilities are governed by a Probability Density Function (PDF): P(a <= X <= b) = integral of f(x)dx. The probability of any single exact point P(X = x) is zero.",
+        examples: ["Parcel weight in kilograms (e.g. 2.45 kg)", "Delivery time in hours (e.g. 14.32 hrs)", "Latency of an LLM generation in milliseconds"],
+        distributions: ["Gaussian / Normal", "Exponential", "Uniform", "Beta"],
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50",
+        badge: "Uncountable Range"
+      }
+    ],
+    mathFoundations: [
+      {
+        concept: "Probability Mass Function (PMF)",
+        appliesTo: "Discrete",
+        formula: "P(X = k) >= 0,  sum_{k} P(X = k) = 1",
+        description: "Gives the exact probability that a discrete random variable is equal to specific countable value k."
+      },
+      {
+        concept: "Probability Density Function (PDF)",
+        appliesTo: "Continuous",
+        formula: "P(a <= X <= b) = int_{a}^{b} f(x) dx",
+        description: "Represents relative likelihood. The integral over an interval equals the probability of falling in that range."
+      },
+      {
+        concept: "Cumulative Distribution Function (CDF)",
+        appliesTo: "Both",
+        formula: "F(x) = P(X <= x)",
+        description: "Probability that random variable X takes a value less than or equal to x. Monotonically non-decreasing from 0 to 1."
+      },
+      {
+        concept: "Expected Value (Mean)",
+        appliesTo: "Both",
+        formula: "E[X] = sum x P(x)  |  int x f(x) dx",
+        description: "The long-run theoretical center of mass or average outcome weighted by probability."
+      },
+      {
+        concept: "Variance & Std Dev",
+        appliesTo: "Both",
+        formula: "Var(X) = E[(X - mu)^2] = E[X^2] - (E[X])^2",
+        description: "Measures the statistical dispersion or uncertainty spread of values around the expected mean."
+      }
+    ],
+    mlApplications: [
+      {
+        title: "Classification & Loss Functions",
+        desc: "Binary defect prediction treats label Y as a Bernoulli random variable in {0, 1}. Binary Cross-Entropy loss directly minimizes negative log-likelihood of this distribution."
+      },
+      {
+        title: "Regression & Uncertainty Modeling",
+        desc: "Continuous targets like parcel weight or delivery time are modeled as Gaussian random variables Y ~ N(f(x), sigma^2), where Mean Squared Error (MSE) corresponds to Maximum Likelihood Estimation."
+      },
+      {
+        title: "Generative AI & Latent Sampling",
+        desc: "Variational Autoencoders (VAEs) and Diffusion Models sample latent vectors from standard normal continuous random variables z ~ N(0, I) before transforming them into synthetic images or text."
+      }
+    ],
+    codeExample: {
+      title: "Discrete (Poisson) vs. Continuous (Gaussian) Simulation in Python",
+      language: "python",
+      code: `import numpy as np
+
+# Set seed for reproducible random experiment
+np.random.seed(42)
+
+# 1. Discrete Random Variable: Count of defective parcels per batch
+# Poisson distribution with lambda = 2 defects on average
+discrete_defects = np.random.poisson(lam=2.0, size=10)
+print(f"Discrete Defects (Countable): {discrete_defects}")
+# Example output: [2, 0, 1, 2, 3, 1, 2, 0, 4, 2]
+
+# 2. Continuous Random Variable: Parcel weight in kg
+# Normal / Gaussian distribution with mean = 5.0 kg, std = 1.2 kg
+continuous_weights = np.random.normal(loc=5.0, scale=1.2, size=5)
+print(f"Continuous Weights (Real Range): {np.round(continuous_weights, 2)}")
+# Example output: [4.74, 5.17, 3.82, 6.42, 4.88]
+
+# Calculate Empirical Expected Value (Mean) and Variance
+print(f"E[Defects] = {np.mean(discrete_defects):.2f}, Var(Defects) = {np.var(discrete_defects):.2f}")
+print(f"E[Weight]  = {np.mean(continuous_weights):.2f} kg, Var(Weight)  = {np.var(continuous_weights):.2f}")`
+    },
+    takeaway: "In statistical modeling and machine learning, recognizing whether your feature or target is a discrete or continuous random variable determines your choice of probability distribution (e.g., Bernoulli/Poisson vs. Gaussian), evaluation metrics, and objective loss function (Cross-Entropy vs. MSE)."
   }
 ];

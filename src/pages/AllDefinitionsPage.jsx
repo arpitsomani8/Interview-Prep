@@ -19612,6 +19612,193 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 145: Random Variable */}
+            {item.id === 'random-variable' && (
+              <div className="space-y-6">
+                {/* 1. Core Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Probability Theory & Mathematical Foundations</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Statistical Modeling
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Random Variable (Discrete vs. Continuous Distributions)
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Main Types Grid: Discrete vs. Continuous */}
+                {item.mainTypes && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-amber-400" />
+                        <span>The Two Fundamental Classes</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Classification
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.mainTypes.map((mt, mIdx) => (
+                        <div key={mIdx} className={`p-4 sm:p-5 rounded-2xl bg-black border ${mt.border} space-y-3 flex flex-col justify-between hover:border-cyan-500/30 transition`}>
+                          <div className="space-y-2.5">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs sm:text-sm font-bold font-mono ${mt.accent} uppercase block`}>
+                                {mt.type}
+                              </span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                                {mt.badge}
+                              </span>
+                            </div>
+
+                            {/* Core Verbatim Highlight */}
+                            <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs sm:text-sm font-semibold text-white font-sans leading-relaxed">
+                              "{mt.definition}"
+                            </div>
+
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {mt.mathDescription}
+                            </p>
+
+                            <div className="space-y-1.5 pt-1">
+                              <span className="text-[10px] font-mono text-zinc-400 uppercase block">Real-World Examples:</span>
+                              {mt.examples.map((ex, eIdx) => (
+                                <div key={eIdx} className="text-xs text-zinc-300 flex items-start gap-2">
+                                  <span className={`${mt.accent} font-mono mt-0.5`}>•</span>
+                                  <span>{ex}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="pt-2.5 border-t border-zinc-900 text-[11px] font-mono flex items-center justify-between">
+                            <span className="text-zinc-500 uppercase">Key Distributions:</span>
+                            <span className="text-zinc-300">{mt.distributions.join(", ")}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Mathematical Foundations Grid */}
+                {item.mathFoundations && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-cyan-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Core Mathematical Operators & Functions</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Formulas
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.mathFoundations.map((mf, mfIdx) => (
+                        <div key={mfIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-xs font-bold text-white font-mono">{mf.concept}</span>
+                              <span className="text-[9px] font-mono text-cyan-400 uppercase bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-800/40">
+                                {mf.appliesTo}
+                              </span>
+                            </div>
+                            <div className="p-1.5 rounded bg-zinc-950 border border-zinc-800 font-mono text-[11px] text-emerald-300 mb-1.5 overflow-x-auto">
+                              {mf.formula}
+                            </div>
+                            <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
+                              {mf.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Machine Learning & Statistics Applications */}
+                {item.mlApplications && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-purple-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                        <span>Random Variables in Machine Learning & Loss Functions</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        ML Use Cases
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.mlApplications.map((app, aIdx) => (
+                        <div key={aIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <span className="text-xs font-bold font-mono text-purple-300 uppercase block">
+                            {app.title}
+                          </span>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {app.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Interactive Python Simulation Code Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>random_variable_simulation.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-random-var', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-random-var' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
