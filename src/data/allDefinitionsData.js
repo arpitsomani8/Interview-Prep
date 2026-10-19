@@ -111,7 +111,8 @@ export const definitionBookmarks = [
   { id: "which-is-better", label: "Which is Better?" },
   { id: "labeled-unlabeled-data", label: "Labeled vs Unlabeled Data" },
   { id: "early-stopping", label: "Early Stopping" },
-  { id: "activation-functions", label: "Activation Functions" }
+  { id: "activation-functions", label: "Activation Functions" },
+  { id: "regularization", label: "Regularization" }
 ];
 
 export const definitionsData = [
@@ -8610,5 +8611,81 @@ x_tensor = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])
 gelu_out = F.gelu(x_tensor)  # Used in BERT, GPT-2/3/4`
     },
     takeaway: "Without non-linear activation functions, any deep neural network collapses mathematically into a single linear transformation (W2 * W1 * x = W_combined * x), completely incapable of learning complex non-linear manifolds. Choosing the appropriate activation—ReLU for CNNs, GELU for Transformers, Sigmoid for binary tasks, and Softmax for categorical distributions—is foundational to stable gradient propagation."
+  },
+  {
+    id: "regularization",
+    title: "Regularization (L1 Lasso, L2 Ridge, Inverse C Parameter & Dropout in Keras)",
+    badge: "Overfitting Control, Penalty Losses & Deep Learning Dropout",
+    summary: "Regularization discourages a model from becoming unnecessarily complex or fitting noise in the training data. It is one way to reduce overfitting. In scikit-learn logistic regression, C is the inverse of regularization strength: a smaller C means stronger regularization. In TensorFlow/Keras, kernel_regularizer=regularizers.l2(0.001) adds an L2 penalty to the layer's kernel weights, and Dropout(0.3) randomly disables 30% of eligible activations during training, behaving differently during inference.",
+    coreDefinition: "Regularization discourages a model from becoming unnecessarily complex or fitting noise in the training data. It is one way to reduce overfitting.",
+    sklearnSection: {
+      headline: "Scikit-Learn Logistic Regression (L1 vs. L2 & Inverse C Parameter)",
+      cExplanation: "In scikit-learn logistic regression, C is the inverse of regularization strength: a smaller C means stronger regularization.",
+      code: `from sklearn.linear_model import LogisticRegression
+
+# L1: can drive some coefficients to zero
+l1_model = LogisticRegression(
+    penalty="l1",
+    solver="liblinear",
+    C=1.0
+)
+
+# L2: discourages large coefficients
+l2_model = LogisticRegression(
+    penalty="l2",
+    solver="lbfgs",
+    C=1.0
+)`
+    },
+    kerasSection: {
+      headline: "Regularization in TensorFlow/Keras",
+      code: `from tensorflow import keras
+from tensorflow.keras import layers, regularizers
+
+model = keras.Sequential([
+    layers.Input(shape=(20,)),
+
+    layers.Dense(
+        64,
+        activation="relu",
+        kernel_regularizer=regularizers.l2(0.001)
+    ),
+
+    layers.Dropout(0.3),
+
+    layers.Dense(1, activation="sigmoid")
+])`,
+      bulletPoints: [
+        "kernel_regularizer=regularizers.l2(0.001) adds an L2 penalty to the layer's kernel weights.",
+        "Dropout(0.3) randomly disables 30% of eligible activations during training. It behaves differently during inference."
+      ]
+    },
+    penaltyTaxonomy: [
+      {
+        type: "L1 Regularization (Lasso)",
+        math: "Loss = Loss_0 + λ Σ |w_i|",
+        mechanism: "Drives non-informative coefficients strictly to absolute zero. Acts as built-in feature selection, creating sparse models.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50",
+        badge: "Sparse Coefficients"
+      },
+      {
+        type: "L2 Regularization (Ridge / Weight Decay)",
+        math: "Loss = Loss_0 + λ Σ w_i²",
+        mechanism: "Penalizes large weights smoothly towards zero without forcing exact zeros. Spreads influence evenly across correlated features.",
+        accent: "text-blue-400",
+        border: "border-blue-800/50",
+        badge: "Smooth Shrinkage"
+      },
+      {
+        type: "Dropout",
+        math: "p_drop = 0.3 (Training vs Inference)",
+        mechanism: "Randomly deactivates 30% of neurons during each training step, preventing co-adaptation. During inference, all neurons are active (scaled automatically).",
+        accent: "text-purple-400",
+        border: "border-purple-800/50",
+        badge: "Neural Ensemble Approximation"
+      }
+    ],
+    takeaway: "Regularization imposes inductive bias to restrict parameter capacity. In linear models, L1 induces sparsity (feature selection) while L2 discourages extreme coefficient magnitudes. In deep neural networks, combining weight decay (L2 kernel regularization) with Dropout prevents complex co-adaptations between neurons, ensuring superior generalization on out-of-distribution real-world inputs."
   }
 ];

@@ -14861,6 +14861,167 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 115: Regularization */}
+            {item.id === 'regularization' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Model Generalization & Complexity Control</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Overfitting Prevention
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Regularization
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Penalty Taxonomy: L1 vs L2 vs Dropout */}
+                {item.penaltyTaxonomy && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {item.penaltyTaxonomy.map((pen, pIdx) => (
+                      <div key={pIdx} className={`p-4 rounded-2xl bg-zinc-950 border ${pen.border} space-y-3 hover:border-zinc-700 transition flex flex-col justify-between shadow-xl`}>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <h5 className={`text-xs font-bold font-mono ${pen.accent}`}>
+                              {pen.type}
+                            </h5>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {pen.badge}
+                            </span>
+                          </div>
+                          <div className="p-1.5 rounded bg-black border border-zinc-800/80 font-mono text-[11px] text-zinc-300">
+                            {pen.math}
+                          </div>
+                        </div>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-2 border-t border-zinc-900">
+                          {pen.mechanism}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 3. Scikit-Learn Section */}
+                {item.sklearnSection && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.sklearnSection.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Scikit-Learn
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 font-mono">
+                      <strong>Key Parameter Rule: </strong>
+                      {item.sklearnSection.cExplanation}
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>sklearn_logistic_regression.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-sklearn-reg', item.sklearnSection.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-sklearn-reg' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.sklearnSection.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. TensorFlow/Keras Section */}
+                {item.kerasSection && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.kerasSection.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        TensorFlow / Keras
+                      </span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>keras_regularization.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-keras-reg', item.kerasSection.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-keras-reg' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.kerasSection.code}
+                      </pre>
+                    </div>
+
+                    <div className="space-y-2 pt-1">
+                      <span className="text-xs font-bold font-mono text-zinc-400 block">
+                        Here:
+                      </span>
+                      <div className="space-y-1.5">
+                        {item.kerasSection.bulletPoints.map((bp, bIdx) => (
+                          <div key={bIdx} className="flex items-start gap-2 text-xs text-zinc-300 font-sans">
+                            <span className="text-cyan-400 font-mono font-bold">•</span>
+                            <span>{bp}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
