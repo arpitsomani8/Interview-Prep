@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
+import ErrorBoundary from './components/ErrorBoundary';
 import IntroPage from './pages/IntroPage';
 import FashionPage from './pages/FashionPage';
 import HybridPage from './pages/HybridPage';
@@ -10,8 +11,16 @@ import AllDefinitionsPage from './pages/AllDefinitionsPage';
 const VALID_TABS = ['intro', 'fashion', 'hybrid', 'yolo', 'eda', 'all-definitions'];
 
 function getTabFromHash() {
-  const raw = window.location.hash.replace(/^#\/?/, '').trim().split('?')[0];
-  if (raw === 'definitions') return 'all-definitions';
+  const hash = window.location.hash || '';
+  const raw = hash
+    .replace(/^#+/, '')
+    .replace(/^\/+/, '')
+    .split('?')[0]
+    .split('#')[0]
+    .replace(/\/+$/, '')
+    .trim()
+    .toLowerCase();
+  if (raw === 'definitions' || raw === 'all-definitions') return 'all-definitions';
   return VALID_TABS.includes(raw) ? raw : 'intro';
 }
 
@@ -31,12 +40,15 @@ export default function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const newTab = getTabFromHash();
-      setActiveTab(newTab);
+      setActiveTab((prev) => (prev !== newTab ? newTab : prev));
     };
 
-    // If no initial hash, set it without adding extra history entry
-    if (!window.location.hash || !VALID_TABS.includes(window.location.hash.replace(/^#\/?/, '').trim())) {
-      window.history.replaceState(null, '', `#/intro`);
+    // Normalize initial hash cleanly without unwanted redirects
+    const initialTab = getTabFromHash();
+    setActiveTab(initialTab);
+    const targetHash = `#/${initialTab}`;
+    if (window.location.hash !== targetHash) {
+      window.history.replaceState(null, '', targetHash);
     }
 
     window.addEventListener('hashchange', handleHashChange);
@@ -55,17 +67,19 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full bg-black text-zinc-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
-      {/* Top Header with 5 Navigation Options */}
+      {/* Top Header with Navigation Options */}
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* Main Content Area */}
+      {/* Main Content Area Protected by ErrorBoundary */}
       <main className="flex-1 w-full">
-        {activeTab === 'intro' && <IntroPage />}
-        {activeTab === 'fashion' && <FashionPage />}
-        {activeTab === 'hybrid' && <HybridPage />}
-        {activeTab === 'yolo' && <YoloPage />}
-        {activeTab === 'eda' && <EdaPage />}
-        {activeTab === 'all-definitions' && <AllDefinitionsPage />}
+        <ErrorBoundary>
+          {activeTab === 'intro' && <IntroPage />}
+          {activeTab === 'fashion' && <FashionPage />}
+          {activeTab === 'hybrid' && <HybridPage />}
+          {activeTab === 'yolo' && <YoloPage />}
+          {activeTab === 'eda' && <EdaPage />}
+          {activeTab === 'all-definitions' && <AllDefinitionsPage />}
+        </ErrorBoundary>
       </main>
     </div>
   );

@@ -18,7 +18,10 @@ import {
   Database,
   Layers,
   Zap,
-  Cpu
+  Cpu,
+  AlertTriangle,
+  Clock,
+  Shield
 } from 'lucide-react';
 
 export default function AllDefinitionsPage() {
