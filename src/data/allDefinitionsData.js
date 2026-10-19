@@ -90,7 +90,8 @@ export const definitionBookmarks = [
   { id: "pydantic", label: "Pydantic" },
   { id: "zero-shot-few-shot", label: "Zero-shot / Few-shot" },
   { id: "lora", label: "LoRA" },
-  { id: "bert", label: "BERT" }
+  { id: "bert", label: "BERT" },
+  { id: "stemming", label: "Stemming" }
 ];
 
 export const definitionsData = [
@@ -6750,5 +6751,97 @@ model.print_trainable_parameters()
       conclusion: "So, yes, BERT can be used to produce embeddings, but BERT and an embedding are not the same thing."
     },
     takeaway: "BERT is a bidirectional Transformer encoder that produces contextual token representations by looking at both left and right context simultaneously. While BERT can generate embeddings via pooling, it is fundamentally a language model; for production semantic search and vector retrieval, specialized Siamese architectures like Sentence-BERT (SBERT) should be utilized."
+  },
+  {
+    id: "stemming",
+    title: "Stemming (Rule-Based Root Reduction) vs. Lemmatization",
+    badge: "Text Preprocessing, Morphological Normalization & Lexical IR",
+    summary: "Stemming is fast and can be useful for classical search or text classification when word variations should be grouped together. Stemming reduces a word to a crude root form by removing prefixes or suffixes according to simple rules. Notice that studi is not a normal English word. Stemming does not guarantee a valid dictionary word.",
+    coreDefinition: "Stemming reduces a word to a crude root form by removing prefixes or suffixes according to simple rules. Stemming is fast and can be useful for classical search or text classification when word variations should be grouped together.",
+    stemmingExamples: [
+      {
+        word: "playing",
+        stem: "play",
+        note: "Produces a valid base English word by stripping suffix '-ing'."
+      },
+      {
+        word: "studies",
+        stem: "studi",
+        note: "A possible stem produced by some stemmers. Notice that studi is not a normal English word. Stemming does not guarantee a valid dictionary word."
+      }
+    ],
+    crucialRule: "Notice that studi is not a normal English word. Stemming does not guarantee a valid dictionary word.",
+    stemmingVsLemmatization: [
+      {
+        aspect: "Core Approach",
+        stemming: "Heuristic rule-based suffix/prefix chopping (e.g., Porter, Snowball)",
+        lemmatization: "Full morphological analysis using vocabulary & WordNet dictionary lookup"
+      },
+      {
+        aspect: "Dictionary Validity",
+        stemming: "Does not guarantee a valid dictionary word (e.g., 'studies' → 'studi', 'universal' → 'univers')",
+        lemmatization: "Guarantees valid dictionary lemma (e.g., 'studies' → 'study', 'better' → 'good')"
+      },
+      {
+        aspect: "Context & POS Awareness",
+        stemming: "Context-blind: applies identical stripping rules regardless of sentence semantics",
+        lemmatization: "Considers Part of Speech (POS) tag (e.g. 'meeting' as noun vs verb)"
+      },
+      {
+        aspect: "Computational Speed",
+        stemming: "Extremely fast (O(1) regex/lookup table stripping; ideal for high-throughput inverted index building)",
+        lemmatization: "Slower (Requires grammatical parsing, lemmatization tables, and POS disambiguation)"
+      },
+      {
+        aspect: "Best Use Cases",
+        stemming: "Fast classical information retrieval (BM25, inverted index), bag-of-words text classification",
+        lemmatization: "Chatbots, conversational agents, sentiment analysis, grammatical analysis, semantic parsing"
+      }
+    ],
+    popularStemmers: [
+      {
+        name: "Porter Stemmer",
+        author: "Martin Porter (1980)",
+        desc: "The standard 5-phase algorithmic rule stemmer for English. Aggressively removes common inflectional endings.",
+        example: "'troubling' → 'troubl'"
+      },
+      {
+        name: "Snowball (Porter2)",
+        author: "Martin Porter (2001)",
+        desc: "An improved, more consistent version of the Porter algorithm with multi-language support (English, French, German, Spanish, etc.).",
+        example: "'generously' → 'generous'"
+      },
+      {
+        name: "Lancaster Stemmer",
+        author: "Paice/Husk (1990)",
+        desc: "An extremely aggressive rule-based stemmer. Very fast, but prone to high over-stemming rates.",
+        example: "'maximum' → 'maxim'"
+      }
+    ],
+    codeExample: {
+      title: "Stemming vs Lemmatization in Python (NLTK)",
+      language: "python",
+      code: `from nltk.stem import PorterStemmer, WordNetLemmatizer
+
+stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+
+words = ["playing", "studies", "crying", "feet"]
+
+print(f"{'Original':<12} | {'Stemmed (Porter)':<18} | {'Lemmatized':<15}")
+print("-" * 50)
+
+for w in words:
+    stem = stemmer.stem(w)
+    lemma = lemmatizer.lemmatize(w)
+    print(f"{w:<12} | {stem:<18} | {lemma:<15}")
+
+# Output:
+# playing      | play               | playing
+# studies      | studi              | study     <-- 'studi' is not a normal English word!
+# crying       | cri                | crying
+# feet         | feet               | foot      <-- Lemmatization handles irregular plurals!`
+    },
+    takeaway: "Stemming reduces words to crude root stems using rapid rule-based chopping without guaranteeing valid dictionary entries (e.g. 'studies' → 'studi'). In production, stemming is prized for ultra-fast inverted index token grouping in search engines (BM25, Elasticsearch), whereas lemmatization is preferred when linguistic correctness and grammatical meaning must be preserved."
   }
 ];
