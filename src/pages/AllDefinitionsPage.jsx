@@ -4201,6 +4201,55 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
+                {/* Cloud Architecture Requirement vs AWS vs Azure Matrix */}
+                {item.cloudMappingTable && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Cloud Architecture Mapping: Requirement vs. AWS vs. Azure</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Multi-Cloud Equivalents
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead className="bg-zinc-900 border-b border-zinc-800 font-mono text-[11px]">
+                          <tr>
+                            <th className="py-2.5 px-3.5 text-white">Requirement</th>
+                            <th className="py-2.5 px-3.5 text-amber-400">AWS example</th>
+                            <th className="py-2.5 px-3.5 text-cyan-400">Azure example</th>
+                            <th className="py-2.5 px-3.5 text-zinc-400">Category</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60">
+                          {item.cloudMappingTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/50 transition">
+                              <td className="py-3 px-3.5 font-mono text-white font-bold text-xs whitespace-nowrap">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                                  <span>{row.requirement}</span>
+                                </div>
+                              </td>
+                              <td className="py-3 px-3.5 font-mono text-xs text-amber-300 font-semibold">
+                                {row.awsExample}
+                              </td>
+                              <td className="py-3 px-3.5 font-mono text-xs text-cyan-300 font-semibold">
+                                {row.azureExample}
+                              </td>
+                              <td className="py-3 px-3.5 font-mono text-[10px] text-zinc-400">
+                                {row.category}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
                 {/* AWS Ecosystem Breakdown */}
                 <div className="space-y-3 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
                   <div className="flex items-center gap-2">

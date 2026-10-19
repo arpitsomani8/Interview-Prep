@@ -2688,6 +2688,44 @@ print("Class probabilities:", model.predict_proba(new_parcel)[0])`,
       { step: "4. Backend API + database", desc: "Save predictions, confidence scores, and inspection status." },
       { step: "5. Dashboard and alerts", desc: "Operations team reviews flagged parcels in real time." }
     ],
+    cloudMappingTable: [
+      {
+        requirement: "Host Python API",
+        awsExample: "ECS or EC2",
+        azureExample: "Azure Container Apps or App Service",
+        category: "Compute & Microservices"
+      },
+      {
+        requirement: "Store parcel images",
+        awsExample: "Amazon S3",
+        azureExample: "Azure Blob Storage",
+        category: "Object Storage"
+      },
+      {
+        requirement: "Host an ML model",
+        awsExample: "SageMaker AI",
+        azureExample: "Azure Machine Learning",
+        category: "AI & ML Platforms"
+      },
+      {
+        requirement: "Store credentials",
+        awsExample: "AWS Secrets Manager",
+        azureExample: "Azure Key Vault",
+        category: "Secrets & Key Management"
+      },
+      {
+        requirement: "Logs and monitoring",
+        awsExample: "CloudWatch",
+        azureExample: "Azure Monitor / Application Insights",
+        category: "Observability & Telemetry"
+      },
+      {
+        requirement: "Identity and access",
+        awsExample: "IAM",
+        azureExample: "Microsoft Entra ID / managed identities",
+        category: "Identity & Security Governance"
+      }
+    ],
     awsServices: [
       {
         name: "Amazon SageMaker",
