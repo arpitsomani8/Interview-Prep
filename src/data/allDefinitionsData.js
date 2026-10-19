@@ -114,7 +114,8 @@ export const definitionBookmarks = [
   { id: "activation-functions", label: "Activation Functions" },
   { id: "regularization", label: "Regularization" },
   { id: "logits", label: "Logits" },
-  { id: "log-loss", label: "Log Loss" }
+  { id: "log-loss", label: "Log Loss" },
+  { id: "elastic-net", label: "Elastic Net" }
 ];
 
 export const definitionsData = [
@@ -8820,5 +8821,74 @@ overall_loss = log_loss(y_true, y_preds, labels=[0, 1])
 print(f"Average Log Loss: {overall_loss:.4f}")`
     },
     takeaway: "While 0-1 accuracy treats all mistakes equally, Log Loss (Cross-Entropy) evaluates probability calibration. By using a negative logarithmic curve, it severely penalizes models that express high certainty on incorrect outcomes. This property makes log loss the standard loss function for training classification neural networks and gradient boosted trees."
+  },
+  {
+    id: "elastic-net",
+    title: "Elastic Net (Combined L1 and L2 Regularized Regression)",
+    badge: "L1/L2 Convex Combination, Feature Collinearity & Scikit-Learn Pipelines",
+    summary: "Elastic Net is a regularized regression method that combines L1 and L2 penalties. It is useful when you have many features, especially correlated features, and want to reduce overfitting while potentially shrinking some coefficients to zero.",
+    coreDefinition: "Elastic Net is a regularized regression method that combines L1 and L2 penalties.",
+    useCaseHeadline: "When is Elastic Net Useful?",
+    useCaseText: "It is useful when you have many features, especially correlated features, and want to reduce overfitting while potentially shrinking some coefficients to zero.",
+    objectiveFunction: {
+      formula: "min_w (1 / 2n) ||y - Xw||² + α · ρ ||w||₁ + (α(1 - ρ) / 2) ||w||₂²",
+      parameters: [
+        {
+          param: "alpha = 0.1",
+          name: "Total Regularization Strength",
+          desc: "Controls the overall weight penalty magnitude. A larger alpha applies stronger shrinkage across all features.",
+          accent: "text-amber-400"
+        },
+        {
+          param: "l1_ratio = 0.5 (ρ)",
+          name: "Elastic Net Mixing Parameter",
+          desc: "The trade-off between L1 and L2 penalties. l1_ratio=1.0 is pure Lasso; l1_ratio=0.0 is pure Ridge. 0.5 balances sparsity with group selection.",
+          accent: "text-cyan-400"
+        }
+      ]
+    },
+    methodComparison: [
+      {
+        name: "Lasso (L1)",
+        penalty: "||w||₁",
+        handlingCorrelated: "Arbitrarily selects one feature from a group of correlated predictors and zeros out the rest.",
+        sparsity: "High (exact zeros)",
+        accent: "text-rose-400",
+        border: "border-rose-800/50"
+      },
+      {
+        name: "Ridge (L2)",
+        penalty: "||w||₂²",
+        handlingCorrelated: "Shrinks correlated features together towards zero, but never eliminates any completely.",
+        sparsity: "Zero (keeps all weights)",
+        accent: "text-blue-400",
+        border: "border-blue-800/50"
+      },
+      {
+        name: "Elastic Net (L1 + L2)",
+        penalty: "ρ||w||₁ + (1 - ρ)||w||₂²",
+        handlingCorrelated: "Encourages a grouping effect: selects or eliminates entire groups of correlated features together while generating sparse models.",
+        sparsity: "Tunable via l1_ratio",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      }
+    ],
+    codeExample: {
+      title: "Scikit-Learn ElasticNet Pipeline with StandardScaler",
+      language: "python",
+      code: `from sklearn.linear_model import ElasticNet
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+model = make_pipeline(
+    StandardScaler(),
+    ElasticNet(alpha=0.1, l1_ratio=0.5)
+)
+
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)`
+    },
+    takeaway: "In high-dimensional datasets with multicollinearity (where number of features p > number of samples n or features share strong correlations), pure Lasso exhibits instability by arbitrarily selecting single features. Elastic Net combines the sparsity benefits of Lasso with the grouping stability of Ridge, governed by alpha (penalty strength) and l1_ratio (convex balance). Pre-scaling with StandardScaler is mandatory to avoid biased penalties on unscaled feature dimensions."
   }
 ];

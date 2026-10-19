@@ -15286,6 +15286,158 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 118: Elastic Net */}
+            {item.id === 'elastic-net' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Regularized Linear Models</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      L1 + L2 Hybrid
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Elastic Net
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Core Use Case Callout Banner */}
+                <div className="p-4 rounded-2xl bg-zinc-950 border border-amber-800/50 space-y-2 shadow-xl">
+                  <span className="text-xs font-bold font-mono text-amber-400 uppercase flex items-center gap-2">
+                    <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{item.useCaseHeadline}</span>
+                  </span>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-medium font-sans leading-relaxed">
+                    {item.useCaseText}
+                  </p>
+                </div>
+
+                {/* 3. Objective Function & Hyperparameter Breakdown */}
+                {item.objectiveFunction && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Objective Function & Hyperparameters</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Convex Optimization
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-black border border-cyan-800/40 text-center">
+                      <code className="text-xs sm:text-sm font-mono text-cyan-300 font-bold block overflow-x-auto">
+                        {item.objectiveFunction.formula}
+                      </code>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.objectiveFunction.parameters.map((p, pIdx) => (
+                        <div key={pIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition">
+                          <span className="text-[10px] font-mono font-bold uppercase text-zinc-400 block">
+                            {p.name}
+                          </span>
+                          <span className={`text-xs font-mono font-bold ${p.accent} block`}>
+                            {p.param}
+                          </span>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                            {p.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Comparison Grid: Lasso vs Ridge vs Elastic Net */}
+                {item.methodComparison && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-purple-400" />
+                        <span>Lasso vs. Ridge vs. Elastic Net (Multicollinearity Handling)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Model Selection
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {item.methodComparison.map((m, mIdx) => (
+                        <div key={mIdx} className={`p-4 rounded-xl bg-black border ${m.border} space-y-2.5 flex flex-col justify-between hover:border-zinc-700 transition`}>
+                          <div className="space-y-1.5">
+                            <h5 className={`text-xs font-bold font-mono ${m.accent}`}>
+                              {m.name}
+                            </h5>
+                            <div className="p-1 rounded bg-zinc-950 border border-zinc-800 font-mono text-[11px] text-zinc-400">
+                              Penalty: {m.penalty}
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                              {m.handlingCorrelated}
+                            </p>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900 text-[10px] font-mono text-zinc-400 flex items-center justify-between">
+                            <span>Feature Sparsity:</span>
+                            <span className="text-emerald-400 font-semibold">{m.sparsity}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Interactive Scikit-Learn Pipeline Code Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>sklearn_elastic_net_pipeline.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-elastic-net', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-elastic-net' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
