@@ -115,7 +115,8 @@ export const definitionBookmarks = [
   { id: "regularization", label: "Regularization" },
   { id: "logits", label: "Logits" },
   { id: "log-loss", label: "Log Loss" },
-  { id: "elastic-net", label: "Elastic Net" }
+  { id: "elastic-net", label: "Elastic Net" },
+  { id: "entropy", label: "Entropy" }
 ];
 
 export const definitionsData = [
@@ -8890,5 +8891,91 @@ model.fit(X_train, y_train)
 predictions = model.predict(X_test)`
     },
     takeaway: "In high-dimensional datasets with multicollinearity (where number of features p > number of samples n or features share strong correlations), pure Lasso exhibits instability by arbitrarily selecting single features. Elastic Net combines the sparsity benefits of Lasso with the grouping stability of Ridge, governed by alpha (penalty strength) and l1_ratio (convex balance). Pre-scaling with StandardScaler is mandatory to avoid biased penalties on unscaled feature dimensions."
+  },
+  {
+    id: "entropy",
+    title: "Entropy (Impurity, Information Theory & Decision Tree Splits)",
+    badge: "Information Theory, Impurity Metrics & Shannon Entropy",
+    summary: "Entropy measures the impurity or uncertainty of a group of labels. For a binary dataset: If all emails are spam, entropy is 0. If all emails are normal, entropy is 0. If half are spam and half are normal, entropy is at its maximum of 1 bit.",
+    coreDefinition: "Entropy measures the impurity or uncertainty of a group of labels.",
+    binaryExamplesHeading: "For a binary dataset:",
+    binaryScenarios: [
+      {
+        scenario: "All Emails are Spam",
+        distribution: "p(Spam) = 1.0, p(Normal) = 0.0",
+        entropyValue: "Entropy = 0 bits",
+        verbatimText: "If all emails are spam, entropy is 0.",
+        status: "Pure Subset (Zero Uncertainty)",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      },
+      {
+        scenario: "All Emails are Normal",
+        distribution: "p(Spam) = 0.0, p(Normal) = 1.0",
+        entropyValue: "Entropy = 0 bits",
+        verbatimText: "If all emails are normal, entropy is 0.",
+        status: "Pure Subset (Zero Uncertainty)",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      },
+      {
+        scenario: "Half Spam & Half Normal",
+        distribution: "p(Spam) = 0.5, p(Normal) = 0.5",
+        entropyValue: "Entropy = 1.0 bit (Max)",
+        verbatimText: "If half are spam and half are normal, entropy is at its maximum of 1 bit.",
+        status: "Maximum Impurity (Peak Uncertainty)",
+        accent: "text-rose-400",
+        border: "border-rose-800/50"
+      }
+    ],
+    formulaSection: {
+      formula: "H(S) = - Σ [ p_i · log₂(p_i) ]",
+      definition: "Shannon Entropy quantifies the average number of binary questions (bits) needed to identify an unknown label.",
+      decisionTreeGain: "Information Gain = H(Parent) - Σ (|S_child| / |S|) · H(Child)"
+    },
+    entropyVsGini: [
+      {
+        metric: "Shannon Entropy",
+        formula: "- Σ p_i · log₂(p_i)",
+        range: "0 to 1.0 bit (binary)",
+        nature: "Logarithmic scale; heavier penalty on mixed probabilities; slightly slower due to log computations.",
+        accent: "text-cyan-400"
+      },
+      {
+        metric: "Gini Impurity",
+        formula: "1 - Σ p_i²",
+        range: "0 to 0.5 (binary)",
+        nature: "Quadratic scale; computationally faster (no logarithms); standard default in Scikit-Learn Decision Trees.",
+        accent: "text-amber-400"
+      }
+    ],
+    codeExample: {
+      title: "Shannon Entropy Calculation in Python (SciPy & Pure NumPy)",
+      language: "python",
+      code: `import numpy as np
+from scipy.stats import entropy
+
+# Function to calculate binary Shannon entropy (base 2)
+def calculate_entropy(p_positive):
+    if p_positive == 0 or p_positive == 1:
+        return 0.0
+    p = [p_positive, 1.0 - p_positive]
+    return entropy(p, base=2)
+
+# Three classic binary scenarios:
+p_all_spam   = 1.0   # If all emails are spam
+p_all_normal = 0.0   # If all emails are normal
+p_half_half  = 0.5   # If half are spam and half are normal
+
+print("All Spam (p=1.0):    ", calculate_entropy(p_all_spam), "bits")
+print("All Normal (p=0.0):  ", calculate_entropy(p_all_normal), "bits")
+print("Half & Half (p=0.5): ", calculate_entropy(p_half_half), "bit")
+
+# Output:
+# All Spam (p=1.0):     0.0 bits
+# All Normal (p=0.0):   0.0 bits
+# Half & Half (p=0.5):  1.0 bit`
+    },
+    takeaway: "Entropy formalizes uncertainty in information theory and guides decision tree splitting algorithms (ID3, C4.5). Splits that maximize Information Gain produce children nodes with minimal entropy (approaching 0 bits), partitioning the feature space into homogeneous, pure class subsets."
   }
 ];
