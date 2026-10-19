@@ -132,7 +132,8 @@ export const definitionBookmarks = [
   { id: "tensor", label: "Tensor & TensorFlow" },
   { id: "security-and-error-handling", label: "Security & Error Handling" },
   { id: "cross-encoder", label: "Cross-Encoder" },
-  { id: "kmeans", label: "K-means Clustering" }
+  { id: "kmeans", label: "K-means Clustering" },
+  { id: "mitigation", label: "Mitigation Strategies" }
 ];
 
 export const definitionsData = [
@@ -10347,5 +10348,97 @@ cluster_ids = model.fit_predict(X_scaled)
 print(cluster_ids)`
     },
     takeaway: "K-means minimizes within-cluster sum-of-squares (inertia) by iteratively shifting cluster centroids to the mean of assigned data points. It is the industry benchmark for unsupervised segmentation, customer cohort discovery, vector quantization in approximate search, and visual grouping of catalog embeddings."
+  },
+  {
+    id: "mitigation",
+    title: "Mitigation Strategies (Systemic ML & AI Failure Prevention)",
+    badge: "Production Safeguards, Reliability & Risk Engineering",
+    summary: "Mitigation means taking steps to reduce a problem or its impact. The exact meaning depends on what problem you're addressing. Master the 7 core production failure modes and their targeted mitigations: Class imbalance, Data leakage, Model bias, RAG hallucination, Model latency, Data drift, and Security risk.",
+    coreDefinition: "Mitigation means taking steps to reduce a problem or its impact. The exact meaning depends on what problem you're addressing.",
+    mitigationTable: [
+      {
+        problem: "Class imbalance",
+        mitigation: "Class weights, resampling, suitable evaluation metrics",
+        category: "Data & Objective Alignment",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        problem: "Data leakage",
+        mitigation: "Proper train/test separation and fitted preprocessing pipelines",
+        category: "Preprocessing & Validation",
+        accent: "text-rose-400",
+        border: "border-rose-800/50"
+      },
+      {
+        problem: "Model bias",
+        mitigation: "Audit group-wise outcomes, improve data quality, evaluate mitigation approaches",
+        category: "Fairness & Responsible AI",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        problem: "RAG hallucination",
+        mitigation: "Improve retrieval, ground answers in sources, validate outputs, abstain when evidence is insufficient",
+        category: "Generative AI & LLM Systems",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      },
+      {
+        problem: "Model latency",
+        mitigation: "Optimize inference, batching, caching, or scaling",
+        category: "Serving & High-Throughput Systems",
+        accent: "text-blue-400",
+        border: "border-blue-800/50"
+      },
+      {
+        problem: "Data drift",
+        mitigation: "Monitor input distributions and model performance; retrain only when justified",
+        category: "MLOps & System Observability",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      },
+      {
+        problem: "Security risk",
+        mitigation: "Authentication, authorization, input validation, and least privilege",
+        category: "Security & Governance Guardrails",
+        accent: "text-red-400",
+        border: "border-red-800/50"
+      }
+    ],
+    codeExample: {
+      title: "Production Mitigation Implementations in Python",
+      language: "python",
+      code: `from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+# 1. Mitigation for Data Leakage & Class Imbalance:
+# Pipeline guarantees scalers are fitted ONLY on training folds
+# class_weight='balanced' automatically mitigates skewed target distributions
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('classifier', LogisticRegression(class_weight='balanced', random_state=42))
+])
+
+# 2. Mitigation for RAG Hallucination (Output Validation & Abstention):
+def generate_grounded_answer(retrieved_docs: list[str], prompt: str) -> dict:
+    # If retrieval confidence is low, abstain instead of hallucinating
+    if not retrieved_docs or len(retrieved_docs) == 0:
+        return {
+            "answer": "I do not have sufficient verified policy evidence to answer this question.",
+            "status": "abstained",
+            "grounded": False
+        }
+    
+    # Process grounded generation with retrieved context
+    return {
+        "answer": "Damage claim approved per Article 4.2 guidelines.",
+        "citations": [retrieved_docs[0]],
+        "status": "success",
+        "grounded": True
+    }`
+    },
+    takeaway: "Mitigation in production AI is not a one-size-fits-all fix. True engineering robustness requires decoupling failures by category—handling training disparities with class weights and leakage-free pipelines, serving bottlenecks with quantization and caching, and generative hallucination with grounded citations and strict schema validation."
   }
 ];
