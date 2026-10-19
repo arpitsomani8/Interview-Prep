@@ -631,6 +631,31 @@ def predict_damage(data: ParcelData):
         }
       ]
     },
+    retrievalVsGenerationEvaluation: {
+      question: "What is the difference between retrieval and generation evaluation?",
+      comparison: [
+        {
+          type: "Retrieval evaluation",
+          pipeline: "Question → Retriever → Top-K chunks",
+          measures: "Measures relevance, recall, ranking, and whether the correct evidence was found.",
+          metrics: "Recall@k, Precision@k, MRR, nDCG, Hit Rate",
+          focus: "Evaluates context discovery independently from the LLM. Ensures the right knowledge is passed to the context window.",
+          accent: "text-amber-400",
+          border: "border-amber-800/50",
+          badge: "Context Search & Index Quality"
+        },
+        {
+          type: "Generation evaluation",
+          pipeline: "Question + Retrieved chunks → LLM → Answer",
+          measures: "Measures correctness, faithfulness to evidence, relevance, completeness, and appropriate abstention.",
+          metrics: "Faithfulness / Groundedness, Answer Relevance, Completeness, Abstention Accuracy",
+          focus: "Evaluates model synthesis and reasoning over retrieved passages. Ensures the LLM does not hallucinate, omit critical facts, or answer when evidence is missing.",
+          accent: "text-cyan-400",
+          border: "border-cyan-800/50",
+          badge: "Synthesis & Model Reasoning"
+        }
+      ]
+    },
     pipelinePillars: [
       {
         pillar: "A. Chunking",

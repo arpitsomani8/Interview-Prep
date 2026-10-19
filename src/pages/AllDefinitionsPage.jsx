@@ -933,6 +933,62 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* What is the difference between retrieval and generation evaluation? */}
+                {item.retrievalVsGenerationEvaluation && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-cyan-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          {item.retrievalVsGenerationEvaluation.question}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-cyan-300 uppercase bg-cyan-950/40 px-2.5 py-1 rounded border border-cyan-800/40 shrink-0 self-start sm:self-auto">
+                        Dual Evaluation Framework
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.retrievalVsGenerationEvaluation.comparison.map((comp, cIdx) => (
+                        <div
+                          key={cIdx}
+                          className={`p-4 rounded-xl bg-black border ${comp.border} space-y-3 flex flex-col justify-between hover:border-cyan-500/30 transition`}
+                        >
+                          <div className="space-y-2.5">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${comp.accent} uppercase block`}>
+                                {comp.type}
+                              </span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                                {comp.badge}
+                              </span>
+                            </div>
+
+                            {/* Pipeline Flow Badge */}
+                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-xs text-white flex items-center gap-2">
+                              <Terminal className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                              <span className="font-semibold text-cyan-200">{comp.pipeline}</span>
+                            </div>
+
+                            <p className="text-xs text-zinc-200 font-sans leading-relaxed font-medium">
+                              {comp.measures}
+                            </p>
+
+                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-1 border-t border-zinc-900">
+                              {comp.focus}
+                            </p>
+                          </div>
+
+                          <div className="pt-2 border-t border-zinc-900 text-[10px] font-mono text-zinc-400 flex items-center justify-between">
+                            <span className="text-zinc-500 uppercase">Core Metrics:</span>
+                            <span className="text-zinc-300">{comp.metrics}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* 5 Pipeline Pillars */}
                 <div className="space-y-2.5">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
