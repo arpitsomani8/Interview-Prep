@@ -121,7 +121,8 @@ export const definitionBookmarks = [
   { id: "information-gain", label: "Information Gain" },
   { id: "outlier-detection", label: "Outlier Detection" },
   { id: "imputation", label: "Imputation" },
-  { id: "z-score", label: "Z-score" }
+  { id: "z-score", label: "Z-score" },
+  { id: "iqr", label: "IQR & Binning" }
 ];
 
 export const definitionsData = [
@@ -9407,5 +9408,82 @@ print("Flagged Outliers (|z| > 3):", outliers)
 # *Notice: The single 150ms outlier inflated std from ~1.3 to ~42.3, demonstrating why |z|>3 is not universal without robust estimators!`
     },
     takeaway: "The Z-score standardizes disparate numeric distributions onto a zero-centered scale measured in standard deviations. While |z| > 3 provides a standard initial heuristic for Gaussian data, real-world machine learning systems must verify normality and adopt median-based robust metrics (like IQR or Modified Z-scores) to prevent severe outliers from masking themselves."
+  },
+  {
+    id: "iqr",
+    title: "IQR (Interquartile Range) & Feature Binning",
+    badge: "Nonparametric Statistics, Outlier Fences & Data Discretization",
+    summary: "IQR stands for Interquartile Range. It measures the spread of the middle 50% of your data and is commonly used to identify potential outliers. Binning converts continuous numerical values into groups or ranges called bins, with 3 common types: Equal-width, Equal-frequency, and Business-rule binning.",
+    iqrDefinition: "IQR stands for Interquartile Range. It measures the spread of the middle 50% of your data and is commonly used to identify potential outliers.",
+    binningDefinition: "Binning converts continuous numerical values into groups or ranges called bins.",
+    binningHeading: "Common types of binning",
+    binningTypes: [
+      {
+        name: "Equal-width binning",
+        definition: "Every bin covers the same numeric range.",
+        implementation: "pandas.cut(df['col'], bins=k)",
+        bestFor: "Uniformly distributed variables with meaningful absolute numeric intervals.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        name: "Equal-frequency binning",
+        definition: "Each bin contains approximately the same number of observations.",
+        implementation: "pandas.qcut(df['col'], q=k)",
+        bestFor: "Skewed continuous variables (e.g. income, customer lifetime value) where quartiles/deciles balance data density.",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      },
+      {
+        name: "Business-rule binning",
+        definition: "Ranges are defined by business needs.",
+        implementation: "pandas.cut(df['col'], bins=[0, 18, 65, 100], labels=['Minor', 'Adult', 'Senior'])",
+        bestFor: "Domain-specific policy thresholds, credit score tiers (FICO), age brackets, or tax brackets.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      }
+    ],
+    tukeyFences: {
+      formula: "IQR = Q3 - Q1",
+      q1: "Q1 (25th Percentile): 25% of data falls below this value",
+      q3: "Q3 (75th Percentile): 75% of data falls below this value",
+      lowerFence: "Lower Fence = Q1 - 1.5 · IQR",
+      upperFence: "Upper Fence = Q3 + 1.5 · IQR",
+      outlierRule: "Any observation x < Lower Fence or x > Upper Fence is flagged as an outlier."
+    },
+    codeExample: {
+      title: "IQR Outlier Filtering & 3 Binning Strategies in Python",
+      language: "python",
+      code: `import numpy as np
+import pandas as pd
+
+# 1. IQR Outlier Detection
+weights = np.array([2.1, 2.4, 2.2, 2.5, 2.3, 95.0])
+q25, q75 = np.percentile(weights, [25, 75])
+iqr = q75 - q25
+lower_fence = q25 - 1.5 * iqr
+upper_fence = q75 + 1.5 * iqr
+
+outliers = weights[(weights < lower_fence) | (weights > upper_fence)]
+print(f"IQR: {iqr:.2f} | Fences: [{lower_fence:.2f}, {upper_fence:.2f}]")
+print(f"Flagged Outliers: {outliers}")
+
+# 2. Common Types of Binning
+df = pd.DataFrame({'age': [14, 22, 28, 35, 42, 58, 67, 72, 85]})
+
+# Type A: Equal-width binning (Same numeric span per bin)
+df['equal_width'] = pd.cut(df['age'], bins=3)
+
+# Type B: Equal-frequency binning (Same number of items per bin)
+df['equal_freq'] = pd.qcut(df['age'], q=3)
+
+# Type C: Business-rule binning (Defined by business needs)
+bins = [0, 18, 65, 120]
+labels = ['Youth (<18)', 'Working Age (18-64)', 'Retiree (65+)']
+df['business_rule'] = pd.cut(df['age'], bins=bins, labels=labels)
+
+print(df[['age', 'equal_width', 'equal_freq', 'business_rule']])`
+    },
+    takeaway: "IQR provides an outlier detection mechanism resistant to extreme values because it relies exclusively on order percentiles (Q1 and Q3) rather than the mean. Binning complements this by converting noisy, high-variance continuous numbers into discrete, interpretable categories—whether by equal interval width, balanced sample frequency, or explicit domain-driven business rules."
   }
 ];
