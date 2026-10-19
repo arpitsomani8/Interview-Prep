@@ -9561,6 +9561,66 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
+                {/* Different types of pipelines (6 Core Types with Definitions & Examples) */}
+                {item.differentTypesOfPipelines && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.pipelineTypesHeading || "Different types of pipelines"}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Core Classification & Examples
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                      {item.differentTypesOfPipelines.map((pipe, pIdx) => (
+                        <div
+                          key={pIdx}
+                          className={`p-4 rounded-xl bg-black border ${pipe.border || 'border-zinc-800'} hover:border-zinc-700 transition flex flex-col justify-between space-y-3`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="w-6 h-6 rounded-md bg-zinc-900 border border-zinc-700 text-cyan-300 font-mono text-xs flex items-center justify-center font-bold shrink-0">
+                                0{pipe.number}
+                              </span>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                                {pipe.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${pipe.accent}`}>
+                              {pipe.name}
+                            </h5>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {pipe.definition}
+                            </p>
+                          </div>
+
+                          <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-900 space-y-1">
+                            <span className="text-[10px] font-mono text-amber-400 uppercase font-bold block">
+                              Example:
+                            </span>
+                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                              {pipe.example}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Other Common Examples Alert */}
+                    {item.otherCommonExamples && (
+                      <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 flex items-start gap-3">
+                        <span className="text-cyan-400 font-bold text-sm leading-none mt-0.5">💡</span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {item.otherCommonExamples}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* 7 Pipeline Types Grid */}
                 {item.sevenPipelineTypes && (
                   <div className="space-y-3">

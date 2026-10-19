@@ -5648,8 +5648,66 @@ def health_check():
     id: "pipeline",
     title: "Pipelines — Processing Sequences Across Data, ML, RAG & DevOps",
     badge: "Systems Architecture & Automation",
-    summary: "Pipeline: A sequence of connected processing steps. Master the 7 core pipeline types: Data, ML training, inference, RAG, CI/CD, streaming, and multimodal pipelines.",
-    coreDefinition: "Pipeline: A sequence of connected processing steps.",
+    summary: "A pipeline is a sequence of steps where the output of one step becomes the input to the next step. Covers Data, ML training, Inference, RAG, CI/CD, and Multimodal AI pipelines.",
+    coreDefinition: "A pipeline is a sequence of steps where the output of one step becomes the input to the next step.",
+    pipelineTypesHeading: "Different types of pipelines",
+    differentTypesOfPipelines: [
+      {
+        number: "1",
+        name: "1. Data pipeline",
+        definition: "Collects, cleans, transforms, and moves data between systems.",
+        example: "Collect parcel scan records, clean missing values, and store them in a database.",
+        badge: "Data Movement & Hygiene",
+        accent: "text-blue-400",
+        border: "border-blue-800/50"
+      },
+      {
+        number: "2",
+        name: "2. ML training pipeline",
+        definition: "Prepares data, trains a model, evaluates it, and saves an approved model artifact.",
+        example: "Train a model to predict whether a parcel is likely to be damaged.",
+        badge: "Model Training & Evaluation",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        number: "3",
+        name: "3. Inference pipeline",
+        definition: "Takes new data, prepares it for a trained model, runs prediction, and processes the output.",
+        example: "An incoming parcel image goes through YOLO and produces defect detections.",
+        badge: "Online Serving & Scoring",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        number: "4",
+        name: "4. RAG pipeline",
+        definition: "Ingests documents, creates embeddings, retrieves relevant chunks, and passes the context to an LLM.",
+        example: "Answer an employee's question using company policies.",
+        badge: "Knowledge Retrieval & Grounding",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      },
+      {
+        number: "5",
+        name: "5. CI/CD pipeline",
+        definition: "Automates building, testing, and deploying software.",
+        example: "A code change triggers automated tests and a deployment workflow.",
+        badge: "Automated Build & Deploy",
+        accent: "text-rose-400",
+        border: "border-rose-800/50"
+      },
+      {
+        number: "6",
+        name: "6. Multimodal AI pipeline",
+        definition: "Processes multiple data types, such as text, images, audio, or video, and combines their results.",
+        example: "Inspect a parcel image, read its shipping label, and combine both results.",
+        badge: "Vision + OCR + Multi-Modal Fusion",
+        accent: "text-indigo-400",
+        border: "border-indigo-800/50"
+      }
+    ],
+    otherCommonExamples: "Other common examples include ETL/ELT pipelines, streaming pipelines, feature pipelines, model evaluation pipelines, and agent/tool-execution workflows.",
     pipelineTypesSummary: "Pipeline types: Data, ML training, inference, RAG, CI/CD, streaming, and multimodal pipelines.",
     sevenPipelineTypes: [
       {
