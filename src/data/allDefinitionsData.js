@@ -95,7 +95,8 @@ export const definitionBookmarks = [
   { id: "lemmatization", label: "Lemmatization" },
   { id: "ngram-bigram", label: "n-gram / Bigram" },
   { id: "react-pattern", label: "ReAct" },
-  { id: "cot-chain-of-thought", label: "COT / Chain of Thought" }
+  { id: "cot-chain-of-thought", label: "COT / Chain of Thought" },
+  { id: "bagging", label: "Bagging" }
 ];
 
 export const definitionsData = [
@@ -7223,5 +7224,92 @@ print(X.toarray())`,
 Final Answer: 4 staff members.`
     },
     takeaway: "Chain of Thought (CoT) prompts the model to generate intermediate reasoning tokens before committing to an answer, dramatically increasing accuracy on math, logic, and planning tasks. In production, pure generated reasoning should be augmented with deterministic tools (calculators, SQL queries, schema validators) to avoid arithmetic slips and factual hallucinations."
+  },
+  {
+    id: "bagging",
+    title: "Bagging (Bootstrap Aggregating) & Variance Reduction",
+    badge: "Ensemble Learning, Parallel Sampling & Random Forests",
+    summary: "Bagging stands for Bootstrap Aggregating. It trains multiple models on different bootstrap samples of the training data and combines their predictions. Its primary goal is to reduce variance and eliminate overfitting in high-variance base estimators.",
+    coreDefinition: "Bagging stands for Bootstrap Aggregating. It trains multiple models on different bootstrap samples of the training data and combines their predictions.",
+    twoPhases: [
+      {
+        phase: "1. Bootstrap Sampling",
+        role: "Draws B random subsets of size N with replacement from the training dataset.",
+        math: "Each bootstrap sample contains ~63.2% unique training instances; the remaining ~36.8% form Out-of-Bag (OOB) samples.",
+        accent: "text-amber-400",
+        badge: "Sampling with Replacement"
+      },
+      {
+        phase: "2. Aggregation",
+        role: "Trains B independent base estimators in parallel and aggregates their predictions.",
+        math: "Classification uses Majority Voting / Soft Voting; Regression computes the arithmetic mean: y_pred = (1/B) * sum(y_b).",
+        accent: "text-emerald-400",
+        badge: "Ensemble Aggregation"
+      }
+    ],
+    whyBaggingWorks: [
+      {
+        concept: "Variance Reduction",
+        desc: "Individual deep decision trees have low bias but high variance (they memorize training noise). Averaging B uncorrelated predictions reduces variance by a factor of 1/B, smoothing decision boundaries."
+      },
+      {
+        concept: "Out-of-Bag (OOB) Evaluation",
+        desc: "Because ~36.8% of samples are never selected in any given tree's bootstrap, they serve as a built-in cross-validation set, enabling zero-cost validation scores without a separate validation split."
+      },
+      {
+        concept: "Parallel Scalability",
+        desc: "Each tree or base estimator trains completely independently of every other tree, enabling linear parallel speedup across multiple CPU cores or GPU nodes (n_jobs=-1)."
+      }
+    ],
+    baggingVsBoosting: [
+      {
+        aspect: "Training Mechanism",
+        bagging: "Parallel & Independent: All base models train simultaneously on distinct bootstrap subsets.",
+        boosting: "Sequential & Iterative: Each model trains to correct the residual errors of prior models."
+      },
+      {
+        aspect: "Target Objective",
+        bagging: "Variance Reduction: Takes complex, overfit base models and stabilizes their predictions.",
+        boosting: "Bias Reduction: Takes simple weak learners (stumps) and boosts overall predictive capacity."
+      },
+      {
+        aspect: "Base Estimator Type",
+        bagging: "Deep, fully grown unpruned decision trees (low bias, high variance).",
+        boosting: "Shallow trees or decision stumps with depth 1–3 (high bias, low variance)."
+      },
+      {
+        aspect: "Susceptibility to Noise",
+        bagging: "Highly robust against noisy labels and outlier spikes (outliers are diluted).",
+        boosting: "Sensitive to noise (may exponentially over-weight outliers and misclassified points)."
+      },
+      {
+        aspect: "Flagship Algorithm",
+        bagging: "Random Forest (Bagging + random feature subsampling at each node split).",
+        boosting: "XGBoost, LightGBM, CatBoost, AdaBoost."
+      }
+    ],
+    codeExample: {
+      title: "BaggingClassifier & Out-of-Bag (OOB) Evaluation in scikit-learn",
+      language: "python",
+      code: `from sklearn.ensemble import BaggingClassifier
+from sklearn.tree import DecisionTreeClassifier
+
+# Bootstrap Aggregating with 100 parallel decision trees
+bagging_model = BaggingClassifier(
+    estimator=DecisionTreeClassifier(max_depth=None),
+    n_estimators=100,
+    max_samples=1.0,         # Bootstrap sample size equal to original dataset
+    bootstrap=True,           # Sample with replacement
+    oob_score=True,           # Evaluate on Out-of-Bag (OOB) samples (~36.8%)
+    n_jobs=-1,                # Train all 100 trees in parallel across all CPU cores
+    random_state=42
+)
+
+bagging_model.fit(X_train, y_train)
+
+print(f"OOB Validation Accuracy: {bagging_model.oob_score_:.4f}")
+print(f"Test Set Accuracy:       {bagging_model.score(X_test, y_test):.4f}")`
+    },
+    takeaway: "Bagging (Bootstrap Aggregating) trains multiple high-variance base models in parallel on bootstrapped subsets and averages their predictions. By combining independent trees, Bagging dramatically lowers variance and prevents overfitting, forming the mathematical foundation for Random Forests."
   }
 ];
