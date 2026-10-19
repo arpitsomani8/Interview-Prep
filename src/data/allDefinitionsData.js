@@ -89,7 +89,8 @@ export const definitionBookmarks = [
   { id: "temperature", label: "Temperature" },
   { id: "pydantic", label: "Pydantic" },
   { id: "zero-shot-few-shot", label: "Zero-shot / Few-shot" },
-  { id: "lora", label: "LoRA" }
+  { id: "lora", label: "LoRA" },
+  { id: "bert", label: "BERT" }
 ];
 
 export const definitionsData = [
@@ -6675,5 +6676,79 @@ model.print_trainable_parameters()
 # A common modern LLM fine-tuning stack is Transformers + PEFT + PyTorch.`
     },
     takeaway: "LoRA is an open algorithmic technique—not tied to TensorFlow. Modern generative AI standardizes on Transformers + PEFT + PyTorch, freezing base weights and training low-rank A and B matrices to enable enterprise domain adaptation on cost-effective hardware."
+  },
+  {
+    id: "bert",
+    title: "BERT (Bidirectional Encoder Representations from Transformers) & Text Preprocessing",
+    badge: "NLP Encoders, Contextual Embeddings & Polysemy Resolution",
+    summary: "BERT: “A pretrained bidirectional Transformer encoder that creates contextual token representations.” It processes text by looking at both left and right context simultaneously, resolving word sense ambiguity and generating rich embeddings for downstream NLP tasks.",
+    verbatimCore: [
+      {
+        term: "BERT",
+        definition: "A pretrained bidirectional Transformer encoder that creates contextual token representations."
+      },
+      {
+        term: "Preprocessing",
+        definition: "Preparing raw text for an NLP task through appropriate cleaning, normalization, tokenization, and sometimes stemming or lemmatization."
+      }
+    ],
+    textPreprocessing: {
+      headline: "Text Preprocessing in Modern NLP",
+      definition: "Text preprocessing is the process of cleaning and preparing text before feeding it into an NLP or machine-learning pipeline.",
+      stages: [
+        {
+          stage: "1. Cleaning & Filtering",
+          desc: "Removing HTML tags, special symbols, noise, and whitespace formatting issues."
+        },
+        {
+          stage: "2. Normalization & Case Folding",
+          desc: "Lowercasing, Unicode normalization (NFKC), accent stripping, and contraction expansion."
+        },
+        {
+          stage: "3. Subword Tokenization",
+          desc: "Splitting text into discrete tokens using algorithms like WordPiece (BERT) or BPE (GPT) to handle out-of-vocabulary words."
+        },
+        {
+          stage: "4. Stemming or Lemmatization",
+          desc: "Reducing words to their root forms (e.g. 'running' → 'run') when classical models or keyword indexing require canonical base terms."
+        }
+      ]
+    },
+    bidirectionalContext: {
+      fullName: "BERT stands for Bidirectional Encoder Representations from Transformers. It is a pretrained language model based on the Transformer encoder architecture.",
+      contextualExplanation: "BERT learns contextual representations of text. It uses information from both the left and right context of a token to build its representation.",
+      polysemyExample: {
+        title: "The Polysemy Problem: The Word 'bank'",
+        sentence1: "“I deposited money at the bank.”",
+        meaning1: "Financial institution (money, deposits, vaults)",
+        sentence2: "“We sat on the river bank.”",
+        meaning2: "River bank (geographical slope, water, river)",
+        resolution: "BERT can produce different contextual representations for bank depending on the surrounding words."
+      }
+    },
+    isBertAnEmbedding: {
+      question: "Is BERT an embedding?",
+      importantDistinction: "There is an important distinction:",
+      points: [
+        {
+          point: "BERT is a language model.",
+          detail: "A deep 12-to-24 layer Transformer encoder network with millions of learned parameters."
+        },
+        {
+          point: "BERT produces contextual token representations, which are embeddings.",
+          detail: "For an input of N tokens, BERT outputs N 768-dimensional contextual vectors."
+        },
+        {
+          point: "You can derive a single sentence or document vector from BERT's output using a pooling method.",
+          detail: "Mean pooling across token vectors or extracting the special [CLS] token representation."
+        },
+        {
+          point: "Standard BERT is not automatically the best choice for semantic similarity search; models specifically trained for sentence embeddings, such as Sentence-BERT variants, are often more suitable.",
+          detail: "Raw BERT embeddings suffer from anisotropy (collapse into a narrow cone) and perform poorly on cosine similarity without siamese fine-tuning."
+        }
+      ],
+      conclusion: "So, yes, BERT can be used to produce embeddings, but BERT and an embedding are not the same thing."
+    },
+    takeaway: "BERT is a bidirectional Transformer encoder that produces contextual token representations by looking at both left and right context simultaneously. While BERT can generate embeddings via pooling, it is fundamentally a language model; for production semantic search and vector retrieval, specialized Siamese architectures like Sentence-BERT (SBERT) should be utilized."
   }
 ];
