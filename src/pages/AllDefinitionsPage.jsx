@@ -12032,6 +12032,220 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 97: ReAct Pattern */}
+            {item.id === 'react-pattern' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Core Definition</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Agentic Design Pattern
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. The Alternating Loop: Thought -> Action -> Observation */}
+                {item.reactLoopSteps && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>The Cyclic ReAct Orchestration Loop</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        Iterative Convergence
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+                      {item.reactLoopSteps.map((st, sIdx) => (
+                        <div key={sIdx} className={`p-4 rounded-xl bg-black border ${st.border} space-y-2 hover:border-zinc-700 transition flex flex-col justify-between`}>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono ${st.accent}`}>
+                                {st.step}
+                              </h5>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {st.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {st.role}
+                            </p>
+                          </div>
+                          <div className="p-2 rounded bg-zinc-950 border border-zinc-900 font-mono text-[11px] text-zinc-400">
+                            {st.desc}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Concrete Execution Trace */}
+                {item.concreteTrace && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 shadow-lg">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-2">
+                      <div>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                          <Layers className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Concrete ReAct Execution Trace</span>
+                        </h4>
+                        <span className="text-xs text-zinc-400 font-sans mt-0.5 block">
+                          Question: <strong className="text-white font-mono">"{item.concreteTrace.userQuestion}"</strong>
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 shrink-0 self-start sm:self-auto">
+                        Multi-Hop Reasoning
+                      </span>
+                    </div>
+
+                    <div className="space-y-2.5 pt-1">
+                      {item.concreteTrace.steps.map((st, sIdx) => {
+                        const isFinal = st.type === "Final Answer";
+                        const isAction = st.type.startsWith("Action");
+                        const isObservation = st.type.startsWith("Observation");
+                        const isThought = st.type.startsWith("Thought");
+
+                        let borderCol = "border-zinc-800";
+                        let textCol = "text-zinc-300";
+                        let tagBg = "bg-zinc-900 text-zinc-400 border-zinc-800";
+
+                        if (isThought) {
+                          borderCol = "border-amber-900/40";
+                          textCol = "text-amber-200/95";
+                          tagBg = "bg-amber-950/80 text-amber-300 border-amber-800/60";
+                        } else if (isAction) {
+                          borderCol = "border-cyan-900/40";
+                          textCol = "text-cyan-200/95";
+                          tagBg = "bg-cyan-950/80 text-cyan-300 border-cyan-800/60";
+                        } else if (isObservation) {
+                          borderCol = "border-emerald-900/40";
+                          textCol = "text-emerald-200/95";
+                          tagBg = "bg-emerald-950/80 text-emerald-300 border-emerald-800/60";
+                        } else if (isFinal) {
+                          borderCol = "border-emerald-500/50 bg-emerald-950/20";
+                          textCol = "text-white";
+                          tagBg = "bg-emerald-900 text-emerald-200 border-emerald-700";
+                        }
+
+                        return (
+                          <div key={sIdx} className={`p-3 rounded-xl bg-black border ${borderCol} flex flex-col sm:flex-row sm:items-start gap-2.5 text-xs`}>
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase shrink-0 border ${tagBg} self-start`}>
+                              {st.type}
+                            </span>
+                            <span className={`font-mono leading-relaxed ${textCol}`}>
+                              {st.content}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Comparison Table: ReAct vs CoT vs Direct Tool Calling */}
+                {item.comparisonWithOthers && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-purple-400" />
+                        <span>Paradigm Comparison: ReAct vs Alternatives</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Agentic Architectures
+                      </span>
+                    </div>
+
+                    <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                          <tr>
+                            <th className="py-3 px-3 font-semibold text-zinc-400 w-1/4">Paradigm</th>
+                            <th className="py-3 px-3 font-semibold text-amber-400 w-1/4">Internal Reasoning</th>
+                            <th className="py-3 px-3 font-semibold text-cyan-400 w-1/4">External Acting / Tools</th>
+                            <th className="py-3 px-3 font-semibold text-rose-400">Production Reliability Profile</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.comparisonWithOthers.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-3.5 px-3 font-mono font-bold text-white align-top">
+                                {row.paradigm}
+                              </td>
+                              <td className="py-3.5 px-3 text-amber-200/90 align-top text-xs leading-relaxed font-mono">
+                                {row.reasoning}
+                              </td>
+                              <td className="py-3.5 px-3 text-cyan-200/90 align-top text-xs leading-relaxed font-mono">
+                                {row.acting}
+                              </td>
+                              <td className="py-3.5 px-3 text-zinc-300 align-top text-xs leading-relaxed">
+                                {row.vulnerability}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 md:hidden">
+                      {item.comparisonWithOthers.map((row, rIdx) => (
+                        <div key={rIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2">
+                          <h6 className="text-xs font-bold text-white font-mono">{row.paradigm}</h6>
+                          <div className="p-2 rounded bg-amber-950/20 border border-amber-900/40 text-xs text-amber-200/90 font-mono">
+                            <strong className="block text-[10px] uppercase text-amber-400">Reasoning:</strong>
+                            {row.reasoning}
+                          </div>
+                          <div className="p-2 rounded bg-cyan-950/20 border border-cyan-900/40 text-xs text-cyan-200/90 font-mono">
+                            <strong className="block text-[10px] uppercase text-cyan-400">Acting:</strong>
+                            {row.acting}
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed">
+                            {row.vulnerability}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Production Guardrails */}
+                {item.productionGuardrails && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Production ReAct Deployment Guardrails</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {item.productionGuardrails.map((g, gIdx) => (
+                        <div key={gIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition">
+                          <h5 className="text-xs font-bold text-emerald-400 font-mono">
+                            {g.rule}
+                          </h5>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {g.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

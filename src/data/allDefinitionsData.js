@@ -93,7 +93,8 @@ export const definitionBookmarks = [
   { id: "bert", label: "BERT" },
   { id: "stemming", label: "Stemming" },
   { id: "lemmatization", label: "Lemmatization" },
-  { id: "ngram-bigram", label: "n-gram / Bigram" }
+  { id: "ngram-bigram", label: "n-gram / Bigram" },
+  { id: "react-pattern", label: "ReAct" }
 ];
 
 export const definitionsData = [
@@ -7002,5 +7003,124 @@ print(X.toarray())`,
       }
     ],
     takeaway: "An n-gram captures consecutive sequences of n tokens, enabling classical bag-of-words pipelines to incorporate local context, multi-word terminology, and negation without the heavy computational overhead of deep neural architectures."
+  },
+  {
+    id: "react-pattern",
+    title: "ReAct Pattern (Reasoning and Acting in LLM Agents)",
+    badge: "Agentic Architecture, Tool Orchestration & Dynamic Reasoning",
+    summary: "ReAct stands for Reasoning and Acting. It is a pattern in which an LLM alternates between deciding what to do and using tools to gather information or perform an action.",
+    coreDefinition: "ReAct stands for Reasoning and Acting. It is a pattern in which an LLM alternates between deciding what to do and using tools to gather information or perform an action.",
+    reactLoopSteps: [
+      {
+        step: "1. Thought (Reasoning)",
+        role: "The model explains its internal reasoning, evaluates the current state, and determines what information is needed next.",
+        desc: "e.g. 'I need to check the return window policy before verifying if parcel #84920 is eligible.'",
+        accent: "text-amber-400",
+        border: "border-amber-800/50",
+        badge: "Internal Monologue"
+      },
+      {
+        step: "2. Action (Acting)",
+        role: "The model emits a structured tool call or API command with specific input arguments.",
+        desc: "e.g. Action: SearchPolicy[query='parcel return window'] or QueryDB[order_id='84920']",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50",
+        badge: "Tool Invocation"
+      },
+      {
+        step: "3. Observation (Feedback)",
+        role: "The external environment or system executes the tool and appends the ground-truth result back into context.",
+        desc: "e.g. Observation: 'Policy says returns must be initiated within 30 days of delivery.'",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50",
+        badge: "Environment Feedback"
+      }
+    ],
+    concreteTrace: {
+      userQuestion: "Can customer order #84920 still be returned for a full refund?",
+      steps: [
+        {
+          type: "Thought 1",
+          content: "I need to find the delivery date of order #84920 and inspect company refund policy terms.",
+          tag: "Reasoning"
+        },
+        {
+          type: "Action 1",
+          content: "DatabaseLookup(table='orders', id='84920')",
+          tag: "Acting"
+        },
+        {
+          type: "Observation 1",
+          content: "{ 'order_id': 84920, 'status': 'Delivered', 'delivered_date': '2026-10-12', 'amount': 149.99 }",
+          tag: "Tool Result"
+        },
+        {
+          type: "Thought 2",
+          content: "The order was delivered on 2026-10-12 (7 days ago). Now I must check whether the standard return window exceeds 7 days.",
+          tag: "Reasoning"
+        },
+        {
+          type: "Action 2",
+          content: "PolicyVectorSearch(query='how many days for refund')",
+          tag: "Acting"
+        },
+        {
+          type: "Observation 2",
+          content: "'Customers have 30 days from the delivery date to request a full refund.'",
+          tag: "Tool Result"
+        },
+        {
+          type: "Thought 3",
+          content: "7 days is within the 30-day window. I now have all required facts to issue the final answer.",
+          tag: "Reasoning"
+        },
+        {
+          type: "Final Answer",
+          content: "Yes, order #84920 is eligible for a full refund. It was delivered on October 12, 2026 (7 days ago), which is well within the company's 30-day return window.",
+          tag: "Completion"
+        }
+      ]
+    },
+    comparisonWithOthers: [
+      {
+        paradigm: "Standard Zero-Shot LLM",
+        reasoning: "None (One forward pass)",
+        acting: "None",
+        vulnerability: "High risk of hallucination on dynamic data or internal private APIs."
+      },
+      {
+        paradigm: "Chain-of-Thought (CoT)",
+        reasoning: "Yes (Multi-step internal reasoning)",
+        acting: "None (Cannot access external databases)",
+        vulnerability: "Can hallucinate intermediate facts or stale information."
+      },
+      {
+        paradigm: "Direct Tool Calling",
+        reasoning: "Low / Implicit",
+        acting: "Yes (Emits function calls directly)",
+        vulnerability: "Cannot self-correct if a tool returns unexpected or incomplete results."
+      },
+      {
+        paradigm: "ReAct Pattern",
+        reasoning: "Explicit (Thought before each Action)",
+        acting: "Yes (Executes tools and reads Observations)",
+        vulnerability: "Highest reliability, self-correcting error recovery, full audit trail."
+      }
+    ],
+    productionGuardrails: [
+      {
+        rule: "Max Iteration Loop Ceiling",
+        desc: "Cap the maximum ReAct cycles (e.g. max_steps = 5–8) to prevent runaway token spend and infinite loop hangs."
+      },
+      {
+        rule: "Tool Argument Schema Validation",
+        desc: "Use Pydantic to strictly validate tool arguments before triggering external database writes or API mutations."
+      },
+      {
+        rule: "Timeouts & Fallbacks",
+        desc: "Apply strict per-tool timeouts; if an observation fails or times out, the model can reason about an alternative tool."
+      }
+    ],
+    takeaway: "The ReAct (Reasoning + Acting) pattern equips LLMs with an alternating loop of internal reasoning ('Thought') and real-world execution ('Action' & 'Observation'). By pairing deliberate planning with live tool execution, ReAct drastically reduces hallucinations and enables robust, self-correcting agentic workflows."
   }
 ];
