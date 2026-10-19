@@ -129,7 +129,8 @@ export const definitionBookmarks = [
   { id: "xgboost", label: "XGBoost" },
   { id: "acceptance-criteria", label: "Acceptance Criteria" },
   { id: "eigenvector-pca", label: "Eigenvectors & PCA" },
-  { id: "tensor", label: "Tensor & TensorFlow" }
+  { id: "tensor", label: "Tensor & TensorFlow" },
+  { id: "security-and-error-handling", label: "Security & Error Handling" }
 ];
 
 export const definitionsData = [
@@ -10046,5 +10047,136 @@ model.compile(
 model.summary()`
     },
     takeaway: "Tensors form the mathematical substrate of all deep learning architectures. By generalizing multidimensional data arrays from scalars and vectors up to N-dimensional hypercubes, tensors standardize input features, weight matrices, and gradient propagations. TensorFlow and its high-level API tf.keras leverage this abstraction to execute accelerated computational graphs seamlessly across CPUs, GPUs, and TPUs."
+  },
+  {
+    id: "security-and-error-handling",
+    title: "Security and Error Handling (Production MCP Servers & AI Systems)",
+    badge: "Production Hardening, Zero-Trust Tooling & Injection Defenses",
+    summary: "Production security and error handling for MCP servers and AI tool-calling services requires implementing 9 critical guardrails: Authentication, Authorization, Input validation, Least privilege, Timeouts, Error handling, Audit logs, Network security, and Prompt-injection defenses.",
+    introHeading: "Security and error handling",
+    introSubtitle: "For production, implement:",
+    securityPillars: [
+      {
+        title: "Authentication",
+        verbatim: "identify the user or service calling the MCP server.",
+        mechanism: "mTLS, API keys, JWT / OAuth 2.0 bearer tokens verifying client caller identity before tool execution.",
+        badge: "Caller Identity",
+        accent: "text-blue-400",
+        border: "border-blue-800/50"
+      },
+      {
+        title: "Authorization",
+        verbatim: "confirm the caller can inspect that parcel or access that tenant's data.",
+        mechanism: "Role-Based Access Control (RBAC) & tenant isolation; check permissions on specific resources (e.g. parcel_id, tenant_id).",
+        badge: "Tenant Isolation & RBAC",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        title: "Input validation",
+        verbatim: "validate IDs, argument types, payload sizes, and allowed values.",
+        mechanism: "Strict Pydantic schemas, regex patterns for IDs, string length boundaries, and payload caps to block buffer/deserialization attacks.",
+        badge: "Schema & Type Bounds",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      },
+      {
+        title: "Least privilege",
+        verbatim: "give database and model-service credentials only the permissions required.",
+        mechanism: "Read-only DB roles for query tools; scoped IAM policies avoiding admin/superuser credentials in tool execution environments.",
+        badge: "Scoped IAM & DB Roles",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        title: "Timeouts",
+        verbatim: "prevent a slow model or database call from hanging indefinitely.",
+        mechanism: "Explicit asyncio/socket timeouts (e.g., 5s DB queries, 15s model inferences) preventing connection pool exhaustion and thread starvation.",
+        badge: "Resource Protection",
+        accent: "text-rose-400",
+        border: "border-rose-800/50"
+      },
+      {
+        title: "Error handling",
+        verbatim: "return clear, controlled errors without leaking secrets or internal stack traces.",
+        mechanism: "Sanitized error envelopes with generic user-safe error messages; log detailed tracebacks and connection strings only to private backend logs.",
+        badge: "Sanitized Envelopes",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      },
+      {
+        title: "Audit logs",
+        verbatim: "record tool invocation, identity, outcome, and request correlation ID without logging unnecessary sensitive data.",
+        mechanism: "Structured JSON logging with correlation_id, timestamp, caller_id, tool_name, and status code, while redacting PII and auth tokens.",
+        badge: "Telemetry & Auditing",
+        accent: "text-indigo-400",
+        border: "border-indigo-800/50"
+      },
+      {
+        title: "Network security",
+        verbatim: "use TLS for remote connections and protect credentials.",
+        mechanism: "Enforce TLS 1.3 for all remote transports (SSE, HTTP, gRPC) and store secrets in HSM/KeyVault rather than environment files.",
+        badge: "Encrypted Transport",
+        accent: "text-teal-400",
+        border: "border-teal-800/50"
+      },
+      {
+        title: "Prompt-injection defenses",
+        verbatim: "treat retrieved documents and tool outputs as untrusted data; don't let them override authorization rules.",
+        mechanism: "Enforce strict separation between system instructions and untrusted tool outputs/retrieved passages; never execute raw LLM instructions attempting privilege escalation.",
+        badge: "Untrusted Boundary Defense",
+        accent: "text-red-400",
+        border: "border-red-800/50"
+      }
+    ],
+    codeExample: {
+      title: "Hardened Production MCP Server in Python",
+      language: "python",
+      code: `import asyncio
+import logging
+from pydantic import BaseModel, Field, constr
+from mcp.server import MCPServer
+
+# Initialize MCP server and structured audit logger
+mcp = MCPServer("Hardened Production Server")
+logger = logging.getLogger("mcp_security")
+
+# 1. Input Validation with Pydantic (Strict ID regex and bounded length)
+class ParcelQuery(BaseModel):
+    parcel_id: constr(pattern=r"^PKG-[0-9]{6}$") = Field(..., description="Unique parcel identifier")
+    tenant_id: str = Field(..., min_length=3, max_length=32)
+
+@mcp.tool()
+async def inspect_parcel(query: ParcelQuery, caller_context: dict) -> dict:
+    """Securely inspects parcel status with production guardrails."""
+    correlation_id = caller_context.get("correlation_id", "req-unknown")
+    caller_tenant = caller_context.get("tenant_id")
+    
+    # 2. Authentication & Authorization Check
+    if not caller_context.get("authenticated"):
+        return {"status": "error", "message": "Authentication required", "code": 401}
+        
+    if caller_tenant != query.tenant_id:
+        logger.warning(f"Unauthorized cross-tenant access attempt by {caller_tenant}", extra={"cid": correlation_id})
+        return {"status": "error", "message": "Forbidden: Tenant isolation violation", "code": 403}
+
+    # 3. Timeout Protection & Controlled Error Handling
+    try:
+        async with asyncio.timeout(3.0):  # 3s strict timeout
+            # Least-privilege query execution
+            parcel_data = await query_read_only_db(query.parcel_id)
+            
+        # 4. Audit Logging (without leaking PII)
+        logger.info(f"Tool inspect_parcel executed for {query.parcel_id}", extra={"cid": correlation_id, "status": 200})
+        return {"status": "success", "data": parcel_data}
+        
+    except asyncio.TimeoutError:
+        return {"status": "error", "message": "Service timeout", "code": 504}
+    except Exception as e:
+        # Sanitized error response - zero stack trace or internal credential leakage!
+        logger.error(f"Internal error: {str(e)}", extra={"cid": correlation_id}, exc_info=True)
+        return {"status": "error", "message": "Internal service error", "code": 500}`
+    },
+    takeaway: "In enterprise AI architectures and MCP deployments, security cannot rely on LLM alignment alone. Hard security boundaries—strict authentication, tenant-isolated authorization, schema-validated inputs, least-privilege database roles, aggressive timeouts, sanitized error responses, and prompt-injection defenses—must be enforced deterministically in the code layer."
   }
 ];
