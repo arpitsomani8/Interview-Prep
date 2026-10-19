@@ -12246,6 +12246,170 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 98: Chain of Thought (CoT) */}
+            {item.id === 'cot-chain-of-thought' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-black border border-purple-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-purple-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Core Definition</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
+                      Reasoning Paradigm
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Is CoT used in GenAI? Interview Q&A Card */}
+                {item.genaiQuestion && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-amber-800/50 space-y-4 shadow-lg">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-amber-400" />
+                        <span>{item.genaiQuestion.question}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        GenAI Application
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-black border border-amber-900/40 space-y-2">
+                      <h5 className="text-sm font-bold text-amber-300 font-mono">
+                        {item.genaiQuestion.answerHeadline}
+                      </h5>
+                      <p className="text-xs text-zinc-300 leading-relaxed font-sans pt-1">
+                        {item.genaiQuestion.productionInsight}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. CoT Variations & Test-Time Reasoning */}
+                {item.cotVariations && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Chain of Thought Methodologies & Evolution</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        Prompt vs Test-Time Compute
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+                      {item.cotVariations.map((v, vIdx) => (
+                        <div key={vIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition flex flex-col justify-between">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono ${v.accent}`}>
+                                {v.type}
+                              </h5>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {v.badge}
+                              </span>
+                            </div>
+                            <div className="p-1.5 rounded bg-zinc-950 border border-zinc-900 font-mono text-[11px] text-amber-300">
+                              {v.trigger}
+                            </div>
+                          </div>
+                          <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
+                            {v.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Concrete Reasoning Comparison */}
+                {item.reasoningTraceExample && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Concrete Problem: Direct Output vs. Chain of Thought</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Trace Auditability
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-black border border-zinc-900 text-xs font-mono text-zinc-200">
+                      <strong className="text-amber-400 uppercase block mb-1">Scenario:</strong>
+                      {item.reasoningTraceExample.problem}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                      <div className="p-3.5 rounded-xl bg-black border border-rose-900/40 space-y-2">
+                        <span className="text-xs font-bold font-mono text-rose-400 uppercase block">
+                          Without Chain of Thought (Direct Output):
+                        </span>
+                        <div className="p-2.5 rounded bg-rose-950/20 border border-rose-900/30 text-xs font-mono text-rose-200">
+                          {item.reasoningTraceExample.withoutCoT}
+                        </div>
+                        <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                          The model jumps directly to the answer with zero scratchpad tokens, increasing hallucination rates on multi-step arithmetic.
+                        </p>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-black border border-emerald-900/40 space-y-2">
+                        <span className="text-xs font-bold font-mono text-emerald-400 uppercase block">
+                          With Chain of Thought (Step-by-Step Scratchpad):
+                        </span>
+                        <pre className="p-2.5 rounded bg-emerald-950/20 border border-emerald-900/30 text-xs font-mono text-emerald-200 whitespace-pre-wrap leading-relaxed">
+                          {item.reasoningTraceExample.withCoT}
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Tool-Augmented Synergy */}
+                {item.toolAugmentedSynergy && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 shadow-lg">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.toolAugmentedSynergy.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Production Tool Integration
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+                      {item.toolAugmentedSynergy.points.map((pt, pIdx) => (
+                        <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
+                          <h5 className="text-xs font-bold font-mono text-amber-300">
+                            {pt.hazard}
+                          </h5>
+                          <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                            {pt.explanation}
+                          </p>
+                          <div className="p-2 rounded bg-emerald-950/30 border border-emerald-900/50 text-[11px] font-mono text-emerald-300">
+                            <strong className="block text-emerald-400 text-[10px] uppercase">Solution:</strong>
+                            {pt.solution}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

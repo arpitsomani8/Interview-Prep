@@ -94,7 +94,8 @@ export const definitionBookmarks = [
   { id: "stemming", label: "Stemming" },
   { id: "lemmatization", label: "Lemmatization" },
   { id: "ngram-bigram", label: "n-gram / Bigram" },
-  { id: "react-pattern", label: "ReAct" }
+  { id: "react-pattern", label: "ReAct" },
+  { id: "cot-chain-of-thought", label: "COT / Chain of Thought" }
 ];
 
 export const definitionsData = [
@@ -7122,5 +7123,70 @@ print(X.toarray())`,
       }
     ],
     takeaway: "The ReAct (Reasoning + Acting) pattern equips LLMs with an alternating loop of internal reasoning ('Thought') and real-world execution ('Action' & 'Observation'). By pairing deliberate planning with live tool execution, ReAct drastically reduces hallucinations and enables robust, self-correcting agentic workflows."
+  },
+  {
+    id: "cot-chain-of-thought",
+    title: "Chain of Thought (CoT) Prompting & Test-Time Reasoning",
+    badge: "Intermediate Reasoning, Multi-Step Problem Solving & Tool-Augmented LLMs",
+    summary: "Chain of Thought is an approach in which a model works through intermediate reasoning steps to arrive at an answer. Is CoT used in GenAI? Yes. Reasoning-oriented prompting and models can help with multi-step tasks. In production systems, it is often better to combine model reasoning with reliable tools, such as a database query or calculator, instead of trusting generated reasoning alone.",
+    coreDefinition: "Chain of Thought is an approach in which a model works through intermediate reasoning steps to arrive at an answer.",
+    genaiQuestion: {
+      question: "Is CoT used in GenAI?",
+      answerHeadline: "Yes. Reasoning-oriented prompting and models can help with multi-step tasks.",
+      productionInsight: "In production systems, it is often better to combine model reasoning with reliable tools, such as a database query or calculator, instead of trusting generated reasoning alone."
+    },
+    cotVariations: [
+      {
+        type: "Zero-Shot CoT",
+        trigger: "Trigger phrase: 'Let's think step by step.'",
+        desc: "Encourages the model to allocate output tokens to an explicit reasoning scratchpad before committing to a final conclusion without needing prior examples.",
+        accent: "text-amber-400",
+        badge: "Zero-Shot Prompting"
+      },
+      {
+        type: "Few-Shot CoT",
+        trigger: "Prompt includes 2–4 worked demonstrations showing step-by-step reasoning chains.",
+        desc: "Steers formatting, depth of reasoning, and logical decomposition structure through In-Context Learning demonstrations.",
+        accent: "text-cyan-400",
+        badge: "Demonstration-Based"
+      },
+      {
+        type: "Native Test-Time Reasoning (RL-Trained)",
+        trigger: "Frontier reasoners (e.g. OpenAI o1/o3, DeepSeek-R1)",
+        desc: "Uses test-time compute where the model generates hundreds of internal hidden reasoning tokens, backtracking and correcting mistakes autonomously.",
+        accent: "text-purple-400",
+        badge: "Test-Time Compute"
+      }
+    ],
+    toolAugmentedSynergy: {
+      title: "Why Pure Generated Reasoning Fails (and Why Tools Win in Production)",
+      points: [
+        {
+          hazard: "Pure Generated Arithmetic",
+          explanation: "LLMs predict the next token based on statistical patterns; multiplying large numbers often hallucinations subtle digit errors.",
+          solution: "Delegate calculations to a deterministic Python interpreter or Calculator API."
+        },
+        {
+          hazard: "Factual Drift & Hallucination",
+          explanation: "Multi-step reasoning over internal parametric memory can propagate erroneous initial assumptions across intermediate steps.",
+          solution: "Ground each step against SQL databases, Vector indices, or real-time APIs (ReAct / Tool-Use)."
+        },
+        {
+          hazard: "Strict Business Logic",
+          explanation: "Tax rates, discount rules, and SLA dates must adhere to deterministic enterprise rules rather than probabilistic next-token generation.",
+          solution: "Validate step transitions with strongly-typed Pydantic schemas and deterministic services."
+        }
+      ]
+    },
+    reasoningTraceExample: {
+      problem: "A courier depot processes 450 parcels/hr. 12% are flagged for manual re-labeling. If manual re-labeling takes 4 minutes per parcel, how many staff members are needed?",
+      withoutCoT: "Answer: 4 staff members. (Black-box guess without intermediate audit trail)",
+      withCoT: `1. Calculate flagged parcels: 450 parcels/hr * 0.12 = 54 parcels/hr requiring manual re-labeling.
+2. Calculate total manual labor minutes needed per hour: 54 parcels * 4 minutes = 216 minutes of labor per hour.
+3. Calculate number of staff needed: 216 minutes / 60 minutes per staff-hour = 3.6 staff members.
+4. Rounding up to ensure all parcels are processed within the hour: 4 full-time staff members are required.
+Final Answer: 4 staff members.`
+    },
+    takeaway: "Chain of Thought (CoT) prompts the model to generate intermediate reasoning tokens before committing to an answer, dramatically increasing accuracy on math, logic, and planning tasks. In production, pure generated reasoning should be augmented with deterministic tools (calculators, SQL queries, schema validators) to avoid arithmetic slips and factual hallucinations."
   }
 ];
