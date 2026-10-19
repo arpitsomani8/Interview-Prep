@@ -176,12 +176,10 @@ export default function HybridPage() {
                     <span>{item.title}</span>
                   </button>
                   {isAlphabetChange && (
-                    <span
+                    <div
                       aria-hidden="true"
-                      className="self-center text-cyan-400 font-bold text-base px-1 select-none font-mono"
-                    >
-                      ,
-                    </span>
+                      className="basis-full w-full h-2 border-b border-zinc-800/40 my-1"
+                    />
                   )}
                 </React.Fragment>
               );

@@ -86,170 +86,166 @@ Future & In-Progress R&D:
       id: "azure-ai-vision",
       title: "Azure AI Vision",
       badge: "Multimodal Embeddings",
-      summary: "Converting both clothing photos and text descriptions into 1024-dimensional vectors.",
+      summary: "Turns clothing photos and text descriptions into matching 1024-number lists (vectors) so the computer can compare visual styles.",
       details: [
-        "Shared Vector Space: It uses two separate neural towers (one for images, one for text) that place visual styles and written descriptions into the exact same coordinate space.",
-        "Fashion Understanding: It understands fashion details like collars, sleeve cuts, fabrics, and drape much better than generic text models.",
-        "Ready-to-Use APIs: Gives us simple endpoints (vectorizeImage and vectorizeText) without needing to manage our own GPU servers."
+        "In Simple Terms: Think of it as a fashion translator. It looks at a picture of a floral dress and creates a digital fingerprint of 1024 numbers representing its color, pattern, cut, and fabric.",
+        "Why We Need It: It places both photos and text descriptions into the exact same coordinate space. If a customer types 'green summer linen shirt', the search points straight to photos of green linen shirts even if the word 'linen' isn't in the product title.",
+        "Interview Answer: 'We used Azure AI Vision because it provides pre-trained fashion embeddings out-of-the-box via managed API endpoints, saving us from hosting and maintaining expensive GPU servers.'"
       ]
     },
     {
       id: "azure-openai",
       title: "Azure OpenAI",
-      badge: "GPT-4o Reasoning",
-      summary: "Using GPT-4o as a smart fashion copilot to advise retailers.",
+      badge: "GPT-4o Fashion Stylist",
+      summary: "Acts as an expert digital stylist that reviews search results, compares fabrics, and gives honest advice to retail buyers.",
       details: [
-        "Smart Division of Labor: GPT-4o does not search through 10,000 images itself. ChromaDB does the fast search first, and GPT-4o only looks at the top few matching items.",
-        "Grounded Advice: It looks at the customer's query, the product images, and the fabric specs to explain styling options and compare materials.",
-        "Truthful Answers: Because it gets real product data injected from PostgreSQL, all its suggestions are accurate and practical."
+        "In Simple Terms: It's like having an experienced fashion designer standing next to the shopper, answering questions like 'Will this blazer match these linen trousers?'",
+        "Smart Division of Labor: GPT-4o never scans 10,000 photos itself—that would be way too slow and expensive. Instead, ChromaDB finds the top 50 matches first, and GPT-4o only reviews those top items.",
+        "Interview Answer: 'We use GPT-4o for high-level styling advice, grounded directly with live inventory and fabric specs from PostgreSQL so it never invents fake prices or out-of-stock items.'"
       ]
     },
     {
       id: "cosine-similarity",
       title: "Cosine Similarity",
-      badge: "Similarity Metric",
-      summary: "Measuring the angle between two vectors instead of their size.",
+      badge: "Style Match Score",
+      summary: "Measures the angle between two style vectors to score how closely a customer's request matches a catalog item from 0% to 100%.",
       details: [
-        "Angle Over Magnitude: A score of 1.0 means identical angle/direction (perfect match), 0 means completely unrelated, and -1 means opposite.",
-        "Image Size Doesn't Matter: Whether an image is high resolution or low resolution, its direction in vector space captures the core style.",
-        "Fast Hardware Execution: With L2 normalization, calculating cosine similarity between query and catalog items uses fast AVX CPU instructions."
+        "In Simple Terms: Imagine two arrows pointing in space. If they point in the exact same direction, the angle is 0° and the match is 1.0 (100% match). If they are perpendicular, the match is 0.",
+        "Why Angle Beats Distance: A high-resolution photo and a low-resolution photo might have different vector lengths, but their angle points to the exact same visual style.",
+        "Interview Answer: 'We use cosine similarity because it focuses purely on visual direction and style rather than image brightness or file size.'"
       ]
     },
     {
       id: "hnsw",
       title: "HNSW",
-      badge: "Graph-Based Search",
-      summary: "A multi-layered graph that jumps directly to the closest matching designs in milliseconds.",
+      badge: "Millisecond Graph Search",
+      summary: "An express-highway graph algorithm that searches through 10,000 clothing designs in less than 5 milliseconds.",
       details: [
-        "Skip-List for Vectors: Think of it like an express highway with local exits. The top layer takes huge leaps across categories, and bottom layers zoom in on the exact style.",
-        "Logarithmic Speed: Replaces slow O(N) scanning of all 10,000 items with O(log N) graph traversal, finding matches in under 5 milliseconds.",
-        "Runs in Memory: For 10,000 fashion designs, the entire HNSW graph takes just ~40MB of RAM, so it runs right inside our backend container."
+        "In Simple Terms: Think of searching a phonebook or using highway express lanes. Instead of checking all 10,000 items one by one, HNSW takes a few big leaps across categories, then zooms into the exact matching style.",
+        "Why It Matters: A linear scan of 10,000 items takes 150ms+. HNSW cuts that down to 4ms, keeping our web application feeling instantaneous.",
+        "Interview Answer: 'HNSW gives us logarithmic search speed (O(log N)) and runs in-memory, requiring only ~40MB of RAM for our entire 10,000-item catalog.'"
       ]
     },
     {
       id: "l2-normalization",
       title: "L2 Normalization",
-      badge: "Vector Math Shortcut",
-      summary: "Rescaling every vector so its mathematical length is exactly 1.0.",
+      badge: "Speed Calculation Shortcut",
+      summary: "Rescales every vector so its mathematical length is exactly 1.0, turning slow math into lightning-fast CPU multiplications.",
       details: [
-        "Why We Do It: It scales every vector by dividing each number by the total vector length: v / ||v||_2 = 1.0.",
-        "Turns Math Into Dot Product: When both vectors have a length of 1.0, complex Cosine Similarity turns into simple multiplication and addition (dot product).",
-        "CPU Speed: Eliminates heavy square root and division calculations, letting the CPU scan thousands of vectors in milliseconds."
+        "In Simple Terms: Dividing every number in a vector by its total length makes all vectors equal to 1.0 in length without changing their direction.",
+        "The Huge Speedup: When vectors have a length of 1.0, complex cosine similarity formulas simplify into basic multiplication and addition (dot product).",
+        "Interview Answer: 'We L2-normalize all vectors on ingestion so the CPU can calculate thousands of similarity scores in milliseconds using raw hardware instructions.'"
       ]
     },
     {
       id: "langchain-langgraph",
       title: "LangChain / LangGraph",
-      badge: "Agentic AI Workflow",
-      summary: "State machine orchestrating the step-by-step agentic search and ordering workflow.",
+      badge: "Workflow Controller",
+      summary: "Orchestrates the multi-step search process—from user query to vector search, database verification, and stylist review.",
       details: [
-        "Stateful Flow: Manages the transition between search -> hydration -> GPT-4o critique -> bulk cart selection -> order placement.",
-        "Cyclic Control with LangGraph: If a buyer's query is vague or no stock matches, the graph loops back with clarifying questions or suggests alternative fabrics.",
-        "Clean Tool Execution: Keeps vector search, PostgreSQL queries, and OpenAI completions modular and easy to debug."
+        "In Simple Terms: It acts like the project manager. It guides the user's search step-by-step: first search vectors, then verify warehouse stock, then ask GPT-4o for styling notes, and finally display results.",
+        "Handling Dead Ends with Loops: If a customer searches for something completely out of stock, LangGraph loops back and suggests similar in-stock alternatives instead of failing.",
+        "Interview Answer: 'LangGraph gives us stateful, cyclic workflow control with clean fallback paths if search filters return zero items.'"
       ]
     },
     {
       id: "late-vector-fusion",
       title: "Late Vector Fusion",
-      badge: "Vector Math",
-      summary: "Blending text and image vectors: e_hybrid = 0.65 * text + 0.35 * image.",
+      badge: "Blending Text & Photo",
+      summary: "Combines a photo vector and a text vector using a 65% text / 35% photo formula when a user uploads an image and types an adjustment.",
       details: [
-        "Why 65% Text / 35% Image: If a retailer uploads a photo and types 'same cut in green linen', 65% weight lets text steer the color and fabric, while 35% locks the original garment shape and neckline.",
-        "Late Fusion vs Early Fusion: Late fusion blends already-calculated vectors in less than 1 millisecond. Early fusion re-processes pixels and text together every time, which is too slow and expensive.",
-        "Re-Normalizing: After blending, we normalize the vector back to length 1.0 so ChromaDB can quickly search it using dot products."
+        "In Simple Terms: If a user uploads a picture of a leather jacket and types 'make it red linen', late fusion blends 65% of the new text instruction with 35% of the original jacket's shape.",
+        "Why Not Early Fusion: Early fusion feeds raw pixels and text into a giant model together, costing 10x more latency. Late fusion simply blends two existing vectors in under 1 millisecond.",
+        "Interview Answer: 'Late fusion lets users refine visual searches with text adjustments instantaneously with zero extra model inference cost.'"
       ]
     },
     {
       id: "lazy-loading",
       title: "Lazy Loading",
-      badge: "Fast UI (60fps)",
-      summary: "Loading 25 items at a time so the website stays smooth and loads instantly.",
+      badge: "Smooth 60fps UI",
+      summary: "Loads 25 clothing items at a time so the webpage opens in 80ms and never stutters or lags.",
       details: [
-        "The Problem: If you render hundreds of high-resolution clothing images all at once, the webpage freezes and uses too much memory.",
-        "25-Item Batches: We load the first 25 designs immediately so the page opens in under 100 milliseconds.",
-        "Smooth Scrolling: As the user scrolls near the bottom, the next 25 designs load automatically in the background without any lag."
+        "In Simple Terms: Don't load 500 heavy images when the user only sees the top 6 on their screen. Load the first 25, and load the next batch only as they scroll down.",
+        "The Practical Result: Cuts initial page load time from 4.2 seconds down to 85 milliseconds and saves mobile users from wasting cellular data.",
+        "Interview Answer: 'We batch UI rendering into 25-item chunks with intersection observers to maintain a fluid 60fps scroll experience even on budget smartphones.'"
       ]
     },
     {
       id: "multimodal-dual-encoder",
       title: "Multimodal Dual-Encoder",
       badge: "Two-Tower AI Model",
-      summary: "Two separate neural networks (one for images, one for text) working together in parallel.",
+      summary: "Uses two separate neural networks—one looking at photos and one reading words—trained to map matching concepts together.",
       details: [
-        "Two Separate Towers: One Vision Transformer (ViT) processes the garment photo, while another Transformer processes the text description.",
-        "Contrastive Training: During training, matching pairs (photo + description) are pulled close together, while non-matching pairs are pushed far apart.",
-        "Fast Querying: At query time, we only run the text tower on the user's search text, and compare it instantly against pre-saved image vectors."
+        "In Simple Terms: Imagine one expert looking at pictures and another reading text. They were trained together until they agreed on what 'casual summer floral dress' looks like.",
+        "Why It's Fast: Image vectors are generated once and saved into ChromaDB. At search time, we only run the lightweight text tower, so search takes milliseconds.",
+        "Interview Answer: 'A two-tower dual encoder allows asynchronous offline pre-computation of image embeddings, making real-time search fast and scalable.'"
       ]
     },
     {
       id: "multimodal-rag",
       title: "Multimodal RAG",
-      badge: "PostgreSQL + ChromaDB + GPT-4o",
-      summary: "Connecting ChromaDB vector search, live PostgreSQL data, and GPT-4o.",
+      badge: "Live Stock Grounding",
+      summary: "Connects vector search (ChromaDB), live inventory (PostgreSQL), and AI reasoning (GPT-4o) so the copilot never invents fake products.",
       details: [
-        "Why We Don't Fine-Tune: Stock levels, prices, and sizes change every day. If you fine-tune an AI model, its data becomes outdated immediately. RAG lets us pull fresh data every second.",
-        "Live Data Pull: ChromaDB finds the top product IDs, and PostgreSQL instantly pulls live sizes (S to XXL), fabric details, price, and image links.",
-        "Zero Hallucination: GPT-4o reads this exact database data before answering, so it never invents fake prices or out-of-stock items."
+        "In Simple Terms: Before the AI says a single word to the customer, it looks up the real database to check prices, available sizes (S to XXL), and real stock.",
+        "Why Not Fine-Tune an AI: Clothing prices and inventory change every single hour. Fine-tuning an AI is slow and expensive. RAG feeds fresh data on every single search.",
+        "Interview Answer: 'We use RAG rather than fine-tuning so our AI always recommends items that are actually in stock and priced accurately right now.'"
       ]
     },
     {
       id: "ranking-reranking",
       title: "Ranking & Re-ranking",
-      badge: "Two-Stage Search",
-      summary: "ChromaDB finds the top 50 candidates fast, then business rules and GPT-4o re-rank the best items.",
+      badge: "Two-Stage Search Funnel",
+      summary: "Casts a wide net first with fast vector search, then applies business rules and stylist logic to show the best 25 items.",
       details: [
-        "Stage 1 (Fast Retrieval): ChromaDB scans 10,000+ vectors in 5ms to grab the Top-50 candidate designs based on cosine similarity.",
-        "Stage 2 (PostgreSQL Business Filter): Filters out out-of-stock items, matches requested sizes (S to XXL), and checks wholesale pricing.",
-        "Stage 3 (GPT-4o Re-ranking): Evaluates fabric GSM and style match to pick and order the top 25 most relevant designs for the buyer."
+        "In Simple Terms: Think of it like job hiring. Stage 1 quickly screens 1,000 resumes down to 50 candidates in 5ms. Stage 2 interviews those top 50 in detail to pick the top 5.",
+        "The Pipeline Steps: ChromaDB grabs the top 50 visually similar items. PostgreSQL filters out out-of-stock sizes. GPT-4o orders them by seasonal trend relevance.",
+        "Interview Answer: 'Two-stage retrieval gives us the speed of vector search combined with the precision of business logic filters and LLM quality scoring.'"
       ]
     },
     {
       id: "sdxl-controlnet",
       title: "SDXL & ControlNet",
-      badge: "Generative AI",
-      summary: "Turning rough designer sketches into photorealistic clothing photos.",
+      badge: "AI Sketch-to-Photo Studio",
+      summary: "Turns rough hand-drawn fashion sketches into photorealistic clothing catalog images without warping the garment's neckline or seams.",
       details: [
-        "ControlNet (Canny Edge): Locks the outline, neckline, and seams from a hand-drawn sketch so the AI doesn't warp the shape of the clothing.",
-        "Stable Diffusion XL (SDXL): Paints realistic fabric textures, folds, lighting, and colors inside that locked outline.",
-        "SAM (Segment Anything): Automatically creates a precise mask around the clothing, so we can swap fabrics without altering the model's face, skin, or pose."
+        "In Simple Terms: ControlNet acts like a coloring book outline—it locks the seams, collar, and zipper. SDXL then fills inside the lines with realistic silk, denim, or cotton textures.",
+        "Segment Anything (SAM): Automatically cuts out the clothing area so designers can test 10 different fabric patterns without changing the model's face or pose.",
+        "Interview Answer: 'ControlNet prevents generative hallucination by preserving structural edge lines from the designer's original sketch.'"
       ]
     },
     {
       id: "semantic-search",
       title: "Semantic Search",
-      badge: "Meaning Over Keywords",
-      summary: "Searching based on the conceptual meaning and intent of the words, rather than exact spelling matches.",
+      badge: "Meaning Over Exact Words",
+      summary: "Searches by conceptual meaning so customers find what they want even with typos, slang, or synonyms.",
       details: [
-        "Meaning Over Keywords: In traditional search, typing 'crimson winter top' fails if the item is tagged 'red sweater'. Semantic search understands that crimson means red and winter top means sweater.",
-        "Handles Typos & Synonyms: Because words are mapped to vector directions based on context, it effortlessly connects synonyms (e.g. 'pants' to 'trousers', 'hoodie' to 'sweatshirt').",
-        "Multimodal Power: In Fashion AI Copilot, semantic search connects words to visual concepts—so searching 'formal dinner attire' naturally retrieves blazers, dress shirts, and pleated trousers without manual keyword tagging."
+        "In Simple Terms: If a customer types 'crimson winter top', old keyword search fails if the product is tagged 'red sweater'. Semantic search knows that crimson means red and winter top means sweater.",
+        "Works Across Slang & Synonyms: Connects 'hoodie' to 'sweatshirt', 'pants' to 'trousers', and 'gym clothes' to 'activewear' automatically.",
+        "Interview Answer: 'Semantic search maps user queries into concept space, eliminating zero-result searches caused by vocabulary mismatches.'"
       ]
     },
     {
       id: "shared-vector-space",
       title: "Shared Vector Space",
-      badge: "Coordinate Mapping",
-      summary: "Placing both image pixels and written words onto the exact same 1024-dimensional coordinate space.",
+      badge: "Common AI Coordinate Room",
+      summary: "The mathematical room where both pictures of clothing and written sentences share the exact same coordinates.",
       details: [
-        "How It Works: Normally, text and images speak different computer languages. A shared vector space maps the photo of a pink dress and the words 'pink floral maxi dress' to nearly identical coordinates.",
-        "Direct Search: Because they share the same space, you don't need text tags to find an image—a text query vector directly finds image vectors.",
-        "Why 1024 Dimensions: 1024 numbers provide enough detail to distinguish subtle fashion traits like collar types, fabric textures, and garment drape."
+        "In Simple Terms: Normally, photos are made of pixels and descriptions are made of words. In a shared space, both are converted into coordinates where 'similar meaning = close distance'.",
+        "Direct Search Without Tags: You don't need human workers to manually tag 10,000 images with 50 keywords each. The photo itself lives near the text concepts automatically.",
+        "Interview Answer: 'Shared vector space enables zero-shot cross-modal retrieval, letting users search raw photos using natural language without manual labeling.'"
       ]
     },
     {
       id: "top-k-vector-search",
       title: "Top-K Vector Search",
-      badge: "ChromaDB + HNSW",
-      summary: "Finding the top matching designs in under 10 milliseconds using ChromaDB and HNSW.",
+      badge: "Instant Best Matches",
+      summary: "Grabbing the top 25 or 50 closest matching clothing items in under 10 milliseconds using ChromaDB and HNSW.",
       details: [
-        "HNSW Index: Instead of checking all 10,000 designs one-by-one, HNSW uses a smart graph shortcut to jump directly to the closest matches in milliseconds.",
-        "Fast Dot Product: Because all our vectors have a length of 1.0, cosine similarity is just simple multiplication and addition (dot product). This makes search super fast on regular CPUs.",
-        "Low Memory: For 10,000 products, the entire ChromaDB index needs only about 40MB of RAM."
+        "In Simple Terms: Top-K simply means: 'Out of all 10,000 items in our catalog, give me the K (e.g. 25) designs that are closest in style to what the user wants.'",
+        "Why K=50: Fetching 50 candidates gives enough variety to filter for size, color, and budget without slowing down the server.",
+        "Interview Answer: 'We retrieve the Top-50 nearest neighbors via ChromaDB in 5ms, pass them through our PostgreSQL business filter, and display the final Top-25.'"
       ]
     }
   ]
 };
-
-
-
-

@@ -86,23 +86,22 @@ Future & In-Progress R&D:
       id: "deepsparse",
       title: "DeepSparse",
       badge: "Fast CPU AI Engine",
-      summary: "A high-speed software engine from Neural Magic that runs AI models on normal computer CPUs at the same speed as expensive GPUs.",
+      summary: "A high-speed software engine from Neural Magic that runs AI models on normal computer CPUs at the same speed as expensive $8,000 GPUs.",
       details: [
-        "Why We Needed It: Warehouses are dusty and hot. Putting delicate $8,000 GPUs on 20 conveyor lines would cost over $150,000 and require frequent maintenance.",
+        "In Simple Terms: Warehouses are hot and dusty environments where fragile GPUs frequently overheat and fail. DeepSparse lets us run real-time YOLO on standard, rugged office CPUs without buying expensive graphics cards.",
         "How It Works: It takes advantage of pruned models. When 75% of a model's weights are zero, DeepSparse completely skips calculating those zeroes, running 4x faster on regular Intel or AMD CPUs.",
-        "The Big Benefit: Cut our YOLO detection time from 65ms down to just 14 milliseconds on standard CPUs, easily meeting our 25ms reaction deadline without buying a single GPU."
+        "Interview Answer: 'DeepSparse cut our YOLO detection time from 65ms down to just 14 milliseconds on standard CPUs, meeting our 25ms reaction deadline while saving over $150,000 in GPU hardware.'"
       ]
     },
     {
       id: "docker",
       title: "Docker",
-      badge: "Edge Containerization",
-      summary: "Packaging the entire camera capture code, AI model, and database into a lightweight container that runs identically on every conveyor computer.",
+      badge: "Conveyor-Side Container",
+      summary: "Packages the entire camera capture code, AI model, and database into a lightweight container that runs identically on every conveyor computer.",
       details: [
-        "Consistent Edge Setup: Each conveyor belt has an industrial PC. Docker ensures all Python packages, camera drivers, and DeepSparse runtimes work out of the box with zero configuration drift.",
-        "Direct Camera Connection: Uses host networking and device passthrough so the container talks directly to the high-speed overhead camera and mechanical pusher arm with zero delay.",
-        "100% Offline & Auto-Start: Containers automatically boot up whenever the conveyor belt is powered on, running 24/7 without needing internet access.",
-        "Small & Fast to Update: Multi-stage builds keep the final container under 280MB, so software improvements can be rolled out across 20+ lines in seconds."
+        "In Simple Terms: Each conveyor line has an industrial mini-PC. Docker ensures that camera drivers, Python packages, and AI runtimes start up automatically the second the conveyor is turned on.",
+        "Works 100% Offline: Logistics facilities cannot stop if warehouse Wi-Fi blinks. The container runs completely locally on the industrial PC with zero cloud dependency.",
+        "Interview Answer: 'Docker allows us to deploy identical, self-healing edge software across 20+ conveyor lines with automated boot-on-power and direct hardware camera access.'"
       ]
     },
     {
@@ -111,64 +110,64 @@ Future & In-Progress R&D:
       badge: "Local Edge API & Dashboard",
       summary: "A fast, lightweight Python backend that coordinates camera triggers, defect logging, and live operator screens.",
       details: [
-        "Non-Blocking Speed: Uses asynchronous Python so database logging and dashboard updates happen in the background without slowing down the critical 14ms AI detection loop.",
-        "Automatic Data Verification: Uses Pydantic schemas to validate carton barcode formats, line speeds, and timestamps before saving, preventing corrupted data.",
-        "Live Operator Screen: Streams live 60fps video with green (good) and red (damaged) bounding boxes to warehouse floor touchscreens with under 10ms display delay."
+        "In Simple Terms: It acts as the local brain on the warehouse floor. It receives the camera photo, sends it to the AI, logs results to the local database, and updates the operator's screen.",
+        "Non-Blocking Background Tasks: Writing defect records and saving high-res photos happens in the background, so the critical 14ms AI detection loop is never delayed.",
+        "Interview Answer: 'FastAPI handles local camera coordination and live operator dashboard streaming asynchronously, guaranteeing that background logging never delays our 25ms diversion deadline.'"
       ]
     },
     {
       id: "gpt-vision",
       title: "GPT-4o / LLaMA Vision",
-      badge: "Multimodal Damage Claims",
-      summary: "A smart Vision AI model that inspects photos of damaged parcels to automatically write insurance claims and packaging repair tickets.",
+      badge: "Damage Claim Writer",
+      summary: "A smart Vision AI model that inspects photos of damaged parcels to automatically write insurance claims and packaging repair tickets in 1 second.",
       details: [
-        "From Defect to Action: While YOLO spots the physical tear in 14ms, the Vision LLM reads the shipping label text, checks the damage severity, and references warehouse packaging rules.",
-        "Instant Insurance Claims: Automatically writes a carrier claim letter in 1 second, citing the package tracking number, exact photo proof, and carrier shipping terms.",
-        "Offline Edge Fallback: For high-security or fully offline facilities, a compact open-source vision model (like LLaMA 3.2 Vision) runs directly on the local warehouse PC."
+        "In Simple Terms: While YOLO quickly spots the physical tear in 14ms, the Vision LLM reads the shipping label text, checks the damage severity, and drafts the insurance paperwork.",
+        "Eliminating Manual Paperwork: Warehouse workers used to spend 15 minutes manually filling out carrier claim forms for crushed boxes. The Vision LLM automates the entire claim letter with photo evidence in 1 second.",
+        "Interview Answer: 'We use YOLO for the real-time physical divert decision, and pass flagged defect photos asynchronously to a Vision LLM for automated insurance claim drafting.'"
       ]
     },
     {
       id: "latency",
       title: "Latency (Real-Time Edge Budget)",
       badge: "Sub-25ms Reaction Deadline",
-      summary: "The strict timing limit our system must hit to spot a damaged box and push it before it travels past the diverter arm.",
+      summary: "The strict physical time limit our system must hit to spot a damaged box and push it before it travels past the diverter arm.",
       details: [
-        "The Physics Constraint: Parcels travel along the conveyor belt at 2.0 to 2.5 meters per second (about 2.5 cm every 10 milliseconds). If AI takes even 100ms, the box travels 25 cm past the diverter arm!",
-        "The 22ms Stopwatch: Photo capture (2ms) + image resizing (2ms) + DeepSparse YOLO on CPU (14ms) + box cleanup (2ms) + diverter trigger (4ms) = 24 milliseconds total.",
-        "Zero Missed Diverts: Finishing in under 24ms guarantees the pneumatic arm catches the damaged carton right on time every single run without conveyor jams."
+        "In Simple Terms: Parcels travel along the conveyor belt at 2.5 meters per second (that's 2.5 cm every 10 milliseconds!). If our AI takes even 100ms, the box has already zoomed past the diverter arm.",
+        "The 24ms Stopwatch: Photo capture (2ms) + image resizing (2ms) + DeepSparse YOLO on CPU (14ms) + box cleanup (2ms) + diverter trigger (4ms) = 24 milliseconds total.",
+        "Interview Answer: 'Conveyor belt physics dictates our latency: at 2.5 m/s, we must complete inference and trigger the pneumatic diverter in under 25ms to prevent parcel jams.'"
       ]
     },
     {
       id: "postgresql-onprem",
       title: "PostgreSQL (On-Premises)",
-      badge: "Local Warehouse Database",
+      badge: "Local Defect Audit Trail",
       summary: "A fast relational database running locally on the warehouse network to store defect records and photos with zero cloud dependence.",
       details: [
-        "Zero Internet Dependency: Logistics sorting centers cannot stop if warehouse WiFi or internet lags. Keeping PostgreSQL on the local LAN ensures 100% uninterrupted sorting 24/7.",
-        "Sub-Millisecond Logging: Saves bounding box coordinates, defect types, conveyor line IDs, and timestamps in less than 1 millisecond.",
-        "Undeniable Audit Trail: Provides permanent photographic evidence of package condition before carrier handover, protecting our client against fraudulent shipping damage claims."
+        "In Simple Terms: It's the local black box recorder for the warehouse. It stores the date, time, conveyor line ID, defect type, and photo link for every single parcel.",
+        "Protection Against False Claims: When a delivery carrier or customer claims 'you sent me a crushed box', our warehouse pulls the exact photo taken at the sorting facility proving the package was intact when handed over.",
+        "Interview Answer: 'Hosting PostgreSQL on the local LAN guarantees zero dependency on cloud internet, logging defect evidence in under 1ms to defend against shipping liability claims.'"
       ]
     },
     {
       id: "pruning",
       title: "Pruning & Sparsity",
-      badge: "Model Diet & Speedup",
+      badge: "Model Slimming & 4x Speedup",
       summary: "Removing 75% of unnecessary neural network calculations so our AI runs 4x faster on standard CPUs without losing accuracy.",
       details: [
-        "Trimming the Unnecessary Math: Neural networks contain millions of tiny weight connections that barely contribute to the final answer. Pruning sets 70% to 80% of these weights to zero.",
+        "In Simple Terms: Neural networks are like students who study 1,000 pages when only 250 pages matter. Pruning removes the 750 useless pages so the AI can answer 4x faster without getting confused.",
         "Why Sparsity Matters: Normal software still multiplies by zeroes (wasting CPU cycles). DeepSparse recognizes zeroes and skips them entirely, doing 4x less computation.",
-        "No Accuracy Loss: By fine-tuning the pruned network, we preserved over 94% defect detection accuracy while cutting CPU execution time from 65ms down to 14ms."
+        "Interview Answer: 'By pruning 75% of weights and fine-tuning, we maintained a 94%+ defect detection rate while slashing CPU execution time from 65ms down to 14ms.'"
       ]
     },
     {
       id: "yolo",
       title: "YOLO (You Only Look Once)",
-      badge: "Real-Time Object Detector",
+      badge: "Single-Glance Defect Detector",
       summary: "The industry-leading computer vision model that scans the entire parcel image in one single glance to locate and classify defects instantly.",
       details: [
-        "Single-Pass Speed: Unlike older detectors (Faster R-CNN) that first search for regions and then classify them in two slow steps, YOLO looks at the entire photo once and predicts bounding boxes in a single step.",
-        "Trained for 4 Warehouse Defects: Fine-tuned on real cardboard carton images to detect: 1. Torn & crushed boxes, 2. Open or unsealed flaps, 3. Missing labels, and 4. Normal intact cartons.",
-        "High Accuracy on Moving Belts: Accurately spots small tears, loose tape, and crushed corners even under dim warehouse lighting and motion blur."
+        "In Simple Terms: Older models examine an image in two slow steps: first searching for where objects might be, then identifying them. YOLO looks at the whole photo once and draws defect boxes in a single step.",
+        "Trained for 4 Specific Parcel States: Fine-tuned on industrial warehouse photos to detect: 1. Crushed boxes, 2. Torn cardboard, 3. Open flaps, and 4. Clean, intact cartons.",
+        "Interview Answer: 'YOLO provides the single-stage detection speed required for conveyor belts, reliably identifying small tears and crushed corners even under motion blur and uneven lighting.'"
       ]
     }
   ]
