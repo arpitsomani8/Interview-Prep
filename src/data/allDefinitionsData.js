@@ -82,7 +82,8 @@ export const definitionBookmarks = [
   { id: "coherence", label: "Coherence" },
   { id: "chunking", label: "Chunking" },
   { id: "lexical-search", label: "Lexical Search" },
-  { id: "pipeline", label: "Pipeline" }
+  { id: "pipeline", label: "Pipeline" },
+  { id: "clip", label: "CLIP" }
 ];
 
 export const definitionsData = [
@@ -5781,5 +5782,74 @@ def health_check():
       { principle: "Fault Tolerance & Retries", desc: "Transient failures (network timeouts, rate limits) trigger exponential backoff retries with dead-letter queues." }
     ],
     takeaway: "Pipelines are the connective tissue of modern AI engineering. Whether transforming raw data, training models, serving low-latency inferences, executing RAG queries, or deploying microservices via CI/CD, well-architected pipelines ensure repeatability, scalability, and deterministic reliability."
+  },
+  {
+    id: "clip",
+    title: "CLIP — Contrastive Language–Image Pre-training",
+    badge: "Multimodal Foundation Model & Joint Embedding Space",
+    summary: "CLIP stands for Contrastive Language–Image Pre-training. It is a model developed by OpenAI that learns to connect images with text.",
+    coreDefinition: "CLIP stands for Contrastive Language–Image Pre-training. It is a model developed by OpenAI that learns to connect images with text.",
+    developedBy: "OpenAI",
+    fullForm: "Contrastive Language–Image Pre-training",
+    whereIsClipUsedHeading: "Where is CLIP used?",
+    whereIsClipUsed: [
+      {
+        number: "1",
+        useCase: "Image search using text descriptions.",
+        badge: "Text-to-Image",
+        accent: "text-blue-400",
+        border: "border-blue-800/50",
+        detail: "Allows users to query visual catalogs with natural language descriptions (e.g., 'blue floral sundress' or 'dented cardboard parcel') without requiring manual image tags or metadata."
+      },
+      {
+        number: "2",
+        useCase: "Text-to-image retrieval.",
+        badge: "Cross-Modal Retrieval",
+        accent: "text-purple-400",
+        border: "border-purple-800/50",
+        detail: "Ranks and retrieves the most relevant images matching an arbitrary prompt by computing cosine similarity between text embeddings and precomputed image embeddings in FAISS."
+      },
+      {
+        number: "3",
+        useCase: "Zero-shot image classification using candidate descriptions.",
+        badge: "Zero-Shot Learning",
+        accent: "text-amber-400",
+        border: "border-amber-800/50",
+        detail: "Classifies unseen images on the fly by comparing the image vector against prompt templates like 'a photo of a {damaged_box, intact_box, torn_label}' without fine-tuning or task-specific training data."
+      },
+      {
+        number: "4",
+        useCase: "Organizing large image collections.",
+        badge: "Clustering & Cataloging",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50",
+        detail: "Clusters millions of visual assets, identifies duplicate or near-duplicate product imagery, and automatically structures large unstructured image repositories."
+      },
+      {
+        number: "5",
+        useCase: "As a component in multimodal AI systems.",
+        badge: "Compound AI Systems",
+        accent: "text-rose-400",
+        border: "border-rose-800/50",
+        detail: "Serves as the visual conditioning backbone for diffusion models (e.g. Stable Diffusion), vision-language models (e.g. LLaVA), and agentic systems that read parcel labels and inspect conveyor imagery."
+      }
+    ],
+    howClipWorks: {
+      title: "How CLIP Connects Images with Text (Contrastive Architecture)",
+      dualEncoders: [
+        {
+          name: "Image Encoder",
+          type: "Vision Transformer (ViT) or ResNet",
+          desc: "Processes 2D pixel grids into a dense visual feature embedding vector."
+        },
+        {
+          name: "Text Encoder",
+          type: "Decoder-only or Standard Transformer",
+          desc: "Processes tokenized natural language descriptions into a dense semantic embedding vector."
+        }
+      ],
+      trainingMechanism: "During pre-training on 400M internet (image, text) pairs, CLIP computes an N x N similarity matrix. It maximizes cosine similarity along the diagonal (matching image-text pairs) while minimizing similarity for off-diagonal pairs using symmetric cross-entropy loss."
+    },
+    takeaway: "CLIP bridges computer vision and natural language by mapping both modalities into a unified metric vector space. Rather than predicting fixed discrete classes, CLIP learns visual concepts from free-form text, enabling instant zero-shot image classification, natural-language visual search, and seamless integration into modern multimodal AI pipelines."
   }
 ];

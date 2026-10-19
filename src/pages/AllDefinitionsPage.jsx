@@ -9700,6 +9700,123 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 86: CLIP */}
+            {item.id === 'clip' && (
+              <div className="space-y-6">
+                {/* Core Concept Banner */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Contrastive Vision-Language Learning</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950/70 text-purple-300 border border-purple-800">
+                      OpenAI Foundation Model
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-purple-900/40 shadow-xl space-y-3">
+                    <p className="text-xs sm:text-sm text-purple-200 font-sans leading-relaxed font-semibold">
+                      {item.coreDefinition}
+                    </p>
+                    <div className="p-3 rounded-xl bg-black border border-purple-950 flex flex-wrap items-center gap-2 text-xs font-mono">
+                      <span className="text-zinc-400">Developer:</span>
+                      <span className="text-emerald-400 font-bold bg-zinc-900 px-2 py-0.5 rounded border border-zinc-700">{item.developedBy}</span>
+                      <span className="text-zinc-500">|</span>
+                      <span className="text-zinc-400">Full Acronym:</span>
+                      <span className="text-purple-300">{item.fullForm}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Where is CLIP used? (5 Core Use Cases) */}
+                {item.whereIsClipUsed && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.whereIsClipUsedHeading || "Where is CLIP used?"}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Production Use Cases
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                      {item.whereIsClipUsed.map((uc, uIdx) => (
+                        <div
+                          key={uIdx}
+                          className={`p-4 rounded-xl bg-black border ${uc.border || 'border-zinc-800'} hover:border-zinc-700 transition flex flex-col justify-between space-y-3`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="w-6 h-6 rounded-md bg-zinc-900 border border-zinc-700 text-cyan-300 font-mono text-xs flex items-center justify-center font-bold shrink-0">
+                                0{uc.number}
+                              </span>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                                {uc.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${uc.accent}`}>
+                              • {uc.useCase}
+                            </h5>
+                          </div>
+
+                          <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-900 text-[11px] text-zinc-300 leading-relaxed font-sans">
+                            {uc.detail}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* How CLIP Works (Dual Encoders & Contrastive Loss) */}
+                {item.howClipWorks && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.howClipWorks.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Dual Encoder Architecture
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.howClipWorks.dualEncoders.map((enc, eIdx) => (
+                        <div key={eIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <h6 className="text-xs font-bold font-mono text-amber-300">
+                              {enc.name}
+                            </h6>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {enc.type}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {enc.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-mono leading-relaxed">
+                      <strong className="text-amber-400 uppercase font-sans">Training Mechanism: </strong>
+                      {item.howClipWorks.trainingMechanism}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
