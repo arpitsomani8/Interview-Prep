@@ -92,7 +92,8 @@ export const definitionBookmarks = [
   { id: "lora", label: "LoRA" },
   { id: "bert", label: "BERT" },
   { id: "stemming", label: "Stemming" },
-  { id: "lemmatization", label: "Lemmatization" }
+  { id: "lemmatization", label: "Lemmatization" },
+  { id: "ngram-bigram", label: "n-gram / Bigram" }
 ];
 
 export const definitionsData = [
@@ -6916,5 +6917,90 @@ for token in doc:
 # meeting      | VERB       | meet      <-- Lemmatized to base verb 'meet'!`
     },
     takeaway: "Lemmatization uses morphological dictionaries and Part-of-Speech context to convert words into genuine dictionary lemmas (e.g. 'playing' → 'play', 'studies' → 'study'). While computationally heavier than heuristic stemming, lemmatization ensures 100% dictionary validity and semantic preservation across downstream NLP and LLM pipelines."
+  },
+  {
+    id: "ngram-bigram",
+    title: "n-gram & Bigram (Sequence Feature Extraction & Local Context Modeling)",
+    badge: "NLP Feature Engineering, Bag-of-Words & scikit-learn",
+    summary: "An n-gram is a sequence of n consecutive items, usually words or characters, from text. Bigrams capture some local word combinations, while trigrams capture slightly longer phrases.",
+    coreDefinition: "An n-gram is a sequence of n consecutive items, usually words or characters, from text. Bigrams capture some local word combinations, while trigrams capture slightly longer phrases.",
+    ngramTaxonomy: [
+      {
+        order: "Unigram (n = 1)",
+        definition: "Single words evaluated independently without sequential context.",
+        example: "'machine', 'learning', 'deep'",
+        pros: "Compact vocabulary, low memory footprint, simple frequency counts.",
+        accent: "text-blue-400",
+        badge: "n = 1"
+      },
+      {
+        order: "Bigram (n = 2)",
+        definition: "Pairs of two consecutive words that capture local word combinations and negation.",
+        example: "'machine learning', 'deep learning', 'not good'",
+        pros: "Preserves key multi-word phrases and prevents losing negation (e.g. 'not happy').",
+        accent: "text-emerald-400",
+        badge: "n = 2"
+      },
+      {
+        order: "Trigram (n = 3)",
+        definition: "Triplets of three consecutive words that capture slightly longer phrases.",
+        example: "'I love machine', 'love machine learning'",
+        pros: "Captures idiomatic expressions and extended syntactic chunks.",
+        accent: "text-purple-400",
+        badge: "n = 3"
+      },
+      {
+        order: "Character n-gram",
+        definition: "Subword character windows extracted across words (e.g., 'm-a-c-h', 'l-e-a-r-n').",
+        example: "Used in FastText, subword tokenizers, and spelling correction.",
+        pros: "Resilient to misspellings, typos, and out-of-vocabulary (OOV) tokens.",
+        accent: "text-amber-400",
+        badge: "Char-level"
+      }
+    ],
+    codeExample: {
+      title: "n-gram Feature Extraction with scikit-learn CountVectorizer",
+      language: "python",
+      code: `from sklearn.feature_extraction.text import CountVectorizer
+
+sentences = [
+    "I love machine learning",
+    "I love deep learning"
+]
+
+vectorizer = CountVectorizer(ngram_range=(1, 2))
+X = vectorizer.fit_transform(sentences)
+
+print(vectorizer.get_feature_names_out())
+print(X.toarray())`,
+      outputFeatures: [
+        "deep",
+        "deep learning",
+        "learning",
+        "love",
+        "love deep",
+        "love machine",
+        "machine",
+        "machine learning"
+      ],
+      outputMatrix: [
+        { sentence: "I love machine learning", vector: "[0, 0, 1, 1, 0, 1, 1, 1]" },
+        { sentence: "I love deep learning", vector: "[1, 1, 1, 1, 1, 0, 0, 0]" }
+      ],
+      explanation: "With ngram_range=(1, 2), CountVectorizer extracts both single words (unigrams) and adjacent word pairs (bigrams). Notice how 'deep learning' and 'machine learning' are each encoded as distinct, individual features, allowing downstream linear classifiers to distinguish the specific subfields."
+    },
+    tradeoffs: [
+      {
+        aspect: "Word Order & Context",
+        advantage: "Captures local phrasing and negation ('not guilty' vs 'guilty') that unigrams lose entirely.",
+        tradeoff: "Still lacks global attention across distant clauses (unlike Transformers)."
+      },
+      {
+        aspect: "Dimensionality & Sparsity",
+        advantage: "Straightforward linear representation compatible with logistic regression, SVMs, and Naive Bayes.",
+        tradeoff: "Vocabulary explodes exponentially (V^n), leading to high-dimensional sparse matrices and potential memory bottlenecks."
+      }
+    ],
+    takeaway: "An n-gram captures consecutive sequences of n tokens, enabling classical bag-of-words pipelines to incorporate local context, multi-word terminology, and negation without the heavy computational overhead of deep neural architectures."
   }
 ];
