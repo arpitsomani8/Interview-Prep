@@ -3776,20 +3776,28 @@ export default function AllDefinitionsPage() {
                     </p>
                   </div>
 
-                  {/* MinMax & Standardization Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                    {item.featureScaling.methods.map((m, mIdx) => (
-                      <div key={mIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-white font-mono text-emerald-400">{m.name}</span>
-                          <span className="text-[11px] font-mono text-cyan-300 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
-                            {m.formula}
-                          </span>
+                    {/* MinMax & Standardization Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.featureScaling.methods.map((m, mIdx) => (
+                        <div key={mIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-white font-mono text-emerald-400">{m.name}</span>
+                              <span className="text-[11px] font-mono text-cyan-300 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
+                                {m.formula}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-zinc-400 leading-relaxed">{m.desc}</p>
+                          </div>
+                          {m.standardScalerDefinition && (
+                            <div className="pt-2 border-t border-zinc-900 text-[11px] font-mono text-amber-300/90 leading-relaxed">
+                              <strong className="text-amber-400 uppercase block text-[10px]">StandardScaler Rule:</strong>
+                              {m.standardScalerDefinition}
+                            </div>
+                          )}
                         </div>
-                        <p className="text-[11px] text-zinc-400 leading-relaxed">{m.desc}</p>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
 
                   {/* Scikit-Learn Scaling Code */}
                   <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
@@ -12719,7 +12727,51 @@ export default function AllDefinitionsPage() {
                   <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
                     {item.coreDefinition}
                   </p>
+                  {item.nnDefinition && (
+                    <div className="pt-2 border-t border-zinc-900 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-sans">
+                      <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+                        <strong className="text-cyan-300 font-mono text-[11px] uppercase block">Nearest Neighbor (NN):</strong>
+                        <p className="text-zinc-300 text-xs leading-relaxed">{item.nnDefinition}</p>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+                        <strong className="text-amber-300 font-mono text-[11px] uppercase block">K-Nearest Neighbors (KNN):</strong>
+                        <p className="text-zinc-300 text-xs leading-relaxed">{item.knnVotingRule}</p>
+                      </div>
+                    </div>
+                  )}
+                  {item.standardScalerRule && (
+                    <div className="p-2.5 rounded-lg bg-zinc-950 border border-emerald-900/50 text-xs font-mono text-emerald-200/90 flex items-start gap-2">
+                      <Terminal className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-emerald-400 uppercase text-[10px] block">StandardScaler Prerequisite:</strong>
+                        <span>{item.standardScalerRule}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
+
+                {/* KNN versus Vector Retrieval Comparison */}
+                {item.knnVsVectorRetrieval && (
+                  <div className="p-4 rounded-xl bg-black border border-purple-800/50 space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-purple-400" />
+                        <span>{item.knnVsVectorRetrieval.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Classification vs RAG Search
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.knnVsVectorRetrieval.points.map((pt, pIdx) => (
+                        <div key={pIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                          <span className="text-xs font-bold font-mono text-purple-300 block">{pt.label}</span>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">{pt.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* 2. Real-World Example Banner */}
                 {item.realWorldExample && (
@@ -16131,6 +16183,12 @@ export default function AllDefinitionsPage() {
                   <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
                     {item.coreDefinition}
                   </p>
+                  {item.simpleImputerDefinition && (
+                    <div className="p-2.5 rounded-lg bg-zinc-950 border border-amber-800/50 text-xs font-mono text-amber-300 flex items-center gap-2">
+                      <Terminal className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span>{item.simpleImputerDefinition}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* 2. Common Imputation Methods Grid */}

@@ -2435,7 +2435,8 @@ fashion_graph = graph_builder.compile()`,
         {
           name: "Standardization (Z-Score Scaling)",
           formula: "z = (x - μ) / σ",
-          desc: "Centers values around a mean of zero and scales by the standard deviation. A value equal to the mean becomes zero. Values above the mean are positive, and values below it are negative."
+          desc: "Centers values around a mean of zero and scales by the standard deviation. A value equal to the mean becomes zero. Values above the mean are positive, and values below it are negative.",
+          standardScalerDefinition: "StandardScaler transforms numerical features to have approximately zero mean and unit variance, based on the training data."
         }
       ],
       code: `from sklearn.preprocessing import MinMaxScaler, StandardScaler
@@ -7354,6 +7355,22 @@ print(f"Test Set Accuracy:       {bagging_model.score(X_test, y_test):.4f}")`
     badge: "Instance-Based Non-Parametric Learning, Metric Spaces & Lazy Learning",
     summary: "KNN predicts the class or value of a new data point by looking at its K nearest training examples. For example, suppose you want to classify an email as spam or normal. KNN looks for similar labeled emails and uses their labels to make a prediction. Advantages: Simple, intuitive, no explicit model-fitting optimization, and useful for small datasets. Limitations: Prediction can be expensive on large datasets; performance depends on distance choice, scaling, and the value of K. Irrelevant or high-dimensional features can make distances less meaningful.",
     coreDefinition: "KNN algorithm (K-Nearest Neighbors). KNN predicts the class or value of a new data point by looking at its K nearest training examples.",
+    nnDefinition: "Nearest neighbor (NN) generally means finding the closest data point to a query according to a distance or similarity measure.",
+    knnVotingRule: "K-nearest neighbors (KNN) considers the K closest data points. For classification, it can use majority voting; for regression, it can average their target values.",
+    knnVsVectorRetrieval: {
+      title: "KNN versus vector retrieval",
+      points: [
+        {
+          label: "KNN classification",
+          desc: "KNN classification predicts a label using nearby labeled training examples."
+        },
+        {
+          label: "Vector retrieval",
+          desc: "Vector retrieval finds similar stored embeddings or records, often to supply candidates for a search or RAG system."
+        }
+      ]
+    },
+    standardScalerRule: "StandardScaler transforms numerical features to have approximately zero mean and unit variance, based on the training data.",
     realWorldExample: {
       headline: "Intuitive Example",
       content: "For example, suppose you want to classify an email as spam or normal. KNN looks for similar labeled emails and uses their labels to make a prediction."
@@ -9254,6 +9271,7 @@ print(validate_parcel_prompt(95.0))`
     badge: "Missing Data Engineering, Leakage Prevention & Scikit-Learn Pipelines",
     summary: "Imputation means filling in missing values in a dataset. Master the 5 common imputation methods: Mean imputation, Median imputation, Mode imputation, Constant imputation, and Model-based imputation.",
     coreDefinition: "Imputation means filling in missing values in a dataset.",
+    simpleImputerDefinition: "SimpleImputer fills missing values in a dataset using a chosen strategy.",
     methodsHeading: "Common imputation methods:",
     imputationMethods: [
       {
