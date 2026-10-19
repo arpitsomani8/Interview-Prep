@@ -21,7 +21,11 @@ import {
   Cpu,
   AlertTriangle,
   Clock,
-  Shield
+  Shield,
+  Workflow,
+  GitBranch,
+  Network,
+  Table
 } from 'lucide-react';
 
 export default function AllDefinitionsPage() {
@@ -47,7 +51,7 @@ export default function AllDefinitionsPage() {
   };
 
   const scrollToId = (id) => {
-    const el = document.getElementById(id);
+    const el = document.getElementById(id) || document.getElementById(id === 'tree-of-thought' || id === 'graph-of-thoughts' ? 'cot-chain-of-thought' : id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setActiveBookmark(id);
@@ -173,7 +177,7 @@ export default function AllDefinitionsPage() {
             key={item.id}
             id={item.id}
             className={`scroll-mt-24 rounded-2xl bg-[#0a0a0c] p-6 sm:p-7 space-y-5 shadow-xl transition border ${
-              activeBookmark === item.id
+              activeBookmark === item.id || (item.id === 'cot-chain-of-thought' && (activeBookmark === 'tree-of-thought' || activeBookmark === 'graph-of-thoughts'))
                 ? 'border-cyan-500 shadow-cyan-500/10'
                 : 'border-zinc-800 hover:border-zinc-700'
             }`}
@@ -12824,7 +12828,7 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 98: Chain of Thought (CoT) */}
+            {/* Item 98: Chain of Thought (CoT), Tree of Thoughts (ToT), & Graph of Thoughts (GoT) */}
             {item.id === 'cot-chain-of-thought' && (
               <div className="space-y-6">
                 {/* 1. Core Definition Banner */}
@@ -12832,10 +12836,10 @@ export default function AllDefinitionsPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold font-mono text-purple-400 uppercase flex items-center gap-2">
                       <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                      <span>Core Definition</span>
+                      <span>Core Reasoning Architecture</span>
                     </span>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
-                      Reasoning Paradigm
+                      Reasoning Paradigms
                     </span>
                   </div>
                   <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
@@ -12843,31 +12847,138 @@ export default function AllDefinitionsPage() {
                   </p>
                 </div>
 
-                {/* 2. Is CoT used in GenAI? Interview Q&A Card */}
-                {item.genaiQuestion && (
-                  <div className="p-5 rounded-2xl bg-zinc-950 border border-amber-800/50 space-y-4 shadow-lg">
+                {/* 2. The 3 Reasoning Paradigms: CoT vs ToT vs GoT */}
+                {item.reasoningParadigms && (
+                  <div className="space-y-3">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                        <Terminal className="w-4 h-4 text-amber-400" />
-                        <span>{item.genaiQuestion.question}</span>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Workflow className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>The 3 Frontier Reasoning Paradigms</span>
                       </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
-                        GenAI Application
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-400 border border-zinc-700">
+                        Linear vs Tree vs Graph
                       </span>
                     </div>
 
-                    <div className="p-3.5 rounded-xl bg-black border border-amber-900/40 space-y-2">
-                      <h5 className="text-sm font-bold text-amber-300 font-mono">
-                        {item.genaiQuestion.answerHeadline}
-                      </h5>
-                      <p className="text-xs text-zinc-300 leading-relaxed font-sans pt-1">
-                        {item.genaiQuestion.productionInsight}
-                      </p>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-1">
+                      {item.reasoningParadigms.map((p, pIdx) => {
+                        const targetAnchor = p.acronym === 'ToT' ? 'tree-of-thought' : p.acronym === 'GoT' ? 'graph-of-thoughts' : 'chain-of-thought';
+                        const isCardActive = activeBookmark === targetAnchor;
+                        return (
+                          <div
+                            key={pIdx}
+                            id={targetAnchor}
+                            className={`scroll-mt-28 p-5 rounded-2xl bg-zinc-950 border ${p.border} space-y-3.5 hover:border-zinc-600 transition flex flex-col justify-between shadow-lg ${
+                              isCardActive ? 'ring-2 ring-cyan-500/50 shadow-cyan-500/10' : ''
+                            }`}
+                          >
+                            <div className="space-y-3">
+                              {/* Header */}
+                              <div className="flex items-start justify-between gap-2 border-b border-zinc-800/80 pb-2.5">
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    {p.acronym === 'CoT' && <Zap className="w-4 h-4 text-cyan-400 shrink-0" />}
+                                    {p.acronym === 'ToT' && <GitBranch className="w-4 h-4 text-purple-400 shrink-0" />}
+                                    {p.acronym === 'GoT' && <Network className="w-4 h-4 text-emerald-400 shrink-0" />}
+                                    <h5 className={`text-sm font-bold font-mono ${p.accent}`}>
+                                      {p.name}
+                                    </h5>
+                                  </div>
+                                  <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
+                                    {p.badge}
+                                  </span>
+                                </div>
+                                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 ${p.accent}`}>
+                                  {p.acronym}
+                                </span>
+                              </div>
+
+                              {/* Topology Badge */}
+                              <div className="p-2 rounded-lg bg-black border border-zinc-900 text-xs font-mono text-amber-300">
+                                <span className="text-[10px] font-bold uppercase text-zinc-500 block mb-0.5">Topology</span>
+                                {p.topology}
+                              </div>
+
+                              {/* Mechanism */}
+                              <div className="space-y-1">
+                                <span className="text-[10px] font-bold font-mono uppercase text-zinc-400">Mechanism</span>
+                                <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                                  {p.mechanism}
+                                </p>
+                              </div>
+
+                              {/* Search Strategy */}
+                              <div className="p-2.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
+                                <div className="text-[10px] font-mono font-bold text-cyan-400 uppercase">Search Algorithm</div>
+                                <p className="text-[11px] text-zinc-300 leading-relaxed font-mono">
+                                  {p.search}
+                                </p>
+                              </div>
+
+                              {/* Backtracking */}
+                              <div className="p-2.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
+                                <div className="text-[10px] font-mono font-bold text-rose-400 uppercase">Backtracking & Self-Correction</div>
+                                <p className="text-[11px] text-zinc-300 leading-relaxed font-mono">
+                                  {p.backtracking}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Ideal Use Cases */}
+                            <div className="pt-2 border-t border-zinc-800/80">
+                              <span className="text-[10px] font-bold font-mono uppercase text-emerald-400 block mb-1">
+                                Ideal Production Use Cases
+                              </span>
+                              <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                                {p.idealUseCases}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
 
-                {/* 3. CoT Variations & Test-Time Reasoning */}
+                {/* 3. Comprehensive Paradigms Comparison Table */}
+                {item.paradigmsTable && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Architectural Comparison Matrix: CoT vs ToT vs GoT</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Interview Matrix
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs font-mono">
+                        <thead className="bg-zinc-900/90 text-zinc-300 border-b border-zinc-800 uppercase tracking-wider text-[11px]">
+                          <tr>
+                            <th className="p-3 font-semibold text-zinc-400">Dimension</th>
+                            <th className="p-3 font-semibold text-cyan-400">Chain-of-Thought (CoT)</th>
+                            <th className="p-3 font-semibold text-purple-400">Tree-of-Thoughts (ToT)</th>
+                            <th className="p-3 font-semibold text-emerald-400">Graph-of-Thoughts (GoT)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/70">
+                          {item.paradigmsTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-bold text-zinc-300 whitespace-nowrap bg-zinc-950/40">{row.dimension}</td>
+                              <td className="p-3 text-cyan-200/90">{row.cot}</td>
+                              <td className="p-3 text-purple-200/90">{row.tot}</td>
+                              <td className="p-3 text-emerald-200/90">{row.got}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. CoT Methodologies & Test-Time Reasoning */}
                 {item.cotVariations && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -12905,7 +13016,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 4. Concrete Reasoning Comparison */}
+                {/* 5. Concrete Reasoning Comparison */}
                 {item.reasoningTraceExample && (
                   <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -12948,7 +13059,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 5. Tool-Augmented Synergy */}
+                {/* 6. Tool-Augmented Synergy */}
                 {item.toolAugmentedSynergy && (
                   <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 shadow-lg">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -12980,7 +13091,29 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 6. Takeaway Banner */}
+                {/* 7. Python Implementation Box with Copy Button */}
+                {item.code && (
+                  <div className="mt-3 pt-3 border-t border-zinc-800/80 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Python Implementation: CoT vs ToT vs GoT Paradigms</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(item.id, item.code)}
+                        className="text-[10px] font-mono text-zinc-400 hover:text-cyan-300 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 flex items-center gap-1 transition cursor-pointer"
+                      >
+                        {copiedId === item.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                        <span>{copiedId === item.id ? 'Copied' : 'Copy Code'}</span>
+                      </button>
+                    </div>
+                    <pre className="text-[11px] font-mono text-cyan-200/90 bg-black/90 border border-zinc-800/90 p-3.5 rounded-xl overflow-x-auto leading-relaxed shadow-inner">
+                      {item.code}
+                    </pre>
+                  </div>
+                )}
+
+                {/* 8. Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}

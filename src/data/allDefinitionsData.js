@@ -312,6 +312,10 @@ export const definitionBookmarks = [
     "label": "Gradient Descent"
   },
   {
+    "id": "graph-of-thoughts",
+    "label": "Graph-of-Thoughts (GoT)"
+  },
+  {
     "id": "hallucination",
     "label": "Hallucination"
   },
@@ -690,6 +694,10 @@ export const definitionBookmarks = [
   {
     "id": "tree-algorithms",
     "label": "Tree Algorithms"
+  },
+  {
+    "id": "tree-of-thought",
+    "label": "Tree-of-Thought (ToT)"
   },
   {
     "id": "trimming",
@@ -8064,70 +8072,138 @@ print(X.toarray())`,
     takeaway: "The ReAct (Reasoning + Acting) pattern equips LLMs with an alternating loop of internal reasoning ('Thought') and real-world execution ('Action' & 'Observation'). By pairing deliberate planning with live tool execution, ReAct drastically reduces hallucinations and enables robust, self-correcting agentic workflows."
   },
   {
-    id: "cot-chain-of-thought",
-    title: "Chain of Thought (CoT) Prompting & Test-Time Reasoning",
-    badge: "Intermediate Reasoning, Multi-Step Problem Solving & Tool-Augmented LLMs",
-    summary: "Chain of Thought is an approach in which a model works through intermediate reasoning steps to arrive at an answer. Is CoT used in GenAI? Yes. Reasoning-oriented prompting and models can help with multi-step tasks. In production systems, it is often better to combine model reasoning with reliable tools, such as a database query or calculator, instead of trusting generated reasoning alone.",
-    coreDefinition: "Chain of Thought is an approach in which a model works through intermediate reasoning steps to arrive at an answer.",
-    genaiQuestion: {
-      question: "Is CoT used in GenAI?",
-      answerHeadline: "Yes. Reasoning-oriented prompting and models can help with multi-step tasks.",
-      productionInsight: "In production systems, it is often better to combine model reasoning with reliable tools, such as a database query or calculator, instead of trusting generated reasoning alone."
+  "id": "cot-chain-of-thought",
+  "title": "Chain-of-Thought (CoT), Tree-of-Thought (ToT) & Graph-of-Thoughts (GoT)",
+  "badge": "Advanced Reasoning Paradigms, Heuristic Search & Thought Graphing",
+  "summary": "Comprehensive architectural breakdown of LLM reasoning paradigms: from linear step-by-step reasoning (Chain-of-Thought) to heuristic branching and backtracking (Tree-of-Thoughts), and multi-perspective network synthesis and merging (Graph-of-Thoughts).",
+  "coreDefinition": "Reasoning paradigms structure how large language models generate, explore, evaluate, and combine intermediate problem-solving steps ('thoughts') before arriving at a final response.",
+  "reasoningParadigms": [
+    {
+      "name": "Chain-of-Thought (CoT)",
+      "acronym": "CoT",
+      "badge": "Linear Sequential Reasoning",
+      "accent": "text-cyan-400",
+      "border": "border-cyan-800/60",
+      "topology": "Linear Chain (A → B → C → Answer)",
+      "mechanism": "Generates a sequential progression of intermediate reasoning tokens before outputting the final answer. Allocates compute directly within the autoregressive token generation window.",
+      "search": "Greedy Forward: Single linear stream with no exploration or branching.",
+      "backtracking": "None: If an early intermediate step contains a logical or arithmetic flaw, all subsequent steps inherit and amplify the hallucination.",
+      "idealUseCases": "Multi-step math word problems (GSM8K), procedural explanations, sequential logic problems, rule-based reasoning."
     },
-    cotVariations: [
-      {
-        type: "Zero-Shot CoT",
-        trigger: "Trigger phrase: 'Let's think step by step.'",
-        desc: "Encourages the model to allocate output tokens to an explicit reasoning scratchpad before committing to a final conclusion without needing prior examples.",
-        accent: "text-amber-400",
-        badge: "Zero-Shot Prompting"
-      },
-      {
-        type: "Few-Shot CoT",
-        trigger: "Prompt includes 2–4 worked demonstrations showing step-by-step reasoning chains.",
-        desc: "Steers formatting, depth of reasoning, and logical decomposition structure through In-Context Learning demonstrations.",
-        accent: "text-cyan-400",
-        badge: "Demonstration-Based"
-      },
-      {
-        type: "Native Test-Time Reasoning (RL-Trained)",
-        trigger: "Frontier reasoners (e.g. OpenAI o1/o3, DeepSeek-R1)",
-        desc: "Uses test-time compute where the model generates hundreds of internal hidden reasoning tokens, backtracking and correcting mistakes autonomously.",
-        accent: "text-purple-400",
-        badge: "Test-Time Compute"
-      }
-    ],
-    toolAugmentedSynergy: {
-      title: "Why Pure Generated Reasoning Fails (and Why Tools Win in Production)",
-      points: [
-        {
-          hazard: "Pure Generated Arithmetic",
-          explanation: "LLMs predict the next token based on statistical patterns; multiplying large numbers often hallucinations subtle digit errors.",
-          solution: "Delegate calculations to a deterministic Python interpreter or Calculator API."
-        },
-        {
-          hazard: "Factual Drift & Hallucination",
-          explanation: "Multi-step reasoning over internal parametric memory can propagate erroneous initial assumptions across intermediate steps.",
-          solution: "Ground each step against SQL databases, Vector indices, or real-time APIs (ReAct / Tool-Use)."
-        },
-        {
-          hazard: "Strict Business Logic",
-          explanation: "Tax rates, discount rules, and SLA dates must adhere to deterministic enterprise rules rather than probabilistic next-token generation.",
-          solution: "Validate step transitions with strongly-typed Pydantic schemas and deterministic services."
-        }
-      ]
+    {
+      "name": "Tree-of-Thoughts (ToT)",
+      "acronym": "ToT",
+      "badge": "Branching & Heuristic Tree Search",
+      "accent": "text-purple-400",
+      "border": "border-purple-800/60",
+      "topology": "Tree Hierarchy (Root → Branches → Evaluated Nodes → Leaves)",
+      "mechanism": "Generates multiple candidate thoughts at each reasoning juncture. An evaluation prompt acts as a heuristic state-value function, scoring intermediate nodes (e.g. Sure / Likely / Impossible).",
+      "search": "BFS / DFS with Lookahead: Systematically explores promising reasoning branches while pruning low-scoring subtrees.",
+      "backtracking": "Full Backtracking: When a branch hits a dead end or score falls below threshold, the search algorithm retreats to the parent node and explores alternative siblings.",
+      "idealUseCases": "Combinatorial exploration (Game of 24), crosswords, strategic game moves (chess/planning), complex software architecture decomposition."
     },
-    reasoningTraceExample: {
-      problem: "A courier depot processes 450 parcels/hr. 12% are flagged for manual re-labeling. If manual re-labeling takes 4 minutes per parcel, how many staff members are needed?",
-      withoutCoT: "Answer: 4 staff members. (Black-box guess without intermediate audit trail)",
-      withCoT: `1. Calculate flagged parcels: 450 parcels/hr * 0.12 = 54 parcels/hr requiring manual re-labeling.
-2. Calculate total manual labor minutes needed per hour: 54 parcels * 4 minutes = 216 minutes of labor per hour.
-3. Calculate number of staff needed: 216 minutes / 60 minutes per staff-hour = 3.6 staff members.
-4. Rounding up to ensure all parcels are processed within the hour: 4 full-time staff members are required.
-Final Answer: 4 staff members.`
+    {
+      "name": "Graph-of-Thoughts (GoT)",
+      "acronym": "GoT",
+      "badge": "Arbitrary Network & Thought Merging",
+      "accent": "text-emerald-400",
+      "border": "border-emerald-800/60",
+      "topology": "Directed Graph / DAG (Splits, Merges, Loops & Consensus)",
+      "mechanism": "Treats thoughts as vertices in an arbitrary graph. Introduces graph transformation primitives: generating thoughts, evaluating thoughts, merging thoughts from distinct branches, and cyclical self-refinement.",
+      "search": "Graph Transformations: Aggregates multiple independent thought streams into a single synthesized consensus node; refines nodes via feedback loops.",
+      "backtracking": "Complete Flexibility: Can branch, backtrack, combine divergent ideas from different branches, and iteratively polish thoughts through graph-level feedback.",
+      "idealUseCases": "Multi-document synthesis, cross-perspective deliberation/consensus, conflicting source summarization, complex iterative code refactoring."
+    }
+  ],
+  "paradigmsTable": [
+    {
+      "dimension": "Graph Topology",
+      "cot": "Linear sequence (Chain)",
+      "tot": "Tree hierarchy (Branches)",
+      "got": "Directed Acyclic / Cyclic Graph (DAG)"
     },
-    takeaway: "Chain of Thought (CoT) prompts the model to generate intermediate reasoning tokens before committing to an answer, dramatically increasing accuracy on math, logic, and planning tasks. In production, pure generated reasoning should be augmented with deterministic tools (calculators, SQL queries, schema validators) to avoid arithmetic slips and factual hallucinations."
+    {
+      "dimension": "Search Algorithm",
+      "cot": "Greedy forward generation",
+      "tot": "BFS or DFS with lookahead & pruning",
+      "got": "Graph transformations (Generate, Score, Merge, Loop)"
+    },
+    {
+      "dimension": "Backtracking Capability",
+      "cot": "❌ None (Errors propagate to end)",
+      "tot": "✅ Full (Returns to parent node on dead end)",
+      "got": "✅ Complete (Can backtrack, branch, & recombine)"
+    },
+    {
+      "dimension": "Thought Merging / Synthesis",
+      "cot": "❌ None (Single isolated thread)",
+      "tot": "❌ None (Branches remain strictly isolated)",
+      "got": "✅ Yes (Combines multiple thoughts into consensus)"
+    },
+    {
+      "dimension": "Token & Latency Cost",
+      "cot": "Lowest (1× baseline)",
+      "tot": "High (5× - 20× due to tree expansion)",
+      "got": "Tunable (3× - 10×; reuses & merges nodes)"
+    },
+    {
+      "dimension": "Classic Benchmark Tasks",
+      "cot": "GSM8K, standard math & logic",
+      "tot": "Game of 24, Mini-Crosswords, Creative Writing",
+      "got": "Document Merging, Graph Sorting, Consensus Voting"
+    }
+  ],
+  "cotVariations": [
+    {
+      "type": "Zero-Shot CoT",
+      "trigger": "Trigger phrase: 'Let's think step by step.'",
+      "desc": "Encourages the model to allocate output tokens to an explicit reasoning scratchpad before committing to a final conclusion without needing prior examples.",
+      "accent": "text-amber-400",
+      "badge": "Zero-Shot Prompting"
+    },
+    {
+      "type": "Few-Shot CoT",
+      "trigger": "Prompt includes 2–4 worked demonstrations showing step-by-step reasoning chains.",
+      "desc": "Steers formatting, depth of reasoning, and logical decomposition structure through In-Context Learning demonstrations.",
+      "accent": "text-cyan-400",
+      "badge": "Demonstration-Based"
+    },
+    {
+      "type": "Native Test-Time Reasoning (RL-Trained)",
+      "trigger": "Frontier reasoners (e.g. OpenAI o1/o3, DeepSeek-R1)",
+      "desc": "Uses test-time compute where the model generates hundreds of internal hidden reasoning tokens, backtracking and correcting mistakes autonomously.",
+      "accent": "text-purple-400",
+      "badge": "Test-Time Compute"
+    }
+  ],
+  "reasoningTraceExample": {
+    "problem": "A courier depot processes 450 parcels/hr. 12% are flagged for manual re-labeling. If manual re-labeling takes 4 minutes per parcel, how many staff members are needed?",
+    "withoutCoT": "Answer: 4 staff members. (Black-box guess without intermediate audit trail)",
+    "withCoT": "1. Calculate flagged parcels: 450 parcels/hr * 0.12 = 54 parcels/hr requiring manual re-labeling.\n2. Calculate total manual labor minutes needed per hour: 54 parcels * 4 minutes = 216 minutes of labor per hour.\n3. Calculate number of staff needed: 216 minutes / 60 minutes per staff-hour = 3.6 staff members.\n4. Rounding up to ensure all parcels are processed within the hour: 4 full-time staff members are required.\nFinal Answer: 4 staff members."
   },
+  "toolAugmentedSynergy": {
+    "title": "Why Pure Generated Reasoning Fails (and Why Tools Win in Production)",
+    "points": [
+      {
+        "hazard": "Pure Generated Arithmetic",
+        "explanation": "LLMs predict the next token based on statistical patterns; multiplying large numbers often hallucinations subtle digit errors.",
+        "solution": "Delegate calculations to a deterministic Python interpreter or Calculator API."
+      },
+      {
+        "hazard": "Factual Drift & Hallucination",
+        "explanation": "Multi-step reasoning over internal parametric memory can propagate erroneous initial assumptions across intermediate steps.",
+        "solution": "Ground each step against SQL databases, Vector indices, or real-time APIs (ReAct / Tool-Use)."
+      },
+      {
+        "hazard": "Strict Business Logic",
+        "explanation": "Tax rates, discount rules, and SLA dates must adhere to deterministic enterprise rules rather than probabilistic next-token generation.",
+        "solution": "Validate step transitions with strongly-typed Pydantic schemas and deterministic services."
+      }
+    ]
+  },
+  "code": "# ==============================================================\n# REASONING PARADIGMS IN PYTHON: CoT vs. ToT vs. GoT\n# ==============================================================\n\nfrom typing import List, Dict\n\n# --- 1. CHAIN-OF-THOUGHT (CoT): Linear Sequential Stream ---\ndef chain_of_thought_solve(problem: str) -> str:\n    \"\"\"CoT: Direct greedy progression with step-by-step scratchpad.\"\"\"\n    prompt = f\"Problem: {problem}\\nLet's think step by step:\"\n    # response = llm.generate(prompt)\n    return \"Step 1: ... -> Step 2: ... -> Step 3: ... -> Final Answer\"\n\n\n# --- 2. TREE-OF-THOUGHTS (ToT): Branching, Scoring & Backtracking ---\ndef tree_of_thoughts_solve(problem: str, branch_factor: int = 3, depth_limit: int = 3) -> str:\n    \"\"\"ToT: Explores candidate thoughts via BFS/DFS with heuristic scoring.\"\"\"\n    current_thoughts = [problem]\n    \n    for depth in range(depth_limit):\n        candidates = []\n        for thought in current_thoughts:\n            # Generate K alternative next thoughts\n            new_thoughts = [f\"{thought} -> Branch {i+1}\" for i in range(branch_factor)]\n            candidates.extend(new_thoughts)\n        \n        # Evaluate/Score intermediate nodes using an LLM evaluator prompt\n        scored_candidates = []\n        for c in candidates:\n            score = 0.9 if \"valid_step\" in c else 0.4  # Mock heuristic score\n            scored_candidates.append((c, score))\n        \n        # Pruning & Backtracking: Keep only top-scoring branches (Beam/BFS)\n        scored_candidates.sort(key=lambda x: x[1], reverse=True)\n        current_thoughts = [t for t, s in scored_candidates[:2]]  # Top 2 branches\n        \n    return current_thoughts[0]  # Best leaf thought\n\n\n# --- 3. GRAPH-OF-THOUGHTS (GoT): Graph Operations & Merging ---\ndef graph_of_thoughts_solve(problem: str) -> str:\n    \"\"\"GoT: Allows thoughts to branch, merge, and refine through cycles.\"\"\"\n    # Step A: Generate diverse independent perspectives\n    perspective_a = \"Perspective A: Focus on cost efficiency and speed\"\n    perspective_b = \"Perspective B: Focus on QA accuracy and failure rates\"\n    \n    # Step B: Graph Merge Operation (Combine multiple thoughts into a consensus)\n    merge_prompt = f\"Combine insights from:\\n1. {perspective_a}\\n2. {perspective_b}\\nSynthesize unified plan:\"\n    # synthesized_thought = llm.generate(merge_prompt)\n    synthesized_thought = \"Hybrid Strategy: Prioritize high-speed inspection with fallback QA re-check\"\n    \n    # Step C: Self-Refinement Feedback Loop\n    refined_thought = f\"{synthesized_thought} -> Polished & verified via schema check\"\n    return refined_thought",
+  "takeaway": "Chain-of-Thought (CoT) provides fast, low-cost linear reasoning suitable for math and sequential logic. Tree-of-Thoughts (ToT) introduces branching, heuristic evaluation, and backtracking for combinatorial puzzles and search spaces. Graph-of-Thoughts (GoT) extends reasoning to arbitrary networks, enabling the combination, merging, and cyclic refinement of multiple thought streams into a unified consensus."
+},
   {
     id: "bagging",
     title: "Bagging (Bootstrap Aggregating) & Variance Reduction",
