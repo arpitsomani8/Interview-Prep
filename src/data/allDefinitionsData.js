@@ -133,7 +133,8 @@ export const definitionBookmarks = [
   { id: "security-and-error-handling", label: "Security & Error Handling" },
   { id: "cross-encoder", label: "Cross-Encoder" },
   { id: "kmeans", label: "K-means Clustering" },
-  { id: "mitigation", label: "Mitigation Strategies" }
+  { id: "mitigation", label: "Mitigation Strategies" },
+  { id: "central-limit-theorem", label: "Central Limit Theorem" }
 ];
 
 export const definitionsData = [
@@ -10440,5 +10441,62 @@ def generate_grounded_answer(retrieved_docs: list[str], prompt: str) -> dict:
     }`
     },
     takeaway: "Mitigation in production AI is not a one-size-fits-all fix. True engineering robustness requires decoupling failures by category—handling training disparities with class weights and leakage-free pipelines, serving bottlenecks with quantization and caching, and generative hallucination with grounded citations and strict schema validation."
+  },
+  {
+    id: "central-limit-theorem",
+    title: "Central Limit Theorem (CLT & Sampling Distributions)",
+    badge: "Statistical Foundations, Sampling Theory & Hypothesis Testing",
+    summary: "The Central Limit Theorem says that, under suitable conditions, the distribution of a properly standardized sample mean approaches a normal distribution as the sample size grows—even when the underlying population isn't normally distributed. Crucially, CLT concerns the distribution of sample means, not a claim that the original data itself becomes normally distributed.",
+    coreDefinition: "The Central Limit Theorem says that, under suitable conditions, the distribution of a properly standardized sample mean approaches a normal distribution as the sample size grows—even when the underlying population isn't normally distributed.",
+    criticalDistinction: "CLT concerns the distribution of sample means, not a claim that the original data itself becomes normally distributed.",
+    mathematicalFormulation: {
+      standardizedMean: "Z = (X̄ - μ) / (σ / √n)  ~  N(0, 1)  as  n → ∞",
+      standardError: "SE = σ / √n",
+      meanEstimate: "E[X̄] = μ,   Var(X̄) = σ² / n"
+    },
+    keyInsights: [
+      {
+        title: "Distribution of Means vs. Original Population",
+        desc: "A common misconception is believing raw population data becomes normal if you gather enough samples. Raw data retains its original distribution (skewed, uniform, bimodal). It is the calculated sample means (X̄) across repeated trials that form a bell-shaped Gaussian.",
+        accent: "text-amber-400"
+      },
+      {
+        title: "Sample Size Rule of Thumb (n ≥ 30)",
+        desc: "For most non-pathological populations with finite variance σ², sample sizes of n ≥ 30 produce sample mean distributions indistinguishable from Gaussian, enabling z-tests and t-tests.",
+        accent: "text-cyan-400"
+      },
+      {
+        title: "Foundation for A/B Testing & Production LLM Benchmarking",
+        desc: "CLT provides the statistical theoretical justification for hypothesis testing, computing confidence intervals for conversion rates, and validating latency benchmarks across production inference clusters.",
+        accent: "text-purple-400"
+      }
+    ],
+    codeExample: {
+      title: "Simulating Central Limit Theorem with Exponential Population in Python",
+      language: "python",
+      code: `import numpy as np
+
+# 1. Underlying Population: Highly skewed Exponential distribution (NOT normal)
+population = np.random.exponential(scale=2.0, size=100000)
+
+# 2. Draw 10,000 samples of size n=50 and compute their sample means
+sample_size = 50
+num_samples = 10000
+sample_means = [np.mean(np.random.choice(population, size=sample_size)) for _ in range(num_samples)]
+
+# 3. Verify Properties:
+pop_mean = np.mean(population)
+pop_std = np.std(population)
+mean_of_means = np.mean(sample_means)
+std_of_means = np.std(sample_means)
+expected_se = pop_std / np.sqrt(sample_size)
+
+print(f"Population Mean:           {pop_mean:.4f}")
+print(f"Mean of Sample Means:      {mean_of_means:.4f} (Approaches μ)")
+print(f"Empirical Std Error:       {std_of_means:.4f}")
+print(f"Theoretical Std Error (SE):{expected_se:.4f} (σ / √n)")
+print(f"Sample Means Distribution: Approximates Normal N(μ, σ²/n)!")`
+    },
+    takeaway: "The Central Limit Theorem enables robust statistical inference on real-world systems without requiring the underlying metrics to be Gaussian. By evaluating sample means, machine learning practitioners can reliably compute confidence intervals and conduct A/B testing on skewed business metrics like user click-through rates and LLM token generation latency."
   }
 ];
