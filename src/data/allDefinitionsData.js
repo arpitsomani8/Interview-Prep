@@ -101,7 +101,8 @@ export const definitionBookmarks = [
   { id: "random-forest", label: "Random Forest" },
   { id: "gradient-descent", label: "Gradient Descent" },
   { id: "design-patterns", label: "Design Patterns" },
-  { id: "tokenization", label: "Tokenization" }
+  { id: "tokenization", label: "Tokenization" },
+  { id: "sft-peft", label: "SFT / PEFT" }
 ];
 
 export const definitionsData = [
@@ -7774,5 +7775,77 @@ decoded_text = enc.decode(token_ids)
 assert decoded_text == text`
     },
     takeaway: "Tokenization bridges discrete human text with continuous vector space. Modern LLMs rely on subword algorithms (BPE, WordPiece, SentencePiece) because they prevent Out-of-Vocabulary (OOV) errors while maintaining a compact vocabulary (typically 32k–128k tokens) that balances sequence length against embedding table memory."
+  },
+  {
+    id: "sft-peft",
+    title: "SFT vs PEFT (Supervised Fine-Tuning & Parameter-Efficient LoRA)",
+    badge: "LLM Post-Training, Adapters & Resource Optimization",
+    summary: "SFT means Supervised Fine-Tuning. It is the process of further training a pretrained model on examples containing inputs and desired outputs. SFT is commonly used to improve instruction following, response style, task-specific behavior, and structured output generation. PEFT means Parameter-Efficient Fine-Tuning. It is a family of techniques that adapt a pretrained model while training only a small subset of parameters, or a small set of added parameters, rather than updating the entire model. One popular PEFT technique is LoRA (Low-Rank Adaptation).",
+    coreDefinition: "SFT means Supervised Fine-Tuning: further training a pretrained model on input-output prompt pairs. PEFT means Parameter-Efficient Fine-Tuning: adapting a model while training only a small subset or adapter layer of parameters.",
+    sftDetails: {
+      headline: "Supervised Fine-Tuning (SFT)",
+      definition: "SFT means Supervised Fine-Tuning. It is the process of further training a pretrained model on examples containing inputs and desired outputs.",
+      useCasesHeadline: "SFT is commonly used to:",
+      useCases: [
+        "Improve instruction following.",
+        "Refine response style and conversational persona.",
+        "Adapt task-specific behavior (e.g. domain summarization, coding).",
+        "Enforce structured output generation (valid JSON schemas, tool calling)."
+      ]
+    },
+    peftDetails: {
+      headline: "Parameter-Efficient Fine-Tuning (PEFT)",
+      definition: "PEFT means Parameter-Efficient Fine-Tuning. It is a family of techniques that adapt a pretrained model while training only a small subset of parameters, or a small set of added parameters, rather than updating the entire model.",
+      flagshipTechnique: "One popular PEFT technique is LoRA (Low-Rank Adaptation).",
+      whyPeftMatters: "Full model fine-tuning requires tracking 16-32 bytes of optimizer states (AdamW) per parameter, requiring massive multi-GPU clusters. PEFT reduces trainable parameters by 99%+, allowing fine-tuning on a single consumer GPU."
+    },
+    comparison: {
+      headline: "Full fine-tuning vs. PEFT with LoRA",
+      options: [
+        {
+          name: "Full fine-tuning",
+          bullet1: "Update the original model's parameters",
+          bullet2: "Can require substantial GPU memory and compute.",
+          hardwareImpact: "Requires updating all billions of parameters. Demands massive GPU clusters to store AdamW optimizer momentum and variance states.",
+          accent: "text-amber-400",
+          border: "border-amber-800/50",
+          badge: "Full Weight Update"
+        },
+        {
+          name: "PEFT with LoRA",
+          bullet1: "Freeze most original weights",
+          bullet2: "Train small adapter parameters that modify the model's behavior.",
+          hardwareImpact: "Injects trainable low-rank rank-decomposition matrices (Delta W = B * A). Slashes VRAM by >70% and produces lightweight (<50MB) portable adapters.",
+          accent: "text-emerald-400",
+          border: "border-emerald-800/50",
+          badge: "Adapter Efficiency"
+        }
+      ]
+    },
+    codeExample: {
+      title: "PEFT with LoRA Implementation via Hugging Face PEFT",
+      language: "python",
+      code: `from peft import LoraConfig, get_peft_model
+from transformers import AutoModelForCausalLM
+
+# 1. Load Pretrained Base Model
+base_model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3-8B")
+
+# 2. Configure LoRA: Freeze base weights, inject rank r=16 low-rank matrices
+lora_config = LoraConfig(
+    r=16,                              # Low rank dimension
+    lora_alpha=32,                     # Scaling hyperparameter
+    target_modules=["q_proj", "v_proj"], # Inject into attention query & value matrices
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+
+# 3. Wrap model with PEFT: Freeze base weights, train adapters
+peft_model = get_peft_model(base_model, lora_config)
+peft_model.print_trainable_parameters()
+# Output: trainable params: 6.8M || all params: 8.03B || trainable%: 0.0847%`
+    },
+    takeaway: "SFT defines the training objective (learning from prompt-response examples), whereas PEFT defines the parameter efficiency mechanism (updating small adapters rather than all weights). In production, combining SFT with PEFT (via LoRA or QLoRA) provides the accuracy of full fine-tuning with a fraction of the GPU VRAM cost."
   }
 ];
