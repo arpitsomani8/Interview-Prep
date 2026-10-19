@@ -109,7 +109,8 @@ export const definitionBookmarks = [
   { id: "ranking-and-reranking", label: "Ranking & Reranking" },
   { id: "dense-sparse", label: "Dense vs. Sparse" },
   { id: "which-is-better", label: "Which is Better?" },
-  { id: "labeled-unlabeled-data", label: "Labeled vs Unlabeled Data" }
+  { id: "labeled-unlabeled-data", label: "Labeled vs Unlabeled Data" },
+  { id: "early-stopping", label: "Early Stopping" }
 ];
 
 export const definitionsData = [
@@ -8462,5 +8463,72 @@ def select_most_informative_for_human_labeling(model, unlabeled_pool, top_n=100)
     return unlabeled_pool[uncertain_indices]`
     },
     takeaway: "In enterprise AI, raw data is abundant but labels are scarce and expensive. Modern practitioners rarely rely solely on manual labeling; instead, they bootstrap from raw data using Self-Supervised pretraining, amplify small labeled seeds through Weak Supervision (Snorkel), and direct human attention strictly where the model is most uncertain via Active Learning."
+  },
+  {
+    id: "early-stopping",
+    title: "Early Stopping (Implicit Regularization & Overfitting Prevention)",
+    badge: "Training Callbacks, Keras & Validation Monitored Optimization",
+    summary: "Early stopping is a technique that stops model training when validation performance stops improving. It helps prevent overfitting and can save training time.",
+    coreDefinition: "Early stopping is a technique that stops model training when validation performance stops improving. It helps prevent overfitting and can save training time.",
+    coreParameters: [
+      {
+        param: "monitor='val_loss'",
+        name: "Validation Metric",
+        desc: "Specifies which quantity to observe (e.g. 'val_loss', 'val_accuracy', 'val_auc'). In regression or cross-entropy classification, minimizing validation loss is standard.",
+        accent: "text-cyan-400"
+      },
+      {
+        param: "patience=3",
+        name: "Grace Epochs Buffer",
+        desc: "Number of consecutive epochs with no recorded improvement after which training will be halted. Prevents premature termination on noisy minibatches or plateaus.",
+        accent: "text-amber-400"
+      },
+      {
+        param: "restore_best_weights=True",
+        name: "Optimal Checkpoint Restoration",
+        desc: "When True, automatically rolls back model weights to the checkpoint from the epoch with the best monitored performance, instead of keeping the overfitted final epoch weights.",
+        accent: "text-emerald-400"
+      }
+    ],
+    regularizationMechanism: {
+      headline: "How Early Stopping Prevents Overfitting",
+      points: [
+        {
+          phase: "Underfitting Stage (Epochs 1–15)",
+          trend: "Both Training Loss & Validation Loss drop rapidly.",
+          action: "Model is discovering generalizable statistical representations."
+        },
+        {
+          phase: "Optimal Generalization (Epoch 20)",
+          trend: "Validation Loss hits its minimum (sweet spot).",
+          action: "Weights have converged on the global optimum without memorizing noise."
+        },
+        {
+          phase: "Overfitting Stage (Epochs 21+)",
+          trend: "Training Loss keeps dropping, but Validation Loss begins rising.",
+          action: "Early Stopping triggers after patience=3 epochs and restores the optimal Epoch 20 weights."
+        }
+      ]
+    },
+    codeExample: {
+      title: "TensorFlow / Keras EarlyStopping Callback Implementation",
+      language: "python",
+      code: `import tensorflow as tf
+
+early_stopping = tf.keras.callbacks.EarlyStopping(
+    monitor="val_loss",
+    patience=3,
+    restore_best_weights=True
+)
+
+history = model.fit(
+    X_train,
+    y_train,
+    validation_data=(X_val, y_val),
+    epochs=100,
+    callbacks=[early_stopping]
+)`
+    },
+    takeaway: "Early stopping acts as an implicit regularizer by restricting the optimization path in weight space. Without early stopping, stochastic gradient descent continues minimizing training empirical loss, memorizing label noise and sample idiosyncrasies. Pairing patience with restore_best_weights=True guarantees optimal out-of-sample generalization while saving substantial GPU compute hours."
   }
 ];
