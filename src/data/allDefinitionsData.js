@@ -135,7 +135,8 @@ export const definitionBookmarks = [
   { id: "kmeans", label: "K-means Clustering" },
   { id: "mitigation", label: "Mitigation Strategies" },
   { id: "central-limit-theorem", label: "Central Limit Theorem" },
-  { id: "strands", label: "Strands Agents SDK" }
+  { id: "strands", label: "Strands Agents SDK" },
+  { id: "oop-concepts", label: "OOP Concepts" }
 ];
 
 export const definitionsData = [
@@ -10570,5 +10571,91 @@ response = agent.run("Order #PKG-8921 has a suspicious inspection photo at https
 print(response.content)`
     },
     takeaway: "Strands provides a lightweight, model-agnostic abstraction for cyclic agent loops. By decoupling the reasoning engine (LLM), external capabilities (Tools), and standardization interfaces (Model Context Protocol / MCP), Strands allows developers to construct robust autonomous workflows without vendor lock-in or proprietary orchestrator runtimes."
+  },
+  {
+    id: "oop-concepts",
+    title: "Four OOP Concepts (Object-Oriented Programming in AI Systems)",
+    badge: "Software Engineering Architecture & AI Model Abstractions",
+    summary: "The four core pillars of Object-Oriented Programming (OOP)—Encapsulation, Inheritance, Polymorphism, and Abstraction—provide the foundational software architecture for modular, maintainable, and testable AI/ML systems.",
+    coreDefinition: "Four fundamental OOP concepts structure modern software engineering: Encapsulation (keeping related data and behavior together), Inheritance (reusing behavior from a parent class), Polymorphism (different classes providing the same interface), and Abstraction (hiding implementation details behind an interface).",
+    oopTable: [
+      {
+        concept: "Encapsulation",
+        meaning: "Keep related data and behavior together",
+        aiExample: "Inspector manages its model",
+        explanation: "Bundles model weights, configuration, and inference methods inside a cohesive class instance while guarding private attributes.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        concept: "Inheritance",
+        meaning: "Reuse behavior from a parent class",
+        aiExample: "YOLOInspector inherits from BaseInspector",
+        explanation: "Shares common lifecycle hooks (logging, device placement, latency tracking) across diverse inspection models without duplicating code.",
+        accent: "text-blue-400",
+        border: "border-blue-800/50"
+      },
+      {
+        concept: "Polymorphism",
+        meaning: "Different classes provide the same interface",
+        aiExample: "YOLO and CLIP inspectors both implement inspect()",
+        explanation: "Allows an orchestration pipeline to invoke .inspect(image) interchangeably across CNNs, Transformers, or multimodal encoders.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        concept: "Abstraction",
+        meaning: "Hide implementation details behind an interface",
+        aiExample: "API calls inspect() without knowing model internals",
+        explanation: "Exposes clean public contracts (e.g. FastAPI route handlers) so consumers remain decoupled from GPU memory management or tensor reshapes.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      }
+    ],
+    codeExample: {
+      title: "Realizing the 4 OOP Pillars in an AI Inspection Pipeline",
+      language: "python",
+      code: `from abc import ABC, abstractmethod
+
+# 1. ABSTRACTION: Base interface hiding model internals behind inspect()
+class BaseInspector(ABC):
+    def __init__(self, device: str = "cuda"):
+        # 2. ENCAPSULATION: Keeping internal state and hardware binding together
+        self._device = device
+        self._load_model()
+
+    @abstractmethod
+    def _load_model(self):
+        """Hidden initialization routine."""
+        pass
+
+    @abstractmethod
+    def inspect(self, image_bytes: bytes) -> dict:
+        """Public abstract interface for callers."""
+        pass
+
+# 3. INHERITANCE: Reusing lifecycle from BaseInspector
+class YOLOInspector(BaseInspector):
+    def _load_model(self):
+        # Encapsulated weights loading
+        self._model = "YOLOv11n-Weights"
+
+    # 4. POLYMORPHISM: Implements common inspect() interface
+    def inspect(self, image_bytes: bytes) -> dict:
+        return {"model": "YOLO", "defects_detected": 2, "box": [50, 60, 200, 300]}
+
+class CLIPInspector(BaseInspector):
+    def _load_model(self):
+        self._model = "OpenAI-CLIP-ViT-B/32"
+
+    # POLYMORPHISM: Same method signature, completely different model architecture
+    def inspect(self, image_bytes: bytes) -> dict:
+        return {"model": "CLIP", "zero_shot_label": "Crushed Carton", "similarity": 0.96}
+
+# Client usage: API calls inspect() polymorphically without knowing internals
+def process_parcel_image(inspector: BaseInspector, img: bytes):
+    return inspector.inspect(img)`
+    },
+    takeaway: "In enterprise AI engineering, applying OOP principles transforms fragile scripting into resilient microservices. Abstraction shields REST/gRPC endpoints from model complexity; Polymorphism enables seamless A/B swapping of detection backends (YOLO vs CLIP); Inheritance standardizes metrics and error handling; and Encapsulation guards GPU memory lifecycle."
   }
 ];
