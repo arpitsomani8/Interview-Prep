@@ -10269,6 +10269,264 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 89: Temperature & Inference Hyperparameters */}
+            {item.id === 'temperature' && (
+              <div className="space-y-6">
+                {/* 1. Core Verbatim Definitions Grid */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Core Decoding Parameters & Schema Primitives</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                      Verbatim Reference
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {item.verbatimCore.map((c, cIdx) => (
+                      <div key={cIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-amber-500/40 transition">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold font-mono text-amber-400">
+                            {c.term}
+                          </span>
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                            #{cIdx + 1}
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-200 font-medium leading-relaxed">
+                          {c.definition}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 2. Deep Dive: Hyperparameter Mechanisms & Math */}
+                {item.hyperparametersList && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Mathematical Formulation & Production Mechanics</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        Inference Dynamics
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.hyperparametersList.map((param, pIdx) => {
+                        const colorMap = {
+                          amber: 'border-amber-900/40 text-amber-400 bg-amber-950/20',
+                          blue: 'border-blue-900/40 text-blue-400 bg-blue-950/20',
+                          purple: 'border-purple-900/40 text-purple-400 bg-purple-950/20',
+                          rose: 'border-rose-900/40 text-rose-400 bg-rose-950/20',
+                          cyan: 'border-cyan-900/40 text-cyan-400 bg-cyan-950/20',
+                          emerald: 'border-emerald-900/40 text-emerald-400 bg-emerald-950/20',
+                        };
+                        const activeTheme = colorMap[param.color] || colorMap.amber;
+
+                        return (
+                          <div key={pIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3 hover:border-zinc-700 transition">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono flex items-center gap-2 ${param.color === 'amber' ? 'text-amber-400' : param.color === 'blue' ? 'text-blue-400' : param.color === 'purple' ? 'text-purple-400' : param.color === 'rose' ? 'text-rose-400' : param.color === 'cyan' ? 'text-cyan-400' : 'text-emerald-400'}`}>
+                                <span>{param.name}</span>
+                              </h5>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black border border-zinc-800 text-zinc-400">
+                                Param #{pIdx + 1}
+                              </span>
+                            </div>
+
+                            {/* Verbatim summary */}
+                            <div className="p-2.5 rounded-lg bg-black border border-zinc-900 text-xs text-zinc-300 font-mono">
+                              <strong className="text-zinc-100 font-semibold">{param.name}: </strong>
+                              {param.verbatim}
+                            </div>
+
+                            {/* Math / Signature */}
+                            <div className="p-2 rounded bg-black/80 border border-zinc-800/80 text-[11px] font-mono text-cyan-300 overflow-x-auto">
+                              {param.math}
+                            </div>
+
+                            {/* Detailed Mechanism */}
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {param.mechanism}
+                            </p>
+
+                            {/* Production Use Guidance */}
+                            <div className={`p-2.5 rounded-lg border text-xs leading-relaxed ${activeTheme}`}>
+                              <strong className="block font-mono uppercase text-[10px] tracking-wide mb-1">
+                                Production Guideline:
+                              </strong>
+                              {param.productionUse}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Production Architecture Pipeline */}
+                {item.productionArchitecture && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.productionArchitecture.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Inference Flow
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+                      {item.productionArchitecture.steps.map((st, stIdx) => (
+                        <div key={stIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                          <span className="text-xs font-bold text-amber-300 font-mono block">
+                            {st.step}
+                          </span>
+                          <p className="text-xs text-zinc-400 leading-relaxed">
+                            {st.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Production Tuning Cheat Sheet Table */}
+                {item.productionTuningCheatSheet && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Production Parameter Tuning & Pydantic Cheat Sheet</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Best Practices
+                      </span>
+                    </div>
+
+                    {/* Desktop Table */}
+                    <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                          <tr>
+                            <th className="py-3 px-3 font-semibold text-zinc-300 w-1/5">Use Case</th>
+                            <th className="py-3 px-3 font-semibold text-amber-400">Temperature</th>
+                            <th className="py-3 px-3 font-semibold text-purple-400">Top-P</th>
+                            <th className="py-3 px-3 font-semibold text-rose-400">Penalties (Freq / Pres)</th>
+                            <th className="py-3 px-3 font-semibold text-emerald-400 w-1/4">Pydantic Role</th>
+                            <th className="py-3 px-3 font-semibold text-zinc-400 w-1/5">Production Notes</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.productionTuningCheatSheet.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-3.5 px-3 font-mono font-bold text-white align-top">
+                                {row.task}
+                              </td>
+                              <td className="py-3.5 px-3 font-mono text-amber-300 align-top">
+                                {row.temperature}
+                              </td>
+                              <td className="py-3.5 px-3 font-mono text-purple-300 align-top">
+                                {row.topP}
+                              </td>
+                              <td className="py-3.5 px-3 font-mono text-rose-300 align-top">
+                                F: {row.freqPenalty} / P: {row.presPenalty}
+                              </td>
+                              <td className="py-3.5 px-3 text-emerald-200/90 align-top text-[11px] leading-relaxed">
+                                {row.pydanticRole}
+                              </td>
+                              <td className="py-3.5 px-3 text-zinc-400 align-top text-[11px] leading-relaxed">
+                                {row.notes}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Mobile View */}
+                    <div className="grid grid-cols-1 gap-3 md:hidden">
+                      {item.productionTuningCheatSheet.map((row, rIdx) => (
+                        <div key={rIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                          <h6 className="text-xs font-bold text-amber-300 font-mono uppercase">
+                            {row.task}
+                          </h6>
+                          <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                            <div className="p-2 rounded bg-zinc-950 border border-zinc-800">
+                              <span className="text-zinc-500 block">Temperature:</span>
+                              <span className="text-amber-400 font-semibold">{row.temperature}</span>
+                            </div>
+                            <div className="p-2 rounded bg-zinc-950 border border-zinc-800">
+                              <span className="text-zinc-500 block">Top-P:</span>
+                              <span className="text-purple-400 font-semibold">{row.topP}</span>
+                            </div>
+                          </div>
+                          <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] space-y-1">
+                            <span className="font-mono text-rose-400 font-bold block">Penalties:</span>
+                            <span className="text-zinc-300">Frequency: {row.freqPenalty} | Presence: {row.presPenalty}</span>
+                          </div>
+                          <div className="p-2.5 rounded-lg bg-zinc-950 border border-emerald-900/40 text-[11px] space-y-1">
+                            <span className="font-mono text-emerald-400 font-bold block">Pydantic Role:</span>
+                            <p className="text-zinc-300">{row.pydanticRole}</p>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 italic">{row.notes}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Production Code Example (FastAPI + Pydantic + LLM) */}
+                {item.codeExamples && item.codeExamples.map((ex, exIdx) => (
+                  <div key={exIdx} className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{ex.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>fastapi_llm_pydantic_service.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode(`code-temperature-${exIdx}`, ex.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === `code-temperature-${exIdx}` ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {ex.code}
+                      </pre>
+                    </div>
+                  </div>
+                ))}
+
+                {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

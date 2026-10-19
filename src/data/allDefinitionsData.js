@@ -85,7 +85,8 @@ export const definitionBookmarks = [
   { id: "pipeline", label: "Pipeline" },
   { id: "clip", label: "CLIP" },
   { id: "production-handling", label: "Production Handling" },
-  { id: "top-k-top-p", label: "Top-K / Top-P" }
+  { id: "top-k-top-p", label: "Top-K / Top-P" },
+  { id: "temperature", label: "Temperature" }
 ];
 
 export const definitionsData = [
@@ -6075,5 +6076,179 @@ def health_check():
       ]
     },
     takeaway: "Top-K enforces a strict, static candidate ceiling (e.g., consider at most 10 tokens), whereas Top-P (nucleus sampling) dynamically adjusts candidate pool size to achieve a cumulative probability threshold (e.g., 90%). In production generative AI systems, Top-P is the industry standard for adaptive quality control, often combined with low temperature for factual grounding."
+  },
+  {
+    id: "temperature",
+    title: "Temperature & Inference Hyperparameters (Sampling Controls & Pydantic Validation)",
+    badge: "LLM Decoding, Logit Penalties & Schema Contracts",
+    summary: "Temperature controls the sharpness of the next-token probability distribution. Master the 6 core generation and schema validation primitives: Temperature, Top-K, Top-P, Frequency penalty, Presence penalty, and Pydantic validation for structured LLM outputs.",
+    verbatimCore: [
+      { term: "Temperature", definition: "Controls the sharpness of the next-token probability distribution." },
+      { term: "Top-K", definition: "Restricts sampling to the K highest-probability tokens." },
+      { term: "Top-P", definition: "Restricts sampling to a probability-mass-based candidate set." },
+      { term: "Frequency penalty", definition: "Discourages tokens according to how often they've appeared." },
+      { term: "Presence penalty", definition: "Discourages tokens based on whether they've appeared at all." },
+      { term: "Pydantic", definition: "Validates and structures Python data; FastAPI uses it for request and response schemas." }
+    ],
+    hyperparametersList: [
+      {
+        name: "Temperature",
+        verbatim: "Controls the sharpness of the next-token probability distribution.",
+        math: "P(x_i) = softmax(z_i / T) = exp(z_i / T) / sum(exp(z_j / T))",
+        mechanism: "Scales the raw unnormalized logits before the softmax layer is evaluated. When T -> 0, logits with even slight advantages become infinitely sharper, converging to greedy argmax decoding (deterministic, focused). As T increases (e.g. 0.7 - 1.2), logit differences are compressed, flattening the probability distribution across all vocabulary tokens (creative, diverse, but higher hallucination risk).",
+        productionUse: "Use T = 0.0 - 0.2 for strict RAG factual Q&A, SQL generation, and code generation. Use T = 0.7 - 0.9 for creative drafting, brainstorms, and narrative generation.",
+        color: "amber"
+      },
+      {
+        name: "Top-K",
+        verbatim: "Restricts sampling to the K highest-probability tokens.",
+        math: "V_cand = {top K tokens sorted by probability}; P'(x) = softmax(z | x in V_cand)",
+        mechanism: "Hard truncates the token candidate pool to a static integer K (e.g. K = 40 or K = 50). All tokens ranked below K are assigned probability 0 before sampling. Prevents the sampling engine from selecting catastrophic low-probability tail tokens ('hallucinated junk').",
+        productionUse: "Frequently set to K = 40 or 50 as a safety ceiling alongside nucleus sampling in OpenLLaMA, Mistral, and vLLM inference engines.",
+        color: "blue"
+      },
+      {
+        name: "Top-P",
+        verbatim: "Restricts sampling to a probability-mass-based candidate set.",
+        math: "Smallest set V_cand such that sum_{x in V_cand} P(x) >= p (Nucleus Sampling)",
+        mechanism: "Dynamically adapts the candidate pool based on the cumulative probability threshold P (e.g. P = 0.90). When the model is highly certain, only 1-2 tokens make up 90% of the mass, shrinking the pool. When the model is uncertain, the pool dynamically widens to 50+ candidates.",
+        productionUse: "Industry-standard default for modern LLM APIs (OpenAI, Anthropic, Gemini, Groq). Recommended P = 0.90 - 0.95 when balanced fluency and high safety are required.",
+        color: "purple"
+      },
+      {
+        name: "Frequency penalty",
+        verbatim: "Discourages tokens according to how often they've appeared.",
+        math: "logit'_i = logit_i - (frequency_penalty * count(token_i))",
+        mechanism: "Subtracts a linear penalty from the unnormalized logit proportional to the exact number of times token_i has already been emitted in the prompt/completion. Directly penalizes verbatim verbatim loops (e.g., repeatedly generating the same phrase or name).",
+        productionUse: "Set between 0.1 and 0.5 if the model gets trapped in recursive loops or repeats key phrases. Avoid high values (> 1.0) in code generation because variable names and syntax tokens must repeat.",
+        color: "rose"
+      },
+      {
+        name: "Presence penalty",
+        verbatim: "Discourages tokens based on whether they've appeared at all.",
+        math: "logit'_i = logit_i - (presence_penalty * (1 if count(token_i) > 0 else 0))",
+        mechanism: "Applies a flat, one-time penalty to any token that has appeared at least once anywhere in the generation, regardless of whether it appeared 1 time or 20 times. Encourages the model to introduce fresh concepts, vocabulary, and topic shifts.",
+        productionUse: "Set between 0.2 and 0.6 for creative ideation, marketing copy, and multi-faceted problem solving to maximize semantic breadth without loop penalties.",
+        color: "cyan"
+      },
+      {
+        name: "Pydantic",
+        verbatim: "Validates and structures Python data; FastAPI uses it for request and response schemas.",
+        math: "class ExtractionSchema(BaseModel): ... -> parse_raw_as(Schema, llm_response)",
+        mechanism: "A high-performance Python data validation and parsing library built on compiled Rust core. Enforces strict type casting, field constraints (regex, min/max, enums), and nested data structures. In FastAPI, incoming HTTP request bodies and outgoing responses are automatically parsed, validated, and documented in OpenAPI/Swagger via Pydantic models.",
+        productionUse: "The backbone of structured LLM outputs (e.g. Instructor library, OpenAI Structured Outputs `response_format=json_schema`, LangChain `with_structured_output`). Guarantees that LLM outputs conform to required production types before entering downstream databases or pipelines.",
+        color: "emerald"
+      }
+    ],
+    productionArchitecture: {
+      title: "End-to-End LLM Serving Pipeline with Hyperparameter Tuning & Pydantic",
+      steps: [
+        {
+          step: "1. Prompt Ingestion & Validation",
+          desc: "FastAPI receives user request validated via Pydantic input schema `UserQueryRequest(prompt=..., max_tokens=...)`"
+        },
+        {
+          step: "2. Logit Computation & Logit Penalties",
+          desc: "LLM forward pass produces unnormalized logits. Frequency penalty and Presence penalty adjust logits for existing tokens."
+        },
+        {
+          step: "3. Temperature Logit Scaling",
+          desc: "Logits are divided by Temperature T (z / T). If T=0, bypass sampling and take argmax."
+        },
+        {
+          step: "4. Candidate Filtering (Top-K & Top-P)",
+          desc: "Softmax applied. Top-K discards all but top K candidates; Top-P nucleus sampling keeps the smallest set with cumulative sum >= P."
+        },
+        {
+          step: "5. Token Sampling & Decoding",
+          desc: "Final token sampled from normalized nucleus distribution and appended to KV-cache."
+        },
+        {
+          step: "6. Downstream Pydantic Schema Enforcement",
+          desc: "Generated JSON string parsed through Pydantic `LLMResponseSchema.model_validate_json(raw_text)`. Any malformed output triggers a retry or fallback."
+        }
+      ]
+    },
+    codeExamples: [
+      {
+        title: "FastAPI + Pydantic + LLM Structured Generation",
+        language: "python",
+        code: `from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+import openai
+
+app = FastAPI(title="LLM Service")
+
+# 1. Pydantic: Validates and structures request and response schemas
+class DefectAnalysisRequest(BaseModel):
+    parcel_id: str
+    image_description: str
+    temperature: float = Field(default=0.1, ge=0.0, le=2.0)
+    top_p: float = Field(default=0.95, ge=0.0, le=1.0)
+
+class DefectAnalysisResponse(BaseModel):
+    parcel_id: str
+    is_damaged: bool
+    defect_type: str = Field(description="Crushed, Torn, Wet, or Intact")
+    confidence: float = Field(ge=0.0, le=1.0)
+    summary: str
+
+@app.post("/analyze-defect", response_model=DefectAnalysisResponse)
+async def analyze_defect(req: DefectAnalysisRequest):
+    # Call LLM with exact hyperparameter controls
+    response = await openai.AsyncOpenAI().beta.chat.completions.parse(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "Analyze parcel condition and return validated schema."},
+            {"role": "user", "content": f"Parcel {req.parcel_id}: {req.image_description}"}
+        ],
+        temperature=req.temperature,     # Controls probability sharpness
+        top_p=req.top_p,                 # Probability-mass candidate set
+        frequency_penalty=0.1,           # Discourages repeating words
+        presence_penalty=0.0,            # Discourages repeated topic mention
+        response_format=DefectAnalysisResponse # Enforced via Pydantic
+    )
+    return response.choices[0].message.parsed`
+      }
+    ],
+    productionTuningCheatSheet: [
+      {
+        task: "JSON Extraction & Structured Data",
+        temperature: "0.0 (Greedy)",
+        topP: "1.0",
+        freqPenalty: "0.0",
+        presPenalty: "0.0",
+        pydanticRole: "Essential: Enforces exact JSON keys, types, and required field validation.",
+        notes: "Strict determinism prevents random key mutations and guarantees syntax validity."
+      },
+      {
+        task: "Enterprise RAG Q&A & Policy Lookup",
+        temperature: "0.1 – 0.2",
+        topP: "0.90 – 0.95",
+        freqPenalty: "0.1",
+        presPenalty: "0.0",
+        pydanticRole: "Recommended: Validates citations, answer text, and source IDs.",
+        notes: "Keeps answers anchored strictly to retrieved context without robotic phrasing."
+      },
+      {
+        task: "Code Generation & Refactoring",
+        temperature: "0.1 – 0.2",
+        topP: "0.95",
+        freqPenalty: "0.0",
+        presPenalty: "0.0",
+        pydanticRole: "Optional: Schema wrapper around generated file paths and code blocks.",
+        notes: "Do not set frequency penalty > 0 in code; variable names must legitimately repeat."
+      },
+      {
+        task: "Creative Writing & Ideation",
+        temperature: "0.8 – 1.0",
+        topP: "0.90",
+        freqPenalty: "0.3 – 0.5",
+        presPenalty: "0.3 – 0.5",
+        pydanticRole: "Validates list of ideas, title tags, and creative pitch outputs.",
+        notes: "Frequency & presence penalties eliminate repetitive loops and force varied vocabulary."
+      }
+    ],
+    takeaway: "Mastering LLM inference requires combining decoding hyperparameters with strict schema engineering. Temperature controls probability sharpness, Top-K and Top-P restrict the candidate search space, Frequency and Presence penalties eradicate repetition loops, and Pydantic guarantees rock-solid, typed API contracts in production FastAPI services."
   }
 ];
