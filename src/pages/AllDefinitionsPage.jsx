@@ -11807,6 +11807,50 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* 3.1 Pretraining Objectives: MLM and NSP */}
+                {item.pretrainingObjectives && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-lg">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.pretrainingObjectives.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Self-Supervised Pretraining
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                      {item.pretrainingObjectives.summary}
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.pretrainingObjectives.objectives.map((obj, oIdx) => (
+                        <div key={oIdx} className={`p-4 rounded-xl bg-black border ${obj.border} space-y-2.5 flex flex-col justify-between hover:border-zinc-600 transition`}>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs sm:text-sm font-bold font-mono ${obj.accent} uppercase block`}>
+                                {obj.name}
+                              </span>
+                              <span className="text-[9px] font-mono text-zinc-400 uppercase bg-zinc-900 px-1.5 py-0.5 rounded border border-zinc-800">
+                                {obj.badge}
+                              </span>
+                            </div>
+
+                            <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs sm:text-sm font-semibold text-white font-sans leading-relaxed">
+                              "{obj.definition}"
+                            </div>
+
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {obj.mechanism}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* 4. Is BERT an Embedding? Architectural Distinction */}
                 {item.isBertAnEmbedding && (
                   <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-lg">

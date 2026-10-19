@@ -6960,6 +6960,30 @@ model.print_trainable_parameters()
         resolution: "BERT can produce different contextual representations for bank depending on the surrounding words."
       }
     },
+    pretrainingObjectives: {
+      headline: "BERT pretraining: MLM and NSP",
+      summary: "In the original BERT setup, pretraining is powered by two self-supervised objectives:",
+      objectives: [
+        {
+          code: "MLM",
+          name: "Masked Language Modeling (MLM)",
+          definition: "Mask some tokens and train the model to predict them from context.",
+          mechanism: "Randomly masks 15% of all input tokens (80% replaced with [MASK], 10% replaced with random token, 10% kept unchanged). The model relies on bidirectional context from both directions to reconstruct the original tokens via cross-entropy loss.",
+          badge: "Bidirectional Token Reconstruction",
+          accent: "text-cyan-400",
+          border: "border-cyan-800/50"
+        },
+        {
+          code: "NSP",
+          name: "Next Sentence Prediction (NSP)",
+          definition: "In the original BERT setup, predict whether one segment follows another in the original text.",
+          mechanism: "Feeds sentence pairs A and B separated by a [SEP] token (50% true consecutive pairs with IsNext label, 50% random sentence from corpus with NotNext label). The [CLS] token vector trains a binary classifier to understand sentence relationships.",
+          badge: "Inter-Sentence Relationship",
+          accent: "text-purple-400",
+          border: "border-purple-800/50"
+        }
+      ]
+    },
     isBertAnEmbedding: {
       question: "Is BERT an embedding?",
       importantDistinction: "There is an important distinction:",
