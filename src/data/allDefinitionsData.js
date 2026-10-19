@@ -9451,6 +9451,18 @@ print("Flagged Outliers (|z| > 3):", outliers)
       upperFence: "Upper Fence = Q3 + 1.5 · IQR",
       outlierRule: "Any observation x < Lower Fence or x > Upper Fence is flagged as an outlier."
     },
+    whyUseBinning: {
+      headline: "Why use binning?",
+      reasons: [
+        "Make patterns easier to interpret.",
+        "Group noisy numeric values.",
+        "Create business-friendly categories.",
+        "Represent nonlinear relationships for some models."
+      ],
+      tradeoffHeadline: "Trade-off:",
+      tradeoff: "Binning loses information. For example, ages 26 and 49 become the same category in this example.",
+      llmScopeNote: "Binning is a general feature-engineering technique, not an LLM-specific feature."
+    },
     codeExample: {
       title: "IQR Outlier Filtering & 3 Binning Strategies in Python",
       language: "python",

@@ -16464,7 +16464,52 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
-                {/* 4. Interactive Python Code Box */}
+                {/* 4. Why Use Binning & Trade-offs */}
+                {item.whyUseBinning && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.whyUseBinning.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
+                        Feature Engineering Rationale
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {item.whyUseBinning.reasons.map((reason, rIdx) => (
+                        <div key={rIdx} className="p-3 rounded-xl bg-black border border-zinc-800 flex items-start gap-2.5">
+                          <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                          <span className="text-xs text-zinc-200 font-sans leading-relaxed">{reason}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Trade-off Warning Banner */}
+                    <div className="p-3.5 rounded-xl bg-rose-950/20 border border-rose-800/50 space-y-1">
+                      <span className="text-xs font-bold font-mono text-rose-400 uppercase flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-rose-400" />
+                        <span>{item.whyUseBinning.tradeoffHeadline}</span>
+                      </span>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.whyUseBinning.tradeoff}
+                      </p>
+                    </div>
+
+                    {/* General Feature Engineering Scope Note */}
+                    <div className="p-3 rounded-xl bg-blue-950/20 border border-blue-800/40 flex items-center justify-between">
+                      <span className="text-[11px] font-mono text-blue-300">
+                        Scope Clarification:
+                      </span>
+                      <span className="text-xs font-sans text-zinc-200">
+                        {item.whyUseBinning.llmScopeNote}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Interactive Python Code Box */}
                 {item.codeExample && (
                   <div className="space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
