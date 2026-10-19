@@ -29,10 +29,6 @@ export default function Header({ activeTab, setActiveTab }) {
                 <span className="hidden sm:inline-block text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
                   Senior AI / ML
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-zinc-950 text-zinc-300 border border-zinc-800 font-mono">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  AMOLED Dark Theme
-                </span>
               </div>
               <p className="text-xs text-zinc-400 hidden sm:block">3 Production Architectures & Technical Concept Vault</p>
             </div>
