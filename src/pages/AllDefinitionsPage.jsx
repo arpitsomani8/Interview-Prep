@@ -10895,6 +10895,216 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 91: Zero-shot vs Few-shot */}
+            {item.id === 'zero-shot-few-shot' && (
+              <div className="space-y-6">
+                {/* 1. Side-by-Side Concept Cards (Zero-shot vs Few-shot) */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Zero-Shot Card */}
+                  {item.zeroShot && (
+                    <div className="p-5 rounded-2xl bg-zinc-950 border border-amber-800/50 space-y-4 shadow-lg hover:border-amber-600 transition flex flex-col justify-between">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-amber-400" />
+                            <h4 className="text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+                              {item.zeroShot.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                            {item.zeroShot.badge}
+                          </span>
+                        </div>
+
+                        {/* Verbatim Definition */}
+                        <div className="p-3 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-200 font-medium leading-relaxed">
+                          <strong className="text-amber-400 font-mono block mb-1">Core Principle:</strong>
+                          {item.zeroShot.definition}
+                        </div>
+
+                        {/* Example Prompt Box */}
+                        <div className="space-y-1.5">
+                          <span className="text-[11px] font-mono font-bold uppercase text-zinc-400">
+                            Example Prompt:
+                          </span>
+                          <div className="p-3 rounded-xl bg-black border border-amber-900/40 font-mono text-xs text-amber-200 leading-relaxed">
+                            {item.zeroShot.example}
+                          </div>
+                        </div>
+
+                        {/* Expected Output */}
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-800/50 text-xs font-mono">
+                          <span className="text-emerald-400 font-bold uppercase">Expected output:</span>
+                          <span className="text-white font-bold px-2 py-0.5 rounded bg-emerald-900/80 border border-emerald-700">
+                            {item.zeroShot.expectedOutput}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Mechanism & When to Use */}
+                      <div className="space-y-2 pt-2 border-t border-zinc-900">
+                        <div className="text-[11px] text-zinc-400 leading-relaxed">
+                          <strong className="text-zinc-200 font-mono">Mechanics: </strong>
+                          {item.zeroShot.mechanics}
+                        </div>
+                        <div className="text-[11px] text-amber-300/90 font-mono">
+                          <strong className="text-zinc-300">When to use: </strong>
+                          {item.zeroShot.whenToUse}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Few-Shot Card */}
+                  {item.fewShot && (
+                    <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/50 space-y-4 shadow-lg hover:border-cyan-600 transition flex flex-col justify-between">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                          <div className="flex items-center gap-2">
+                            <Layers className="w-4 h-4 text-cyan-400" />
+                            <h4 className="text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                              {item.fewShot.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            {item.fewShot.badge}
+                          </span>
+                        </div>
+
+                        {/* Verbatim Definition */}
+                        <div className="p-3 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-200 font-medium leading-relaxed">
+                          <strong className="text-cyan-400 font-mono block mb-1">Core Principle:</strong>
+                          {item.fewShot.definition}
+                        </div>
+
+                        {/* Example Prompt Box */}
+                        <div className="space-y-1.5">
+                          <span className="text-[11px] font-mono font-bold uppercase text-zinc-400">
+                            Example Prompt (Demonstrations + New Query):
+                          </span>
+                          <pre className="p-3 rounded-xl bg-black border border-cyan-900/40 font-mono text-xs text-cyan-200 leading-relaxed whitespace-pre-wrap overflow-x-auto">
+                            {item.fewShot.examplePrompt}
+                          </pre>
+                        </div>
+
+                        {/* Expected Output */}
+                        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-800/50 text-xs font-mono">
+                          <span className="text-emerald-400 font-bold uppercase">Expected output:</span>
+                          <span className="text-white font-bold px-2 py-0.5 rounded bg-emerald-900/80 border border-emerald-700">
+                            {item.fewShot.expectedOutput}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Mechanism & When to Use */}
+                      <div className="space-y-2 pt-2 border-t border-zinc-900">
+                        <div className="text-[11px] text-zinc-400 leading-relaxed">
+                          <strong className="text-zinc-200 font-mono">Mechanics: </strong>
+                          {item.fewShot.mechanics}
+                        </div>
+                        <div className="text-[11px] text-cyan-300/90 font-mono">
+                          <strong className="text-zinc-300">When to use: </strong>
+                          {item.fewShot.whenToUse}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Side-by-Side Comparison Table */}
+                {item.comparisonTable && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Zero-Shot vs Few-Shot Technical Comparison</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Trade-Off Analysis
+                      </span>
+                    </div>
+
+                    <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                          <tr>
+                            <th className="py-3 px-3 font-semibold text-zinc-400 w-1/4">Aspect</th>
+                            <th className="py-3 px-3 font-semibold text-amber-400 w-3/8">Zero-Shot</th>
+                            <th className="py-3 px-3 font-semibold text-cyan-400 w-3/8">Few-Shot</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.comparisonTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-3.5 px-3 font-mono font-bold text-white align-top">
+                                {row.feature}
+                              </td>
+                              <td className="py-3.5 px-3 text-amber-200/90 align-top text-xs leading-relaxed font-mono">
+                                {row.zeroShot}
+                              </td>
+                              <td className="py-3.5 px-3 text-cyan-200/90 align-top text-xs leading-relaxed font-mono whitespace-pre-line">
+                                {row.fewShot}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 md:hidden">
+                      {item.comparisonTable.map((row, rIdx) => (
+                        <div key={rIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2">
+                          <h6 className="text-xs font-bold text-white font-mono">{row.feature}</h6>
+                          <div className="p-2 rounded bg-amber-950/20 border border-amber-900/40 text-xs text-amber-200/90 font-mono">
+                            <strong className="block text-[10px] uppercase text-amber-400">Zero-Shot:</strong>
+                            {row.zeroShot}
+                          </div>
+                          <div className="p-2 rounded bg-cyan-950/20 border border-cyan-900/40 text-xs text-cyan-200/90 font-mono whitespace-pre-line">
+                            <strong className="block text-[10px] uppercase text-cyan-400">Few-Shot:</strong>
+                            {row.fewShot}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Production Guidelines */}
+                {item.productionGuidelines && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Production Few-Shot Engineering Guardrails</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Best Practices
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {item.productionGuidelines.map((g, gIdx) => (
+                        <div key={gIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition">
+                          <span className={`text-xs font-bold font-mono block ${g.accent}`}>
+                            {g.rule}
+                          </span>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {g.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

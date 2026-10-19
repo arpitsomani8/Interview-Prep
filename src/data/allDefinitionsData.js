@@ -87,7 +87,8 @@ export const definitionBookmarks = [
   { id: "production-handling", label: "Production Handling" },
   { id: "top-k-top-p", label: "Top-K / Top-P" },
   { id: "temperature", label: "Temperature" },
-  { id: "pydantic", label: "Pydantic" }
+  { id: "pydantic", label: "Pydantic" },
+  { id: "zero-shot-few-shot", label: "Zero-shot / Few-shot" }
 ];
 
 export const definitionsData = [
@@ -6471,5 +6472,95 @@ def predict(request: PredictionRequest):
       }
     ],
     takeaway: "In modern production Python architectures, Pydantic acts as the definitive data boundary contract. Paired with FastAPI, it guarantees end-to-end type safety, rejects malformed payloads with 422 status codes, protects model inference pipelines from invalid inputs, and automatically documents your service via OpenAPI."
+  },
+  {
+    id: "zero-shot-few-shot",
+    title: "Zero-Shot vs Few-Shot Prompting (In-Context Learning)",
+    badge: "Prompt Engineering, Few-Shot Demonstrations & In-Context Learning",
+    summary: "Zero-shot prompting asks the model to perform a task with instructions only and zero worked examples. Few-shot prompting provides a small number of demonstrations within the prompt to steer output structure, tone, and reasoning.",
+    zeroShot: {
+      title: "Zero-shot",
+      badge: "0 Demonstrations",
+      definition: "The model receives an instruction but no worked examples of the task in the prompt.",
+      example: "“Classify this customer review as positive or negative: ‘The delivery was excellent.’”",
+      expectedOutput: "Positive",
+      mechanics: "Relies entirely on the LLM's pre-trained parametric knowledge, internal semantic associations, and instruction-following alignment (RLHF/DPO).",
+      whenToUse: "Simple classification, general question answering, or when prompt context budget is constrained.",
+      accent: "text-amber-400",
+      border: "border-amber-800/50"
+    },
+    fewShot: {
+      title: "Few-shot",
+      badge: "K Demonstrations",
+      definition: "The model receives a small number of examples before the new question.",
+      examplePrompt: `Review: "Very disappointing service."
+Sentiment: Negative
+
+Review: "Amazing product."
+Sentiment: Positive
+
+Review: "The delivery was excellent."
+Sentiment:`,
+      expectedOutput: "Positive",
+      mechanics: "Leverages In-Context Learning (ICL)—without updating model weights, attention heads align to the demonstrated pattern, locking into exact formatting, syntax, and nuanced class boundaries.",
+      whenToUse: "Complex domain taxonomy, strict formatting requirements (JSON, regex), subtle edge cases, or low-latency models that struggle with abstract zero-shot guidelines.",
+      accent: "text-cyan-400",
+      border: "border-cyan-800/50"
+    },
+    comparisonTable: [
+      {
+        feature: "Worked Examples in Prompt",
+        zeroShot: "0 examples (Instruction only)",
+        fewShot: "K examples (typically 2 to 5 demonstrations)"
+      },
+      {
+        feature: "Example Prompt Pattern",
+        zeroShot: "“Classify this customer review as positive or negative: ‘The delivery was excellent.’”",
+        fewShot: 'Demonstrates input-output pairs:\nReview: "..."\nSentiment: ...'
+      },
+      {
+        feature: "Expected Output",
+        zeroShot: "Positive",
+        fewShot: "Positive"
+      },
+      {
+        feature: "Primary Mechanism",
+        zeroShot: "Parametric knowledge & instruction alignment",
+        fewShot: "In-Context Learning (ICL) activation steering"
+      },
+      {
+        feature: "Token Consumption & Cost",
+        zeroShot: "Lowest (Minimal input tokens per request)",
+        fewShot: "Higher (Demonstrations consume context window & tokens)"
+      },
+      {
+        feature: "Format Adherence",
+        zeroShot: "Moderate (May add conversational filler like 'Sure! Here is...')",
+        fewShot: "Very High (Model naturally mimics the exact output style of previous shots)"
+      }
+    ],
+    productionGuidelines: [
+      {
+        rule: "1. Shot Quality > Shot Quantity",
+        desc: "3 high-quality, diverse, representative examples often outperform 10 repetitive or noisy examples while consuming 70% fewer prompt tokens.",
+        accent: "text-emerald-400"
+      },
+      {
+        rule: "2. Balanced Label Distribution",
+        desc: "Avoid class bias in few-shot demonstrations. If you provide 3 positive examples and 0 negative, models develop a recency/majority bias toward predicting positive.",
+        accent: "text-amber-400"
+      },
+      {
+        rule: "3. Format Consistency",
+        desc: "Keep delimiter labels (e.g. 'Review:', 'Sentiment:', newline patterns) 100% consistent across all shots to ensure seamless autocomplete termination.",
+        accent: "text-cyan-400"
+      },
+      {
+        rule: "4. When to Switch to Fine-Tuning",
+        desc: "If you need > 20 examples to capture domain nuances, or if prompt token latency and cost are prohibitive, fine-tuning via LoRA bakes the patterns into the weights permanently.",
+        accent: "text-purple-400"
+      }
+    ],
+    takeaway: "Zero-shot prompting tests the LLM's baseline comprehension with instructions only, minimizing token overhead. Few-shot prompting equips the prompt with a handful of input-output demonstrations, harnessing In-Context Learning to dramatically boost formatting precision, domain nuance, and classification accuracy without modifying a single model weight."
   }
 ];
