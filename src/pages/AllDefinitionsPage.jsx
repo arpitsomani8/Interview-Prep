@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { definitionBookmarks, definitionsData } from '../data/allDefinitionsData';
 import { 
   FileCode, 
@@ -28,6 +28,23 @@ export default function AllDefinitionsPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 250) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const scrollToId = (id) => {
     const el = document.getElementById(id);
@@ -22269,6 +22286,18 @@ export default function AllDefinitionsPage() {
           </div>
         ))}
       </div>
+
+      {/* Floating Scroll to Top Arrow Button (Bottom-Right, Compact) */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          aria-label="Scroll to top"
+          title="Back to Top"
+          className="fixed bottom-6 right-6 z-50 p-2.5 rounded-full bg-black/90 hover:bg-cyan-950/80 text-cyan-400 border border-cyan-500/40 hover:border-cyan-400 shadow-xl shadow-black/80 hover:shadow-cyan-500/20 backdrop-blur-md transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center group"
+        >
+          <ArrowUp className="w-4 h-4 text-cyan-400 group-hover:-translate-y-0.5 transition-transform" />
+        </button>
+      )}
     </div>
   );
 }
