@@ -21384,6 +21384,885 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 152: QLoRA */}
+            {item.id === 'qlora' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs sm:text-sm text-purple-200/90 leading-relaxed font-mono">
+                  <strong className="text-purple-400 uppercase font-sans font-bold">What is QLoRA? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {/* 2. Three Core Innovations */}
+                {item.threeInnovations && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-purple-400" />
+                        <span>The 3 Breakthrough Innovations of QLoRA</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Memory Efficiency
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.threeInnovations.map((inno, iIdx) => (
+                        <div key={iIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-purple-500/40 transition">
+                          <span className={`text-xs font-mono font-bold uppercase ${inno.accent}`}>
+                            {inno.title}
+                          </span>
+                          <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 inline-block">
+                            {inno.badge}
+                          </span>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                            {inno.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. LoRA vs. QLoRA Comparison Table */}
+                {item.loraVsQloraTable && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-purple-400" />
+                      <span>LoRA vs. QLoRA Production Comparison</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                              <th className="p-3 w-1/4">Metric / Dimension</th>
+                              <th className="p-3 w-3/8 text-cyan-400">Standard LoRA (16-bit)</th>
+                              <th className="p-3 w-3/8 text-purple-400">QLoRA (4-bit NF4)</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 font-sans">
+                            {item.loraVsQloraTable.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                  {row.feature}
+                                </td>
+                                <td className="p-3 text-cyan-200/90 text-[11px] leading-relaxed">
+                                  {row.lora}
+                                </td>
+                                <td className="p-3 text-purple-200/90 text-[11px] leading-relaxed font-semibold">
+                                  {row.qlora}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Interactive Code Snippet */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-purple-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-purple-400" />
+                          <span>qlora_training.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-qlora', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-qlora' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-purple-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-purple-800/40 text-xs text-purple-200/90 leading-relaxed font-mono">
+                  <strong className="text-purple-400 uppercase">PEFT Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 153: TF-IDF */}
+            {item.id === 'tf-idf' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase font-sans font-bold">What is TF-IDF? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.formulaBreakdown && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-xl space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Terminal className="w-4 h-4 text-cyan-400" />
+                      <span>Mathematical Formulation of TF-IDF</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                        <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold">1. Term Frequency (TF)</span>
+                        <p className="text-xs text-cyan-300 font-mono">{item.formulaBreakdown.tfFormula}</p>
+                      </div>
+                      <div className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                        <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold">2. Inverse Doc Frequency (IDF)</span>
+                        <p className="text-xs text-emerald-300 font-mono">{item.formulaBreakdown.idfFormula}</p>
+                      </div>
+                      <div className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                        <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold">3. Composite TF-IDF</span>
+                        <p className="text-xs text-amber-300 font-mono">{item.formulaBreakdown.tfidfFormula}</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-zinc-400 font-sans leading-relaxed pt-1">
+                      {item.formulaBreakdown.explanation}
+                    </p>
+                  </div>
+                )}
+
+                {item.tfidfVsEmbeddings && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>TF-IDF (Sparse Lexical) vs. Neural Embeddings (Dense Semantic)</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                              <th className="p-3 w-1/4">Aspect</th>
+                              <th className="p-3 w-3/8 text-cyan-400">TF-IDF / BM25 (Sparse)</th>
+                              <th className="p-3 w-3/8 text-emerald-400">Dense Embeddings (Neural)</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 font-sans">
+                            {item.tfidfVsEmbeddings.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                  {row.feature}
+                                </td>
+                                <td className="p-3 text-cyan-200/90 text-[11px] leading-relaxed">
+                                  {row.tfidf}
+                                </td>
+                                <td className="p-3 text-emerald-200/90 text-[11px] leading-relaxed font-semibold">
+                                  {row.embeddings}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Information Retrieval Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 154: COCO Dataset */}
+            {item.id === 'coco-dataset' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs sm:text-sm text-amber-200/90 leading-relaxed font-mono">
+                  <strong className="text-amber-400 uppercase font-sans font-bold">What is COCO? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.datasetHighlights && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    {item.datasetHighlights.map((stat, sIdx) => (
+                      <div key={sIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-amber-500/40 transition">
+                        <span className={`text-xs font-mono font-bold uppercase ${stat.accent}`}>
+                          {stat.metric}
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {stat.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {item.tasksSupported && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Terminal className="w-4 h-4 text-amber-400" />
+                      <span>Computer Vision Tasks Standardized by COCO</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.tasksSupported.map((task, tIdx) => (
+                        <div key={tIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                          <span className="text-xs font-bold font-mono text-white block">
+                            {task.task}
+                          </span>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            <strong className="text-zinc-500 font-mono">Output: </strong>
+                            {task.output}
+                          </p>
+                          <div className="pt-1 text-[11px] font-mono text-amber-400">
+                            <strong>Standard Metric: </strong>
+                            <span>{task.primaryMetric}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed font-mono">
+                  <strong className="text-amber-400 uppercase">Computer Vision Benchmark: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 155: Frontier LLMs */}
+            {item.id === 'frontier-llms' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase font-sans font-bold">Frontier Ecosystem: </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.comparisonMatrix && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>OpenAI vs. Anthropic (Claude) vs. Google (Gemini)</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                              <th className="p-3 w-1/5">Dimension</th>
+                              <th className="p-3 w-4/15 text-emerald-400">OpenAI</th>
+                              <th className="p-3 w-4/15 text-amber-400">Anthropic Claude</th>
+                              <th className="p-3 w-4/15 text-blue-400">Google Gemini</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 font-sans">
+                            {item.comparisonMatrix.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                  {row.dimension}
+                                </td>
+                                <td className="p-3 text-emerald-200/90 text-[11px] leading-relaxed">
+                                  {row.openai}
+                                </td>
+                                <td className="p-3 text-amber-200/90 text-[11px] leading-relaxed">
+                                  {row.claude}
+                                </td>
+                                <td className="p-3 text-blue-200/90 text-[11px] leading-relaxed font-semibold">
+                                  {row.gemini}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Architecture Selection Strategy: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 156: mAP Evaluation */}
+            {item.id === 'map-evaluation' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-800/40 text-xs sm:text-sm text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase font-sans font-bold">What is mAP? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.metricComponents && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    {item.metricComponents.map((comp, cIdx) => (
+                      <div key={cIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 hover:border-emerald-500/40 transition">
+                        <div className="flex items-center justify-between">
+                          <span className={`text-xs font-mono font-bold uppercase ${comp.accent}`}>
+                            {comp.concept}
+                          </span>
+                        </div>
+                        <p className="text-xs text-emerald-300 font-mono bg-black/60 p-2 rounded border border-zinc-800">
+                          {comp.formula}
+                        </p>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {comp.role}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Detection Evaluation Metric: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 157: ANN vs. CNN */}
+            {item.id === 'ann-cnn' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs sm:text-sm text-purple-200/90 leading-relaxed font-mono">
+                  <strong className="text-purple-400 uppercase font-sans font-bold">ANN vs. CNN Architecture: </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.comparisonTable && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                      <span>ANN (Fully Connected) vs. CNN (Convolutional)</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                              <th className="p-3 w-1/4">Aspect</th>
+                              <th className="p-3 w-3/8 text-cyan-400">ANN (Dense MLP)</th>
+                              <th className="p-3 w-3/8 text-purple-400">CNN (Convolutional)</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 font-sans">
+                            {item.comparisonTable.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                  {row.aspect}
+                                </td>
+                                <td className="p-3 text-cyan-200/90 text-[11px] leading-relaxed">
+                                  {row.ann}
+                                </td>
+                                <td className="p-3 text-purple-200/90 text-[11px] leading-relaxed font-semibold">
+                                  {row.cnn}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {item.cnnBuildingBlocks && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Terminal className="w-4 h-4 text-purple-400" />
+                      <span>Core CNN Building Blocks</span>
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {item.cnnBuildingBlocks.map((blk, bIdx) => (
+                        <div key={bIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                          <span className="text-xs font-bold font-mono text-white block">
+                            {blk.layer}
+                          </span>
+                          <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                            {blk.purpose}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-purple-800/40 text-xs text-purple-200/90 leading-relaxed font-mono">
+                  <strong className="text-purple-400 uppercase">Vision Deep Learning Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 158: Gaussian Distribution */}
+            {item.id === 'gaussian-distribution' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-800/40 text-xs sm:text-sm text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase font-sans font-bold">What is the Gaussian Distribution? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.formulaBlock && (
+                  <div className="p-4 rounded-xl bg-black border border-emerald-900/50 space-y-2">
+                    <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold">Probability Density Function (PDF):</span>
+                    <p className="text-xs sm:text-sm font-mono text-emerald-300">{item.formulaBlock.formula}</p>
+                    <p className="text-xs text-zinc-400 font-mono">{item.formulaBlock.params}</p>
+                  </div>
+                )}
+
+                {item.empiricalRule && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Empirical 68-95-99.7 Rule (3-Sigma Rule)</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {item.empiricalRule.map((rule, rIdx) => (
+                        <div key={rIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 hover:border-emerald-500/40 transition">
+                          <span className={`text-xs font-mono font-bold uppercase ${rule.accent}`}>
+                            {rule.band}
+                          </span>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {rule.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {item.roleInMachineLearning && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Terminal className="w-4 h-4 text-emerald-400" />
+                      <span>Foundational Role of Gaussian Distribution in ML</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.roleInMachineLearning.map((app, aIdx) => (
+                        <div key={aIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                          <span className="text-xs font-bold font-mono text-white block">
+                            {app.application}
+                          </span>
+                          <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                            {app.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Statistical ML Principle: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 159: R2 Score */}
+            {item.id === 'r2-score' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase font-sans font-bold">What is R²? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.mathematicalBreakdown && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-xl space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Terminal className="w-4 h-4 text-cyan-400" />
+                      <span>Mathematical Breakdown & Adjusted R²</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                        <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold">Standard R²</span>
+                        <p className="text-xs text-cyan-300 font-mono">{item.mathematicalBreakdown.formula}</p>
+                        <p className="text-[11px] text-zinc-400 font-mono pt-1">{item.mathematicalBreakdown.ssTot}</p>
+                        <p className="text-[11px] text-zinc-400 font-mono">{item.mathematicalBreakdown.ssRes}</p>
+                      </div>
+                      <div className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                        <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold">Adjusted R²</span>
+                        <p className="text-xs text-emerald-300 font-mono">{item.mathematicalBreakdown.adjustedFormula}</p>
+                        <p className="text-xs text-zinc-400 font-sans pt-1 leading-relaxed">{item.mathematicalBreakdown.adjustedNote}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {item.r2InterpretationGuide && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    {item.r2InterpretationGuide.map((guide, gIdx) => (
+                      <div key={gIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1 hover:border-cyan-500/40 transition">
+                        <span className={`text-xs font-mono font-bold uppercase ${guide.accent}`}>
+                          {guide.value}
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {guide.meaning}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Regression Metric Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 160: Learning Rate & Epochs */}
+            {item.id === 'learning-rate-epochs' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs sm:text-sm text-amber-200/90 leading-relaxed font-mono">
+                  <strong className="text-amber-400 uppercase font-sans font-bold">Training Dynamics: </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.parameterGrid && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    {item.parameterGrid.map((param, pIdx) => (
+                      <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-amber-500/40 transition">
+                        <span className={`text-xs font-mono font-bold uppercase ${param.accent}`}>
+                          {param.parameter}
+                        </span>
+                        <p className="text-xs text-white font-medium font-sans leading-relaxed">
+                          {param.definition}
+                        </p>
+                        <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-1 border-t border-zinc-900">
+                          {param.impact}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {item.modernLRSchedules && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Terminal className="w-4 h-4 text-amber-400" />
+                      <span>Production Learning Rate Schedules</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.modernLRSchedules.map((sched, sIdx) => (
+                        <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                          <span className="text-xs font-bold font-mono text-white block">
+                            {sched.schedule}
+                          </span>
+                          <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                            {sched.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed font-mono">
+                  <strong className="text-amber-400 uppercase">Hyperparameter Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 161: Kubernetes */}
+            {item.id === 'kubernetes' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-blue-950/20 border border-blue-800/40 text-xs sm:text-sm text-blue-200/90 leading-relaxed font-mono">
+                  <strong className="text-blue-400 uppercase font-sans font-bold">What is Kubernetes (K8s)? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.coreAbstractions && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    {item.coreAbstractions.map((abs, aIdx) => (
+                      <div key={aIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-blue-500/40 transition">
+                        <div className="flex items-center justify-between">
+                          <span className={`text-xs font-mono font-bold uppercase ${abs.accent}`}>
+                            {abs.abstraction}
+                          </span>
+                        </div>
+                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 inline-block">
+                          {abs.badge}
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                          {abs.role}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {item.gpuOrchestrationInK8s && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-blue-800/40 shadow-xl space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-blue-400 font-mono flex items-center gap-2">
+                      <Terminal className="w-4 h-4 text-blue-400" />
+                      <span>{item.gpuOrchestrationInK8s.headline}</span>
+                    </h4>
+                    <ul className="space-y-2 pt-1 font-sans text-xs">
+                      {item.gpuOrchestrationInK8s.points.map((pt, pIdx) => (
+                        <li key={pIdx} className="flex items-start gap-2 text-zinc-300">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
+                          <span>{pt}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-blue-800/40 text-xs text-blue-200/90 leading-relaxed font-mono">
+                  <strong className="text-blue-400 uppercase">Cloud Infrastructure Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 162: NumPy */}
+            {item.id === 'numpy' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase font-sans font-bold">What is NumPy? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.corePillars && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    {item.corePillars.map((pil, pIdx) => (
+                      <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-cyan-500/40 transition">
+                        <span className={`text-xs font-mono font-bold uppercase ${pil.accent}`}>
+                          {pil.pillar}
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {pil.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>vectorized_numpy.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-numpy', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-numpy' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-cyan-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Array Computing Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 163: Data Visualization (Matplotlib & Seaborn) */}
+            {item.id === 'data-visualization' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs sm:text-sm text-purple-200/90 leading-relaxed font-mono">
+                  <strong className="text-purple-400 uppercase font-sans font-bold">Visualization Stack: </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.comparisonTable && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Matplotlib vs. Seaborn Comparison</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                              <th className="p-3 w-1/4">Dimension</th>
+                              <th className="p-3 w-3/8 text-blue-400">Matplotlib (Object-Oriented)</th>
+                              <th className="p-3 w-3/8 text-purple-400">Seaborn (Statistical High-Level)</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 font-sans">
+                            {item.comparisonTable.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                  {row.feature}
+                                </td>
+                                <td className="p-3 text-blue-200/90 text-[11px] leading-relaxed">
+                                  {row.matplotlib}
+                                </td>
+                                <td className="p-3 text-purple-200/90 text-[11px] leading-relaxed font-semibold">
+                                  {row.seaborn}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {item.essentialEdaPlots && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Terminal className="w-4 h-4 text-purple-400" />
+                      <span>Essential EDA Visualizations in Python</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.essentialEdaPlots.map((plot, pIdx) => (
+                        <div key={pIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                          <span className="text-xs font-bold font-mono text-white block">
+                            {plot.plot}
+                          </span>
+                          <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                            {plot.purpose}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-purple-800/40 text-xs text-purple-200/90 leading-relaxed font-mono">
+                  <strong className="text-purple-400 uppercase">EDA Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 164: Log Transformation */}
+            {item.id === 'log-transform' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-800/40 text-xs sm:text-sm text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase font-sans font-bold">What is Log Transformation? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.whyApplyLogTransformation && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    {item.whyApplyLogTransformation.map((reason, rIdx) => (
+                      <div key={rIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 hover:border-emerald-500/40 transition">
+                        <span className={`text-xs font-mono font-bold uppercase ${reason.accent}`}>
+                          {reason.reason}
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {reason.detail}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Feature Engineering Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 165: Tree Algorithms */}
+            {item.id === 'tree-algorithms' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs sm:text-sm text-amber-200/90 leading-relaxed font-mono">
+                  <strong className="text-amber-400 uppercase font-sans font-bold">What are Tree Algorithms? </strong>
+                  {item.coreDefinition}
+                </div>
+
+                {item.splittingCriteria && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Mathematical Splitting Criteria</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.splittingCriteria.map((crit, cIdx) => (
+                        <div key={cIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 hover:border-amber-500/40 transition">
+                          <span className={`text-xs font-mono font-bold uppercase ${crit.accent}`}>
+                            {crit.criterion}
+                          </span>
+                          <p className="text-xs text-amber-300 font-mono bg-black/60 p-2 rounded border border-zinc-800">
+                            {crit.formula}
+                          </p>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {crit.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {item.treeEvolutionRoadmap && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      <span>The Evolution of Tree Algorithms</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.treeEvolutionRoadmap.map((stage, sIdx) => (
+                        <div key={sIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold font-mono text-white">
+                              {stage.stage}
+                            </span>
+                          </div>
+                          <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-800 inline-block">
+                            {stage.badge}
+                          </span>
+                          <p className="text-xs text-zinc-400 font-sans leading-relaxed pt-1">
+                            {stage.trait}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-xl bg-black border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed font-mono">
+                  <strong className="text-amber-400 uppercase">Tabular ML Gold Standard: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
           </div>
         ))}
       </div>

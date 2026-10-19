@@ -148,7 +148,21 @@ export const definitionBookmarks = [
   { id: "bias-weight", label: "Bias & Weights" },
   { id: "flip-flop-latch", label: "Flip-Flop vs. Latch" },
   { id: "underfitting-overfitting", label: "Underfitting & Overfitting" },
-  { id: "adapters", label: "Adapters" }
+  { id: "adapters", label: "Adapters" },
+  { id: "qlora", label: "QLoRA" },
+  { id: "tf-idf", label: "TF-IDF" },
+  { id: "coco-dataset", label: "COCO Dataset" },
+  { id: "frontier-llms", label: "Frontier LLMs (OpenAI, Claude, Gemini)" },
+  { id: "map-evaluation", label: "mAP (Mean Average Precision)" },
+  { id: "ann-cnn", label: "ANN vs. CNN" },
+  { id: "gaussian-distribution", label: "Gaussian Distribution" },
+  { id: "r2-score", label: "R² Score" },
+  { id: "learning-rate-epochs", label: "Learning Rate & Epochs" },
+  { id: "kubernetes", label: "Kubernetes" },
+  { id: "numpy", label: "NumPy" },
+  { id: "data-visualization", label: "Matplotlib & Seaborn" },
+  { id: "log-transform", label: "Log Transformation" },
+  { id: "tree-algorithms", label: "Tree Algorithms" }
 ];
 
 export const definitionsData = [
@@ -12277,5 +12291,658 @@ print(f"Trainable adapter params: {sum(p.numel() for p in adapter.parameters() i
 # Base model weights remain 100% frozen!`
     },
     takeaway: "Adapters introduce parameter efficiency through modular bottleneck layers. By freezing billions of pretrained parameters and training only compact down-and-up projections (typically <1% of the model's footprint), engineering teams achieve task specialization, drastically reduced VRAM overhead, and seamless hot-swappable multi-task serving."
+  }
+,
+  {
+    id: "qlora",
+    title: "QLoRA (Quantized Low-Rank Adaptation) & 4-Bit Parameter-Efficient Fine-Tuning",
+    badge: "NF4 Quantization, Double Quantization & Paged Optimizers",
+    summary: "QLoRA reduces the memory footprint of LLM fine-tuning to enable a 65B-parameter model to be fine-tuned on a single 48GB GPU without degrading 16-bit performance, introducing 4-bit NormalFloat (NF4), Double Quantization, and Paged Optimizers.",
+    coreDefinition: "QLoRA is an advanced parameter-efficient fine-tuning technique that quantizes a frozen base model to the 4-bit NormalFloat (NF4) data type, attaches 16-bit LoRA adapter matrices, and computes gradients through the dequantized weights during backpropagation.",
+    threeInnovations: [
+      {
+        title: "4-bit NormalFloat (NF4)",
+        desc: "An information-theoretically optimal quantile quantization data type for normally distributed neural network weights, outperforming standard 4-bit integer (INT4) and floating-point (FP4).",
+        badge: "Optimal Information Quantization",
+        accent: "text-purple-400"
+      },
+      {
+        title: "Double Quantization (DQ)",
+        desc: "Quantizes the quantization constants themselves (the FP32 scaling factors), saving approximately 0.37 bits per parameter (~3 GB of VRAM on a 65B model) with zero accuracy degradation.",
+        badge: "Constant Compression",
+        accent: "text-cyan-400"
+      },
+      {
+        title: "Paged Optimizers",
+        desc: "Leverages CUDA Unified Memory to automatically page optimizer states between GPU VRAM and CPU RAM during gradient checkpointing memory spikes, preventing out-of-memory (OOM) crashes.",
+        badge: "OOM Prevention",
+        accent: "text-emerald-400"
+      }
+    ],
+    loraVsQloraTable: [
+      {
+        feature: "Base Model Weights Precision",
+        lora: "16-bit (FP16 or BF16)",
+        qlora: "4-bit NormalFloat (NF4)"
+      },
+      {
+        feature: "VRAM Footprint (65B / 70B Model)",
+        lora: "~130 GB to 160 GB (Requires 2–4× A100 80GB)",
+        qlora: "~40 GB to 48 GB (Fits on 1× A100 48GB or 2× RTX 3090/4090)"
+      },
+      {
+        feature: "Adapter Weight Precision",
+        lora: "16-bit (BF16/FP16)",
+        qlora: "16-bit (BF16/FP16)"
+      },
+      {
+        feature: "Training Speed & Throughput",
+        lora: "Faster forward/backward pass (native 16-bit compute)",
+        qlora: "Slightly slower (~20-30%) due to on-the-fly dequantization overhead"
+      },
+      {
+        feature: "Model Performance & Accuracy",
+        lora: "Matches full 16-bit fine-tuning",
+        qlora: "Empirically matches 16-bit LoRA and full fine-tuning benchmarks"
+      }
+    ],
+    codeExample: {
+      title: "Hugging Face PEFT + BitsAndBytes QLoRA Configuration",
+      language: "python",
+      code: `import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+
+# 1. Configure 4-bit NormalFloat (NF4) and Double Quantization
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_compute_dtype=torch.bfloat16
+)
+
+# 2. Load 70B model in 4-bit precision
+model_id = "meta-llama/Llama-3-70b"
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    quantization_config=bnb_config,
+    device_map="auto"
+)
+model = prepare_model_for_kbit_training(model)
+
+# 3. Attach 16-bit LoRA Adapters
+peft_config = LoraConfig(
+    r=16,
+    lora_alpha=32,
+    target_modules=["q_proj", "v_proj", "k_proj", "o_proj"],
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+qlora_model = get_peft_model(model, peft_config)
+qlora_model.print_trainable_parameters()
+# Trainable params: ~0.1% of base model!`
+    },
+    takeaway: "QLoRA democratizes LLM fine-tuning. By marrying 4-bit NormalFloat weight compression with 16-bit LoRA adapter training and paged memory paging, engineering teams can fine-tune 70B parameter frontier models on consumer or single enterprise GPUs with zero empirical quality loss."
+  },
+  {
+    id: "tf-idf",
+    title: "TF-IDF (Term Frequency – Inverse Document Frequency)",
+    badge: "Lexical Search, Sparse Text Representations & Information Retrieval",
+    summary: "A fundamental statistical measure in NLP and Information Retrieval that evaluates how important a word is to a document within a large collection (corpus), balancing frequency within a text against commonality across all texts.",
+    coreDefinition: "TF-IDF computes a numerical statistic that reflects how relevant a term is to a specific document in a corpus by multiplying the term frequency (how often a term appears in a document) by its inverse document frequency (how rare the term is across all documents).",
+    formulaBreakdown: {
+      tfFormula: "TF(t, d) = count(t, d) / total_words_in_d",
+      idfFormula: "IDF(t, D) = ln((1 + N) / (1 + df(t))) + 1",
+      tfidfFormula: "TF-IDF(t, d, D) = TF(t, d) × IDF(t, D)",
+      explanation: "Terms appearing frequently in a single document (high TF) but rarely across the whole corpus (high IDF) receive high scores (domain keywords). Stopwords ('the', 'is', 'and') receive very low scores because their IDF approaches zero."
+    },
+    tfidfVsEmbeddings: [
+      {
+        feature: "Representation Type",
+        tfidf: "Sparse vector (vocabulary dimension, e.g., 50,000+ features with mostly zeros)",
+        embeddings: "Dense vector (compact fixed dimension, e.g., 768, 1536, or 3072 floats)"
+      },
+      {
+        feature: "Matching Philosophy",
+        tfidf: "Exact keyword matching (lexical matching)",
+        embeddings: "Semantic and conceptual meaning (similarity in latent vector space)"
+      },
+      {
+        feature: "Out-of-Vocabulary (OOV)",
+        tfidf: "Cannot match synonyms, acronyms, or misspellings without manual n-grams/stemming",
+        embeddings: "Inherently handles synonyms, multilingual concepts, and paraphrasing"
+      },
+      {
+        feature: "Computational Cost",
+        tfidf: "Extremely fast, CPU-bound, zero neural network inference required",
+        embeddings: "Requires neural network forward pass (GPU inference overhead)"
+      },
+      {
+        feature: "Modern Hybrid RAG Role",
+        tfidf: "Acts as sparse retrieval pillar (or BM25) for exact codes, serial numbers, and entities",
+        embeddings: "Acts as dense retrieval pillar for semantic intent and conceptual questions"
+      }
+    ],
+    takeaway: "TF-IDF remains an essential baseline in NLP and search engines. In production RAG systems, combining dense vector embeddings with sparse TF-IDF/BM25 retrieval (Hybrid Search with Reciprocal Rank Fusion) delivers the best accuracy by balancing semantic understanding with exact entity recall."
+  },
+  {
+    id: "coco-dataset",
+    title: "COCO Dataset (Common Objects in Context) & Object Detection Benchmarks",
+    badge: "Computer Vision, Object Detection & Segmentation Benchmark",
+    summary: "The gold-standard computer vision dataset and benchmark comprising over 330,000 images, 1.5 million object instances, and 80 standard object categories, widely used for training and evaluating models like YOLO, Mask R-CNN, and DETR.",
+    coreDefinition: "COCO (Common Objects in Context) is a large-scale object detection, segmentation, and captioning dataset containing everyday scenes with complex backgrounds, multiple overlapping objects, bounding boxes, segmentation masks, and human keypoints.",
+    datasetHighlights: [
+      {
+        metric: "80 Object Categories",
+        desc: "Includes everyday objects spanning vehicles (car, bus, motorcycle), animals (dog, cat, horse), food, furniture, and electronics.",
+        accent: "text-cyan-400"
+      },
+      {
+        metric: "330,000+ Images",
+        desc: "More than 200,000 labeled images with complex, non-iconic visual scenes where objects appear in natural contextual environments.",
+        accent: "text-amber-400"
+      },
+      {
+        metric: "1.5 Million Object Instances",
+        desc: "Annotated with precise bounding box coordinates [x_min, y_min, width, height] and polygon segmentation masks.",
+        accent: "text-emerald-400"
+      },
+      {
+        metric: "250,000 People Keypoints",
+        desc: "17 anatomical joint keypoints (shoulders, elbows, wrists, hips, knees) for human pose estimation benchmarks.",
+        accent: "text-purple-400"
+      }
+    ],
+    tasksSupported: [
+      {
+        task: "Object Detection",
+        output: "Bounding box coordinates and class probability (YOLO, SSD, Faster R-CNN)",
+        primaryMetric: "mAP@[0.5:0.95]"
+      },
+      {
+        task: "Instance Segmentation",
+        output: "Pixel-accurate polygon mask for every individual object (Mask R-CNN, YOLO-Seg)",
+        primaryMetric: "mask mAP"
+      },
+      {
+        task: "Keypoint Detection",
+        output: "Coordinates and visibility flag for 17 body keypoints",
+        primaryMetric: "Object Keypoint Similarity (OKS)"
+      },
+      {
+        task: "Image Captioning",
+        output: "5 human-written descriptive sentences per image for vision-language evaluation",
+        primaryMetric: "BLEU, CIDEr, ROUGE"
+      }
+    ],
+    takeaway: "COCO is the industry standard benchmark in computer vision. When evaluating object detectors like YOLOv8 or YOLOv11, reporting mAP@50 and mAP@50-95 on the COCO val2017 split represents the universal currency of detection accuracy."
+  },
+  {
+    id: "frontier-llms",
+    title: "Frontier LLMs: OpenAI (GPT-4o), Anthropic (Claude 3.5 Sonnet) & Google (Gemini 1.5 Pro)",
+    badge: "Frontier Multimodal Models, Extended Context & Coding Capabilities",
+    summary: "A comparative analysis of the leading commercial frontier foundation models—OpenAI GPT-4o, Anthropic Claude 3.5 Sonnet, and Google Gemini 1.5 Pro—across context windows, multimodality, reasoning, coding, and enterprise pricing.",
+    coreDefinition: "Commercial frontier LLMs represent state-of-the-art multimodal foundation models capable of complex reasoning, software engineering, long-document comprehension, and tool usage across enterprise APIs.",
+    comparisonMatrix: [
+      {
+        dimension: "Primary Creator",
+        openai: "OpenAI",
+        claude: "Anthropic",
+        gemini: "Google DeepMind"
+      },
+      {
+        dimension: "Flagship Frontier Models",
+        openai: "GPT-4o, o1, o3-mini",
+        claude: "Claude 3.5 Sonnet, Claude 3.5 Haiku",
+        gemini: "Gemini 1.5 Pro, Gemini 1.5 Flash, Gemini 2.0 Flash"
+      },
+      {
+        dimension: "Context Window Capacity",
+        openai: "128,000 tokens (~100k words)",
+        claude: "200,000 tokens (~150k words)",
+        gemini: "2,000,000 tokens (Industry record: ~1.5 million words, 1hr video, 1hr audio)"
+      },
+      {
+        dimension: "Software Engineering & Coding",
+        openai: "Very strong (o1 excels at competitive coding & math proofs)",
+        claude: "Industry-leading SWE-bench score, exceptional refactoring & UI coding (Artifacts)",
+        gemini: "Strong code reasoning across massive multi-repository codebases"
+      },
+      {
+        dimension: "Native Multimodal Input",
+        openai: "Omni: Text, Vision, Real-time Audio input/output",
+        claude: "Vision + Text (High precision PDF, document chart understanding)",
+        gemini: "Native Multimodal: Text, Audio, Video, PDF, and Code in a single context"
+      },
+      {
+        dimension: "Ideal Production Sweet Spot",
+        openai: "Real-time conversational voice agents, structured JSON schema extraction, deep reasoning (o1)",
+        claude: "Complex autonomous agentic workflows, software development, long-horizon tool execution",
+        gemini: "Full-codebase ingestion, hours-long video/audio processing, high-throughput batch analysis"
+      }
+    ],
+    takeaway: "No single frontier LLM wins every enterprise workload. Claude 3.5 Sonnet is the gold standard for software engineering and autonomous agents; Gemini 1.5 Pro reigns supreme for massive context ingestion (up to 2M tokens of video, audio, or entire codebases); and GPT-4o provides low-latency omni-modal streaming and rigorous schema validation."
+  },
+  {
+    id: "map-evaluation",
+    title: "mAP (Mean Average Precision) in Object Detection",
+    badge: "Detection Metrics, IoU Thresholds & Precision-Recall Curves",
+    summary: "The primary evaluation metric for object detection models (including YOLO and Faster R-CNN) that quantifies how accurately a model locates and classifies bounding boxes across multiple confidence and IoU thresholds.",
+    coreDefinition: "mAP (Mean Average Precision) is the average of Average Precision (AP) scores across all target object categories, where AP is calculated as the Area Under the Precision-Recall Curve (AUC-PR) at specific Intersection-over-Union (IoU) thresholds.",
+    metricComponents: [
+      {
+        concept: "IoU (Intersection over Union)",
+        formula: "IoU = Area of Overlap / Area of Union",
+        role: "Evaluates spatial localization accuracy. A detection is flagged as True Positive (TP) only if IoU ≥ threshold and the predicted class matches ground truth.",
+        accent: "text-cyan-400"
+      },
+      {
+        concept: "AP (Average Precision)",
+        formula: "AP = ∫₀¹ P(R) dR",
+        role: "Calculates the area under the interpolated Precision-Recall curve for a single target class across varying confidence score thresholds.",
+        accent: "text-amber-400"
+      },
+      {
+        concept: "mAP@50 (mAP_0.5)",
+        formula: "Mean AP across all classes at IoU = 0.50",
+        role: "Lenient evaluation (PASCAL VOC benchmark). As long as bounding box overlap is at least 50%, detection counts as correct.",
+        accent: "text-emerald-400"
+      },
+      {
+        concept: "mAP@[0.5:0.95] (COCO mAP)",
+        formula: "Average of mAP evaluated at 10 IoU steps: 0.50, 0.55, 0.60, ..., 0.95",
+        role: "Strict gold-standard benchmark. Heavily penalizes sloppy or loose bounding boxes, rewarding pinpoint object boundary localization.",
+        accent: "text-purple-400"
+      }
+    ],
+    takeaway: "In object detection engineering, never evaluate models using classification accuracy alone. Always inspect mAP@50 for general object recognition capacity and mAP@[0.5:0.95] to measure tight bounding box localization precision."
+  },
+  {
+    id: "ann-cnn",
+    title: "ANN vs. CNN (Artificial Neural Networks vs. Convolutional Neural Networks)",
+    badge: "Deep Learning Architectures, Dense vs Spatial Convolutions",
+    summary: "A fundamental comparison between standard Feedforward Artificial Neural Networks (MLPs with fully connected dense layers) and Convolutional Neural Networks (CNNs using parameter-shared filters, receptive fields, and pooling layers for spatial data).",
+    coreDefinition: "ANNs process 1D flattened inputs through fully connected matrix multiplications where every neuron connects to every input, whereas CNNs leverage parameter sharing and spatial local receptive fields through 2D convolutions to preserve 2D/3D spatial hierarchies without exploding parameter counts.",
+    comparisonTable: [
+      {
+        aspect: "Primary Data Domain",
+        ann: "Tabular structured data, flattened vectors, and 1D numerical embeddings",
+        cnn: "Grid-structured spatial data: Images (2D), Video (3D), Audio spectrograms"
+      },
+      {
+        aspect: "Neuron Connectivity",
+        ann: "Fully connected (Dense): every input neuron connects to every neuron in next layer",
+        cnn: "Locally connected: neurons connect only to a local spatial receptive field (e.g. 3×3 kernel)"
+      },
+      {
+        aspect: "Parameter Efficiency",
+        ann: "Parameters scale as O(Inputs × Outputs), exploding with high-resolution inputs",
+        cnn: "Parameter sharing: identical 3×3 kernel weights are reused across the entire image grid"
+      },
+      {
+        aspect: "Spatial Invariance",
+        ann: "Not translation invariant (a cat in the corner looks completely different to dense weights)",
+        cnn: "Translation invariant: learned feature detectors recognize edges/textures anywhere in frame"
+      },
+      {
+        aspect: "Core Layer Types",
+        ann: "Linear / Dense layers + Activation (ReLU, Sigmoid)",
+        cnn: "Conv2D, BatchNorm, Pooling (MaxPool, AvgPool), followed by Dense classification head"
+      }
+    ],
+    cnnBuildingBlocks: [
+      {
+        layer: "Convolution Layer (Conv2D)",
+        purpose: "Slides learnable filter kernels across the input image to extract feature maps (edges, contours, textures)."
+      },
+      {
+        layer: "Activation Layer (ReLU / GELU)",
+        purpose: "Introduces non-linearity, allowing the network to approximate complex non-linear visual relationships."
+      },
+      {
+        layer: "Pooling Layer (MaxPool / AvgPool)",
+        purpose: "Downsamples feature maps to reduce spatial dimensions, lower compute load, and provide translation invariance."
+      },
+      {
+        layer: "Fully Connected Head (Dense)",
+        purpose: "Flattens high-level spatial feature representations into class probabilities via Softmax."
+      }
+    ],
+    takeaway: "Attempting to process a 1000×1000 color image in an ANN requires 3 million input weights per single neuron, causing catastrophic overfitting. CNNs solve this fundamental computer vision bottleneck through local receptive fields and parameter-shared convolutional filters."
+  },
+  {
+    id: "gaussian-distribution",
+    title: "Gaussian Distribution (Normal Distribution & The Bell Curve)",
+    badge: "Probability Distributions, Central Limit Theorem & Gaussian Mixture Models",
+    summary: "The most widely observed continuous probability distribution in statistics and machine learning, characterized by its symmetric bell-shaped curve parameterized entirely by its mean (μ) and variance (σ²).",
+    coreDefinition: "The Gaussian distribution is a continuous probability distribution whose probability density function is symmetric around its mean, demonstrating that values closer to the mean occur with higher frequency than values far from the mean.",
+    formulaBlock: {
+      formula: "f(x) = (1 / (σ √(2π))) · exp(- (x - μ)² / (2σ²))",
+      params: "μ = Mean (center / location of peak), σ = Standard Deviation (spread / dispersion), σ² = Variance."
+    },
+    empiricalRule: [
+      {
+        band: "68.27% of Data (μ ± 1σ)",
+        desc: "Roughly two-thirds of all observations lie within one standard deviation of the mean.",
+        accent: "text-emerald-400"
+      },
+      {
+        band: "95.45% of Data (μ ± 2σ)",
+        desc: "Over 95% of observations fall within two standard deviations (standard threshold for 95% confidence intervals).",
+        accent: "text-cyan-400"
+      },
+      {
+        band: "99.73% of Data (μ ± 3σ)",
+        desc: "Nearly all observations fall within three standard deviations. Values beyond 3σ are universally treated as statistical outliers.",
+        accent: "text-purple-400"
+      }
+    ],
+    roleInMachineLearning: [
+      {
+        application: "Linear Regression Residuals",
+        detail: "Ordinary Least Squares (OLS) guarantees maximum likelihood optimality when error residuals follow an independent Gaussian distribution."
+      },
+      {
+        application: "Central Limit Theorem (CLT)",
+        detail: "The sum or mean of independent random variables asymptotically approaches a Gaussian distribution regardless of the underlying distribution shape."
+      },
+      {
+        application: "Gaussian Mixture Models (GMM)",
+        detail: "Unsupervised clustering method that models complex multimodal data distributions as a mixture of multiple weighted Gaussian components."
+      },
+      {
+        application: "Neural Network Weight Initialization",
+        detail: "He-normal and Xavier-normal initialization draw random initial weights from zero-centered Gaussian distributions scaled by fan-in/fan-out."
+      }
+    ],
+    takeaway: "The Gaussian distribution forms the statistical backbone of machine learning. From Z-score standardization and anomaly detection to regression assumptions and neural weight initialization, understanding Gaussian properties is essential for rigorous modeling."
+  },
+  {
+    id: "r2-score",
+    title: "R² Score (Coefficient of Determination) in Regression",
+    badge: "Regression Metrics, Variance Explained & Goodness of Fit",
+    summary: "A statistical measure in regression models that quantifies the proportion of variance in the dependent variable that is predictable from the independent variables, comparing model predictions against a naive baseline mean model.",
+    coreDefinition: "R² (R-squared) measures the proportion of total variance explained by a regression model, where R² = 1 indicates perfect predictions, R² = 0 indicates the model performs no better than predicting the mean of the target variable, and R² < 0 indicates performance worse than the mean baseline.",
+    mathematicalBreakdown: {
+      formula: "R² = 1 - (SS_res / SS_tot)",
+      ssTot: "SS_tot = Σ (y_i - ȳ)²  (Total Sum of Squares: variance inherent in ground truth target)",
+      ssRes: "SS_res = Σ (y_i - ŷ_i)² (Residual Sum of Squares: unexplained prediction error)",
+      adjustedFormula: "Adjusted R² = 1 - [((1 - R²)(n - 1)) / (n - p - 1)]",
+      adjustedNote: "Adjusted R² penalizes the addition of useless features (p), preventing artificial inflation from feature bloat."
+    },
+    r2InterpretationGuide: [
+      {
+        value: "R² = 1.0",
+        meaning: "Perfect fit: model predictions exactly match true target values with zero residual error (SS_res = 0).",
+        accent: "text-emerald-400"
+      },
+      {
+        value: "R² = 0.85",
+        meaning: "Strong explanatory power: 85% of the variance in target y is explained by the input features.",
+        accent: "text-cyan-400"
+      },
+      {
+        value: "R² = 0.0",
+        meaning: "Zero predictive value: model performs identically to simply predicting the average ȳ every single time.",
+        accent: "text-amber-400"
+      },
+      {
+        value: "R² < 0 (Negative)",
+        meaning: "Severely broken model: predictions are worse than guessing the mean (common with severe overfitting on test sets).",
+        accent: "text-rose-400"
+      }
+    ],
+    takeaway: "R² provides a scale-independent percentage of variance explained, making it easy to communicate model fit to stakeholders. However, always verify Adjusted R² to guard against feature bloat and plot residual errors to ensure errors are homoscedastic and unbiased."
+  },
+  {
+    id: "learning-rate-epochs",
+    title: "Learning Rate, Epochs, Batch Size & Iterations",
+    badge: "Hyperparameter Optimization, Gradient Step Size & Training Dynamics",
+    summary: "The core hyperparameters that dictate model training convergence: Learning Rate controls the step size in parameter updates; Epochs define complete passes through the dataset; Batch Size defines samples processed before weight updates; and Iterations count total gradient steps.",
+    coreDefinition: "Learning Rate is the step size hyperparameter used in gradient descent to determine how aggressively model weights are updated with respect to the loss gradient; an Epoch represents one complete forward and backward pass through the entire training dataset.",
+    parameterGrid: [
+      {
+        parameter: "Learning Rate (η / alpha)",
+        definition: "Step size multiplier scaling gradient updates: θ_{t+1} = θ_t - η · ∇L(θ).",
+        impact: "Too high causes gradient explosion or divergence; too low causes agonizingly slow training or getting trapped in suboptimal local minima.",
+        accent: "text-amber-400"
+      },
+      {
+        parameter: "Epoch",
+        definition: "One complete pass of the entire training dataset through the neural network.",
+        impact: "Too few epochs cause underfitting; too many epochs lead to overfitting (mitigated with Early Stopping).",
+        accent: "text-cyan-400"
+      },
+      {
+        parameter: "Batch Size",
+        definition: "The number of training samples processed before the model updates its internal weights.",
+        impact: "Small batches (e.g., 32) introduce helpful gradient noise that escapes saddle points; large batches (e.g., 512+) maximize GPU tensor core utilization.",
+        accent: "text-emerald-400"
+      },
+      {
+        parameter: "Iteration (Step)",
+        definition: "One single gradient calculation and weight update. Iterations = (Total Samples / Batch Size) × Epochs.",
+        impact: "In LLM pre-training, budgets are measured in steps/tokens rather than epochs (often single-epoch training on trillions of tokens).",
+        accent: "text-purple-400"
+      }
+    ],
+    modernLRSchedules: [
+      {
+        schedule: "Linear Warmup + Cosine Decay",
+        desc: "Starts with a small learning rate for the first 5-10% of steps to stabilize initial gradient updates, then decays smoothly following a cosine curve to zero."
+      },
+      {
+        schedule: "ReduceLROnPlateau",
+        desc: "Monitors validation loss; if loss fails to improve for a patience window of N epochs, scales down learning rate by a factor (e.g., 0.5× or 0.1×)."
+      }
+    ],
+    takeaway: "Learning rate is consistently the single most impactful hyperparameter in deep learning. Modern training workflows stabilize convergence by pairing AdamW optimizer with a linear warmup followed by cosine annealing decay."
+  },
+  {
+    id: "kubernetes",
+    title: "Kubernetes (K8s) in AI/ML & Container Orchestration",
+    badge: "Cloud-Native Infrastructure, Pod Autoscaling & GPU Workloads",
+    summary: "An open-source container orchestration engine that automates deploying, scaling, and managing containerized machine learning applications, microservices, and distributed inference engines across GPU/CPU clusters.",
+    coreDefinition: "Kubernetes (K8s) is a production platform that orchestrates containerized services (Docker) across clusters of physical or virtual nodes, providing automated service discovery, load balancing, rolling zero-downtime updates, self-healing restarts, and horizontal pod autoscaling (HPA).",
+    coreAbstractions: [
+      {
+        abstraction: "Pod",
+        role: "Smallest deployable compute unit in K8s. Encapsulates one or more containers (e.g., FastAPI inference container + logging sidecar) sharing localhost and storage.",
+        badge: "Atomic Execution",
+        accent: "text-cyan-400"
+      },
+      {
+        abstraction: "Deployment & ReplicaSet",
+        role: "Declarative controller managing pod lifecycles, maintaining desired replica counts, and orchestrating rolling zero-downtime canary updates.",
+        badge: "Lifecycle & Rollout",
+        accent: "text-emerald-400"
+      },
+      {
+        abstraction: "Service & Ingress",
+        role: "Provides stable internal DNS networking and external routing (L4/L7 load balancing) across ephemeral pod IP addresses.",
+        badge: "Networking & Routing",
+        accent: "text-amber-400"
+      },
+      {
+        abstraction: "Horizontal Pod Autoscaler (HPA)",
+        role: "Dynamically scales pod replica counts up or down based on CPU, memory, or custom Prometheus metrics (e.g., incoming request queue depth).",
+        badge: "Dynamic Elasticity",
+        accent: "text-purple-400"
+      }
+    ],
+    gpuOrchestrationInK8s: {
+      headline: "How Kubernetes Schedules GPUs for LLM Serving (vLLM / Triton):",
+      points: [
+        "NVIDIA Container Toolkit & K8s GPU Device Plugin expose GPU resources (e.g. `resources.limits: nvidia.com/gpu: 1`).",
+        "Node Affinity and Taints/Tolerations ensure compute-heavy model pods land exclusively on dedicated GPU worker nodes.",
+        "KServe & vLLM operators orchestrate distributed tensor-parallel inference across multiple multi-GPU pods."
+      ]
+    },
+    takeaway: "Docker packages an AI microservice into an immutable container; Kubernetes operates the fleet in production—automating self-healing, GPU resource allocation, load balancing, and dynamic scaling to handle production traffic swings."
+  },
+  {
+    id: "numpy",
+    title: "NumPy (Numerical Python) & Vectorized Multidimensional Arrays",
+    badge: "Array Computing, SIMD Vectorization & C-Contiguous Memory",
+    summary: "The foundational library for scientific and numerical computing in Python, providing high-performance N-dimensional array objects (ndarray), vectorization, broadcasting, and low-level C memory buffers powering PyTorch, Pandas, and Scikit-Learn.",
+    coreDefinition: "NumPy is the fundamental numerical computing package for Python that replaces slow interpreted Python loops with vectorized C-level operations on homogeneous, contiguous multidimensional arrays (ndarrays).",
+    corePillars: [
+      {
+        pillar: "ndarray (N-Dimensional Array)",
+        desc: "Fixed-size homogeneous data buffer stored in contiguous memory with a defined data type (dtype). Eliminates Python pointer overhead.",
+        accent: "text-cyan-400"
+      },
+      {
+        pillar: "SIMD Vectorization",
+        desc: "Executes mathematical operations across entire arrays simultaneously using CPU vector registers (AVX/SSE) at compiled C/Fortran speeds without Python loops.",
+        accent: "text-emerald-400"
+      },
+      {
+        pillar: "Broadcasting Rules",
+        desc: "Performs arithmetic between arrays of different dimensions without copying data, expanding trailing singleton dimensions automatically.",
+        accent: "text-amber-400"
+      },
+      {
+        pillar: "Strided Memory Views",
+        desc: "Array reshaping, slicing, and transpositions return memory views sharing the same underlying buffer, avoiding expensive memory copies.",
+        accent: "text-purple-400"
+      }
+    ],
+    codeExample: {
+      title: "Vectorized Operations vs Slow Python Loops",
+      language: "python",
+      code: `import numpy as np
+
+# 1. Vectorized Euclidean Norm (100x faster than pure Python loop)
+embeddings = np.random.randn(10000, 768).astype(np.float32)
+norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+normalized_embeddings = embeddings / norms  # Broadcasting in action!
+
+# 2. Dot product similarity matrix
+query = np.random.randn(1, 768).astype(np.float32)
+query_norm = query / np.linalg.norm(query)
+similarities = np.dot(normalized_embeddings, query_norm.T)  # Shape: (10000, 1)`
+    },
+    takeaway: "NumPy is the backbone of the Python scientific stack. Whether manipulating tabular data in Pandas, calculating loss matrices in Scikit-Learn, or moving tensors in PyTorch, all modern ML architectures rely on NumPy's C-contiguous memory design and vectorized broadcasting."
+  },
+  {
+    id: "data-visualization",
+    title: "Matplotlib & Seaborn (Python Data Visualization Stack)",
+    badge: "Exploratory Data Analysis (EDA), Statistical Graphics & Plotting",
+    summary: "The primary plotting ecosystem in Python: Matplotlib provides granular, publication-grade figure-and-axes control; Seaborn builds on Matplotlib to provide high-level, statistically grounded visualizations like heatmaps, pairplots, and distribution curves.",
+    coreDefinition: "Matplotlib is a low-level, object-oriented plotting library offering granular control over every visual element; Seaborn is a high-level statistical data visualization library built directly on Matplotlib and integrated with Pandas data structures.",
+    comparisonTable: [
+      {
+        feature: "API Level & Paradigm",
+        matplotlib: "Low-level imperative (Object-Oriented: fig, ax = plt.subplots())",
+        seaborn: "High-level declarative (Function-oriented: sns.histplot(data=df, x='col'))"
+      },
+      {
+        feature: "Data Structure Integration",
+        matplotlib: "Accepts raw Python lists, NumPy arrays, or Pandas Series",
+        seaborn: "Directly designed for Pandas DataFrames with automatic categorical column grouping"
+      },
+      {
+        feature: "Statistical Capabilities",
+        matplotlib: "Plots raw data points; statistical aggregations must be precomputed",
+        seaborn: "Built-in statistical estimation: automatic regression lines, error bars, and KDE distributions"
+      },
+      {
+        feature: "Best Used For",
+        matplotlib: "Custom publication layouts, fine-grained multi-axis subplots, domain annotations",
+        seaborn: "Fast Exploratory Data Analysis (EDA), correlation heatmaps, violin plots, pairplots"
+      }
+    ],
+    essentialEdaPlots: [
+      {
+        plot: "Correlation Heatmap (`sns.heatmap`)",
+        purpose: "Visualizes feature correlations to instantly diagnose multicollinearity before regression modeling."
+      },
+      {
+        plot: "Box Plot / Violin Plot (`sns.boxplot`, `sns.violinplot`)",
+        purpose: "Identifies outliers, quartiles, and distribution skewness across categorical cohorts."
+      },
+      {
+        plot: "Pairplot (`sns.pairplot`)",
+        purpose: "Renders a matrix of bivariate scatter plots and univariate distributions across all numerical features."
+      }
+    ],
+    takeaway: "In modern Data Science workflows, use Seaborn for fast statistical exploration and correlation analysis during EDA, and use Matplotlib's Object-Oriented interface when you need precise pixel-level control over multi-panel figures and publication reports."
+  },
+  {
+    id: "log-transform",
+    title: "Log Transformation in Feature Engineering",
+    badge: "Variance Stabilization, Skewness Correction & Multiplicative Modeling",
+    summary: "A monotonic mathematical transformation applied to continuous features to reduce right-skewness, compress extreme outliers, stabilize non-constant variance (heteroscedasticity), and convert multiplicative relationships into additive ones.",
+    coreDefinition: "Log transformation is a feature engineering technique that applies the natural logarithm (y = ln(x) or y = ln(1 + x)) to a right-skewed positive numerical feature to reshape its distribution closer to a Gaussian normal distribution.",
+    whyApplyLogTransformation: [
+      {
+        reason: "Reduces Positive Skewness",
+        detail: "Features with power-law distributions (income, house prices, web traffic) have long right tails. The log function compresses large values drastically while expanding small values, yielding a symmetric bell-like curve.",
+        accent: "text-cyan-400"
+      },
+      {
+        reason: "Stabilizes Variance (Homoscedasticity)",
+        detail: "When variance grows proportionally with feature magnitude, log transformation stabilizes variance across levels, satisfying core Gauss-Markov assumptions for linear regression.",
+        accent: "text-emerald-400"
+      },
+      {
+        reason: "Converts Multiplicative into Additive",
+        detail: "Transforms compounding exponential growth Y = A · e^(B·X) into a linear equation ln(Y) = ln(A) + B·X, allowing linear models to fit non-linear exponential dynamics.",
+        accent: "text-amber-400"
+      },
+      {
+        reason: "Handles Zero Values (`np.log1p`)",
+        detail: "Because ln(0) is mathematically undefined (-infinity), practical implementations use y = ln(1 + x) via numpy's `np.log1p(x)`, with inverse `np.expm1(y)`.",
+        accent: "text-purple-400"
+      }
+    ],
+    takeaway: "Log transformation is the first line of defense against heavy right-skewed tabular data. It protects linear models from outlier distortion, stabilizes residual variance, and helps gradient descent converge faster by pulling long-tail data points into a well-behaved range."
+  },
+  {
+    id: "tree-algorithms",
+    title: "Tree Algorithms (Decision Trees, CART & Ensembles)",
+    badge: "Non-Parametric Models, Recursive Splitting & Gini vs Entropy",
+    summary: "Non-parametric supervised learning models that partition feature space into orthogonal rectangular regions through recursive binary splits, forming the building blocks of Random Forests, Gradient Boosted Trees, and XGBoost.",
+    coreDefinition: "A Decision Tree is an intuitive tree-structured model where internal nodes represent tests on feature attributes, branches represent test outcomes, and leaf nodes represent final class predictions or regression target values.",
+    splittingCriteria: [
+      {
+        criterion: "Gini Impurity (CART default)",
+        formula: "Gini = 1 - Σ (p_i)²",
+        desc: "Measures the probability of misclassifying a randomly chosen element. Computationally faster than entropy because it avoids logarithmic calculations.",
+        accent: "text-emerald-400"
+      },
+      {
+        criterion: "Entropy & Information Gain (ID3 / C4.5)",
+        formula: "Entropy = - Σ p_i · log₂(p_i)",
+        desc: "Measures information disorder. Information Gain calculates the reduction in entropy achieved by splitting on an attribute.",
+        accent: "text-cyan-400"
+      },
+      {
+        criterion: "Variance Reduction / MSE (Regression Trees)",
+        formula: "MSE = (1/n) · Σ (y_i - ȳ_leaf)²",
+        desc: "For continuous targets, splits are chosen to minimize the residual mean squared error within resulting left and right leaf nodes.",
+        accent: "text-amber-400"
+      }
+    ],
+    treeEvolutionRoadmap: [
+      {
+        stage: "1. Single Decision Tree (CART)",
+        trait: "High interpretability, white-box rules, but suffers from high variance and severe overfitting.",
+        badge: "Base Estimator"
+      },
+      {
+        stage: "2. Random Forest (Bagging)",
+        trait: "Trains hundreds of deep trees in parallel on bootstrap samples with random feature subsets, reducing variance.",
+        badge: "Variance Reduction"
+      },
+      {
+        stage: "3. Gradient Boosting (XGBoost / LightGBM)",
+        trait: "Trains shallow trees sequentially, each correcting the residual pseudo-errors of the previous ensemble, minimizing bias.",
+        badge: "SOTA Tabular"
+      }
+    ],
+    takeaway: "Decision trees require zero feature normalization, effortlessly handle mixed numerical/categorical data, and naturally capture non-linear feature interactions. However, single trees overfit rapidly, which is why ensemble tree algorithms (Random Forests and XGBoost) dominate tabular machine learning."
   }
 ];
