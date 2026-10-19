@@ -3329,6 +3329,73 @@ export default function AllDefinitionsPage() {
                     {item.mechanismVsOutputDistinction}
                   </div>
                 )}
+
+                {/* Attention Paradigms: Self-Attention vs Cross-Attention vs Causal Attention */}
+                {item.attentionTypesOverview && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/90 border border-amber-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-amber-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+                          {item.attentionTypesOverview.headline}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-amber-300 uppercase bg-amber-950/60 px-2.5 py-1 rounded border border-amber-800/60 shrink-0 self-start sm:self-auto">
+                        Attention Architecture
+                      </span>
+                    </div>
+
+                    {/* Core Principle Banner */}
+                    <div className="p-3.5 rounded-xl bg-black border border-amber-900/40 space-y-2">
+                      <div className="text-xs sm:text-sm font-bold text-amber-300 font-mono">
+                        "{item.attentionTypesOverview.corePrinciple}"
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-1 text-xs">
+                        <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800">
+                          <strong className="text-amber-400 font-mono block text-[11px] mb-0.5">Self-Attention Mechanism:</strong>
+                          <span className="text-zinc-300">{item.attentionTypesOverview.mechanismComparison.selfAttention}</span>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800">
+                          <strong className="text-cyan-400 font-mono block text-[11px] mb-0.5">Cross-Attention Mechanism:</strong>
+                          <span className="text-zinc-300">{item.attentionTypesOverview.mechanismComparison.crossAttention}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 3 Attention Types Breakdown Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+                      {item.attentionTypesOverview.threeAttentionTypes.map((type, tIdx) => (
+                        <div key={tIdx} className={`p-4 rounded-xl bg-black border ${type.border} space-y-2.5 flex flex-col justify-between hover:border-zinc-700 transition`}>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono ${type.accent}`}>
+                                {type.name}
+                              </h5>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {type.badge}
+                              </span>
+                            </div>
+
+                            {/* Verbatim Definition Quote */}
+                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-900 text-xs text-zinc-200 font-medium leading-relaxed italic">
+                              "{type.quote}"
+                            </div>
+
+                            <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                              <strong className="text-zinc-300 font-mono block text-[10px] uppercase">Q, K, V Routing:</strong>
+                              {type.qkvSource}
+                            </p>
+                          </div>
+
+                          <div className="pt-2 border-t border-zinc-900 text-[10px] font-mono text-zinc-400">
+                            <span className="text-zinc-500 block uppercase">Where used:</span>
+                            <span className="text-zinc-300">{type.architectureRole}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

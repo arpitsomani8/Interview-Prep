@@ -2133,7 +2133,44 @@ print("Output:", output)`,
       question: "How would I use attention in the Fashion AI Copilot?",
       answer: "I'd use a pretrained vision-language model such as CLIP for text-to-image and image-to-image retrieval. Its learned Transformer components use attention internally, depending on the selected model architecture. My application code would call the model to create embeddings. I would not need to manually calculate attention for every retailer search."
     },
-    mechanismVsOutputDistinction: "Attention is a model mechanism; embeddings are model outputs we can use for search. They are related, but they are not the same thing. Attention helps a model process information."
+    mechanismVsOutputDistinction: "Attention is a model mechanism; embeddings are model outputs we can use for search. They are related, but they are not the same thing. Attention helps a model process information.",
+    attentionTypesOverview: {
+      headline: "Attention Paradigms: Self-Attention vs Cross-Attention vs Causal Attention",
+      corePrinciple: "Attention lets a model decide which other representations are important when processing a token.",
+      mechanismComparison: {
+        selfAttention: "In self-attention, tokens attend to other tokens within the same sequence.",
+        crossAttention: "In cross-attention, the queries come from one sequence or representation, while the keys and values come from another."
+      },
+      threeAttentionTypes: [
+        {
+          name: "Self-attention",
+          quote: "Each token uses other tokens in the same sequence to build a context-aware representation.",
+          qkvSource: "Queries (Q), Keys (K), and Values (V) all originate from the exact same sequence.",
+          architectureRole: "Used in Encoder & Decoder blocks across Transformer models (BERT, GPT, LLaMA, ViT).",
+          accent: "text-amber-400",
+          border: "border-amber-800/50",
+          badge: "Intra-Sequence"
+        },
+        {
+          name: "Cross-attention",
+          quote: "One sequence attends to representations from another sequence.",
+          qkvSource: "Queries (Q) come from one sequence or representation, while Keys (K) and Values (V) come from another.",
+          architectureRole: "Used in Encoder-Decoder models (T5, Whisper) and multimodal models (CLIP text-image binding, Stable Diffusion prompt conditioning).",
+          accent: "text-cyan-400",
+          border: "border-cyan-800/50",
+          badge: "Inter-Sequence"
+        },
+        {
+          name: "Causal attention",
+          quote: "A mask prevents a token from attending to future tokens, enabling autoregressive next-token prediction.",
+          qkvSource: "Applies an upper-triangular causal mask (-inf above diagonal) before softmax, ensuring token i can only attend to positions j <= i.",
+          architectureRole: "Essential for autoregressive generative language models (GPT-4, LLaMA-3, Mistral, Claude).",
+          accent: "text-emerald-400",
+          border: "border-emerald-800/50",
+          badge: "Autoregressive Masked"
+        }
+      ]
+    }
   },
   {
     id: "fashion-360-visualization",
