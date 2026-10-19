@@ -106,7 +106,8 @@ export const definitionBookmarks = [
   { id: "reinforcement-learning", label: "Reinforcement Learning" },
   { id: "machine-learning-types", label: "ML Types & RLHF" },
   { id: "hallucination", label: "Hallucination" },
-  { id: "ranking-and-reranking", label: "Ranking & Reranking" }
+  { id: "ranking-and-reranking", label: "Ranking & Reranking" },
+  { id: "dense-sparse", label: "Dense vs. Sparse" }
 ];
 
 export const definitionsData = [
@@ -8218,5 +8219,82 @@ ranked_results = sorted(zip(candidate_docs, scores), key=lambda x: x[1], reverse
 top_passages = [doc for doc, score in ranked_results[:5]]`
     },
     takeaway: "In modern production search and RAG pipelines, single-stage vector search alone often suffers from semantic drift and false positives. Combining first-stage Ranking (high-recall Bi-encoders filtering millions of items) with second-stage Reranking (high-precision Cross-encoders re-ordering the top 50 candidates) yields the optimal balance of sub-second latency and pinpoint factual accuracy."
+  },
+  {
+    id: "dense-sparse",
+    title: "Dense vs. Sparse Representations (BM25, Lexical Search & Semantic Embeddings)",
+    badge: "Vector Representations, BM25 & Hybrid Search",
+    summary: "Sparse representation: Most values in the vector are zero. Dense representation: Most values are nonzero, and the values can encode learned patterns or semantic relationships. Sparse representations include bag-of-words and TF-IDF vectors. BM25 is a popular sparse, lexical retrieval method, although it uses its own term-weighting and scoring formula rather than requiring a dense fixed-length vector. Sparse search is particularly useful for exact terms, product IDs, error codes, and rare keywords. A dense embedding model converts text into a fixed-length vector whose dimensions are learned by the model.",
+    coreDefinition: "Sparse representation: Most values in the vector are zero. Dense representation: Most values are nonzero, and the values can encode learned patterns or semantic relationships.",
+    representations: [
+      {
+        type: "Sparse Representation",
+        definition: "Sparse representation: Most values in the vector are zero.",
+        details: "Sparse representations include bag-of-words and TF-IDF vectors. BM25 is a popular sparse, lexical retrieval method, although it uses its own term-weighting and scoring formula rather than requiring a dense fixed-length vector.",
+        useCases: "Sparse search is particularly useful for exact terms, product IDs, error codes, and rare keywords.",
+        vectorShape: "High-dimensional (vocab size V ~ 50,000+), mostly 0.0s with non-zero weights for exact matched tokens.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50",
+        badge: "Lexical & Exact Match"
+      },
+      {
+        type: "Dense Representation",
+        definition: "Dense representation: Most values are nonzero, and the values can encode learned patterns or semantic relationships.",
+        details: "A dense embedding model converts text into a fixed-length vector whose dimensions are learned by the model.",
+        useCases: "Dense search excels at conceptual matching, multilingual retrieval, synonyms, paraphrasing, and semantic intent.",
+        vectorShape: "Fixed low-dimensional (e.g., 768, 1536, or 3072 floats), dense non-zero continuous coordinates.",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50",
+        badge: "Semantic & Continuous"
+      }
+    ],
+    comparisonTable: [
+      {
+        attribute: "Vector Sparsity",
+        sparse: "Most values are zero (>99% zeros)",
+        dense: "Virtually all values are non-zero floats"
+      },
+      {
+        attribute: "Dimensionality",
+        sparse: "Huge: 30,000 – 100,000+ (vocabulary size)",
+        dense: "Compact & fixed: 256 – 3,072 dimensions"
+      },
+      {
+        attribute: "Core Strengths",
+        sparse: "Exact terms, SKU codes, product IDs, rare keywords",
+        dense: "Synonyms, conceptual nuances, paraphrased queries"
+      },
+      {
+        attribute: "Popular Methods",
+        sparse: "BM25, TF-IDF, SPLADE",
+        dense: "OpenAI text-embedding-3, BGE, E5, Cohere Embed"
+      },
+      {
+        attribute: "Index Structure",
+        sparse: "Inverted Index (Lucene / Elasticsearch)",
+        dense: "Approximate Nearest Neighbors (HNSW, IVF-PQ)"
+      }
+    ],
+    codeExample: {
+      title: "Production Hybrid Search (BM25 Sparse + Dense Vector via RRF)",
+      language: "python",
+      code: `def reciprocal_rank_fusion(dense_ranks, sparse_ranks, k=60):
+    """
+    Combines dense semantic ranking with sparse BM25 lexical ranking.
+    RRF Score = 1 / (k + rank_dense) + 1 / (k + rank_sparse)
+    """
+    scores = {}
+    for rank, doc_id in enumerate(dense_ranks):
+        scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (k + rank)
+    for rank, doc_id in enumerate(sparse_ranks):
+        scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (k + rank)
+    
+    # Sort merged candidate pool by combined fusion score
+    return sorted(scores.items(), key=lambda x: x[1], reverse=True)
+
+# Sparse search captures exact SKU: "CR-9042-ERR"
+# Dense search captures semantic query: "how to troubleshoot payment failure"`
+    },
+    takeaway: "Neither sparse nor dense retrieval alone is sufficient for production RAG. Sparse search (BM25) guarantees precision on exact serial numbers, acronyms, and error codes where embeddings fail; dense search captures contextual semantics and synonyms where exact keywords miss. Combining both in Hybrid Search via Reciprocal Rank Fusion (RRF) yields the industry standard for enterprise search accuracy."
   }
 ];
