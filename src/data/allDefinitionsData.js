@@ -110,7 +110,8 @@ export const definitionBookmarks = [
   { id: "dense-sparse", label: "Dense vs. Sparse" },
   { id: "which-is-better", label: "Which is Better?" },
   { id: "labeled-unlabeled-data", label: "Labeled vs Unlabeled Data" },
-  { id: "early-stopping", label: "Early Stopping" }
+  { id: "early-stopping", label: "Early Stopping" },
+  { id: "activation-functions", label: "Activation Functions" }
 ];
 
 export const definitionsData = [
@@ -8530,5 +8531,84 @@ history = model.fit(
 )`
     },
     takeaway: "Early stopping acts as an implicit regularizer by restricting the optimization path in weight space. Without early stopping, stochastic gradient descent continues minimizing training empirical loss, memorizing label noise and sample idiosyncrasies. Pairing patience with restore_best_weights=True guarantees optimal out-of-sample generalization while saving substantial GPU compute hours."
+  },
+  {
+    id: "activation-functions",
+    title: "Activation Functions (ReLU, Sigmoid, Softmax, GELU & Non-Linear Mappings)",
+    badge: "Non-Linear Representations, Deep Learning & Transformer Layer Norms",
+    summary: "An activation function transforms a neuron's weighted input into its output. It allows neural networks to learn nonlinear patterns. Common activation functions: ReLU (Negative values become zero; positive values remain unchanged. Common in hidden layers of neural networks and CNNs), Sigmoid (Produces a value between 0 and 1. Often used in the output layer of binary classifiers), Softmax (Converts a vector of scores into values that sum to 1. Common in multi-class classification output layers), and GELU (A smooth nonlinear activation commonly used in Transformer architectures, including many LLMs). Softmax takes a list of raw model scores and converts them into values that sum to 1.",
+    coreDefinition: "An activation function transforms a neuron's weighted input into its output. It allows neural networks to learn nonlinear patterns.",
+    functionsHeadline: "Common activation functions",
+    functionsList: [
+      {
+        name: "ReLU — Rectified Linear Unit",
+        formula: "f(x) = max(0, x)",
+        definition: "Negative values become zero; positive values remain unchanged. Common in hidden layers of neural networks and CNNs.",
+        range: "[0, +∞)",
+        useCase: "Hidden layers of CNNs, ResNets, and MLPs. Highly computationally efficient and solves vanishing gradient for positive activations.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50",
+        badge: "CNNs & Standard Hidden Layers"
+      },
+      {
+        name: "Sigmoid",
+        formula: "σ(x) = 1 / (1 + e^(-x))",
+        definition: "Produces a value between 0 and 1. Often used in the output layer of binary classifiers.",
+        range: "(0, 1)",
+        useCase: "Binary classification output layers and multi-label classification (independent per-label probabilities).",
+        accent: "text-blue-400",
+        border: "border-blue-800/50",
+        badge: "Binary Classifier Outputs"
+      },
+      {
+        name: "Softmax",
+        formula: "Softmax(z_i) = e^(z_i) / Σ_j e^(z_j)",
+        definition: "Converts a vector of scores into values that sum to 1. Common in multi-class classification output layers.",
+        range: "(0, 1), sum = 1.0",
+        useCase: "Multi-class classification output layers, self-attention weight normalization, and LLM next-token probability distributions.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50",
+        badge: "Multi-Class & Attention Distribution"
+      },
+      {
+        name: "GELU — Gaussian Error Linear Unit",
+        formula: "GELU(x) = x · Φ(x) ≈ 0.5x(1 + tanh(√(2/π)(x + 0.044715x³)))",
+        definition: "A smooth nonlinear activation commonly used in Transformer architectures, including many LLMs.",
+        range: "(-0.17, +∞)",
+        useCase: "Standard hidden layer activation for Transformer foundation models including BERT, GPT-2, GPT-3, GPT-4, and RoBERTa.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50",
+        badge: "Transformer & LLM Architectures"
+      }
+    ],
+    softmaxSpecialNote: {
+      title: "Softmax Mechanism",
+      content: "Softmax takes a list of raw model scores and converts them into values that sum to 1."
+    },
+    codeExample: {
+      title: "Implementations of ReLU, Sigmoid, Softmax, and GELU in Python / PyTorch",
+      language: "python",
+      code: `import numpy as np
+import torch
+import torch.nn.functional as F
+
+# 1. ReLU: f(x) = max(0, x)
+def relu(x):
+    return np.maximum(0, x)
+
+# 2. Sigmoid: σ(x) = 1 / (1 + e^(-x))
+def sigmoid(x):
+    return 1.0 / (1.0 + np.exp(-x))
+
+# 3. Softmax: Converts scores into probabilities summing to 1
+def softmax(z):
+    exp_z = np.exp(z - np.max(z))  # Subtract max for numerical stability
+    return exp_z / np.sum(exp_z)
+
+# 4. GELU: Smooth Transformer activation in PyTorch
+x_tensor = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])
+gelu_out = F.gelu(x_tensor)  # Used in BERT, GPT-2/3/4`
+    },
+    takeaway: "Without non-linear activation functions, any deep neural network collapses mathematically into a single linear transformation (W2 * W1 * x = W_combined * x), completely incapable of learning complex non-linear manifolds. Choosing the appropriate activation—ReLU for CNNs, GELU for Transformers, Sigmoid for binary tasks, and Softmax for categorical distributions—is foundational to stable gradient propagation."
   }
 ];
