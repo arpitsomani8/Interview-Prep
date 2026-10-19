@@ -989,6 +989,143 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* Irrelevant Context & Missing Answer Abstention */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* How do you detect irrelevant context? */}
+                  {item.detectingIrrelevantContext && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-amber-800/40 space-y-3 shadow-xl">
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                          <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                          <span>{item.detectingIrrelevantContext.question}</span>
+                        </h4>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                          Relevance
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.detectingIrrelevantContext.summary}
+                      </p>
+                      <div className="space-y-1.5 pt-1">
+                        {item.detectingIrrelevantContext.methods.map((m, mIdx) => (
+                          <div key={mIdx} className="p-2.5 rounded-lg bg-black border border-zinc-900 text-xs text-zinc-300 flex items-start gap-2 leading-relaxed">
+                            <span className="text-amber-400 font-bold font-mono mt-0.5">•</span>
+                            <span>{m}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* What happens when the answer isn't in the knowledge base? */}
+                  {item.missingAnswerAbstention && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-rose-800/40 space-y-3 shadow-xl">
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                          <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
+                          <span>{item.missingAnswerAbstention.question}</span>
+                        </h4>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
+                          Abstention Protocol
+                        </span>
+                      </div>
+                      <div className="p-3 bg-black rounded-xl border border-rose-950 text-xs text-rose-200 font-semibold font-mono">
+                        {item.missingAnswerAbstention.principle}
+                      </div>
+                      <span className="text-xs font-bold font-mono text-zinc-400 uppercase block pt-1">
+                        {item.missingAnswerAbstention.flowTitle}
+                      </span>
+                      <div className="space-y-1.5">
+                        {item.missingAnswerAbstention.steps.map((st, sIdx) => (
+                          <div key={sIdx} className="p-2.5 rounded-lg bg-black border border-zinc-900 text-xs text-zinc-300 flex items-start gap-2 leading-relaxed">
+                            <span className="text-cyan-400 font-bold font-mono mt-0.5">→</span>
+                            <span>{st}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* How do you evaluate faithfulness? */}
+                {item.faithfulnessEvaluation && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-emerald-800/40 space-y-3 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.faithfulnessEvaluation.question}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 shrink-0 self-start sm:self-auto">
+                        Groundedness
+                      </span>
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-zinc-200 font-medium font-sans">
+                      {item.faithfulnessEvaluation.definition}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                      {item.faithfulnessEvaluation.methods.map((method, meIdx) => (
+                        <div key={meIdx} className="p-3 rounded-xl bg-black border border-zinc-900 text-xs text-zinc-300 flex items-start gap-2 leading-relaxed">
+                          <span className="text-emerald-400 font-bold font-mono mt-0.5">✓</span>
+                          <span>{method}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-black border border-amber-900/40 text-xs text-amber-200/90 leading-relaxed font-sans">
+                      <strong className="text-amber-400 font-mono uppercase">Faithfulness vs. Correctness Distinction: </strong>
+                      {item.faithfulnessEvaluation.distinction}
+                    </div>
+                  </div>
+                )}
+
+                {/* How would you improve poor retrieval results? */}
+                {item.improvingPoorRetrieval && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-blue-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-blue-400 font-mono flex items-center gap-2">
+                          <Layers className="w-3.5 h-3.5 text-blue-400" />
+                          <span>{item.improvingPoorRetrieval.question}</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 font-sans mt-0.5">
+                          {item.improvingPoorRetrieval.principle}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 shrink-0 self-start sm:self-auto">
+                        Troubleshooting Matrix
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead className="bg-zinc-900/80 border-b border-zinc-800 font-mono text-[11px]">
+                          <tr>
+                            <th className="py-2.5 px-3.5 text-rose-400">Observed problem</th>
+                            <th className="py-2.5 px-3.5 text-emerald-400">Possible fix</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+                          {item.improvingPoorRetrieval.table.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/50 transition">
+                              <td className="py-2.5 px-3.5 font-medium text-zinc-200">
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-1.5 h-1.5 rounded-full ${row.accent.replace('text-', 'bg-')}`} />
+                                  <span>{row.problem}</span>
+                                </div>
+                              </td>
+                              <td className="py-2.5 px-3.5 text-emerald-300 font-mono text-xs">
+                                {row.fix}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
                 {/* 5 Pipeline Pillars */}
                 <div className="space-y-2.5">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
@@ -19101,6 +19238,374 @@ export default function AllDefinitionsPage() {
                 )}
 
                 {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 144: Production AI Playbook & System Trade-offs */}
+            {item.id === 'production-ai-playbook' && (
+              <div className="space-y-6">
+                {/* 1. Core Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Enterprise System Design, Resiliency & Trade-offs</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Production Playbook
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Production AI Playbook & System Trade-offs
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. The 7 Architecture Trade-offs Table */}
+                {item.tradeoffsTable && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-cyan-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                          <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.tradeoffsTable.title}</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 font-sans mt-0.5">
+                          {item.tradeoffsTable.subtitle}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 shrink-0 self-start sm:self-auto">
+                        7 Core Trade-offs
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead className="bg-zinc-900/80 border-b border-zinc-800 font-mono text-[11px]">
+                          <tr>
+                            <th className="py-2.5 px-3.5 text-white">Decision</th>
+                            <th className="py-2.5 px-3.5 text-emerald-400">Benefit</th>
+                            <th className="py-2.5 px-3.5 text-rose-400">Trade-off</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+                          {item.tradeoffsTable.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/50 transition">
+                              <td className="py-3 px-3.5 font-bold font-mono text-white whitespace-nowrap">
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-1.5 h-1.5 rounded-full ${row.accent.replace('text-', 'bg-')}`} />
+                                  <span>{row.decision}</span>
+                                </div>
+                              </td>
+                              <td className="py-3 px-3.5 text-emerald-200 font-medium">
+                                {row.benefit}
+                              </td>
+                              <td className="py-3 px-3.5 text-rose-300/90 leading-relaxed">
+                                {row.tradeoff}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Scalability & Outage Resilience Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* What happens when traffic increases 10x? */}
+                  {item.trafficSurge10x && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-blue-800/40 space-y-3 shadow-xl">
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-blue-400 font-mono flex items-center gap-2">
+                          <Terminal className="w-3.5 h-3.5 text-blue-400" />
+                          <span>{item.trafficSurge10x.question}</span>
+                        </h4>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
+                          10x Surge
+                        </span>
+                      </div>
+
+                      <div className="p-3 bg-black rounded-xl border border-blue-950 text-xs text-blue-200 font-semibold font-mono">
+                        {item.trafficSurge10x.strategy}
+                      </div>
+
+                      <div className="p-3 bg-black rounded-xl border border-zinc-800 font-mono text-xs text-zinc-300">
+                        <span className="text-[10px] uppercase text-zinc-500 block mb-1">Production Architecture:</span>
+                        <span className="text-cyan-300 font-bold">{item.trafficSurge10x.architecturePipeline}</span>
+                      </div>
+
+                      <span className="text-xs font-bold font-mono text-zinc-400 uppercase block pt-1">
+                        Evaluation Checklist:
+                      </span>
+                      <div className="space-y-1.5">
+                        {item.trafficSurge10x.evaluationAxes.map((axis, aIdx) => (
+                          <div key={aIdx} className="p-2 rounded-lg bg-black border border-zinc-900 text-xs text-zinc-300 flex items-start gap-2 leading-relaxed">
+                            <span className="text-blue-400 font-bold font-mono mt-0.5">•</span>
+                            <span>{axis}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* What happens when the LLM API goes down? */}
+                  {item.llmOutageProtocol && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-rose-800/40 space-y-3 shadow-xl">
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                          <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
+                          <span>{item.llmOutageProtocol.question}</span>
+                        </h4>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
+                          Outage Protocol
+                        </span>
+                      </div>
+
+                      <span className="text-xs font-semibold text-zinc-300 font-sans block">
+                        {item.llmOutageProtocol.subtitle}
+                      </span>
+
+                      <div className="space-y-1.5">
+                        {item.llmOutageProtocol.steps.map((step, sIdx) => (
+                          <div key={sIdx} className="p-2.5 rounded-lg bg-black border border-zinc-900 text-xs text-zinc-300 flex items-start gap-2 leading-relaxed">
+                            <span className="text-rose-400 font-bold font-mono mt-0.5">→</span>
+                            <span>{step}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-black border border-amber-900/40 text-xs text-amber-200/90 leading-relaxed font-sans mt-2">
+                        <strong className="text-amber-400 font-mono uppercase">Caution on Fallbacks: </strong>
+                        {item.llmOutageProtocol.warnings}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 4. Latency & Cost Engineering */}
+                {item.latencyAndCost && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-amber-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Clock className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Latency Engineering & Cost Optimization</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 shrink-0 self-start sm:self-auto">
+                        Telemetry & SLA
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Latency Breakdown */}
+                      <div className="space-y-2.5">
+                        <span className="text-xs font-bold font-mono text-cyan-300 uppercase block">
+                          Latency Decomposition (Don't Invent a Single Number):
+                        </span>
+                        <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                          {item.latencyAndCost.latencyGuidance}
+                        </p>
+                        <div className="space-y-1.5 pt-1">
+                          {item.latencyAndCost.latencyBreakdown.map((l, lIdx) => (
+                            <div key={lIdx} className="p-2 rounded-lg bg-black border border-zinc-900 text-xs text-zinc-300 flex items-center gap-2">
+                              <span className="text-amber-400 font-bold font-mono">#0{lIdx + 1}</span>
+                              <span>{l}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="p-2.5 bg-black rounded-lg border border-cyan-900/50 text-[11px] font-mono text-cyan-200">
+                          {item.latencyAndCost.latencyMetrics}
+                        </div>
+                      </div>
+
+                      {/* Cost Optimization */}
+                      <div className="space-y-2.5">
+                        <span className="text-xs font-bold font-mono text-emerald-300 uppercase block">
+                          Cost Measurement & Reduction Strategies:
+                        </span>
+                        <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                          {item.latencyAndCost.costMeasurement}
+                        </p>
+                        <div className="space-y-1.5 pt-1">
+                          {item.latencyAndCost.costReductionStrategies.map((c, cIdx) => (
+                            <div key={cIdx} className="p-2 rounded-lg bg-black border border-zinc-900 text-xs text-zinc-300 flex items-start gap-2">
+                              <span className="text-emerald-400 font-bold font-mono mt-0.5">✓</span>
+                              <span>{c}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Model Evaluation & Hallucination Testing */}
+                {item.modelEvaluationAndQuality && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-purple-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-purple-400" />
+                        <span>Model Evaluation, Hallucinations & Output Consistency</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 shrink-0 self-start sm:self-auto">
+                        QA & Guardrails
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                      {/* Defining a Good Response */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <span className="text-xs font-bold font-mono text-amber-300 uppercase block">
+                            {item.modelEvaluationAndQuality.goodResponseCriteria.title}
+                          </span>
+                          <p className="text-[11px] text-zinc-400">
+                            {item.modelEvaluationAndQuality.goodResponseCriteria.intro}
+                          </p>
+                          <div className="space-y-1 pt-1">
+                            {item.modelEvaluationAndQuality.goodResponseCriteria.criteria.map((cr, crIdx) => (
+                              <div key={crIdx} className="text-xs text-zinc-300 flex items-start gap-2">
+                                <span className="text-amber-400 font-mono">•</span>
+                                <span>{cr}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Comparing 2 Models */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <span className="text-xs font-bold font-mono text-blue-300 uppercase block">
+                            {item.modelEvaluationAndQuality.compareTwoModels.title}
+                          </span>
+                          <p className="text-[11px] text-zinc-400">
+                            {item.modelEvaluationAndQuality.compareTwoModels.intro}
+                          </p>
+                          <div className="space-y-1 pt-1 text-xs text-zinc-300">
+                            {item.modelEvaluationAndQuality.compareTwoModels.steps.map((st, stIdx) => (
+                              <div key={stIdx} className="flex items-start gap-2">
+                                <span className="text-blue-400 font-mono">•</span>
+                                <span>{st}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="pt-2 border-t border-zinc-900 text-[10px] text-zinc-500 font-mono">
+                          {item.modelEvaluationAndQuality.compareTwoModels.caution}
+                        </div>
+                      </div>
+
+                      {/* Testing Hallucinations */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <span className="text-xs font-bold font-mono text-rose-300 uppercase block">
+                            {item.modelEvaluationAndQuality.testHallucinations.title}
+                          </span>
+                          <p className="text-[11px] text-zinc-400">
+                            {item.modelEvaluationAndQuality.testHallucinations.setup}
+                          </p>
+                          <div className="space-y-1 pt-1 text-xs text-zinc-300">
+                            {item.modelEvaluationAndQuality.testHallucinations.measures.map((me, meIdx) => (
+                              <div key={meIdx} className="flex items-start gap-2">
+                                <span className="text-rose-400 font-mono">•</span>
+                                <span>{me}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Handling Inconsistent Outputs */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between md:col-span-2">
+                        <div className="space-y-2">
+                          <span className="text-xs font-bold font-mono text-cyan-300 uppercase block">
+                            {item.modelEvaluationAndQuality.inconsistentOutputs.title}
+                          </span>
+                          <p className="text-xs text-zinc-300 font-medium font-sans">
+                            {item.modelEvaluationAndQuality.inconsistentOutputs.principle}
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs text-zinc-300">
+                            {item.modelEvaluationAndQuality.inconsistentOutputs.solutions.map((sol, soIdx) => (
+                              <div key={soIdx} className="p-2 rounded bg-zinc-950 border border-zinc-900 flex items-start gap-2">
+                                <span className="text-cyan-400 font-mono">•</span>
+                                <span>{sol}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="pt-2 border-t border-zinc-900 text-[11px] text-amber-300/80 font-mono">
+                          {item.modelEvaluationAndQuality.inconsistentOutputs.caveat}
+                        </div>
+                      </div>
+
+                      {/* LLM-as-a-Judge Guidance */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <span className="text-xs font-bold font-mono text-emerald-300 uppercase block">
+                            {item.modelEvaluationAndQuality.llmAsJudgeGuidance.title}
+                          </span>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {item.modelEvaluationAndQuality.llmAsJudgeGuidance.answer}
+                          </p>
+                        </div>
+                        <div className="pt-2 border-t border-zinc-900 text-[11px] text-zinc-500 font-mono">
+                          {item.modelEvaluationAndQuality.llmAsJudgeGuidance.caveat}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Real-World Architecture: Retail Visual Search */}
+                {item.visualSearchCaseStudy && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-emerald-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.visualSearchCaseStudy.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 shrink-0 self-start sm:self-auto">
+                        Multimodal Search
+                      </span>
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-zinc-200 font-medium font-sans">
+                      {item.visualSearchCaseStudy.overview}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.visualSearchCaseStudy.details.map((dt, dIdx) => (
+                        <div key={dIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                          <span className="text-[10px] font-mono text-emerald-400 font-bold">Step 0{dIdx + 1}</span>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {dt}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Worker Flow Pipeline Banner */}
+                    <div className="p-3.5 rounded-xl bg-black border border-emerald-900/50 space-y-1.5">
+                      <span className="text-[11px] font-mono text-zinc-400 uppercase block">
+                        {item.visualSearchCaseStudy.workerFlowTitle}
+                      </span>
+                      <div className="font-mono text-xs text-white flex items-center gap-2 font-bold flex-wrap">
+                        <span className="p-1 px-2 rounded bg-zinc-900 text-emerald-300 border border-zinc-800">
+                          {item.visualSearchCaseStudy.pipelineFlow}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}

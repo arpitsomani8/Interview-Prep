@@ -140,7 +140,8 @@ export const definitionBookmarks = [
   { id: "system-scaling", label: "Scaling" },
   { id: "centroid", label: "Centroid" },
   { id: "polling", label: "Polling & Response Consistency" },
-  { id: "ai-evaluation", label: "AI Evaluation" }
+  { id: "ai-evaluation", label: "AI Evaluation" },
+  { id: "production-ai-playbook", label: "Production AI Playbook & Trade-offs" }
 ];
 
 export const definitionsData = [
@@ -653,6 +654,85 @@ def predict_damage(data: ParcelData):
           accent: "text-cyan-400",
           border: "border-cyan-800/50",
           badge: "Synthesis & Model Reasoning"
+        }
+      ]
+    },
+    detectingIrrelevantContext: {
+      question: "How do you detect irrelevant context?",
+      summary: "Use a multi-layered verification strategy combining empirical labels, ranking metrics, score calibration, trace inspection, and validated LLM judges.",
+      methods: [
+        "Human-labeled relevance judgments on a representative test set.",
+        "Precision@K and ranking metrics.",
+        "Similarity or reranker scores, calibrated against actual relevance labels.",
+        "Context inspection in traces: which chunks were retrieved, in what order, and why.",
+        "LLM-based relevance judgments, validated against human reviews."
+      ]
+    },
+    missingAnswerAbstention: {
+      question: "What happens when the answer isn't in the knowledge base?",
+      principle: "The system should abstain instead of inventing an answer.",
+      flowTitle: "A robust production flow is:",
+      steps: [
+        "1. Retrieve relevant candidates.",
+        "2. Assess whether the evidence supports the requested answer.",
+        "3. If evidence is insufficient, say it couldn't be verified.",
+        "4. Offer a clarification or route the query to an authorized human or source."
+      ]
+    },
+    faithfulnessEvaluation: {
+      question: "How do you evaluate faithfulness?",
+      definition: "Faithfulness means the answer's claims are supported by the retrieved context.",
+      methods: [
+        "Break the answer into factual claims.",
+        "Check whether each claim is supported by the retrieved evidence.",
+        "Use deterministic checks for dates, prices, IDs, and explicit policy rules where possible.",
+        "Use an LLM judge for broader semantic comparisons, validated against human-reviewed cases."
+      ],
+      distinction: "Faithfulness is different from correctness: an answer can faithfully repeat a policy document that is itself outdated or wrong. You must also verify source authority and freshness."
+    },
+    improvingPoorRetrieval: {
+      question: "How would you improve poor retrieval results?",
+      principle: "Diagnose the failure before changing the technology.",
+      table: [
+        {
+          problem: "Relevant policy is missing from the index",
+          fix: "Fix ingestion, parsing, indexing, or document filters",
+          accent: "text-amber-400"
+        },
+        {
+          problem: "Correct document exists but relevant section is missed",
+          fix: "Improve chunking and overlap",
+          accent: "text-blue-400"
+        },
+        {
+          problem: "Exact product ID or policy code is missed",
+          fix: "Add lexical search such as BM25",
+          accent: "text-purple-400"
+        },
+        {
+          problem: "Paraphrased questions retrieve poor matches",
+          fix: "Evaluate a better embedding model",
+          accent: "text-cyan-400"
+        },
+        {
+          problem: "Relevant chunk appears too low in the ranking",
+          fix: "Add a cross-encoder reranker",
+          accent: "text-emerald-400"
+        },
+        {
+          problem: "Results are from the wrong tenant or version",
+          fix: "Correct metadata filters and access controls",
+          accent: "text-rose-400"
+        },
+        {
+          problem: "Results contain too much irrelevant material",
+          fix: "Tune K, chunk size, filtering, and reranking",
+          accent: "text-orange-400"
+        },
+        {
+          problem: "User's question is ambiguous",
+          fix: "Rewrite the query or ask a clarification",
+          accent: "text-indigo-400"
         }
       ]
     },
@@ -11064,5 +11144,178 @@ Candidate Answer: {sample['model_answer']}"""
 # Calibration verification: Compare judge's output score against human annotated ground truth label.`
     },
     takeaway: "Robust AI systems cannot rely on ad-hoc gut checks. By combining LLM-as-a-Judge for semantic fidelity, Trajectory Evals for multi-step agent actions, calibrated Golden Datasets in CI/CD, and continuous online production telemetry, engineering teams can iterate safely without silent regressions."
+  },
+  {
+    id: "production-ai-playbook",
+    title: "Production AI Playbook (System Trade-offs, 10× Scaling, Outage Protocols & Multimodal Visual Search)",
+    badge: "Enterprise AI Architecture, Resiliency, Latency & Trade-offs",
+    summary: "Comprehensive production guide for enterprise AI engineering interviews. Covers the 7 core architectural trade-offs, 10× traffic surge scaling, LLM API outage protocols, latency and cost engineering, hallucination testing, and Azure AI Vision visual search architecture.",
+    coreDefinition: "Production AI systems require balancing trade-offs between recall, latency, cost, and safety. Interviewers want to know why you selected a solution, how the system handles 10× traffic surges and third-party API outages, and how you verify factual grounding and latency SLAs.",
+    tradeoffsTable: {
+      title: "What trade-offs should you discuss?",
+      subtitle: "Interviewers want to know why you selected a solution and what you sacrificed to get its benefits.",
+      rows: [
+        {
+          decision: "Increase top-K retrieval",
+          benefit: "May improve recall",
+          tradeoff: "More irrelevant context, tokens, and latency",
+          accent: "text-amber-400"
+        },
+        {
+          decision: "Add a cross-encoder",
+          benefit: "Can improve ranking quality",
+          tradeoff: "Additional compute and latency",
+          accent: "text-blue-400"
+        },
+        {
+          decision: "Use a larger LLM",
+          benefit: "May improve complex reasoning",
+          tradeoff: "Higher cost and potentially slower responses",
+          accent: "text-purple-400"
+        },
+        {
+          decision: "Cache answers",
+          benefit: "Lower latency and fewer model calls",
+          tradeoff: "Stale answers or unsafe reuse if cache invalidation is wrong",
+          accent: "text-emerald-400"
+        },
+        {
+          decision: "Add more agents",
+          benefit: "Enables specialized responsibilities",
+          tradeoff: "More orchestration complexity and failure points",
+          accent: "text-cyan-400"
+        },
+        {
+          decision: "Require human review",
+          benefit: "Better control for high-risk cases",
+          tradeoff: "Slower and more expensive workflows",
+          accent: "text-rose-400"
+        },
+        {
+          decision: "Strict abstention",
+          benefit: "Reduces unsupported answers",
+          tradeoff: "May decline questions that could have been answered",
+          accent: "text-indigo-400"
+        }
+      ]
+    },
+    trafficSurge10x: {
+      question: "What happens when traffic increases 10×?",
+      strategy: "I would load-test the application and identify its bottleneck before simply adding servers.",
+      architecturePipeline: "API → rate limiting → queue (for async work) → scalable workers → vector database / LLM provider",
+      evaluationAxes: [
+        "Horizontal scaling and autoscaling.",
+        "Connection and concurrency limits.",
+        "Queue depth and worker throughput.",
+        "Vector database capacity.",
+        "Provider rate limits and quotas.",
+        "Backpressure, timeouts, and load shedding.",
+        "Cost at peak traffic."
+      ]
+    },
+    llmOutageProtocol: {
+      question: "What happens when the LLM API goes down?",
+      subtitle: "A robust failure strategy could include:",
+      steps: [
+        "1. Set timeouts so requests don't hang indefinitely.",
+        "2. Retry transient errors with bounded exponential backoff and jitter.",
+        "3. Use a circuit breaker to avoid repeatedly calling an unhealthy dependency.",
+        "4. Fall back to a tested alternative model if one is available and authorized.",
+        "5. Return a clear temporary-unavailability message when no safe fallback exists.",
+        "6. Track failures and alert the operations team."
+      ],
+      warnings: "Don't silently switch to an ungrounded model for a policy chatbot if doing so would make the answer unsafe. Also consider idempotency when retrying tool calls that cause side effects."
+    },
+    latencyAndCost: {
+      latencyQuestion: "What's your average latency?",
+      latencyGuidance: "Don't invent a number in an interview. Explain how you would measure it and distinguish average latency from tail latency.",
+      latencyBreakdown: [
+        "Query processing and embedding.",
+        "Vector or hybrid retrieval.",
+        "Reranking.",
+        "LLM time to first token and generation.",
+        "Tool execution and network overhead."
+      ],
+      latencyMetrics: "Track average, p50, p95, and p99 latency. Streaming responses also need time-to-first-token and inter-token latency.",
+      costMeasurement: "Measure input and output tokens, embedding calls, reranking, storage, compute, network traffic, and any external tool charges. Use actual provider prices and usage records rather than assuming every request costs the same.",
+      costReductionStrategies: [
+        "Avoid unnecessary repeated LLM calls.",
+        "Limit retrieved context to useful evidence.",
+        "Use a smaller model for simple tasks if quality remains acceptable.",
+        "Cache safe, reusable results.",
+        "Route complex requests to more capable models only when needed."
+      ]
+    },
+    modelEvaluationAndQuality: {
+      goodResponseCriteria: {
+        title: "How do you define a “good” response?",
+        intro: "Define quality according to the task rather than relying on whether the answer sounds fluent. For a policy chatbot, a good response should be:",
+        criteria: [
+          "Factually correct.",
+          "Supported by authoritative evidence.",
+          "Relevant and sufficiently complete.",
+          "Clear and understandable.",
+          "Safe and compliant with access rules.",
+          "Honest about missing information."
+        ]
+      },
+      compareTwoModels: {
+        title: "How do you compare two models?",
+        intro: "Use the same versioned evaluation dataset, source documents, and task requirements for both models.",
+        steps: [
+          "1. Run both models on the same representative questions.",
+          "2. Compare correctness, faithfulness, completeness, and safety.",
+          "3. Use pairwise evaluations and human review for ambiguous cases.",
+          "4. Measure latency, throughput, and cost under comparable workloads.",
+          "5. Test difficult cases, including missing evidence and conflicting documents.",
+          "6. Choose the model that meets quality requirements within the business's cost and latency constraints."
+        ],
+        caution: "Do not select a model solely because its responses are more detailed or its benchmark score is higher."
+      },
+      testHallucinations: {
+        title: "How do you test hallucinations?",
+        setup: "Create test cases where the answer is known, where evidence is incomplete, and where the knowledge base contains conflicting or outdated information.",
+        measures: [
+          "Unsupported factual claims.",
+          "Contradictions with authoritative evidence.",
+          "Incorrect citations.",
+          "Incorrect answers to unanswerable questions.",
+          "Failure to abstain when necessary."
+        ]
+      },
+      inconsistentOutputs: {
+        title: "How do you handle inconsistent outputs?",
+        principle: "First determine whether the facts actually changed or only the wording changed.",
+        solutions: [
+          "Set temperature to zero where supported to reduce sampling variation.",
+          "Pin model and prompt versions where possible.",
+          "Stabilize retrieval and document versions.",
+          "Test repeated requests for factual consistency.",
+          "Use approved responses for high-frequency, high-risk FAQs.",
+          "Cache answers only when the query, permissions, context, and source freshness make reuse safe."
+        ],
+        caveat: "A fixed seed can improve repeatability on supported APIs, but it does not guarantee identical results. Temperature zero does not guarantee correctness either."
+      },
+      llmAsJudgeGuidance: {
+        title: "Would you use an LLM-as-a-Judge?",
+        answer: "Yes, for scalable evaluation of criteria such as relevance, completeness, and semantic faithfulness. I would define a rubric, calibrate it against human judgments, monitor disagreements, and use deterministic checks for critical facts such as policy dates and amounts.",
+        caveat: "I would not treat an LLM judge's score as unquestionable ground truth."
+      }
+    },
+    visualSearchCaseStudy: {
+      headline: "Real-World Architecture: Retail Visual Search with Azure AI Vision & Azure AI Search",
+      overview: "Each approved product image is processed using Azure AI Vision and converted into a numerical representation of how the product looks.",
+      details: [
+        "Under the hood, Azure AI Vision uses a multimodal deep-learning embedding model.",
+        "The model converts each image into a 1,024-dimensional vector—essentially a set of numbers that represents the visual and semantic features of the image.",
+        "These vectors are stored in Azure AI Search, which can quickly find visually similar products across thousands of items.",
+        "For fast vector search, Azure AI Search uses HNSW (Hierarchical Navigable Small World), an Approximate Nearest Neighbor (ANN) algorithm.",
+        "Instead of comparing a new image with every product one by one, HNSW organizes the vectors in a graph so that similar products can be found much faster.",
+        "The original product images stay securely stored in Azure Blob Storage."
+      ],
+      workerFlowTitle: "When a store worker takes a new photo, it goes through the same process:",
+      pipelineFlow: "Photo → Azure AI Vision → Vector (1,024-d) → Azure AI Search (HNSW) → Closest Matches"
+    },
+    takeaway: "In production AI engineering, success is defined by trade-off awareness, resiliency architecture, and empirical observability. Teams must design for peak surges with asynchronous queues, guard against API outages with bounded circuit breakers, enforce rigorous task-based evaluation over fluency, and deploy specialized vector search indexes (such as 1,024-d HNSW graphs) for high-performance multimodal applications."
   }
 ];
