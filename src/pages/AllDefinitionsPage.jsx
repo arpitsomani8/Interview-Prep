@@ -126,22 +126,43 @@ export default function AllDefinitionsPage() {
           Click any bookmark to jump directly to its complete explanation, formulas, and working code:
         </p>
 
-        {/* Clickable Bookmark Badges */}
-        <div className="flex flex-wrap gap-2 pt-1">
-          {definitionBookmarks.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => scrollToId(item.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 border cursor-pointer ${
-                activeBookmark === item.id
-                  ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/10'
-                  : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:border-cyan-500/50 hover:bg-zinc-800 hover:text-white'
-              }`}
-            >
-              <Bookmark className={`w-3 h-3 ${activeBookmark === item.id ? 'text-cyan-400 fill-cyan-400' : 'text-cyan-400'}`} />
-              <span>{item.label}</span>
-            </button>
-          ))}
+        {/* Clickable Bookmark Badges with Alphabet-Change Comma Separators */}
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          {definitionBookmarks.map((item, index) => {
+            const getInitial = (str) => {
+              if (!str) return '';
+              const ch = str.trim().charAt(0).toUpperCase();
+              return /[A-Z]/.test(ch) ? ch : '#';
+            };
+            const currentInitial = getInitial(item.label);
+            const nextItem = definitionBookmarks[index + 1];
+            const nextInitial = nextItem ? getInitial(nextItem.label) : null;
+            const isAlphabetChange = nextInitial && currentInitial !== nextInitial;
+
+            return (
+              <React.Fragment key={item.id}>
+                <button
+                  onClick={() => scrollToId(item.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 border cursor-pointer ${
+                    activeBookmark === item.id
+                      ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/10'
+                      : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:border-cyan-500/50 hover:bg-zinc-800 hover:text-white'
+                  }`}
+                >
+                  <Bookmark className={`w-3 h-3 ${activeBookmark === item.id ? 'text-cyan-400 fill-cyan-400' : 'text-cyan-400'}`} />
+                  <span>{item.label}</span>
+                </button>
+                {isAlphabetChange && (
+                  <span
+                    aria-hidden="true"
+                    className="self-center text-cyan-400 font-bold text-base px-1 select-none font-mono"
+                  >
+                    ,
+                  </span>
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       </div>
 
