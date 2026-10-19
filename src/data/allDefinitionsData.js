@@ -137,7 +137,8 @@ export const definitionBookmarks = [
   { id: "central-limit-theorem", label: "Central Limit Theorem" },
   { id: "strands", label: "Strands Agents SDK" },
   { id: "oop-concepts", label: "OOP Concepts" },
-  { id: "system-scaling", label: "Scaling" }
+  { id: "system-scaling", label: "Scaling" },
+  { id: "centroid", label: "Centroid" }
 ];
 
 export const definitionsData = [
@@ -10776,5 +10777,75 @@ async def submit_inspection(image_url: str, bg_tasks: BackgroundTasks):
     return {"task_id": task_id, "status": "queued", "message": "Inspection running asynchronously"}`
     },
     takeaway: "True system scalability in production AI combines multiple complementary patterns: horizontal stateless APIs behind a load balancer, asynchronous message queues to decouple bursty image uploads from compute-heavy YOLO/LLM inference, and autoscaling policies to dynamically adapt GPU clusters to incoming queue depth."
+  },
+  {
+    id: "centroid",
+    title: "Centroid (Cluster Prototype & Vector Center of Mass)",
+    badge: "Unsupervised Learning, Vector Geometry & K-means Clustering",
+    summary: "A centroid is the center point of a cluster of data points, calculated as the mean of their coordinates. In high-dimensional vector spaces, centroids represent the prototypical concept vector summarizing group embeddings.",
+    coreDefinition: "A centroid is the center point of a cluster of data points, calculated as the mean of their coordinates.",
+    mathematicalFormula: {
+      formula: "μ_k = (1 / |S_k|) * Σ (x_i for x_i in S_k)",
+      components: [
+        { symbol: "μ_k", meaning: "Centroid vector of cluster k across all D dimensions" },
+        { symbol: "S_k", meaning: "Set of all data sample vectors assigned to cluster k" },
+        { symbol: "|S_k|", meaning: "Total count of data points belonging to cluster k" },
+        { symbol: "Σ x_i", meaning: "Component-wise summation across each coordinate axis" }
+      ]
+    },
+    keyProperties: [
+      {
+        title: "Mean of Coordinates",
+        desc: "Each dimension d of the centroid is the arithmetic average of the d-th coordinates of all assigned points: μ_{k,d} = (1/N) * Σ x_{i,d}.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        title: "Minimizer of Variance",
+        desc: "The centroid is mathematically proven to minimize the Within-Cluster Sum of Squares (WCSS) inertia under Euclidean distance.",
+        accent: "text-blue-400",
+        border: "border-blue-800/50"
+      },
+      {
+        title: "Geometric Center vs Medoid",
+        desc: "A centroid does not have to be an actual sample point from the dataset (unlike a medoid, which must be a real data sample).",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        title: "Vector Search & Indexing",
+        desc: "In vector databases (IVF-FLAT in FAISS/Pinecone), centroids partition the embedding space into Voronoi cells to accelerate nearest neighbor lookups.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      }
+    ],
+    codeExample: {
+      title: "Centroid Calculation & Distance-Based Vector Assignment (NumPy)",
+      language: "python",
+      code: `import numpy as np
+
+# 1. Cluster of 2D data points (e.g. parcel dimensions or embeddings)
+# Points: (x, y) coordinates
+points = np.array([
+    [2.0, 3.0],
+    [3.0, 4.0],
+    [2.5, 3.5],
+    [4.0, 5.0],
+    [3.5, 4.5]
+])
+
+# 2. Centroid calculation: arithmetic mean across coordinates (axis=0)
+centroid = np.mean(points, axis=0)
+print(f"Points shape: {points.shape}")
+print(f"Calculated Centroid (mean of coordinates): {centroid}")
+# Output: [3.0, 4.0]
+
+# 3. Minimizing Inertia (Within-Cluster Sum of Squares - WCSS)
+euclidean_distances = np.linalg.norm(points - centroid, axis=1)
+wcss = np.sum(euclidean_distances ** 2)
+print(f"Distances to centroid: {np.round(euclidean_distances, 3)}")
+print(f"Within-Cluster Sum of Squares (Inertia): {wcss:.4f}")`
+    },
+    takeaway: "The centroid serves as the geometric anchor of a cluster. In modern AI pipelines, centroids power K-means clustering, vector quantization (IVF indexing in FAISS/Milvus), and semantic theme summarization by condensing thousands of high-dimensional embedding vectors into representative prototypes."
   }
 ];
