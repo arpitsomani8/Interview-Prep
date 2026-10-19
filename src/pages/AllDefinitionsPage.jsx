@@ -5121,6 +5121,190 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
+            {/* Big Data & The Medallion Architecture */}
+            {item.id === 'big-data' && (
+              <div className="space-y-6">
+                {/* 1. Core Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Database className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Enterprise Lakehouse & Modern Data Stack</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Bronze • Silver • Gold
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Big Data & The Medallion Architecture (Lakehouse Design Pattern)
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                  <div className="p-3 rounded-lg bg-zinc-950 border border-cyan-900/40 text-xs text-cyan-200/90 leading-relaxed font-sans">
+                    <strong className="text-cyan-400 font-mono uppercase block mb-0.5">Why The Medallion Architecture Matters:</strong>
+                    Raw data is chaotic, full of duplicates, schema mutations, and corrupt records. The Medallion pattern builds a structured quality progression: Bronze preserves raw immutable truth, Silver cleanses and normalizes into a trusted enterprise baseline, and Gold pre-aggregates high-value star schemas and ML feature tables for sub-second business decisions.
+                  </div>
+                </div>
+
+                {/* 2. The 5 V's of Big Data */}
+                {item.fiveVs && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                        <span>The 5 V's of Big Data Engineering</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Core Foundations
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                      {item.fiveVs.map((fv, fIdx) => (
+                        <div key={fIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-mono font-bold text-amber-400">{fv.v}</span>
+                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-medium">
+                                {fv.badge}
+                              </span>
+                            </div>
+                            <h5 className="text-xs font-bold text-white font-mono">{fv.title}</h5>
+                            <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{fv.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. The 3 Medallion Stages: Bronze vs Silver vs Gold Cards */}
+                {item.medallionStages && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-purple-400" />
+                        <span>The 3 Medallion Data Stages: Bronze, Silver & Gold</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Lakehouse Quality Progression
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {item.medallionStages.map((stage, stIdx) => (
+                        <div key={stIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3 flex flex-col justify-between">
+                          <div className="space-y-2.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono text-white">{stage.title}</span>
+                              <span className={`text-[9px] font-mono px-2 py-0.5 rounded border ${stage.accent}`}>
+                                {stage.badge}
+                              </span>
+                            </div>
+                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800/80 text-[11px] text-zinc-300 leading-relaxed font-sans">
+                              <strong className="text-cyan-400 block mb-0.5 font-mono text-[10px] uppercase">Purpose & Role:</strong>
+                              {stage.purpose}
+                            </div>
+                            <div className="p-2 rounded-lg bg-zinc-950 border border-zinc-800 text-[10px] font-mono text-emerald-300">
+                              <strong className="text-zinc-400 block mb-0.5 uppercase">Storage Standard:</strong>
+                              {stage.format}
+                            </div>
+                            <div className="space-y-1.5 pt-1">
+                              <strong className="text-zinc-200 block font-mono text-[10px] uppercase">Key Pipeline Characteristics:</strong>
+                              <ul className="space-y-1 text-[11px] text-zinc-300 font-sans">
+                                {stage.characteristics.map((c, cIdx) => (
+                                  <li key={cIdx} className="flex items-start gap-1.5">
+                                    <span className="text-cyan-400 font-bold">•</span>
+                                    <span>{c}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Architectural Comparison Table: Warehouse vs Lake vs Lakehouse */}
+                {item.architectureMatrix && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Data Warehouse vs. Data Lake vs. Modern Lakehouse</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Architectural Comparison
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                      <table className="w-full text-left text-xs font-sans border-collapse">
+                        <thead>
+                          <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-300">
+                            <th className="p-2.5 font-semibold text-cyan-300">Architectural Dimension</th>
+                            <th className="p-2.5 font-semibold text-zinc-300">Traditional Data Warehouse</th>
+                            <th className="p-2.5 font-semibold text-blue-300">Traditional Data Lake</th>
+                            <th className="p-2.5 font-semibold text-emerald-300">Modern Data Lakehouse (Delta/Iceberg)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 bg-black">
+                          {item.architectureMatrix.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/30 transition-colors">
+                              <td className="p-2.5 font-mono text-cyan-400 font-medium whitespace-nowrap">{row.dimension}</td>
+                              <td className="p-2.5 text-zinc-300">{row.warehouse}</td>
+                              <td className="p-2.5 text-blue-200/90">{row.lake}</td>
+                              <td className="p-2.5 text-emerald-200/90">{row.lakehouse}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Production Python/PySpark Medallion Pipeline */}
+                {item.pythonCode && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <span className="text-xs font-mono font-bold text-emerald-400 flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Production PySpark: Bronze → Silver → Gold Pipeline</span>
+                      </span>
+                      <button
+                        onClick={() => handleCopyCode(item.pythonCode, item.id)}
+                        className="px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] font-mono text-zinc-300 border border-zinc-700 flex items-center gap-1.5 transition cursor-pointer"
+                      >
+                        {copiedId === item.id ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span className="text-emerald-400">Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3 text-zinc-400" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-zinc-300 overflow-x-auto leading-relaxed max-h-96">
+                      <code>{item.pythonCode}</code>
+                    </pre>
+                  </div>
+                )}
+
+                {/* 6. Architecture Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
             {/* Item 47: Blockchain */}
             {item.id === 'blockchain' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
@@ -11441,6 +11625,136 @@ export default function AllDefinitionsPage() {
                 )}
 
                 {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* PySpark */}
+            {item.id === 'pyspark' && (
+              <div className="space-y-6">
+                {/* 1. Core Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Distributed In-Memory Computing</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Apache Spark • Catalyst Engine
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    PySpark (Apache Spark Python API & Distributed Compute Engine)
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                  <div className="p-3 rounded-lg bg-zinc-950 border border-cyan-900/40 text-xs text-cyan-200/90 leading-relaxed font-sans">
+                    <strong className="text-cyan-400 font-mono uppercase block mb-0.5">Why PySpark Over Pandas:</strong>
+                    Pandas is single-threaded and executes strictly in the RAM of a single computer—crashing with Out-Of-Memory (OOM) errors once datasets exceed 10GB. PySpark distributes data partitions across hundreds of multi-core servers, computing terabytes of data concurrently via in-memory DAG pipelines.
+                  </div>
+                </div>
+
+                {/* 2. The 4 PySpark Architecture Pillars */}
+                {item.pysparkPillars && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Core Architectural Pillars of PySpark</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Engine Mechanics
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.pysparkPillars.map((pil, pIdx) => (
+                        <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono text-white">{pil.title}</span>
+                              <span className={`text-[9px] font-mono px-2 py-0.5 rounded border ${pil.accent}`}>
+                                {pil.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">{pil.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Production Optimization Techniques */}
+                {item.optimizationTechniques && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5 text-purple-400" />
+                        <span>PySpark Senior Optimization & Tuning Cheatsheet</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Cluster Performance
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.optimizationTechniques.map((opt, oIdx) => (
+                        <div key={oIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono text-cyan-300">{opt.technique}</span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400">
+                                {opt.badge}
+                              </span>
+                            </div>
+                            <pre className="p-2 rounded bg-zinc-950 border border-zinc-800/80 text-[10px] font-mono text-emerald-300 overflow-x-auto">
+                              <code>{opt.code}</code>
+                            </pre>
+                            <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{opt.impact}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Production PySpark Pipeline Code Block */}
+                {item.pythonCode && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <span className="text-xs font-mono font-bold text-emerald-400 flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Production PySpark: Broadcast Join & Window Functions Pipeline</span>
+                      </span>
+                      <button
+                        onClick={() => handleCopyCode(item.pythonCode, item.id)}
+                        className="px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] font-mono text-zinc-300 border border-zinc-700 flex items-center gap-1.5 transition cursor-pointer"
+                      >
+                        {copiedId === item.id ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span className="text-emerald-400">Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3 text-zinc-400" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-zinc-300 overflow-x-auto leading-relaxed max-h-96">
+                      <code>{item.pythonCode}</code>
+                    </pre>
+                  </div>
+                )}
+
+                {/* 5. Architecture Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}

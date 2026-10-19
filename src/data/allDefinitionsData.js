@@ -88,6 +88,10 @@ export const definitionBookmarks = [
     "label": "Bias & Weights"
   },
   {
+    "id": "big-data",
+    "label": "Big Data (Bronze, Silver & Gold Medallion)"
+  },
+  {
     "id": "binning",
     "label": "Binning (Discretization)"
   },
@@ -554,6 +558,10 @@ export const definitionBookmarks = [
   {
     "id": "pydantic",
     "label": "Pydantic"
+  },
+  {
+    "id": "pyspark",
+    "label": "PySpark"
   },
   {
     "id": "python",
@@ -3884,6 +3892,179 @@ def get_order_status(order_id: str) -> dict:
         }
       ]
     }
+  },
+  {
+    id: "big-data",
+    title: "Big Data & The Medallion Architecture (Bronze, Silver & Gold Lakehouse Design)",
+    badge: "Distributed Lakehouse, Modern Data Stack & ACID Storage",
+    summary: "Big Data refers to massive, high-velocity datasets that exceed the memory and processing limits of single-node computers. In modern data lakehouses (Databricks, Delta Lake, Apache Iceberg, Snowflake), the Medallion Architecture is the industry-standard design pattern: raw data lands append-only in the Bronze layer, gets validated, cleaned, and deduplicated in the Silver layer, and is aggregated into high-performance dimensional star schemas and ML feature stores in the Gold layer.",
+    coreDefinition: "Big Data represents datasets characterized by the 5 V's: Volume (petabytes of logs), Velocity (real-time Kafka/IoT streams), Variety (structured, semi-structured JSON, unstructured media), Veracity (data quality and schema drift), and Value (actionable business intelligence and ML predictions). Modern big data architecture decouples compute from storage, storing columnar Parquet files on cloud object storage (S3/ADLS/GCS) with ACID transaction layers.",
+    fiveVs: [
+      { v: "Volume", title: "Petabytes to Exabytes", desc: "Datasets so large that storing them on a single hard drive or database server is physically impossible; requires distributed storage across clusters.", badge: "Scale" },
+      { v: "Velocity", title: "Real-Time Ingestion", desc: "Data generated continuously at millisecond intervals (clickstreams, credit card swipes, sensor telemetry) via Kafka and Spark Streaming.", badge: "Speed" },
+      { v: "Variety", title: "Multi-Format Ingestion", desc: "Handles structured tabular SQL, semi-structured JSON/Avro/Parquet, and unstructured media (images, audio, PDFs) in one unified lake.", badge: "Diversity" },
+      { v: "Veracity", title: "Data Trust & Quality", desc: "Guarding against missing values, schema drift, out-of-order events, and corrupted payloads through automated testing and validation gates.", badge: "Integrity" },
+      { v: "Value", title: "Business ROI & ML", desc: "Transforming raw noise into high-value analytics, executive KPI dashboards, automated fraud detection, and predictive ML models.", badge: "Impact" }
+    ],
+    medallionStages: [
+      {
+        layer: "Bronze",
+        title: "Raw Landed Data (Raw Ingestion Zone)",
+        badge: "Append-Only / Raw Lake",
+        accent: "border-amber-700/60 text-amber-400 bg-amber-950/30",
+        purpose: "The raw, unadulterated landing zone for all incoming enterprise data. Preserves historical source fidelity without transformation.",
+        format: "Delta Lake / Parquet / Raw JSON (Append-Only)",
+        characteristics: [
+          "Zero Transformations: Ingests raw events exactly as emitted by source APIs, CDC databases, and Kafka streams.",
+          "Technical Audit Columns: Automatically appends _ingested_at timestamp, _source_file_name, and _batch_id for complete audit traceability.",
+          "Immutable Replayability: If downstream transformations or business logic change, you can completely recompute Silver and Gold from Bronze."
+        ]
+      },
+      {
+        layer: "Silver",
+        title: "Cleaned & Conformed (Enterprise Single Source of Truth)",
+        badge: "Enterprise Bus Matrix / Filtered",
+        accent: "border-zinc-400/60 text-zinc-300 bg-zinc-900/40",
+        purpose: "The cleansed, validated, schema-enforced single source of truth for the entire organization.",
+        format: "Delta Lake / Apache Iceberg (ACID Merges & Upserts)",
+        characteristics: [
+          "Deduplication & Validation: Eliminates duplicate events (dropDuplicates on event_id) and drops corrupted or out-of-bound records.",
+          "Schema Enforcement & Type Casting: Strictly casts strings to INT, FLOAT, and ISO-8601 TIMESTAMPS with null handling rules.",
+          "PII Masking & Privacy: Masks, hashes, or encrypts sensitive customer data (SSN, credit cards, emails) to satisfy GDPR and HIPAA.",
+          "Enrichment & Joins: Joins reference dimension tables (e.g., matching user_id with account tier) to create rich enterprise feature tables."
+        ]
+      },
+      {
+        layer: "Gold",
+        title: "Curated & Aggregated (Business Intelligence & ML Feature Store)",
+        badge: "Business BI & Production ML",
+        accent: "border-yellow-500/60 text-yellow-400 bg-yellow-950/30",
+        purpose: "Production-ready, highly aggregated, business-level tables optimized for lightning-fast queries and machine learning.",
+        format: "Delta Lake / Star Schema / Partitioned Parquet",
+        characteristics: [
+          "Dimensional Modeling: Star schemas with conformed Fact tables (transactions) and Dimension tables (customers, products, dates).",
+          "Pre-computed Rollups: Daily, weekly, and monthly aggregate KPIs (e.g. daily active users, average order value, regional churn rate).",
+          "Sub-Second BI Queries: Partitioned and indexed so PowerBI, Tableau, and executive dashboards load in milliseconds.",
+          "Feature Store Ready: Curated feature vectors fed directly to real-time ML inference APIs and batch scoring pipelines."
+        ]
+      }
+    ],
+    architectureMatrix: [
+      {
+        dimension: "Core Concept",
+        warehouse: "Monolithic relational DB for structured data (Snowflake, Redshift, BigQuery)",
+        lake: "Cheap object storage dumping ground for files (S3, ADLS, HDFS with Parquet/ORC)",
+        lakehouse: "Best of both: ACID transactions and BI performance directly on open object storage (Delta Lake, Iceberg)"
+      },
+      {
+        dimension: "Data Types",
+        warehouse: "Structured tabular SQL only (semi-structured JSON via VARIANT)",
+        lake: "All data types (structured, JSON, images, audio, video)",
+        lakehouse: "All data types with structured governance and schema enforcement"
+      },
+      {
+        dimension: "Storage vs Compute",
+        warehouse: "Traditionally coupled; modern clouds decouple but use proprietary formats",
+        lake: "100% decoupled; store on S3/ADLS and spin up EMR/Databricks on demand",
+        lakehouse: "100% decoupled with open Parquet/Delta standards preventing vendor lock-in"
+      },
+      {
+        dimension: "Transaction Support (ACID)",
+        warehouse: "Full ACID transactions native to database engine",
+        lake: "No native ACID (risk of partial writes, corrupted concurrent reads)",
+        lakehouse: "Full ACID via transaction log (_delta_log) with time-travel and rollback"
+      },
+      {
+        dimension: "Cost Efficiency",
+        warehouse: "$$ High compute and storage pricing",
+        lake: "$ Low raw storage cost, but high maintenance overhead",
+        lakehouse: "$ Optimal: Cheap commodity cloud storage + auto-scaling distributed compute"
+      }
+    ],
+    pythonCode: `# ==============================================================================
+# PYSPARK MEDALLION ARCHITECTURE PIPELINE (BRONZE -> SILVER -> GOLD)
+# ==============================================================================
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import (
+    col, current_timestamp, to_date, count, sum as _sum, 
+    avg, sha2, when, input_file_name
+)
+from pyspark.sql.types import StructType, StructField, StringType, DoubleType, LongType
+
+# 1. Initialize Distributed SparkSession with Delta Lake support
+spark = SparkSession.builder \
+    .appName("MedallionArchitecturePipeline") \
+    .master("local[*]") \
+    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
+    .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
+    .getOrCreate()
+
+# ------------------------------------------------------------------------------
+# STAGE 1: BRONZE LAYER (Raw Ingestion with Metadata Tracking)
+# ------------------------------------------------------------------------------
+# In production, this ingests streaming Kafka events or S3 landing files
+raw_data = [
+    ('tx_101', 'usr_88', '2026-10-19 14:00:00', '150.50', 'COMPLETED', 'alice@email.com'),
+    ('tx_102', 'usr_92', '2026-10-19 14:05:00', '-50.00', 'FAILED', 'bob@email.com'),    # Invalid negative amount
+    ('tx_101', 'usr_88', '2026-10-19 14:00:00', '150.50', 'COMPLETED', 'alice@email.com'), # Duplicate record
+    ('tx_103', 'usr_88', '2026-10-19 15:30:00', '420.00', 'COMPLETED', 'alice@email.com')
+]
+
+bronze_schema = StructType([
+    StructField("raw_tx_id", StringType(), True),
+    StructField("raw_user_id", StringType(), True),
+    StructField("raw_timestamp", StringType(), True),
+    StructField("raw_amount", StringType(), True),
+    StructField("raw_status", StringType(), True),
+    StructField("raw_email", StringType(), True)
+])
+
+# Write to Bronze with technical audit tracking columns
+bronze_df = spark.createDataFrame(raw_data, schema=bronze_schema) \
+    .withColumn("_ingested_at", current_timestamp()) \
+    .withColumn("_source_file", input_file_name())
+
+print("--- [BRONZE LAYER] Raw Landed Data (Immutable Audit Log) ---")
+bronze_df.show(truncate=False)
+
+# ------------------------------------------------------------------------------
+# STAGE 2: SILVER LAYER (Cleaned, Deduplicated, Schema-Enforced, PII Masked)
+# ------------------------------------------------------------------------------
+silver_df = bronze_df \
+    .dropDuplicates(["raw_tx_id"]) \
+    .filter(col("raw_amount").cast(DoubleType()) > 0) \
+    .filter(col("raw_status") == "COMPLETED") \
+    .select(
+        col("raw_tx_id").alias("transaction_id"),
+        col("raw_user_id").alias("user_id"),
+        col("raw_timestamp").cast("timestamp").alias("transaction_time"),
+        to_date(col("raw_timestamp")).alias("transaction_date"),
+        col("raw_amount").cast(DoubleType()).alias("amount"),
+        sha2(col("raw_email"), 256).alias("user_email_hash"), # Masked PII
+        col("_ingested_at")
+    )
+
+print("--- [SILVER LAYER] Cleaned, Deduplicated & Conformed Single Source of Truth ---")
+silver_df.show(truncate=False)
+
+# ------------------------------------------------------------------------------
+# STAGE 3: GOLD LAYER (Aggregated Business KPIs & ML Customer Feature Store)
+# ------------------------------------------------------------------------------
+gold_customer_kpis = silver_df \
+    .groupBy("user_id", "transaction_date") \
+    .agg(
+        count("transaction_id").alias("daily_tx_count"),
+        _sum("amount").alias("daily_total_spend"),
+        avg("amount").alias("daily_avg_spend")
+    ) \
+    .withColumn("high_roller_flag", when(col("daily_total_spend") >= 500.0, 1).otherwise(0))
+
+print("--- [GOLD LAYER] Business-Ready Analytics & ML Feature Store ---")
+gold_customer_kpis.show(truncate=False)
+
+# In production: write partitioned Delta tables:
+# gold_customer_kpis.write.format("delta").mode("overwrite").partitionBy("transaction_date").save("/lakehouse/gold/customer_kpis")`,
+    takeaway: "The Medallion Architecture transforms unstructured big data lakes from unmanageable data swamps into clean, performant enterprise data lakehouses. Bronze preserves immutable historical truth, Silver provides the trusted enterprise foundation with ACID consistency and PII security, and Gold powers high-performance BI reporting and production machine learning feature tables."
   },
   {
     id: "blockchain",
@@ -7425,6 +7606,125 @@ def predict(request: PredictionRequest):
       }
     ],
     takeaway: "In modern production Python architectures, Pydantic acts as the definitive data boundary contract. Paired with FastAPI, it guarantees end-to-end type safety, rejects malformed payloads with 422 status codes, protects model inference pipelines from invalid inputs, and automatically documents your service via OpenAPI."
+  },
+  {
+    id: "pyspark",
+    title: "PySpark (Apache Spark Distributed Compute, Catalyst Optimizer & Lakehouse ETL)",
+    badge: "Distributed Computing, In-Memory DAG & Big Data ETL",
+    summary: "PySpark is the Python API for Apache Spark, the leading distributed compute engine for large-scale data engineering and machine learning. It distributes computations across a cluster of worker nodes (Executors) coordinated by a central Driver program. Utilizing in-memory caching, lazy evaluation, and the Catalyst query optimizer, PySpark processes terabytes to petabytes of data 10x to 100x faster than traditional Hadoop MapReduce.",
+    coreDefinition: "PySpark translates Python code into a Directed Acyclic Graph (DAG) executed on the Java Virtual Machine (JVM). Its core abstraction is the DataFrame—a distributed collection of data organized into named columns across partitions. PySpark separates operations into Lazy Transformations (which construct the execution graph) and Eager Actions (which trigger distributed computation).",
+    pysparkPillars: [
+      {
+        title: "Driver vs. Executors Architecture",
+        desc: "The Driver creates the SparkSession, schedules tasks, and coordinates worker nodes. Worker Executors run parallel tasks on partition chunks in RAM, reporting results back to the driver.",
+        badge: "Cluster Architecture",
+        accent: "border-cyan-800/60 text-cyan-400 bg-cyan-950/20"
+      },
+      {
+        title: "Lazy Evaluation & DAG Engine",
+        desc: "Transformations (.select, .filter, .join) are lazy—they don't run immediately. Instead, Spark builds an optimized Directed Acyclic Graph (DAG) and executes only when an Action (.count, .write, .collect) is called.",
+        badge: "Execution Plan",
+        accent: "border-emerald-800/60 text-emerald-400 bg-emerald-950/20"
+      },
+      {
+        title: "Narrow vs. Wide Transformations (Shuffling)",
+        desc: "Narrow transformations (.filter, .map) execute in-memory within local partitions with zero network transfer. Wide transformations (.groupBy, .join, .distinct) force an expensive network data shuffle across nodes.",
+        badge: "Network Shuffling",
+        accent: "border-purple-800/60 text-purple-400 bg-purple-950/20"
+      },
+      {
+        title: "Catalyst Optimizer & Project Tungsten",
+        desc: "Catalyst analyzes query plans, performs predicate pushdown (filtering at the storage level), and reorders joins. Tungsten compiles queries into native JVM bytecode and manages off-heap memory to avoid Java GC pauses.",
+        badge: "Hardware Speedup",
+        accent: "border-amber-800/60 text-amber-400 bg-amber-950/20"
+      }
+    ],
+    optimizationTechniques: [
+      {
+        technique: "Broadcast Hash Join",
+        code: "from pyspark.sql.functions import broadcast\nlarge_df.join(broadcast(small_df), 'key')",
+        impact: "Copies small tables (< 10MB) to every executor, completely eliminating costly network shuffles on large table joins.",
+        badge: "Zero-Shuffle Join"
+      },
+      {
+        technique: "coalesce(n) vs repartition(n)",
+        code: "df.coalesce(5)   # Reduces partitions without shuffle\ndf.repartition(100) # Increases/balances partitions with full shuffle",
+        impact: "Use coalesce to write small files without network transfer; use repartition to balance skewed partitions across all CPU cores.",
+        badge: "Partition Tuning"
+      },
+      {
+        technique: "In-Memory Caching & Persistence",
+        code: "df.persist(StorageLevel.MEMORY_AND_DISK)\n# Use only when dataframe is reused multiple times!",
+        impact: "Avoids re-evaluating the entire upstream DAG multiple times across iterative ML loops and repeated branch actions.",
+        badge: "Cache Reuse"
+      },
+      {
+        technique: "Salting Skewed Keys",
+        code: "df.withColumn('salt', (rand() * 10).cast('int'))\n  .withColumn('salted_key', concat(col('key'), col('salt')))",
+        impact: "Splits hot-key bottleneck partitions (e.g. 90% of rows having country='US') evenly across executors to avoid long-tail stragglers.",
+        badge: "Skew Mitigation"
+      }
+    ],
+    pythonCode: `# ==============================================================================
+# PYSPARK ENTERPRISE OPTIMIZATION & DISTRIBUTED AGGREGATION RECIPE
+# ==============================================================================
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import (
+    col, broadcast, row_number, avg, count, when, lit
+)
+from pyspark.sql.window import Window
+
+# 1. Initialize High-Performance SparkSession
+spark = SparkSession.builder \
+    .appName("PySparkProductionOptimization") \
+    .config("spark.sql.shuffle.partitions", "200") \
+    .config("spark.sql.autoBroadcastJoinThreshold", "10485760") \
+    .getOrCreate()
+
+# 2. Large Transactions DataFrame (Simulating 50 Million Rows across cluster)
+tx_data = [
+    ('ord_1', 'CUST_A', 'Electronics', 1200.0),
+    ('ord_2', 'CUST_A', 'Apparel', 80.0),
+    ('ord_3', 'CUST_B', 'Electronics', 450.0),
+    ('ord_4', 'CUST_C', 'Home', 220.0),
+    ('ord_5', 'CUST_A', 'Electronics', 890.0)
+]
+tx_df = spark.createDataFrame(tx_data, ["order_id", "customer_id", "category", "order_amount"])
+
+# 3. Small Dimension Table (Customer Metadata - Broadcast Join Candidate)
+cust_meta = [
+    ('CUST_A', 'Enterprise_Tier', 'California'),
+    ('CUST_B', 'Standard_Tier', 'Texas'),
+    ('CUST_C', 'VIP_Tier', 'New_York')
+]
+cust_df = spark.createDataFrame(cust_meta, ["customer_id", "tier", "region"])
+
+# 4. BROADCAST HASH JOIN (Avoids Network Shuffle!)
+# Small cust_df is sent to every executor in RAM; tx_df stays in local partitions
+enriched_df = tx_df.join(
+    broadcast(cust_df), 
+    on="customer_id", 
+    how="inner"
+)
+
+# 5. WINDOW FUNCTION: Rank highest spend order per customer
+cust_window = Window.partitionBy("customer_id").orderBy(col("order_amount").desc())
+
+ranked_df = enriched_df.withColumn(
+    "order_rank", 
+    row_number().over(cust_window)
+).filter(col("order_rank") == 1)
+
+print("--- [OPTIMIZED BROADCAST JOIN + WINDOW RANKING] ---")
+ranked_df.select("customer_id", "tier", "order_id", "order_amount", "region").show()
+
+# 6. Check Execution Plan to Verify Catalyst Optimizer pushed down BroadcastHashJoin
+print("--- [CATALYST PHYSICAL PLAN] ---")
+ranked_df.explain()
+
+# 7. Coalesce partitions to prevent 'Small File Problem' when exporting
+# ranked_df.coalesce(1).write.mode('overwrite').parquet('/lakehouse/gold/top_customer_orders')`,
+    takeaway: "PySpark is the industry standard engine for distributed big data processing. Mastering the distinction between narrow transformations (in-memory) and wide transformations (network shuffle), leveraging broadcast joins for lookup dimensions, and understanding the Catalyst query plan are the essential hallmarks of a Senior Big Data & AI Engineer."
   },
   {
     id: "zero-shot-few-shot",
