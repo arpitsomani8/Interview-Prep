@@ -134,7 +134,8 @@ export const definitionBookmarks = [
   { id: "cross-encoder", label: "Cross-Encoder" },
   { id: "kmeans", label: "K-means Clustering" },
   { id: "mitigation", label: "Mitigation Strategies" },
-  { id: "central-limit-theorem", label: "Central Limit Theorem" }
+  { id: "central-limit-theorem", label: "Central Limit Theorem" },
+  { id: "strands", label: "Strands Agents SDK" }
 ];
 
 export const definitionsData = [
@@ -10498,5 +10499,76 @@ print(f"Theoretical Std Error (SE):{expected_se:.4f} (σ / √n)")
 print(f"Sample Means Distribution: Approximates Normal N(μ, σ²/n)!")`
     },
     takeaway: "The Central Limit Theorem enables robust statistical inference on real-world systems without requiring the underlying metrics to be Gaussian. By evaluating sample means, machine learning practitioners can reliably compute confidence intervals and conduct A/B testing on skewed business metrics like user click-through rates and LLM token generation latency."
+  },
+  {
+    id: "strands",
+    title: "Strands Agents SDK (Model-Driven Autonomous Agent Workflows)",
+    badge: "Open-Source Agent SDK, Tool Loops & Model Context Protocol",
+    summary: "Strands Agents is an open-source SDK for building AI agents. It was initially released by AWS and supports a model-driven approach: you give an agent a model, instructions, and tools, and the SDK manages the agent loop that decides when to call those tools and when to return an answer.",
+    coreDefinition: "Strands Agents is an open-source SDK for building AI agents. It was initially released by AWS and supports a model-driven approach: you give an agent a model, instructions, and tools, and the SDK manages the agent loop that decides when to call those tools and when to return an answer.",
+    architectureBreakdown: {
+      headline: "Think of it this way:",
+      roles: [
+        {
+          component: "LLM",
+          role: "Understands the request and decides what action may help.",
+          accent: "text-amber-400",
+          border: "border-amber-800/50"
+        },
+        {
+          component: "Tools",
+          role: "Perform actual work, such as searching PostgreSQL or calling your YOLO service.",
+          accent: "text-cyan-400",
+          border: "border-cyan-800/50"
+        },
+        {
+          component: "Strands",
+          role: "Connects the model and tools into an agent workflow.",
+          accent: "text-purple-400",
+          border: "border-purple-800/50"
+        },
+        {
+          component: "MCP",
+          role: "A protocol through which compatible clients and servers expose and use tools.",
+          accent: "text-emerald-400",
+          border: "border-emerald-800/50"
+        }
+      ]
+    },
+    platformNote: "Strands can use Amazon Bedrock by default, and it also supports other model providers. It is a library, not a hosting platform by itself.",
+    installationCommand: "pip install strands-agents",
+    codeExample: {
+      title: "Building an Autonomous Agent with Strands SDK & Tool Loop",
+      language: "python",
+      code: `# Installation: pip install strands-agents
+from strands import Agent, tool
+import json
+
+# Define custom tools that perform actual operational work
+@tool
+def search_postgresql_orders(order_id: str) -> str:
+    """Searches PostgreSQL database for order records and status."""
+    # Queries PostgreSQL database
+    return json.dumps({"order_id": order_id, "status": "In Transit", "carrier": "ExpressPost"})
+
+@tool
+def call_yolo_defect_service(image_url: str) -> str:
+    """Invokes YOLO vision microservice to detect parcel damages."""
+    # Calls YOLO inference endpoint
+    return json.dumps({"box_damage": True, "confidence": 0.94, "category": "Severe Crushing"})
+
+# Initialize Strands Agent with Bedrock model, prompt instructions, and tools
+# Strands automatically handles the cyclic agent decision loop:
+# LLM reasoning -> Tool selection -> Tool execution -> Final synthesis
+agent = Agent(
+    model="amazon.nova-pro-v1:0",  # or Anthropic Claude via Bedrock / OpenAI
+    instructions="You are an enterprise logistics triage agent. Use tools to inspect parcel data and detect defects.",
+    tools=[search_postgresql_orders, call_yolo_defect_service]
+)
+
+response = agent.run("Order #PKG-8921 has a suspicious inspection photo at https://s3.aws/pkg.jpg. Assess status and damage.")
+print(response.content)`
+    },
+    takeaway: "Strands provides a lightweight, model-agnostic abstraction for cyclic agent loops. By decoupling the reasoning engine (LLM), external capabilities (Tools), and standardization interfaces (Model Context Protocol / MCP), Strands allows developers to construct robust autonomous workflows without vendor lock-in or proprietary orchestrator runtimes."
   }
 ];
