@@ -125,7 +125,8 @@ export const definitionBookmarks = [
   { id: "iqr", label: "IQR & Binning" },
   { id: "feature-cross", label: "Feature Cross" },
   { id: "powertransformer", label: "PowerTransformer" },
-  { id: "regression-vs-classification", label: "Regression vs Classification" }
+  { id: "regression-vs-classification", label: "Regression vs Classification" },
+  { id: "xgboost", label: "XGBoost" }
 ];
 
 export const definitionsData = [
@@ -9724,5 +9725,97 @@ print(f"Classification Prediction (Class Label): {pred_class[0]}")
 print(f"Estimated Class Probabilities [Class 0, Class 1]: {np.round(pred_prob[0], 2)}")`
     },
     takeaway: "The distinction between regression and classification is fundamentally determined by the mathematical nature of the target label (y): continuous numeric measurements versus discrete categorical classes. While both share tree and ensemble foundations (e.g. Random Forest and XGBoost), their optimization loss functions, evaluation metrics, and final decision boundaries differ fundamentally—with models like Logistic Regression bridging the gap by estimating continuous class probabilities to assign discrete labels."
+  },
+  {
+    id: "xgboost",
+    title: "XGBoost (Extreme Gradient Boosting)",
+    badge: "Ensemble Trees, 2nd-Order Optimization & Tabular SOTA",
+    summary: "XGBoost stands for Extreme Gradient Boosting. It is a machine learning library that builds an ensemble of decision trees to make predictions. It supports both regression and classification and is especially popular for structured, tabular data.",
+    coreDefinition: "XGBoost stands for Extreme Gradient Boosting. It is a machine learning library that builds an ensemble of decision trees to make predictions. It supports both regression and classification and is especially popular for structured, tabular data.",
+    whyUseHeading: "Why use XGBoost instead of a basic model?",
+    whyUseReasons: [
+      {
+        title: "Nonlinear Relationships & Interactions",
+        detail: "It can capture nonlinear relationships and interactions between features.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        title: "Exceptional Tabular Performance",
+        detail: "It often performs well on structured business data.",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      },
+      {
+        title: "Built-in Regularization",
+        detail: "It includes regularization and other controls to reduce overfitting.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        title: "Feature-Importance Analysis",
+        detail: "It supports useful feature-importance analysis.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      }
+    ],
+    technicalPillars: {
+      formula: "Obj = ∑ L(y_i, ŷ_i) + ∑ [ γ T + (λ/2) ||w||² + α ||w||₁ ]",
+      gradientTaylor: "Second-Order Taylor Approximation: Uses both first-order gradients (g_i) and second-order Hessians (h_i) for exact, accelerated step sizes.",
+      regularization: "Gamma (γ) penalizes tree depth/leaves, while Lambda (λ) and Alpha (α) add L2 and L1 weight shrinkage to prevent leaf overfitting.",
+      sparsityAware: "Automatic Default Direction: Learns optimal split routing for missing and zero values natively without explicit imputation."
+    },
+    featureImportanceTypes: [
+      {
+        name: "Gain",
+        description: "Average reduction in loss/impurity contributed by all splits using the feature (most reliable metric for feature relevance)."
+      },
+      {
+        name: "Weight (Frequency)",
+        description: "The total number of times a feature is selected to split data across all trees in the ensemble."
+      },
+      {
+        name: "Cover",
+        description: "The relative quantity of observations or Hessian sum influenced by splits on the feature across all trees."
+      }
+    ],
+    codeExample: {
+      title: "XGBoost Classifier & Feature Importance in Python",
+      language: "python",
+      code: `import numpy as np
+import pandas as pd
+from xgboost import XGBClassifier
+
+# Structured tabular dataset (e.g. Parcel transit features)
+df = pd.DataFrame({
+    'weight_kg': [1.2, 5.5, 0.8, 12.0, 3.4, 25.0],
+    'distance_km': [120, 850, 45, 1200, 310, 2100],
+    'is_fragile': [0, 1, 0, 1, 0, 1],
+    'damaged': [0, 1, 0, 1, 0, 1]  # Target classification label
+})
+
+X = df[['weight_kg', 'distance_km', 'is_fragile']]
+y = df['damaged']
+
+# Initialize XGBoost with L2 regularization (reg_lambda) and tree complexity penalty (gamma)
+model = XGBClassifier(
+    n_estimators=50,
+    learning_rate=0.1,
+    max_depth=3,
+    reg_lambda=1.5,
+    gamma=0.2,
+    eval_metric='logloss',
+    random_state=42
+)
+
+model.fit(X, y)
+
+# Inspect feature importances (Gain-based)
+gain_importance = model.get_booster().get_score(importance_type='gain')
+print("XGBoost Gain-Based Feature Importance:")
+for feat, score in gain_importance.items():
+    print(f"  {feat}: {score:.4f}")`
+    },
+    takeaway: "XGBoost dominates structured tabular workflows because it enhances traditional gradient boosted trees with second-order Taylor expansions (gradients and Hessians) and integrated L1/L2 regularization on leaf weights. It automatically models complex nonlinear interactions while offering granular feature-importance metrics (Gain, Weight, Cover) to ensure model interpretability."
   }
 ];
