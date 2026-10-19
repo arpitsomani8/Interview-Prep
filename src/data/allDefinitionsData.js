@@ -116,7 +116,8 @@ export const definitionBookmarks = [
   { id: "logits", label: "Logits" },
   { id: "log-loss", label: "Log Loss" },
   { id: "elastic-net", label: "Elastic Net" },
-  { id: "entropy", label: "Entropy" }
+  { id: "entropy", label: "Entropy" },
+  { id: "gini-impurity", label: "Gini Impurity" }
 ];
 
 export const definitionsData = [
@@ -8977,5 +8978,70 @@ print("Half & Half (p=0.5): ", calculate_entropy(p_half_half), "bit")
 # Half & Half (p=0.5):  1.0 bit`
     },
     takeaway: "Entropy formalizes uncertainty in information theory and guides decision tree splitting algorithms (ID3, C4.5). Splits that maximize Information Gain produce children nodes with minimal entropy (approaching 0 bits), partitioning the feature space into homogeneous, pure class subsets."
+  },
+  {
+    id: "gini-impurity",
+    title: "Gini Impurity (CART Tree Splits & Class Mixture Metric)",
+    badge: "Tree Algorithms, CART Optimization & Impurity Criteria",
+    summary: "Gini impurity measures how mixed the classes are in a group. For binary classes, Gini is 0 when all examples belong to one class and reaches 0.5 when the classes are equally balanced.",
+    coreDefinition: "Gini impurity measures how mixed the classes are in a group.",
+    binaryBoundariesHeading: "Binary Class Boundaries (0 to 0.5):",
+    binaryBoundariesText: "For binary classes, Gini is 0 when all examples belong to one class and reaches 0.5 when the classes are equally balanced.",
+    boundaryScenarios: [
+      {
+        scenario: "Completely Pure (Single Class)",
+        distribution: "p₁ = 1.0, p₂ = 0.0 (or p₁ = 0.0, p₂ = 1.0)",
+        giniValue: "Gini = 0.0 (Minimum)",
+        explanation: "All examples belong to one class. Zero probability of misclassification.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      },
+      {
+        scenario: "Equally Balanced (Max Impurity)",
+        distribution: "p₁ = 0.5, p₂ = 0.5",
+        giniValue: "Gini = 0.5 (Maximum)",
+        explanation: "The classes are equally balanced. Maximum uncertainty for binary classification.",
+        accent: "text-rose-400",
+        border: "border-rose-800/50"
+      }
+    ],
+    formulaSection: {
+      formula: "Gini(S) = 1 - Σ p_i²",
+      alternateFormula: "Gini(S) = Σ p_i · (1 - p_i)",
+      probabilisticMeaning: "Represents the probability that a randomly chosen element from the set would be incorrectly labeled if it were randomly labeled according to the class distribution."
+    },
+    cartOptimization: {
+      headline: "Why CART (Scikit-Learn) Uses Gini as the Default Split Criterion",
+      points: [
+        "Computational Speed: Gini requires only multiplications and subtractions (1 - Σ p_i²), avoiding computationally expensive log₂(p_i) evaluations required by Shannon Entropy.",
+        "Split Quality Parity: In >98% of practical machine learning splits, Gini and Entropy yield identical split points and tree structures.",
+        "Smooth Convexity: Maximizing Gini Gain splits datasets into high-purity child nodes, minimizing leaf misclassification error."
+      ]
+    },
+    codeExample: {
+      title: "Gini Impurity Calculation in Python",
+      language: "python",
+      code: `import numpy as np
+
+# Function to compute Gini Impurity for binary classification
+def gini_impurity(p):
+    # p is probability of class 1; (1-p) is probability of class 0
+    return 1.0 - (p**2 + (1.0 - p)**2)
+
+# Boundary scenarios:
+pure_case     = gini_impurity(1.0)  # All examples belong to one class
+balanced_case = gini_impurity(0.5)  # Classes are equally balanced
+skewed_case   = gini_impurity(0.8)  # 80% class 1, 20% class 0
+
+print("Pure Class (p=1.0):      Gini =", pure_case)
+print("Equally Balanced (p=0.5): Gini =", balanced_case)
+print("Skewed 80/20 (p=0.8):    Gini =", round(skewed_case, 4))
+
+# Output:
+# Pure Class (p=1.0):      Gini = 0.0
+# Equally Balanced (p=0.5): Gini = 0.5
+# Skewed 80/20 (p=0.8):    Gini = 0.32`
+    },
+    takeaway: "Gini Impurity quantifies the likelihood of misclassification under random sampling from a node's empirical label distribution. With bounded values from 0.0 (pure node) to 0.5 (equal binary split), CART decision trees recursively evaluate candidate splits to maximize Gini Gain, optimizing execution speed by avoiding logarithmic arithmetic."
   }
 ];
