@@ -112,7 +112,8 @@ export const definitionBookmarks = [
   { id: "labeled-unlabeled-data", label: "Labeled vs Unlabeled Data" },
   { id: "early-stopping", label: "Early Stopping" },
   { id: "activation-functions", label: "Activation Functions" },
-  { id: "regularization", label: "Regularization" }
+  { id: "regularization", label: "Regularization" },
+  { id: "logits", label: "Logits" }
 ];
 
 export const definitionsData = [
@@ -8687,5 +8688,64 @@ model = keras.Sequential([
       }
     ],
     takeaway: "Regularization imposes inductive bias to restrict parameter capacity. In linear models, L1 induces sparsity (feature selection) while L2 discourages extreme coefficient magnitudes. In deep neural networks, combining weight decay (L2 kernel regularization) with Dropout prevents complex co-adaptations between neurons, ensuring superior generalization on out-of-distribution real-world inputs."
+  },
+  {
+    id: "logits",
+    title: "Logits (Raw Unnormalized Model Scores & Probability Mapping)",
+    badge: "Model Outputs, Softmax Normalization & Numerical Stability",
+    summary: "Logits are the raw scores a model produces before applying a probability transformation such as sigmoid or softmax. For example, a three-class model might output: [2.0, 1.0, 0.1]. These are logits, not probabilities. Applying softmax converts them into normalized class scores.",
+    coreDefinition: "Logits are the raw scores a model produces before applying a probability transformation such as sigmoid or softmax.",
+    exampleHeading: "For example, a three-class model might output:",
+    exampleLogits: "[2.0, 1.0, 0.1]",
+    exampleExplanation: "These are logits, not probabilities. Applying softmax converts them into normalized class scores.",
+    transformationSteps: [
+      {
+        step: "Raw Unnormalized Output (Logits)",
+        scores: "[2.0, 1.0, 0.1]",
+        desc: "Unbounded real numbers (-∞ to +∞) representing linear activations of the final output layer.",
+        accent: "text-amber-400"
+      },
+      {
+        step: "Exponentiation: e^(z_i)",
+        scores: "[7.389, 2.718, 1.105] (Sum = 11.212)",
+        desc: "Maps negative and positive values strictly into positive numbers, amplifying differences between top scores.",
+        accent: "text-cyan-400"
+      },
+      {
+        step: "Softmax Probability: e^(z_i) / Σ e^(z_j)",
+        scores: "[0.659, 0.242, 0.099] (Sum = 1.000)",
+        desc: "Normalized class probabilities where each p_i ∈ (0, 1) and the sum equals exactly 1.0.",
+        accent: "text-emerald-400"
+      }
+    ],
+    numericalStabilityCallout: {
+      headline: "Why Loss Functions Prefer Raw Logits (from_logits=True)",
+      explanation: "Computing cross-entropy loss directly from probabilities requires calculating log(p) = log(softmax(z)). If p approaches 0, floating-point underflow causes NaN or inf errors. Libraries like PyTorch (nn.CrossEntropyLoss) and TensorFlow (from_logits=True) combine Softmax and Cross-Entropy into a single mathematically fused Log-Sum-Exp operation for strict numerical stability."
+    },
+    codeExample: {
+      title: "Logits to Probabilities Conversion via Softmax in Python",
+      language: "python",
+      code: `import numpy as np
+
+# Raw logits from a three-class classification model
+logits = np.array([2.0, 1.0, 0.1])
+
+# Numerically stable Softmax transformation
+def logits_to_probabilities(z):
+    exp_z = np.exp(z - np.max(z))  # Subtract max to avoid overflow
+    return exp_z / np.sum(exp_z)
+
+probabilities = logits_to_probabilities(logits)
+
+print("Raw Logits:    ", logits)
+print("Probabilities: ", np.round(probabilities, 4))
+print("Sum:           ", np.sum(probabilities))
+
+# Output:
+# Raw Logits:     [2.  1.  0.1]
+# Probabilities:  [0.659 0.2424 0.0985]
+# Sum:            1.0`
+    },
+    takeaway: "Logits are unconstrained real-valued activations that preserve the raw margin of evidence between candidates. While downstream user interfaces require normalized probabilities (via Softmax or Sigmoid), internal training losses and LLM generation pipelines (Temperature scaling, Top-K/Top-P filtering) operate directly on raw logits to maximize gradient fidelity and avoid floating-point underflow."
   }
 ];
