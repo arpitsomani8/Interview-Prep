@@ -138,7 +138,8 @@ export const definitionBookmarks = [
   { id: "strands", label: "Strands Agents SDK" },
   { id: "oop-concepts", label: "OOP Concepts" },
   { id: "system-scaling", label: "Scaling" },
-  { id: "centroid", label: "Centroid" }
+  { id: "centroid", label: "Centroid" },
+  { id: "polling", label: "Polling & Response Consistency" }
 ];
 
 export const definitionsData = [
@@ -10847,5 +10848,114 @@ print(f"Distances to centroid: {np.round(euclidean_distances, 3)}")
 print(f"Within-Cluster Sum of Squares (Inertia): {wcss:.4f}")`
     },
     takeaway: "The centroid serves as the geometric anchor of a cluster. In modern AI pipelines, centroids power K-means clustering, vector quantization (IVF indexing in FAISS/Milvus), and semantic theme summarization by condensing thousands of high-dimensional embedding vectors into representative prototypes."
+  },
+  {
+    id: "polling",
+    title: "Polling & Response Consistency (Async Inference & Conflicting Chatbot Policy Fixes)",
+    badge: "Async Architecture, Polling Protocols & Deterministic LLM Serving",
+    summary: "Polling means repeatedly checking a server to see whether a task has finished or new information is available. In AI production systems, robust polling couples with strict response consistency techniques to resolve conflicting policy answers.",
+    coreDefinition: "Polling means repeatedly checking a server to see whether a task has finished or new information is available. Polling is a technique where a client periodically requests the status of an asynchronous task. In an AI application, the API can return a job ID immediately, and the client polls a status endpoint until inference completes. To reduce unnecessary requests, I would use a reasonable polling interval, backoff, and a timeout.",
+    incidentScenario: {
+      title: "Production Failure: Conflicting Chatbot Return Policy Information",
+      description: "For example, a customer asks to a Chatbot, running on LLM:\n• First time: “You can return the product within 30 days.”\n• Second time: “You can return the product within 14 days.”",
+      severity: "This is a serious production failure because the chatbot is giving conflicting policy information.",
+      causes: [
+        {
+          cause: "LLM randomness",
+          detail: "generation settings can produce different responses."
+        },
+        {
+          cause: "Unstable retrieval",
+          detail: "RAG retrieves different documents or chunks between requests."
+        },
+        {
+          cause: "Changing context",
+          detail: "conversation history or user-specific information differs."
+        },
+        {
+          cause: "Model changes",
+          detail: "the provider's model version or serving behavior changes."
+        },
+        {
+          cause: "Weak grounding",
+          detail: "the model generates an answer without sufficient evidence."
+        }
+      ]
+    },
+    consistencyTable: [
+      {
+        approach: "Temperature = 0",
+        solves: "Reduces sampling randomness",
+        limitation: "Does not guarantee identical responses or correct facts",
+        accent: "text-amber-400"
+      },
+      {
+        approach: "Fixed seed",
+        solves: "Improves repeatability where supported",
+        limitation: "Not guaranteed across model versions or infrastructure changes",
+        accent: "text-blue-400"
+      },
+      {
+        approach: "Answer caching",
+        solves: "Reuses an earlier answer",
+        limitation: "Cache keys must account for user, permissions, context, and data freshness",
+        accent: "text-purple-400"
+      },
+      {
+        approach: "Pin model version",
+        solves: "Reduces unexpected model changes",
+        limitation: "Model behavior can still vary for other reasons",
+        accent: "text-cyan-400"
+      },
+      {
+        approach: "Pre-approved answers",
+        solves: "Provides consistent wording for known FAQs",
+        limitation: "Requires maintenance when policies change",
+        accent: "text-emerald-400"
+      },
+      {
+        approach: "Quote source evidence",
+        solves: "Improves traceability and grounding",
+        limitation: "A model can still misquote or misinterpret evidence",
+        accent: "text-rose-400"
+      },
+      {
+        approach: "Consistency tests",
+        solves: "Detects conflicting answers",
+        limitation: "Passing tests doesn't prove every answer is reliable",
+        accent: "text-indigo-400"
+      }
+    ],
+    codeExample: {
+      title: "Client-Side Polling with Exponential Backoff & Grounded LLM Policy Verification",
+      language: "python",
+      code: `import time
+import requests
+
+def poll_inference_task(job_id: str, max_timeout: int = 60) -> dict:
+    """
+    Client-side polling with exponential backoff and timeout
+    to monitor an asynchronous AI inference job without overwhelming the server.
+    """
+    interval = 1.0       # initial 1-second interval
+    backoff_factor = 1.5 # multiplier
+    max_interval = 8.0   # ceiling
+    start_time = time.time()
+
+    while (time.time() - start_time) < max_timeout:
+        res = requests.get(f"https://api.enterprise.ai/tasks/{job_id}/status")
+        data = res.json()
+        
+        if data["status"] == "COMPLETED":
+            return data["result"]
+        elif data["status"] == "FAILED":
+            raise RuntimeError(f"Job failed: {data.get('error')}")
+
+        time.sleep(interval)
+        interval = min(interval * backoff_factor, max_interval)
+
+    raise TimeoutError(f"Job {job_id} did not finish within {max_timeout}s.")`
+    },
+    takeaway: "In enterprise AI applications, polling allows long-running multimodal or RAG inference jobs to proceed asynchronously without HTTP request timeouts. To eliminate conflicting answers in customer-facing chatbots, teams must layer temperature pinning, semantic caching, pre-approved verified answers, and explicit quote grounding."
   }
 ];
