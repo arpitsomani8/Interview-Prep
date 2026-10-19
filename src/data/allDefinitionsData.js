@@ -108,7 +108,8 @@ export const definitionBookmarks = [
   { id: "hallucination", label: "Hallucination" },
   { id: "ranking-and-reranking", label: "Ranking & Reranking" },
   { id: "dense-sparse", label: "Dense vs. Sparse" },
-  { id: "which-is-better", label: "Which is Better?" }
+  { id: "which-is-better", label: "Which is Better?" },
+  { id: "labeled-unlabeled-data", label: "Labeled vs Unlabeled Data" }
 ];
 
 export const definitionsData = [
@@ -8389,5 +8390,77 @@ top_passages = [doc for doc, score in ranked_results[:5]]`
 # Model A (10k clean samples) might yield lower cost than Model B (1M noisy samples)`
     },
     takeaway: "In production ML engineering, dataset volume is a secondary signal. A model trained on less data often outperforms a model trained on more data if the smaller dataset has superior labeling hygiene, lack of distribution drift, and fewer contradictory samples. The definitive choice always rests on equal-footing validation benchmarks and domain-specific business cost functions."
+  },
+  {
+    id: "labeled-unlabeled-data",
+    title: "Labeled vs. Unlabeled Data & Strategies for Unlabeled Datasets",
+    badge: "Data Annotation, Active Learning & Weak Supervision",
+    summary: "Labeled data contains inputs plus the correct target or answer. Unlabeled data contains inputs without the target answer. What if you have a lot of unlabeled data? Possible approaches include: Manual labeling (Have people annotate a sample), Semi-supervised learning (Combine a small labeled dataset with a larger unlabeled dataset), Self-supervised learning (Learn representations from the structure of the data itself, as many foundation models do during pretraining), Active learning (Select the examples that would be most useful for a human to label next), and Weak supervision (Generate approximate labels from rules or other labeling functions, then validate their quality).",
+    coreDefinition: "Labeled data contains inputs plus the correct target or answer. Unlabeled data contains inputs without the target answer.",
+    unlabeledStrategiesHeadline: "What if you have a lot of unlabeled data?",
+    unlabeledIntro: "Possible approaches include:",
+    strategies: [
+      {
+        name: "Manual labeling",
+        definition: "Have people annotate a sample.",
+        detail: "Domain experts or crowd-workers hand-annotate a golden sample. Highest accuracy but slowest and most expensive.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50",
+        badge: "Golden Ground Truth"
+      },
+      {
+        name: "Semi-supervised learning",
+        definition: "Combine a small labeled dataset with a larger unlabeled dataset.",
+        detail: "Leverages pseudo-labeling, consistency regularization, or graph-based label propagation to propagate knowledge from labeled seeds.",
+        accent: "text-blue-400",
+        border: "border-blue-800/50",
+        badge: "Seed Propagation"
+      },
+      {
+        name: "Self-supervised learning",
+        definition: "Learn representations from the structure of the data itself, as many foundation models do during pretraining.",
+        detail: "Engineers pretext tasks (masked language modeling, next-token prediction, contrastive image crops) to build deep latent representations without manual labels.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50",
+        badge: "Foundation Model Pretraining"
+      },
+      {
+        name: "Active learning",
+        definition: "Select the examples that would be most useful for a human to label next.",
+        detail: "Uses model uncertainty (prediction entropy, margin sampling) to send only the most ambiguous or informative edge-cases to human annotators.",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50",
+        badge: "Human-in-the-Loop ROI"
+      },
+      {
+        name: "Weak supervision",
+        definition: "Generate approximate labels from rules or other labeling functions, then validate their quality.",
+        detail: "Uses programmatic heuristics, regex pattern matching, knowledge bases, or small LLMs (via frameworks like Snorkel) to auto-label massive datasets at near-zero marginal cost.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50",
+        badge: "Programmatic Heuristics"
+      }
+    ],
+    codeExample: {
+      title: "Active Learning Uncertainty Sampling (Entropy Scoring in Python)",
+      language: "python",
+      code: `import numpy as np
+
+def select_most_informative_for_human_labeling(model, unlabeled_pool, top_n=100):
+    """
+    Active Learning: Finds unlabeled samples with highest prediction entropy (highest uncertainty).
+    These samples yield the maximum learning gain when human-annotated.
+    """
+    probabilities = model.predict_proba(unlabeled_pool)  # Shape: (N, num_classes)
+    
+    # Calculate Shannon Entropy: H(x) = - sum(p * log(p))
+    epsilon = 1e-10  # Prevent log(0)
+    entropy = -np.sum(probabilities * np.log(probabilities + epsilon), axis=1)
+    
+    # Select top N most uncertain examples for manual review
+    uncertain_indices = np.argsort(entropy)[-top_n:]
+    return unlabeled_pool[uncertain_indices]`
+    },
+    takeaway: "In enterprise AI, raw data is abundant but labels are scarce and expensive. Modern practitioners rarely rely solely on manual labeling; instead, they bootstrap from raw data using Self-Supervised pretraining, amplify small labeled seeds through Weak Supervision (Snorkel), and direct human attention strictly where the model is most uncertain via Active Learning."
   }
 ];

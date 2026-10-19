@@ -14491,6 +14491,129 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 112: Labeled vs. Unlabeled Data */}
+            {item.id === 'labeled-unlabeled-data' && (
+              <div className="space-y-6">
+                {/* 1. Core Dual Definition Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Data Engineering & Supervision Taxonomy</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Labeling Strategy
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                    <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+                      <span className="text-xs font-bold font-mono text-emerald-400 block">
+                        Labeled Data
+                      </span>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        Labeled data contains inputs plus the correct target or answer.
+                      </p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+                      <span className="text-xs font-bold font-mono text-amber-400 block">
+                        Unlabeled Data
+                      </span>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        Unlabeled data contains inputs without the target answer.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. What if you have a lot of unlabeled data? 5 Strategies Grid */}
+                {item.strategies && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                          <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                          <span>{item.unlabeledStrategiesHeadline}</span>
+                        </h4>
+                        <p className="text-xs text-zinc-400 italic font-sans">
+                          {item.unlabeledIntro}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        5 Strategic Approaches
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+                      {item.strategies.map((st, sIdx) => (
+                        <div key={sIdx} className={`p-4 rounded-xl bg-black border ${st.border} space-y-2 hover:border-zinc-700 transition flex flex-col justify-between`}>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono ${st.accent}`}>
+                                • {st.name}
+                              </h5>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {st.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-200 font-semibold font-sans leading-relaxed">
+                              {st.definition}
+                            </p>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-2 border-t border-zinc-900">
+                            {st.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Interactive Active Learning Uncertainty Sampling Python Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>active_learning_entropy.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-label-unlabel', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-label-unlabel' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
