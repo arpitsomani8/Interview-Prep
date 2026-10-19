@@ -6924,8 +6924,25 @@ model.print_trainable_parameters()
       {
         term: "Preprocessing",
         definition: "Preparing raw text for an NLP task through appropriate cleaning, normalization, tokenization, and sometimes stemming or lemmatization."
+      },
+      {
+        term: "BERT pretraining: MLM and NSP",
+        definition: "MLM: Mask some tokens and train the model to predict them from context. | NSP: In the original BERT setup, predict whether one segment follows another in the original text."
       }
     ],
+    pretrainingCallout: {
+      title: "BERT pretraining: MLM and NSP",
+      bullets: [
+        {
+          label: "MLM",
+          text: "Mask some tokens and train the model to predict them from context."
+        },
+        {
+          label: "NSP",
+          text: "In the original BERT setup, predict whether one segment follows another in the original text."
+        }
+      ]
+    },
     textPreprocessing: {
       headline: "Text Preprocessing in Modern NLP",
       definition: "Text preprocessing is the process of cleaning and preparing text before feeding it into an NLP or machine-learning pipeline.",

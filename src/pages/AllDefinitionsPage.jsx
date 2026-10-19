@@ -11686,6 +11686,34 @@ export default function AllDefinitionsPage() {
             {/* Item 93: BERT & Text Preprocessing */}
             {item.id === 'bert' && (
               <div className="space-y-6">
+                {/* 0. Top Callout: BERT pretraining: MLM and NSP */}
+                {item.pretrainingCallout && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-black to-purple-950/40 border border-cyan-700/60 space-y-3.5 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-cyan-400" />
+                        <span>{item.pretrainingCallout.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                        Core Pretraining
+                      </span>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {item.pretrainingCallout.bullets.map((b, bIdx) => (
+                        <div key={bIdx} className="p-3.5 rounded-xl bg-black/90 border border-zinc-800/90 flex items-start gap-3">
+                          <span className={`text-xs font-mono font-bold uppercase shrink-0 mt-0.5 px-2 py-0.5 rounded ${b.label === 'MLM' ? 'bg-cyan-950 text-cyan-300 border border-cyan-800' : 'bg-purple-950 text-purple-300 border border-purple-800'}`}>
+                            • {b.label}:
+                          </span>
+                          <p className="text-xs sm:text-sm text-zinc-100 font-medium leading-relaxed font-sans">
+                            {b.text}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* 1. Core Verbatim Definitions Grid */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
