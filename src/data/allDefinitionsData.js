@@ -6428,8 +6428,9 @@ def health_check():
     id: "temperature",
     title: "Temperature & Inference Hyperparameters (Sampling Controls & Pydantic Validation)",
     badge: "LLM Decoding, Logit Penalties & Schema Contracts",
-    summary: "Temperature controls how randomly an LLM selects the next token by adjusting the sharpness of the next-token probability distribution. Master the 6 core generation and schema validation primitives: Temperature, Top-K, Top-P, Frequency penalty, Presence penalty, and Pydantic validation for structured LLM outputs.",
+    summary: "Temperature adjusts the sharpness of token probabilities and controls how randomly an LLM selects the next token. Master the 6 core generation and schema validation primitives: Temperature, Top-K, Top-P, Frequency penalty, Presence penalty, and Pydantic validation for structured LLM outputs.",
     randomnessControl: "Temperature controls how randomly an LLM selects the next token.",
+    adjustsSharpness: "Temperature adjusts the sharpness of token probabilities.",
     temperatureRandomnessSpectrum: [
       {
         range: "T = 0.0 (Greedy Decoding)",
@@ -6461,7 +6462,7 @@ def health_check():
       }
     ],
     verbatimCore: [
-      { term: "Temperature", definition: "Controls the sharpness of the next-token probability distribution. Temperature controls how randomly an LLM selects the next token." },
+      { term: "Temperature", definition: "Controls the sharpness of the next-token probability distribution. Temperature adjusts the sharpness of token probabilities. Temperature controls how randomly an LLM selects the next token." },
       { term: "Top-K", definition: "Restricts sampling to the K highest-probability tokens." },
       { term: "Top-P", definition: "Restricts sampling to a probability-mass-based candidate set." },
       { term: "Frequency penalty", definition: "Discourages tokens according to how often they've appeared." },
@@ -6471,7 +6472,7 @@ def health_check():
     hyperparametersList: [
       {
         name: "Temperature",
-        verbatim: "Controls the sharpness of the next-token probability distribution. Temperature controls how randomly an LLM selects the next token.",
+        verbatim: "Controls the sharpness of the next-token probability distribution. Temperature adjusts the sharpness of token probabilities. Temperature controls how randomly an LLM selects the next token.",
         math: "P(x_i) = softmax(z_i / T) = exp(z_i / T) / sum(exp(z_j / T))",
         mechanism: "Scales the raw unnormalized logits before the softmax layer is evaluated. Temperature controls how randomly an LLM selects the next token: When T -> 0, logits with even slight advantages become infinitely sharper, converging to greedy argmax decoding (deterministic, focused). As T increases (e.g. 0.7 - 1.2), logit differences are compressed, flattening the probability distribution across all vocabulary tokens (creative, diverse, but higher hallucination risk).",
         productionUse: "Use T = 0.0 - 0.2 for strict RAG factual Q&A, SQL generation, and code generation. Use T = 0.7 - 0.9 for creative drafting, brainstorms, and narrative generation.",

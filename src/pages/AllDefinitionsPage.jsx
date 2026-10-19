@@ -10783,8 +10783,8 @@ export default function AllDefinitionsPage() {
             {item.id === 'temperature' && (
               <div className="space-y-6">
                 {/* 0. Intuitive Randomness Principle Banner */}
-                {item.randomnessControl && (
-                  <div className="p-4 rounded-xl bg-gradient-to-r from-amber-950/40 via-black to-cyan-950/40 border border-amber-600/50 space-y-2 shadow-lg shadow-amber-950/20">
+                {(item.randomnessControl || item.adjustsSharpness) && (
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-amber-950/40 via-black to-cyan-950/40 border border-amber-600/50 space-y-2.5 shadow-lg shadow-amber-950/20">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold font-mono text-amber-400 uppercase flex items-center gap-2">
                         <Sparkles className="w-3.5 h-3.5 text-amber-400" />
@@ -10794,9 +10794,18 @@ export default function AllDefinitionsPage() {
                         Next-Token Entropy
                       </span>
                     </div>
-                    <p className="text-sm sm:text-base text-amber-200 font-semibold font-mono tracking-wide leading-relaxed">
-                      "{item.randomnessControl}"
-                    </p>
+                    <div className="space-y-1.5">
+                      {item.randomnessControl && (
+                        <p className="text-sm sm:text-base text-amber-200 font-semibold font-mono tracking-wide leading-relaxed">
+                          "{item.randomnessControl}"
+                        </p>
+                      )}
+                      {item.adjustsSharpness && (
+                        <p className="text-xs sm:text-sm text-cyan-300 font-bold font-mono tracking-wide leading-relaxed">
+                          ⚡ "{item.adjustsSharpness}"
+                        </p>
+                      )}
+                    </div>
                   </div>
                 )}
 
