@@ -130,7 +130,7 @@ export default function AllDefinitionsPage() {
           Click any bookmark to jump directly to its complete explanation, formulas, and working code:
         </p>
 
-        {/* Clickable Bookmark Badges with Alphabet-Change Comma Separators */}
+        {/* Clickable Bookmark Badges with Alphabet-Change Line Breaks */}
         <div className="flex flex-wrap items-center gap-2 pt-1">
           {definitionBookmarks.map((item, index) => {
             const getInitial = (str) => {
@@ -157,12 +157,10 @@ export default function AllDefinitionsPage() {
                   <span>{item.label}</span>
                 </button>
                 {isAlphabetChange && (
-                  <span
+                  <div
                     aria-hidden="true"
-                    className="self-center text-cyan-400 font-bold text-base px-1 select-none font-mono"
-                  >
-                    ,
-                  </span>
+                    className="basis-full w-full h-2 border-b border-zinc-800/40 my-1"
+                  />
                 )}
               </React.Fragment>
             );
