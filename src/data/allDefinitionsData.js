@@ -518,6 +518,29 @@ def predict_damage(data: ParcelData):
       failureModes: "RAG can still fail if retrieval is poor, the documents are outdated, or the LLM misinterprets the retrieved context. RAG does not automatically eliminate hallucinations."
     },
     keyPrinciple: "RAG doesn't guarantee a correct answer. Retrieval can miss relevant information, and the model can still misinterpret its context, so we need evaluation and safeguards. Key point: RAG generally does not retrain or fine-tune the LLM. It supplies relevant information at inference time.",
+    adaptationTriad: {
+      title: "RAG vs. Fine-Tuning vs. Prompt Engineering",
+      pillars: [
+        {
+          name: "RAG",
+          definition: "Retrieves external information and gives it to the model as context; the model's weights don't have to change.",
+          accent: "text-emerald-400",
+          border: "border-emerald-800/50"
+        },
+        {
+          name: "Fine-tuning",
+          definition: "Updates trainable model parameters to adapt its behavior or capabilities.",
+          accent: "text-amber-400",
+          border: "border-amber-800/50"
+        },
+        {
+          name: "Prompt engineering",
+          definition: "Changes the instructions given to the model without updating its weights.",
+          accent: "text-cyan-400",
+          border: "border-cyan-800/50"
+        }
+      ]
+    },
     ragPipelineOverview: {
       title: "Understand the RAG Pipeline",
       stages: [
@@ -4157,6 +4180,32 @@ print("Saved catalog_v2.index for Blue/Green staging validation")`,
       }
     ],
     goldenRule: "You generally try a clear prompt, structured outputs, and proper validation before deciding that fine-tuning is necessary.",
+    adaptationTriad: {
+      title: "RAG vs. Fine-Tuning vs. Prompt Engineering (The 3 Adaptation Pillars)",
+      pillars: [
+        {
+          name: "RAG",
+          definition: "Retrieves external information and gives it to the model as context; the model's weights don't have to change.",
+          weights: "Model weights don't have to change (frozen model + dynamic retrieval).",
+          accent: "text-emerald-400",
+          border: "border-emerald-800/50"
+        },
+        {
+          name: "Fine-tuning",
+          definition: "Updates trainable model parameters to adapt its behavior or capabilities.",
+          weights: "Updates trainable model parameters (full fine-tuning or PEFT adapters).",
+          accent: "text-amber-400",
+          border: "border-amber-800/50"
+        },
+        {
+          name: "Prompt engineering",
+          definition: "Changes the instructions given to the model without updating its weights.",
+          weights: "Changes instructions without updating weights (fully frozen).",
+          accent: "text-cyan-400",
+          border: "border-cyan-800/50"
+        }
+      ]
+    },
     engineeringTechniques: [
       {
         technique: "System Role & Persona Definition",
@@ -6851,6 +6900,11 @@ Sentiment:`,
     badge: "PEFT, Low-Rank Decomposition & PyTorch Ecosystem",
     summary: "LoRA stands for Low-Rank Adaptation. It is a parameter-efficient fine-tuning technique that lets you adapt a pretrained neural network by training small additional matrices while keeping the original weights frozen in the usual LoRA setup. A common modern LLM fine-tuning stack is Transformers + PEFT + PyTorch.",
     coreDefinition: "LoRA stands for Low-Rank Adaptation. It is a parameter-efficient fine-tuning technique that lets you adapt a pretrained neural network by training small additional matrices while keeping the original weights frozen in the usual LoRA setup.",
+    adaptersComparison: {
+      headline: "Adapters vs. LoRA",
+      loraCore: "LoRA is a parameter-efficient fine-tuning (PEFT) technique. In practice, it is widely used because it can adapt large models while training far fewer parameters than full fine-tuning.",
+      insight: "Adapters and LoRA are related approaches, but they are not identical: traditional adapters add modules to the network, whereas LoRA parameterizes updates to existing weight matrices."
+    },
     tensorflowQuestion: {
       question: "Does LoRA belong to TensorFlow?",
       answerHeadline: "No. LoRA is a technique, not a TensorFlow-specific feature.",
@@ -12168,6 +12222,27 @@ evaluate_model(degree=4, alpha=0.5, name="Regularized Poly")`
         }
       ],
       caveat: "Adapters still require training data and compute, and their effectiveness depends on the task and architecture."
+    },
+    adaptersVsLora: {
+      headline: "Adapters vs. LoRA: Related Approaches, Key Differences",
+      loraCore: "LoRA is a parameter-efficient fine-tuning (PEFT) technique. In practice, it is widely used because it can adapt large models while training far fewer parameters than full fine-tuning.",
+      comparisonInsight: "Adapters and LoRA are related approaches, but they are not identical: traditional adapters add modules to the network, whereas LoRA parameterizes updates to existing weight matrices.",
+      comparisonList: [
+        {
+          aspect: "Traditional Adapters",
+          mechanism: "Adds small bottleneck modules (down-projection -> non-linearity -> up-projection) inserted between or after Transformer layers.",
+          modelWeights: "Keeps original weights frozen while adding new layer structures to the forward pass graph.",
+          latency: "Can add slight sequential inference latency due to extra matrix multiplications and activations per layer.",
+          accent: "text-cyan-400"
+        },
+        {
+          aspect: "LoRA (Low-Rank Adaptation)",
+          mechanism: "Parameterizes updates to existing weight matrices (ΔW = B · A) with low intrinsic rank r.",
+          modelWeights: "Keeps original weights frozen during training, but updates can be directly merged back into base matrices (W = W_0 + B·A).",
+          latency: "Zero inference latency overhead when merged into base model weights for deployment.",
+          accent: "text-amber-400"
+        }
+      ]
     },
     codeExample: {
       title: "PyTorch Implementation of a Houlsby / Bottleneck Adapter Module",

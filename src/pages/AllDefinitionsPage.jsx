@@ -674,6 +674,34 @@ export default function AllDefinitionsPage() {
                   {item.keyPrinciple}
                 </div>
 
+                {/* RAG vs Fine-Tuning vs Prompt Engineering Triad */}
+                {item.adaptationTriad && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-emerald-800/40 shadow-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-emerald-400" />
+                        <span>{item.adaptationTriad.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Adaptation Landscape
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {item.adaptationTriad.pillars.map((pil, pIdx) => (
+                        <div key={pIdx} className={`p-3.5 rounded-xl bg-black border ${pil.border} space-y-1.5`}>
+                          <span className={`text-xs font-mono font-bold uppercase ${pil.accent}`}>
+                            {pil.name}
+                          </span>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {pil.definition}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Two Phases of RAG: Indexing & Retrieval/Generation */}
                 {item.twoPhases && (
                   <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl">
@@ -6281,6 +6309,42 @@ export default function AllDefinitionsPage() {
                   {item.goldenRule}
                 </div>
 
+                {/* RAG vs. Fine-Tuning vs. Prompt Engineering Triad */}
+                {item.adaptationTriad && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.adaptationTriad.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Adaptation Triad
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.adaptationTriad.pillars.map((pillar, pIdx) => (
+                        <div key={pIdx} className={`p-4 rounded-xl bg-black border ${pillar.border} space-y-2 flex flex-col justify-between hover:border-zinc-700 transition`}>
+                          <div className="space-y-1.5">
+                            <span className={`text-xs font-bold font-mono ${pillar.accent} uppercase block`}>
+                              {pillar.name}
+                            </span>
+                            <p className="text-xs text-white font-medium font-sans leading-relaxed">
+                              {pillar.definition}
+                            </p>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900 space-y-1 text-[11px] font-sans text-zinc-400">
+                            <div>
+                              <strong className="text-zinc-500 font-mono">Weight Impact: </strong>
+                              <span className="text-zinc-300">{pillar.weights}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Core Techniques Grid */}
                 <div className="space-y-2">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono flex items-center gap-2">
@@ -11569,6 +11633,28 @@ export default function AllDefinitionsPage() {
                     {item.coreDefinition}
                   </p>
                 </div>
+
+                {/* LoRA and Adapters Relationship Banner */}
+                {item.adaptersComparison && (
+                  <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-800/40 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold font-mono text-purple-400 uppercase flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-purple-400" />
+                        <span>{item.adaptersComparison.headline}</span>
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        PEFT Taxonomy
+                      </span>
+                    </div>
+                    <p className="text-xs text-purple-200/90 font-medium font-sans leading-relaxed">
+                      {item.adaptersComparison.loraCore}
+                    </p>
+                    <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1 border-t border-purple-900/40">
+                      <strong className="text-purple-300 font-mono">Structural Difference: </strong>
+                      {item.adaptersComparison.insight}
+                    </p>
+                  </div>
+                )}
 
                 {/* 2. Does LoRA belong to TensorFlow? Framework Distinction Card */}
                 {item.tensorflowQuestion && (
@@ -21207,7 +21293,54 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 4. Interactive PyTorch Code Box */}
+                {/* 4. Adapters vs. LoRA Comparison */}
+                {item.adaptersVsLora && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-purple-400" />
+                        <span>{item.adaptersVsLora.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Adapters vs. LoRA
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-black border border-purple-900/50 space-y-2">
+                      <p className="text-xs sm:text-sm text-purple-200 font-sans font-medium leading-relaxed">
+                        {item.adaptersVsLora.loraCore}
+                      </p>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1 border-t border-zinc-900">
+                        <strong className="text-purple-300 font-mono">Key Distinction: </strong>
+                        {item.adaptersVsLora.comparisonInsight}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.adaptersVsLora.comparisonList.map((comp, cIdx) => (
+                        <div key={cIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                          <span className={`text-xs font-bold font-mono ${comp.accent} uppercase block`}>
+                            {comp.aspect}
+                          </span>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            <strong className="text-zinc-400 font-mono">Mechanism: </strong>
+                            {comp.mechanism}
+                          </p>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            <strong className="text-zinc-400 font-mono">Weights: </strong>
+                            {comp.modelWeights}
+                          </p>
+                          <div className="pt-2 border-t border-zinc-900 text-[11px] font-mono text-zinc-400">
+                            <strong className="text-zinc-500 uppercase">Latency Impact: </strong>
+                            <span className="text-zinc-200">{comp.latency}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Interactive PyTorch Code Box */}
                 {item.codeExample && (
                   <div className="space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
