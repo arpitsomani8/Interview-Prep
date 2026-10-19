@@ -143,7 +143,8 @@ export const definitionBookmarks = [
   { id: "ai-evaluation", label: "AI Evaluation" },
   { id: "production-ai-playbook", label: "Production AI Playbook & Trade-offs" },
   { id: "random-variable", label: "Random Variable" },
-  { id: "expectation", label: "Expectation" }
+  { id: "expectation", label: "Expectation" },
+  { id: "variance", label: "Variance" }
 ];
 
 export const definitionsData = [
@@ -11524,5 +11525,120 @@ transformed = 2 * rolls + 5
 print(f"Empirical E[2X + 5]: {np.mean(transformed):.4f} (Theoretical: 12.0)")`
     },
     takeaway: "Expectation is a summary statistic of long-run behavior, not a prediction of any single realization. In machine learning, almost every optimization objective—from cross-entropy loss to reinforcement learning value functions and generative models—is formulated as an expectation over underlying data distributions."
+  },
+  {
+    id: "variance",
+    title: "Variance (Dispersion, Squared Deviations & Bias-Variance Decomposition)",
+    badge: "Probability Theory & Statistical Foundations",
+    summary: "Variance measures how spread out values are around their mean. Squaring deviations prevents positive and negative differences from canceling each other out, heavily penalizes large outliers, and ensures differentiability for optimization.",
+    coreDefinition: "Variance: Variance measures how spread out values are around their mean.",
+    squaringQuestion: {
+      question: "Why do we square the deviations when calculating variance?",
+      answer: "Squaring prevents positive and negative deviations from canceling each other and gives greater weight to larger deviations.",
+      threeKeyReasons: [
+        {
+          reason: "1. Preventing Zero Cancellation",
+          desc: "By mathematical identity, the sum of raw deviations sum(x_i - mean) is always exactly zero. Squaring makes all distances strictly positive: (x_i - mean)^2 >= 0."
+        },
+        {
+          reason: "2. Penalizing Larger Deviations Non-Linearly",
+          desc: "Squaring imparts an exponential penalty to outliers. An error of 10 adds 100 to the sum, whereas an error of 1 adds only 1. In production quality control and risk modeling, large errors are disproportionately more dangerous than small fluctuations."
+        },
+        {
+          reason: "3. Smooth Mathematical Differentiability",
+          desc: "Unlike the absolute value |x_i - mean| (which has a sharp non-differentiable corner at zero), the squared function (x_i - mean)^2 has a smooth, continuous derivative 2*(x_i - mean), making analytical calculus, Ordinary Least Squares (OLS), and Gradient Descent straightforward."
+        }
+      ]
+    },
+    mathematicalFormulas: [
+      {
+        type: "Population Variance (sigma^2)",
+        formula: "sigma^2 = (1/N) * sum_{i=1}^N (x_i - mu)^2 = E[(X - mu)^2]",
+        desc: "Calculated across the entire census/population using the true population mean mu."
+      },
+      {
+        type: "Sample Variance (s^2 with Bessel's Correction)",
+        formula: "s^2 = [1 / (n - 1)] * sum_{i=1}^n (x_i - x_bar)^2",
+        desc: "Divides by (n - 1) instead of n to correct for sample bias, providing an unbiased estimator of true population variance."
+      },
+      {
+        type: "Computational Shortcut Formula",
+        formula: "Var(X) = E[X^2] - (E[X])^2",
+        desc: "The expectation of the squares minus the square of the expectation. Allows single-pass variance calculation."
+      },
+      {
+        type: "Standard Deviation (sigma)",
+        formula: "sigma = sqrt(Var(X))",
+        desc: "The square root of variance, restoring the dispersion metric to original interpretable units (e.g., kg, ms, dollars)."
+      }
+    ],
+    coreProperties: [
+      {
+        property: "Constant Multiplier Scaling",
+        formula: "Var(aX) = a^2 * Var(X)",
+        importance: "Multiplying a variable by 'a' scales its variance by a^2. Standard deviation scales by |a|.",
+        badge: "Quadratic Scaling"
+      },
+      {
+        property: "Additive Shift Invariance",
+        formula: "Var(X + c) = Var(X)",
+        importance: "Adding a constant shifts the center of mass but does not change the internal spread or dispersion.",
+        badge: "Shift Invariance"
+      },
+      {
+        property: "Sum of Independent Variables",
+        formula: "Var(X + Y) = Var(X) + Var(Y)",
+        importance: "If X and Y are uncorrelated/independent, variances add directly. (Standard deviations do NOT add directly!).",
+        badge: "Independence"
+      },
+      {
+        property: "Correlated Variable Sum",
+        formula: "Var(X + Y) = Var(X) + Var(Y) + 2*Cov(X, Y)",
+        importance: "Covariance determines whether joint variance expands (positive correlation) or dampens (hedging/negative correlation).",
+        badge: "Covariance Effect"
+      }
+    ],
+    mlRelevance: [
+      {
+        area: "Bias-Variance Trade-off",
+        role: "Total Expected Test Error = Bias^2 + Variance + Irreducible Noise. High model variance causes overfitting—the model memorizes training noise and fails to generalize to unseen test distributions."
+      },
+      {
+        area: "Mean Squared Error (MSE) Loss",
+        role: "In regression tasks, MSE = (1/n) * sum (y_i - y_hat_i)^2 directly minimizes the variance of residuals, aligning with Maximum Likelihood Estimation under Gaussian error assumptions."
+      },
+      {
+        area: "Feature Standardization (Z-Score)",
+        role: "StandardScaler transforms features into zero mean and unit variance: z = (x - mu) / sigma, preventing features with large numerical variance from dominating gradient updates."
+      }
+    ],
+    codeExample: {
+      title: "Verifying Zero Cancellation, Bessel's Correction & Scaling in Python",
+      language: "python",
+      code: `import numpy as np
+
+# Sample parcel weights (in kilograms)
+weights = np.array([2.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0])
+mean_wt = np.mean(weights)
+
+# 1. Why square? Proof that raw deviations sum to zero:
+raw_deviations = weights - mean_wt
+print(f"Raw Deviations: {raw_deviations}")
+print(f"Sum of Raw Deviations: {np.sum(raw_deviations):.6f} (Always cancels to 0!)")
+
+# 2. Population vs. Sample Variance (Bessel's Correction)
+pop_var = np.var(weights, ddof=0)  # Divided by N
+sample_var = np.var(weights, ddof=1)  # Divided by N - 1
+std_dev = np.std(weights, ddof=1)
+
+print(f"Population Variance (sigma^2): {pop_var:.4f}")
+print(f"Sample Variance (s^2, ddof=1): {sample_var:.4f}")
+print(f"Standard Deviation (s, in kg): {std_dev:.4f} kg")
+
+# 3. Variance Scaling Property: Var(3X) = 9 * Var(X)
+scaled_var = np.var(3 * weights, ddof=1)
+print(f"Var(3 * X): {scaled_var:.4f} == 9 * Var(X): {9 * sample_var:.4f}")`
+    },
+    takeaway: "Variance quantifies the uncertainty or volatility of a system. By squaring deviations, it eliminates zero cancellation and heavily penalizes large outliers. In machine learning, balancing model variance against bias is the central dogma of generalizable artificial intelligence."
   }
 ];
