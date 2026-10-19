@@ -99,7 +99,8 @@ export const definitionBookmarks = [
   { id: "bagging", label: "Bagging" },
   { id: "knn", label: "KNN" },
   { id: "random-forest", label: "Random Forest" },
-  { id: "gradient-descent", label: "Gradient Descent" }
+  { id: "gradient-descent", label: "Gradient Descent" },
+  { id: "design-patterns", label: "Design Patterns" }
 ];
 
 export const definitionsData = [
@@ -7577,5 +7578,111 @@ for epoch in range(num_epochs):
         optimizer.step()                    # Update parameters: θ = θ - η * ∇_θ L`
     },
     takeaway: "Gradient descent iteratively adjusts parameters in the opposite direction of the loss gradient (-∇_θ L). Finding a reasonable learning rate (η) prevents disastrous overshooting when too large and endless training lag when too small. In production deep learning, Mini-Batch Gradient Descent paired with adaptive optimizers (AdamW) delivers the best compromise between vectorization speed and optimization stability."
+  },
+  {
+    id: "design-patterns",
+    title: "Three Important Design Patterns in AI/ML Systems",
+    badge: "Software Architecture, System Design & Clean Production Code",
+    summary: "Three important design patterns in AI/ML: 1. Singleton: Ensures a class has one shared instance within a defined application scope (e.g. reusing loaded embedding models). 2. Factory: Centralizes object creation so calling code doesn't need to know construction details (e.g. selecting OpenAI vs Azure vs local LLM). 3. Strategy: Allows interchangeable algorithms behind a common interface (e.g. switching between vector, keyword, and hybrid search).",
+    coreDefinition: "Three important design patterns: Singleton ensures a class has one shared instance within a defined application scope; Factory centralizes object creation without exposing construction details; Strategy allows interchangeable algorithms to be selected behind a common interface.",
+    patternsList: [
+      {
+        number: 1,
+        name: "Singleton",
+        coreConcept: "Ensures a class has one shared instance within a defined application scope.",
+        aiExample: "Reusing a loaded embedding model instead of loading it repeatedly for every request.",
+        whyItMatters: "Large language and embedding models (e.g., BGE, MiniLM) consume hundreds of megabytes or gigabytes of RAM/VRAM. Reloading weights per HTTP request introduces huge memory bloat and multi-second latency.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50",
+        badge: "Instance Lifecycle"
+      },
+      {
+        number: 2,
+        name: "Factory",
+        coreConcept: "Centralizes object creation so the calling code doesn't need to know the details of constructing each implementation.",
+        aiExample: "Selecting an OpenAI, Azure OpenAI, or locally hosted model client from configuration.",
+        whyItMatters: "Decouples application business logic from specific vendor SDKs, API keys, and endpoint schemas. Swapping model providers requires only an environment variable change rather than refactoring codebase call-sites.",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50",
+        badge: "Object Creational"
+      },
+      {
+        number: 3,
+        name: "Strategy",
+        coreConcept: "Allows interchangeable algorithms to be selected behind a common interface.",
+        aiExample: "Switching between vector similarity search, keyword search, and hybrid retrieval.",
+        whyItMatters: "Enables runtime algorithmic switching and A/B testing across diverse search modalities without altering the downstream RAG generation pipeline.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50",
+        badge: "Behavioral Interchangeability"
+      }
+    ],
+    codeExamples: [
+      {
+        id: "code-singleton",
+        pattern: "1. Singleton Pattern (Shared In-Memory Embedding Model)",
+        code: `class EmbeddingModelSingleton:
+    _instance = None
+
+    def __new__(cls, model_name="all-MiniLM-L6-v2"):
+        if cls._instance is None:
+            print(f"Loading heavy model {model_name} into memory once...")
+            cls._instance = super().__new__(cls)
+            cls._instance.model = SentenceTransformer(model_name)
+        return cls._instance
+
+# Multiple requests share the exact same in-memory weights
+model_client_1 = EmbeddingModelSingleton()
+model_client_2 = EmbeddingModelSingleton()
+assert model_client_1 is model_client_2  # True: Zero memory duplication`
+      },
+      {
+        id: "code-factory",
+        pattern: "2. Factory Pattern (Multi-Provider LLM Client)",
+        code: `class LLMFactory:
+    @staticmethod
+    def get_client(provider: str, **kwargs):
+        if provider == "openai":
+            return OpenAIClient(api_key=kwargs["api_key"])
+        elif provider == "azure":
+            return AzureOpenAIClient(endpoint=kwargs["endpoint"], api_key=kwargs["api_key"])
+        elif provider == "local_ollama":
+            return OllamaClient(base_url="http://localhost:11434")
+        else:
+            raise ValueError(f"Unknown LLM provider: {provider}")
+
+# Caller has zero dependency on concrete provider constructors
+llm = LLMFactory.get_client(os.getenv("LLM_PROVIDER", "openai"))`
+      },
+      {
+        id: "code-strategy",
+        pattern: "3. Strategy Pattern (Interchangeable RAG Retrieval)",
+        code: `from abc import ABC, abstractmethod
+
+class RetrievalStrategy(ABC):
+    @abstractmethod
+    def retrieve(self, query: str, top_k: int) -> list[str]:
+        pass
+
+class VectorSearchStrategy(RetrievalStrategy):
+    def retrieve(self, query: str, top_k: int):
+        return vector_db.similarity_search(query, k=top_k)
+
+class HybridSearchStrategy(RetrievalStrategy):
+    def retrieve(self, query: str, top_k: int):
+        dense = vector_db.similarity_search(query, k=top_k)
+        sparse = bm25_index.search(query, k=top_k)
+        return reciprocal_rank_fusion(dense, sparse)
+
+# Pipeline accepts any RetrievalStrategy transparently
+class RAGPipeline:
+    def __init__(self, strategy: RetrievalStrategy):
+        self.strategy = strategy
+    def answer(self, q):
+        docs = self.strategy.retrieve(q, top_k=5)
+        return generate_answer(q, docs)`
+      }
+    ],
+    takeaway: "In production AI systems, classic software design patterns solve real infrastructure bottlenecks: Singleton prevents wasteful GPU/RAM reloading of heavy model weights; Factory abstracts multi-provider LLM vendor switching; and Strategy enables dynamic interchangeability across RAG retrieval mechanisms without refactoring the generation engine."
   }
 ];
