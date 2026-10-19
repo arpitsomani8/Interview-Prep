@@ -103,7 +103,8 @@ export const definitionBookmarks = [
   { id: "design-patterns", label: "Design Patterns" },
   { id: "tokenization", label: "Tokenization" },
   { id: "sft-peft", label: "SFT / PEFT" },
-  { id: "reinforcement-learning", label: "Reinforcement Learning" }
+  { id: "reinforcement-learning", label: "Reinforcement Learning" },
+  { id: "machine-learning-types", label: "ML Types & RLHF" }
 ];
 
 export const definitionsData = [
@@ -7937,5 +7938,103 @@ while not terminated:
 print(f"Episode Finished! Cumulative Reward: {total_cumulative_reward}")`
     },
     takeaway: "Reinforcement Learning optimizes sequential decision-making through environmental interaction. Unlike supervised learning where correct answers are immediately provided, RL agents navigate exploration vs. exploitation to maximize cumulative future reward over time—powering autonomous robotics, game AI (AlphaGo), and LLM alignment (RLHF / PPO)."
+  },
+  {
+    id: "machine-learning-types",
+    title: "Major Types of Machine Learning & RLHF (Human Feedback Alignment)",
+    badge: "ML Taxonomy, Self-Supervision & PPO Policy Optimization",
+    summary: "Other major types of machine learning: 1. Supervised learning: Learns from labeled examples (e.g. parcel defect classification). 2. Unsupervised learning: Finds patterns in data without predefined target labels (e.g. clustering electricity consumers). 3. Semi-supervised learning: Uses a small labeled dataset alongside a larger unlabeled dataset. 4. Self-supervised learning: Creates training targets from the data itself (e.g. next-token prediction). 5. Reinforcement learning: Learns actions from rewards and penalties. RLHF stands for Reinforcement Learning from Human Feedback. One common approach trains a reward model from human preferences and then optimizes the language model against that reward, for example with PPO.",
+    coreDefinition: "Other major types of machine learning include Supervised, Unsupervised, Semi-supervised, Self-supervised, and Reinforcement Learning. RLHF (Reinforcement Learning from Human Feedback) aligns models using human preference reward modeling optimized with PPO.",
+    mlTypes: [
+      {
+        number: 1,
+        name: "Supervised learning",
+        definition: "Learns from labeled examples.",
+        example: "Train a model on parcel images labeled damaged or normal to classify new parcels.",
+        dataNature: "Input features X with ground-truth target labels y.",
+        accent: "text-blue-400",
+        border: "border-blue-800/50",
+        badge: "Full Supervision"
+      },
+      {
+        number: 2,
+        name: "Unsupervised learning",
+        definition: "Finds patterns in data without predefined target labels.",
+        example: "Group electricity consumers by consumption patterns using clustering.",
+        dataNature: "Unlabeled data X only; finds latent clusters, embeddings, or distributions.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50",
+        badge: "Zero Labels"
+      },
+      {
+        number: 3,
+        name: "Semi-supervised learning",
+        definition: "Uses a small labeled dataset alongside a larger unlabeled dataset.",
+        example: "Label a small set of parcel images manually and use many unlabeled images to help train a classifier.",
+        dataNature: "Small (X_l, y_l) + Massive (X_u); leverages pseudo-labeling or consistency regularization.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50",
+        badge: "Hybrid Dataset"
+      },
+      {
+        number: 4,
+        name: "Self-supervised learning",
+        definition: "Creates training targets from the data itself.",
+        example: "Train a language model to predict the next token in a text sequence.",
+        dataNature: "Raw unlabeled corpora; supervisory signals engineered from intrinsic structure (masked tokens, next token).",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50",
+        badge: "Intrinsic Supervision"
+      },
+      {
+        number: 5,
+        name: "Reinforcement learning",
+        definition: "Learns actions from rewards and penalties.",
+        example: "Train a simulated robot to navigate efficiently without collisions.",
+        dataNature: "No static dataset; agent interacts with dynamic environment receiving scalar rewards.",
+        accent: "text-rose-400",
+        border: "border-rose-800/50",
+        badge: "Reward Signal"
+      }
+    ],
+    rlhfSection: {
+      headline: "Reinforcement Learning from Human Feedback (RLHF)",
+      definition: "RLHF stands for Reinforcement Learning from Human Feedback. One common approach trains a reward model from human preferences and then optimizes the language model against that reward, for example with PPO.",
+      threeStages: [
+        {
+          step: "Stage 1: Supervised Fine-Tuning (SFT)",
+          desc: "Curate high-quality human demonstration prompt-response pairs to train the base model into an instruction-following assistant.",
+          accent: "text-blue-400"
+        },
+        {
+          step: "Stage 2: Reward Model (RM) Training",
+          desc: "Collect human preference rankings over multiple model outputs (y_w preferred over y_l). Train a scalar reward model r_phi(x, y) using Bradley-Terry preference loss.",
+          accent: "text-amber-400"
+        },
+        {
+          step: "Stage 3: PPO Policy Optimization",
+          desc: "Optimize the language model policy pi_theta using Proximal Policy Optimization (PPO) against the reward model r_phi, constrained by a KL divergence penalty to prevent reward hacking.",
+          accent: "text-emerald-400"
+        }
+      ]
+    },
+    codeExample: {
+      title: "PPO Objective with KL Divergence Penalty in RLHF",
+      language: "python",
+      code: `# RLHF PPO Objective Function:
+# Maximize: E [ Reward(x, y) - beta * KL(pi_theta(y|x) || pi_ref(y|x)) ]
+
+import torch
+import torch.nn.functional as F
+
+def compute_rlhf_reward(reward_score, policy_logprobs, ref_logprobs, kl_coef=0.1):
+    # Calculate token-level KL divergence penalty
+    kl_divergence = policy_logprobs - ref_logprobs
+    
+    # Penalize policy drift from the frozen reference model (prevents reward hacking)
+    penalized_reward = reward_score - kl_coef * kl_divergence
+    return penalized_reward`
+    },
+    takeaway: "Machine learning spans five foundational paradigms distinguished by how supervision is acquired: Supervised (explicit labels), Unsupervised (intrinsic patterns), Semi-supervised (label scarcity), Self-supervised (predictive pretext tasks), and Reinforcement Learning (environmental rewards). RLHF synthesizes self-supervised pretraining with human preference reward modeling via PPO to achieve safe, aligned modern LLMs."
   }
 ];
