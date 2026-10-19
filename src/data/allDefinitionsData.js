@@ -176,6 +176,10 @@ export const definitionBookmarks = [
     "label": "Cross-Encoder"
   },
   {
+    "id": "crud-api",
+    "label": "CRUD API"
+  },
+  {
     "id": "custom-model-fastapi",
     "label": "Custom Model with FastAPI"
   },
@@ -290,6 +294,10 @@ export const definitionBookmarks = [
   {
     "id": "gini-impurity",
     "label": "Gini Impurity"
+  },
+  {
+    "id": "git-github",
+    "label": "Git / GitHub"
   },
   {
     "id": "gpt-llama",
@@ -596,6 +604,10 @@ export const definitionBookmarks = [
     "label": "REST API vs FastAPI"
   },
   {
+    "id": "roc-auc",
+    "label": "ROC-AUC"
+  },
+  {
     "id": "system-scaling",
     "label": "Scaling"
   },
@@ -622,6 +634,10 @@ export const definitionBookmarks = [
   {
     "id": "skewed-data",
     "label": "Skewed Data (Left, Normal, Right)"
+  },
+  {
+    "id": "sql-postgres",
+    "label": "SQL (PostgreSQL)"
   },
   {
     "id": "stemming",
@@ -13809,5 +13825,61 @@ similarities = np.dot(normalized_embeddings, query_norm.T)  # Shape: (10000, 1)`
         "Algorithm Protection: Prevents large-scale numerical features with zeros or negatives from dominating distance-based algorithms like KNN, K-Means, and gradient descent."
     ],
     "code": "from sklearn.preprocessing import PowerTransformer\n# Automatically selects Yeo-Johnson by default\npt = PowerTransformer(method='yeo-johnson')\ndf['transformed_profit'] = pt.fit_transform(df[['net_profit']])"
+},
+  {
+    "id": "crud-api",
+    "title": "CRUD API (RESTful Endpoints, HTTP Methods & Architecture)",
+    "badge": "RESTful Backend & API Architecture",
+    "summary": "The fundamental backend design pattern representing Create (POST), Read (GET), Update (PUT/PATCH), and Delete (DELETE) operations on persistent database entities through stateless HTTP endpoints.",
+    "details": [
+        "The 4 Core Operations & HTTP Verbs: Create (POST /resources → 201 Created), Read (GET /resources or GET /resources/{id} → 200 OK), Update (PUT replaces entire resource; PATCH updates selective fields → 200 OK), Delete (DELETE /resources/{id} → 204 No Content or 200 OK).",
+        "Idempotence in REST: GET, PUT, and DELETE are idempotent (calling them multiple times produces the identical server state as calling them once). POST is NOT idempotent (calling POST multiple times creates multiple duplicate records unless deduplication keys or unique constraints are enforced).",
+        "HTTP Status Code Hierarchy: 2xx (Success: 200 OK, 201 Created, 204 No Content), 4xx (Client Error: 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 422 Unprocessable Entity), 5xx (Server Error: 500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable).",
+        "Pydantic Schema Validation: In modern Python APIs (FastAPI), Pydantic schemas enforce type validation, default values, and serialization at request boundaries, preventing malformed payloads from hitting database queries.",
+        "Error Handling & Middleware: Centralized exception handlers catch database constraints, duplicate keys, or validation errors and return standard JSON error structures ({'detail': 'Parcel ID not found', 'status_code': 404})."
+    ],
+    "code": "from fastapi import FastAPI, HTTPException, status\nfrom pydantic import BaseModel, Field\nfrom typing import Optional, List\n\napp = FastAPI(title=\"Logistics Parcel CRUD API\")\n\nclass ParcelSchema(BaseModel):\n    tracking_id: str = Field(..., example=\"TRK-98214\")\n    weight_kg: float = Field(..., gt=0.0)\n    status: str = Field(default=\"in_transit\")\n\ndb_parcels = {}  # In-memory store or database session\n\n# CREATE (POST -> 201 Created)\n@app.post(\"/parcels\", status_code=status.HTTP_201_CREATED, response_model=ParcelSchema)\ndef create_parcel(parcel: ParcelSchema):\n    if parcel.tracking_id in db_parcels:\n        raise HTTPException(status_code=400, detail=\"Tracking ID already exists\")\n    db_parcels[parcel.tracking_id] = parcel\n    return parcel\n\n# READ (GET -> 200 OK)\n@app.get(\"/parcels/{tracking_id}\", response_model=ParcelSchema)\ndef get_parcel(tracking_id: str):\n    if tracking_id not in db_parcels:\n        raise HTTPException(status_code=404, detail=\"Parcel not found\")\n    return db_parcels[tracking_id]\n\n# UPDATE (PATCH -> 200 OK Partial Update)\n@app.patch(\"/parcels/{tracking_id}\", response_model=ParcelSchema)\ndef update_parcel(tracking_id: str, updates: dict):\n    if tracking_id not in db_parcels:\n        raise HTTPException(status_code=404, detail=\"Parcel not found\")\n    parcel_data = db_parcels[tracking_id].dict()\n    parcel_data.update(updates)\n    db_parcels[tracking_id] = ParcelSchema(**parcel_data)\n    return db_parcels[tracking_id]\n\n# DELETE (DELETE -> 204 No Content)\n@app.delete(\"/parcels/{tracking_id}\", status_code=status.HTTP_204_NO_CONTENT)\ndef delete_parcel(tracking_id: str):\n    if tracking_id not in db_parcels:\n        raise HTTPException(status_code=404, detail=\"Parcel not found\")\n    del db_parcels[tracking_id]"
+},
+  {
+    "id": "git-github",
+    "title": "Git / GitHub (Version Control, Branching & Engineering Workflows)",
+    "badge": "Version Control & CI/CD Collaboration",
+    "summary": "Distributed version control system (Git) paired with cloud hosting, pull requests, automated review workflows, and GitHub Actions CI/CD to ensure atomic code tracking, branch isolation, and production release safety.",
+    "details": [
+        "Git Plumbing & 3 Stages: Working Directory (untracked/modified files) → Staging Area (git add / index prepared for commit) → Repository (.git commit history as a DAG of cryptographic SHA-1 hashes).",
+        "Branching Strategies (Trunk-Based vs. Git Flow): Trunk-based development (developers merge small, frequent commits into main protected by automated tests) vs Git Flow (feature branches, develop, release branches, and hotfix branches for scheduled release cycles).",
+        "Merge vs. Rebase: 'git merge' preserves exact chronological history with a dedicated merge commit. 'git rebase' rewrites commit history on top of the target branch for a clean, linear commit graph without clutter.",
+        "Resolving Merge Conflicts: Occurs when two branches modify identical lines. Git marks conflict markers ('<<<<<<<', '=======', '>>>>>>>'); engineers resolve differences manually, stage with 'git add', and complete with 'git commit' or 'git rebase --continue'.",
+        "GitHub Pull Requests & CI/CD Actions: PRs provide peer code reviews, line-by-line discussions, and automated GitHub Actions workflows (unit tests, linters like Ruff/Flake8, vulnerability scans, and container build checks) before branch merging is authorized."
+    ],
+    "code": "# 1. Everyday feature branch workflow\ngit checkout -b feature/parcels-yolo-inference\ngit add src/models/yolo_detector.py\ngit commit -m \"feat(yolo): integrate DeepSparse 11ms CPU runtime\"\n\n# 2. Keep feature branch up-to-date with main cleanly\ngit fetch origin\ngit rebase origin/main\n\n# 3. Push and open PR\ngit push -u origin feature/parcels-yolo-inference\n\n# 4. Safe undos: soft reset keeps edits staged, restore discards unstaged changes\ngit reset --soft HEAD~1   # removes last commit, leaves changes staged\ngit restore <filename>     # discards unstaged local modifications"
+},
+  {
+    "id": "roc-auc",
+    "title": "ROC-AUC (Receiver Operating Characteristic & Area Under Curve)",
+    "badge": "Model Evaluation & Threshold Invariance",
+    "summary": "A performance measurement across all classification thresholds, plotting True Positive Rate (Sensitivity/Recall) against False Positive Rate (1 - Specificity) to evaluate model discriminative power independently of arbitrary probability cutoffs.",
+    "details": [
+        "True Positive Rate (TPR / Recall): TPR = TP / (TP + FN). Measures the fraction of actual positive instances correctly caught by the model at a specific threshold.",
+        "False Positive Rate (FPR / Fall-out): FPR = FP / (FP + TN). Measures the fraction of negative instances incorrectly flagged as positive.",
+        "Area Under Curve (AUC): Ranges from 0.0 to 1.0. AUC = 0.5 represents a useless random guess (diagonal line); AUC = 1.0 represents perfect discrimination with zero false alarms; AUC ≥ 0.85 is typically strong in production.",
+        "Threshold Invariance vs. Scale Invariance: Threshold invariance evaluates how well predictions are ranked regardless of what decision threshold (0.5 vs 0.8) is chosen. Scale invariance measures ranking quality rather than absolute predicted probability values.",
+        "Critical Caveat — ROC-AUC vs. PR-AUC on Imbalanced Data: In heavily imbalanced problems (e.g., 99.5% non-fraud vs 0.5% fraud), ROC-AUC can look deceptively high (e.g., 0.98) because the massive true negative denominator keeps FPR near zero. In extreme imbalance, Precision-Recall AUC (PR-AUC) is the mandatory metric."
+    ],
+    "code": "from sklearn.metrics import roc_curve, roc_auc_score, auc\nimport matplotlib.pyplot as plt\n\n# 1. Calculate ROC-AUC score directly from predicted probabilities\nauc_score = roc_auc_score(y_true, y_pred_proba)\nprint(f\"ROC-AUC Score: {auc_score:.4f}\")\n\n# 2. Generate curve coordinates across all discrimination thresholds\nfpr, tpr, thresholds = roc_curve(y_true, y_pred_proba)\n\n# 3. Plot ROC Curve\nplt.figure(figsize=(7, 5))\nplt.plot(fpr, tpr, color='#06b6d4', lw=2, label=f'ROC Curve (AUC = {auc_score:.2f})')\nplt.plot([0, 1], [0, 1], color='#71717a', linestyle='--', label='Random Guess (AUC = 0.50)')\nplt.xlabel('False Positive Rate (1 - Specificity)')\nplt.ylabel('True Positive Rate (Recall / Sensitivity)')\nplt.title('Receiver Operating Characteristic (ROC) Curve')\nplt.legend(loc='lower right')\nplt.grid(alpha=0.3)"
+},
+  {
+    "id": "sql-postgres",
+    "title": "SQL (PostgreSQL) — Relational Data Modeling, Querying & Indexing",
+    "badge": "Relational Database & Query Optimization",
+    "summary": "Enterprise-grade open-source object-relational database management system (RDBMS) featuring strict ACID compliance, robust B-tree/GIN indexing, complex JOIN queries, CTEs, window functions, and JSONB document storage.",
+    "details": [
+        "ACID Guarantees: Atomicity (all operations in transaction commit or all rollback), Consistency (schema constraints, foreign keys, and checks are always preserved), Isolation (concurrent transactions don't dirty-read, controlled via isolation levels), Durability (committed data is flushed to WAL disk log and survives power failure).",
+        "Indexing Mechanics (B-Tree vs. GIN/GiST): B-Tree indexes provide O(log N) lookup for equality and range queries (=, <, >, BETWEEN). GIN (Generalized Inverted Index) indexes accelerate multi-value elements like JSONB attributes, full-text search tsvector, and arrays.",
+        "Joins & Execution Plans (EXPLAIN ANALYZE): Inner Join (matching rows in both tables), Left Join (all left rows + matching right rows), Outer Join (all rows). 'EXPLAIN ANALYZE' reveals the query planner's actual execution path: Sequential Scan (slow full-table reads) vs Index Scan / Bitmap Index Scan (fast indexed lookups).",
+        "CTEs (Common Table Expressions) & Window Functions: WITH clauses break monolithic queries into readable temporary views. Window functions (ROW_NUMBER(), RANK(), DENSE_RANK() OVER (PARTITION BY ... ORDER BY ...)) perform aggregations across row subsets without collapsing rows like GROUP BY.",
+        "Connection Pooling (PgBouncer): Spawning a new PostgreSQL process per incoming request costs 2–10MB RAM and SSL handshake latency. Connection poolers maintain a warm pool of reusable connections, allowing 10,000+ API workers to share 50–100 active database connections safely."
+    ],
+    "code": "-- 1. Create table with constraints and JSONB support\nCREATE TABLE parcels (\n    id SERIAL PRIMARY KEY,\n    tracking_id VARCHAR(50) UNIQUE NOT NULL,\n    conveyor_lane INT NOT NULL,\n    damage_detected BOOLEAN DEFAULT FALSE,\n    inspection_metadata JSONB,\n    scanned_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP\n);\n\n-- 2. Fast B-Tree index on high-cardinality search column\nCREATE INDEX idx_parcels_lane_time ON parcels(conveyor_lane, scanned_at DESC);\n\n-- 3. GIN Index for lightning-fast JSONB key/value querying\nCREATE INDEX idx_parcels_metadata_gin ON parcels USING GIN (inspection_metadata);\n\n-- 4. Advanced Window Function query: Rank top 3 latest parcels per lane\nWITH RankedParcels AS (\n    SELECT \n        tracking_id,\n        conveyor_lane,\n        damage_detected,\n        scanned_at,\n        ROW_NUMBER() OVER(\n            PARTITION BY conveyor_lane \n            ORDER BY scanned_at DESC\n        ) as lane_rank\n    FROM parcels\n)\nSELECT * FROM RankedParcels WHERE lane_rank <= 3;"
 }
 ];
