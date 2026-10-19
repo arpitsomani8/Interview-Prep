@@ -88,7 +88,8 @@ export const definitionBookmarks = [
   { id: "top-k-top-p", label: "Top-K / Top-P" },
   { id: "temperature", label: "Temperature" },
   { id: "pydantic", label: "Pydantic" },
-  { id: "zero-shot-few-shot", label: "Zero-shot / Few-shot" }
+  { id: "zero-shot-few-shot", label: "Zero-shot / Few-shot" },
+  { id: "lora", label: "LoRA" }
 ];
 
 export const definitionsData = [
@@ -6562,5 +6563,80 @@ Sentiment:`,
       }
     ],
     takeaway: "Zero-shot prompting tests the LLM's baseline comprehension with instructions only, minimizing token overhead. Few-shot prompting equips the prompt with a handful of input-output demonstrations, harnessing In-Context Learning to dramatically boost formatting precision, domain nuance, and classification accuracy without modifying a single model weight."
+  },
+  {
+    id: "lora",
+    title: "LoRA (Low-Rank Adaptation) & Parameter-Efficient Fine-Tuning (PEFT)",
+    badge: "PEFT, Low-Rank Decomposition & PyTorch Ecosystem",
+    summary: "LoRA stands for Low-Rank Adaptation. It is a parameter-efficient fine-tuning technique that lets you adapt a pretrained neural network by training small additional matrices while keeping the original weights frozen in the usual LoRA setup. A common modern LLM fine-tuning stack is Transformers + PEFT + PyTorch.",
+    coreDefinition: "LoRA stands for Low-Rank Adaptation. It is a parameter-efficient fine-tuning technique that lets you adapt a pretrained neural network by training small additional matrices while keeping the original weights frozen in the usual LoRA setup.",
+    tensorflowQuestion: {
+      question: "Does LoRA belong to TensorFlow?",
+      answerHeadline: "No. LoRA is a technique, not a TensorFlow-specific feature.",
+      points: [
+        "LoRA is widely used with PyTorch-based libraries such as Hugging Face PEFT.",
+        "TensorFlow is a separate machine-learning framework.",
+        "LoRA-style adaptation can be implemented in TensorFlow/Keras too, but the available tooling and model support differ."
+      ],
+      modernStack: "A common modern LLM fine-tuning stack is Transformers + PEFT + PyTorch."
+    },
+    mathematicalDecomposition: {
+      formula: "W = W_0 + ΔW = W_0 + (α / r) · (B · A)",
+      description: "Instead of updating full weight matrix W_0 ∈ R^(d × k) directly, LoRA freezes W_0 and decomposes the weight update ΔW into two low-rank matrices: A ∈ R^(r × k) and B ∈ R^(d × r), where rank r << min(d, k).",
+      advantages: [
+        {
+          title: "VRAM Reduction (> 75%)",
+          desc: "Only matrix A and matrix B have gradients and optimizer states during training. For a 70B model, training parameters drop from 70 billion to < 70 million (0.1%).",
+          accent: "text-emerald-400",
+          badge: "Resource Efficiency"
+        },
+        {
+          title: "Zero Added Inference Latency",
+          desc: "In production serving, you can merge weights: W_merged = W_0 + (α/r)(B · A). Forward pass runs through a single matrix with zero architectural overhead.",
+          accent: "text-amber-400",
+          badge: "Mergeable Weights"
+        },
+        {
+          title: "Multi-Tenant Hot Swapping",
+          desc: "A single frozen base model in VRAM can serve multiple customers or tasks simultaneously by dynamically swapping tiny adapter matrices (~20 MB to 200 MB each) on the fly.",
+          accent: "text-cyan-400",
+          badge: "Multi-Tenant Serving"
+        }
+      ]
+    },
+    peftCodeExample: {
+      title: "Production LoRA Fine-Tuning with PyTorch + Hugging Face PEFT",
+      language: "python",
+      code: `import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, Trainer
+from peft import LoraConfig, get_peft_model, TaskType
+
+# 1. Load base model in PyTorch
+model_id = "meta-llama/Llama-3.1-8B-Instruct"
+base_model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    torch_dtype=torch.bfloat16,
+    device_map="auto"
+)
+
+# 2. Configure Low-Rank Adaptation (LoRA)
+lora_config = LoraConfig(
+    r=16,                         # Rank: inner dimension of low-rank matrices
+    lora_alpha=32,                # Scaling factor (alpha / r)
+    target_modules=["q_proj", "v_proj", "k_proj", "o_proj"], # Attention layers
+    lora_dropout=0.05,
+    bias="none",
+    task_type=TaskType.CAUSAL_LM
+)
+
+# 3. Freeze base weights & inject trainable adapters (PEFT)
+model = get_peft_model(base_model, lora_config)
+model.print_trainable_parameters()
+# Output: trainable params: 13,631,488 || all params: 8,043,892,736 || trainable%: 0.169%
+
+# 4. Standard PyTorch training updates ONLY adapter matrices A and B!
+# A common modern LLM fine-tuning stack is Transformers + PEFT + PyTorch.`
+    },
+    takeaway: "LoRA is an open algorithmic technique—not tied to TensorFlow. Modern generative AI standardizes on Transformers + PEFT + PyTorch, freezing base weights and training low-rank A and B matrices to enable enterprise domain adaptation on cost-effective hardware."
   }
 ];

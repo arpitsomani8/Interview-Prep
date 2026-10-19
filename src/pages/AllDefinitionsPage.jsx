@@ -11105,6 +11105,154 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 92: LoRA (Low-Rank Adaptation) */}
+            {item.id === 'lora' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Core Definition</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      PEFT Primitive
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Does LoRA belong to TensorFlow? Framework Distinction Card */}
+                {item.tensorflowQuestion && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-amber-800/50 space-y-4 shadow-lg">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-amber-400" />
+                        <span>{item.tensorflowQuestion.question}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Framework Architecture
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-black border border-amber-900/40 space-y-2">
+                      <h5 className="text-sm font-bold text-amber-300 font-mono">
+                        {item.tensorflowQuestion.answerHeadline}
+                      </h5>
+                      <ul className="space-y-2 pt-1">
+                        {item.tensorflowQuestion.points.map((pt, pIdx) => (
+                          <li key={pIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                            <span className="text-cyan-400 mt-0.5">•</span>
+                            <span>{pt}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Standard Fine-Tuning Stack */}
+                    <div className="p-3.5 rounded-xl bg-gradient-to-r from-cyan-950/40 via-black to-emerald-950/40 border border-cyan-500/40 flex items-center gap-3">
+                      <Zap className="w-5 h-5 text-cyan-400 shrink-0" />
+                      <div>
+                        <span className="text-[10px] font-mono uppercase text-cyan-400 font-bold block">
+                          Industry Standard LLM Fine-Tuning Stack:
+                        </span>
+                        <span className="text-xs sm:text-sm font-bold text-white font-mono">
+                          {item.tensorflowQuestion.modernStack}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Mathematical Decomposition & Advantages */}
+                {item.mathematicalDecomposition && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-zinc-800">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Mathematical Formulation & Low-Rank Decomposition</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        Rank Decomposition
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-black border border-zinc-900 space-y-1.5">
+                      <div className="text-sm font-bold font-mono text-cyan-300">
+                        {item.mathematicalDecomposition.formula}
+                      </div>
+                      <p className="text-xs text-zinc-400 leading-relaxed">
+                        {item.mathematicalDecomposition.description}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+                      {item.mathematicalDecomposition.advantages.map((adv, aIdx) => (
+                        <div key={aIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
+                          <div className="flex items-center justify-between">
+                            <h5 className={`text-xs font-bold font-mono ${adv.accent}`}>
+                              {adv.title}
+                            </h5>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {adv.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {adv.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Production Code Example (PEFT + PyTorch) */}
+                {item.peftCodeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.peftCodeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>lora_peft_fine_tuning.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-lora', item.peftCodeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-lora' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.peftCodeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
