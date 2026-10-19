@@ -117,7 +117,8 @@ export const definitionBookmarks = [
   { id: "log-loss", label: "Log Loss" },
   { id: "elastic-net", label: "Elastic Net" },
   { id: "entropy", label: "Entropy" },
-  { id: "gini-impurity", label: "Gini Impurity" }
+  { id: "gini-impurity", label: "Gini Impurity" },
+  { id: "information-gain", label: "Information Gain" }
 ];
 
 export const definitionsData = [
@@ -9043,5 +9044,90 @@ print("Skewed 80/20 (p=0.8):    Gini =", round(skewed_case, 4))
 # Skewed 80/20 (p=0.8):    Gini = 0.32`
     },
     takeaway: "Gini Impurity quantifies the likelihood of misclassification under random sampling from a node's empirical label distribution. With bounded values from 0.0 (pure node) to 0.5 (equal binary split), CART decision trees recursively evaluate candidate splits to maximize Gini Gain, optimizing execution speed by avoiding logarithmic arithmetic."
+  },
+  {
+    id: "information-gain",
+    title: "Information Gain (Entropy Reduction & Decision Tree Splitting)",
+    badge: "Tree Splitting Criteria, Entropy Reduction & ID3 / C4.5 Algorithms",
+    summary: "Information gain measures how much a split reduces entropy. In plain English: calculate uncertainty before splitting, calculate the weighted uncertainty after splitting, and subtract.",
+    coreDefinition: "Information gain measures how much a split reduces entropy.",
+    plainEnglishHeadline: "In plain English:",
+    plainEnglishText: "In plain English: calculate uncertainty before splitting, calculate the weighted uncertainty after splitting, and subtract.",
+    threeStepMethod: [
+      {
+        stepNum: "Step 1",
+        name: "Uncertainty Before Splitting",
+        desc: "Calculate the Shannon Entropy of the parent node H(Parent) across all current target labels.",
+        formula: "H(Parent) = - Σ p_i · log₂(p_i)",
+        accent: "text-amber-400"
+      },
+      {
+        stepNum: "Step 2",
+        name: "Weighted Uncertainty After Splitting",
+        desc: "For each child branch created by feature A, compute its entropy H(Child_v) weighted by sample size fraction.",
+        formula: "Weighted H = Σ (|S_v| / |S|) · H(S_v)",
+        accent: "text-cyan-400"
+      },
+      {
+        stepNum: "Step 3",
+        name: "Subtract to Obtain Information Gain",
+        desc: "Subtract the weighted child entropy from the parent entropy. The split with the highest gain is chosen.",
+        formula: "IG(S, A) = H(Parent) - Weighted H",
+        accent: "text-emerald-400"
+      }
+    ],
+    numericalExample: {
+      headline: "Concrete Example: Splitting on Feature 'Windy'",
+      parentDetails: "Parent Node: 14 samples (9 Yes, 5 No) -> H(Parent) = 0.940 bits",
+      childLeft: "Left Branch (Weak Wind): 8 samples (6 Yes, 2 No) -> H(Left) = 0.811 bits",
+      childRight: "Right Branch (Strong Wind): 6 samples (3 Yes, 3 No) -> H(Right) = 1.000 bit",
+      weightedCalc: "Weighted H = (8/14) · 0.811 + (6/14) · 1.000 = 0.463 + 0.429 = 0.892 bits",
+      finalGain: "Information Gain = 0.940 - 0.892 = 0.048 bits"
+    },
+    biasCallout: {
+      headline: "The High-Cardinality Bias Gotcha (Why C4.5 Uses Gain Ratio)",
+      explanation: "Information Gain inherently favors features with a high number of unique categories (e.g. User ID, Transaction Timestamp). If every sample gets its own branch, child entropy is 0.0, yielding maximal Information Gain but zero generalization. Modern trees (like C4.5) use Gain Ratio = Information Gain / Split Information to penalize splits with excessive branches."
+    },
+    codeExample: {
+      title: "Information Gain Calculation in Python",
+      language: "python",
+      code: `import numpy as np
+
+def entropy(labels):
+    _, counts = np.unique(labels, return_counts=True)
+    probs = counts / len(labels)
+    return -np.sum([p * np.log2(p) for p in probs if p > 0])
+
+def information_gain(parent_labels, left_labels, right_labels):
+    # Step 1: Uncertainty before splitting
+    h_parent = entropy(parent_labels)
+    
+    # Step 2: Weighted uncertainty after splitting
+    n_total = len(parent_labels)
+    w_left  = len(left_labels) / n_total
+    w_right = len(right_labels) / n_total
+    h_weighted = (w_left * entropy(left_labels)) + (w_right * entropy(right_labels))
+    
+    # Step 3: Subtract to obtain information gain
+    ig = h_parent - h_weighted
+    return h_parent, h_weighted, ig
+
+# Example: 14 samples (9 Yes=1, 5 No=0)
+parent = [1]*9 + [0]*5
+left   = [1]*6 + [0]*2  # Weak wind: 6 Yes, 2 No
+right  = [1]*3 + [0]*3  # Strong wind: 3 Yes, 3 No
+
+h_before, h_after, ig = information_gain(parent, left, right)
+
+print(f"Entropy Before: {h_before:.4f} bits")
+print(f"Weighted After: {h_after:.4f} bits")
+print(f"Information Gain: {ig:.4f} bits")
+
+# Output:
+# Entropy Before: 0.9403 bits
+# Weighted After: 0.8922 bits
+# Information Gain: 0.0481 bits`
+    },
+    takeaway: "Information Gain represents the expected reduction in entropy achieved by partitioning a dataset according to a candidate attribute. At each decision tree node, greedy split-finding algorithms test every feature threshold and select the candidate maximizing Information Gain, sequentially carving out subsets of increasing class purity."
   }
 ];
