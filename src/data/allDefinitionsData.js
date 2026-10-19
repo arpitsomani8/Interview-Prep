@@ -118,7 +118,8 @@ export const definitionBookmarks = [
   { id: "elastic-net", label: "Elastic Net" },
   { id: "entropy", label: "Entropy" },
   { id: "gini-impurity", label: "Gini Impurity" },
-  { id: "information-gain", label: "Information Gain" }
+  { id: "information-gain", label: "Information Gain" },
+  { id: "outlier-detection", label: "Outlier Detection" }
 ];
 
 export const definitionsData = [
@@ -9129,5 +9130,109 @@ print(f"Information Gain: {ig:.4f} bits")
 # Information Gain: 0.0481 bits`
     },
     takeaway: "Information Gain represents the expected reduction in entropy achieved by partitioning a dataset according to a candidate attribute. At each decision tree node, greedy split-finding algorithms test every feature threshold and select the candidate maximizing Information Gain, sequentially carving out subsets of increasing class purity."
+  },
+  {
+    id: "outlier-detection",
+    title: "Outlier Detection in LLM Applications & ML Pipelines",
+    badge: "Data Validation, System Telemetry & Anomaly Detection",
+    summary: "Outlier detection can be used in systems involving LLMs as a data-analysis and machine-learning technique. An outlier is a data point that differs significantly from the normal pattern. In LLM applications, it detects unusual input data, unusual model behavior, and unusual RAG retrieval results.",
+    coreQuestion: "Is outlier detection used in LLMs?",
+    coreAnswer: "Yes. Outlier detection can be used in systems involving LLMs, but it is not a core LLM architecture component by itself. It is a general data-analysis and machine-learning technique that can support an LLM application.",
+    coreDefinition: "An outlier is a data point that differs significantly from the normal pattern.",
+    concreteExample: {
+      domain: "Logistics parcel weights",
+      text: "For example, suppose a logistics company records parcel weights: 2.1, 2.4, 2.2, 2.5, 2.3, 95.0 kg",
+      normalCluster: "2.1, 2.4, 2.2, 2.5, 2.3 kg",
+      outlierValue: "95.0 kg (differing by >40x from normal cluster)"
+    },
+    llmApplicationUses: [
+      {
+        num: "1",
+        title: "Detect unusual input data",
+        description: "Identify suspicious weights, prices, quantities, or sensor readings before sending them to an LLM.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        num: "2",
+        title: "Detect unusual model behavior",
+        description: "Monitor unexpected response lengths, latency, token usage, error rates, or unusual embedding distributions.",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      },
+      {
+        num: "3",
+        title: "Detect unusual retrieval results",
+        description: "In a RAG system, flag queries whose retrieved documents have unusually low relevance scores, using thresholds calibrated on evaluation data.",
+        accent: "text-rose-400",
+        border: "border-rose-800/50"
+      }
+    ],
+    commonMethods: [
+      {
+        method: "Z-score",
+        howItWorks: "Measures distance from the mean in standard deviations",
+        typicalUse: "Numerical data that is approximately normally distributed",
+        accent: "text-blue-400",
+        border: "border-blue-800/50"
+      },
+      {
+        method: "IQR",
+        howItWorks: "Uses the middle 50% of the data to define an expected range",
+        typicalUse: "Skewed numerical data; less sensitive to extreme values",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      },
+      {
+        method: "Isolation Forest",
+        howItWorks: "Isolates unusual points using random partitions",
+        typicalUse: "Multivariate tabular data",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        method: "Local Outlier Factor (LOF)",
+        howItWorks: "Compares a point's local density with its neighbors",
+        typicalUse: "Detecting locally unusual clusters",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        method: "Autoencoder",
+        howItWorks: "Learns to reconstruct normal data; unusual reconstruction errors can indicate anomalies",
+        typicalUse: "Complex data, including learned representations",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      }
+    ],
+    codeExample: {
+      title: "Outlier Detection in Python (IQR & Z-Score for LLM Input Guardrails)",
+      language: "python",
+      code: `import numpy as np
+
+# Logistics company parcel weights example
+parcel_weights = np.array([2.1, 2.4, 2.2, 2.5, 2.3, 95.0])
+
+# 1. IQR Method (Robust to extreme skews)
+q25, q75 = np.percentile(parcel_weights, [25, 75])
+iqr = q75 - q25
+lower_bound = q25 - 1.5 * iqr
+upper_bound = q75 + 1.5 * iqr
+
+iqr_outliers = parcel_weights[(parcel_weights < lower_bound) | (parcel_weights > upper_bound)]
+
+print(f"IQR Expected Range: [{lower_bound:.2f}, {upper_bound:.2f}] kg")
+print(f"Detected Outliers via IQR: {iqr_outliers} kg")
+
+# 2. LLM Guardrail Function
+def validate_parcel_prompt(weight_kg):
+    if weight_kg > upper_bound or weight_kg < lower_bound:
+        return f"[GUARDRAIL BLOCKED]: Weight {weight_kg}kg flagged as outlier. Routing to human review."
+    return f"[INPUT APPROVED]: Proceeding to LLM dispatch with weight {weight_kg}kg."
+
+print(validate_parcel_prompt(2.3))
+print(validate_parcel_prompt(95.0))`
+    },
+    takeaway: "Outlier detection acts as a vital observability and safety guardrail around generative AI systems. By filtering nonsensical inputs (e.g. 95.0kg parcel data), tracking semantic embedding drift, and catching silent RAG retrieval degradations, anomaly detection ensures downstream LLMs generate factually reliable outputs without burning excessive tokens on garbage data."
   }
 ];

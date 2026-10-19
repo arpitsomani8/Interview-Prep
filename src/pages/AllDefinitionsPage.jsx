@@ -15935,6 +15935,181 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 122: Outlier Detection */}
+            {item.id === 'outlier-detection' && (
+              <div className="space-y-6">
+                {/* 1. Core Q&A and Definition Header Banner */}
+                <div className="p-5 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Data Validation & Guardrail Telemetry</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      LLM Support Technique
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5 border-b border-zinc-800 pb-3">
+                    <h3 className="text-sm sm:text-base font-bold text-white font-mono flex items-center gap-2">
+                      <Terminal className="w-4 h-4 text-amber-400" />
+                      <span>{item.coreQuestion}</span>
+                    </h3>
+                    <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                      {item.coreAnswer}
+                    </p>
+                  </div>
+
+                  <div className="pt-1">
+                    <span className="text-[10px] font-mono uppercase text-zinc-400 block font-bold">
+                      Definition:
+                    </span>
+                    <p className="text-xs sm:text-sm text-cyan-300 font-semibold font-sans">
+                      "{item.coreDefinition}"
+                    </p>
+                  </div>
+                </div>
+
+                {/* 2. Concrete Example Callout (Logistics Parcel Weights) */}
+                {item.concreteExample && (
+                  <div className="p-4 rounded-2xl bg-zinc-950 border border-amber-800/50 space-y-3 shadow-xl">
+                    <span className="text-xs font-bold font-mono text-amber-400 uppercase flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Logistics Parcel Weights Example</span>
+                    </span>
+
+                    <p className="text-xs sm:text-sm text-zinc-200 font-medium font-sans leading-relaxed">
+                      {item.concreteExample.text}
+                    </p>
+
+                    <div className="p-3 rounded-xl bg-black border border-zinc-800 flex flex-wrap items-center gap-2">
+                      <span className="text-xs font-mono text-zinc-400">Normal Range Cluster:</span>
+                      <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-xs font-mono text-emerald-400">
+                        {item.concreteExample.normalCluster}
+                      </span>
+                      <span className="text-xs font-mono text-zinc-400">vs. Outlier:</span>
+                      <span className="px-2 py-0.5 rounded bg-rose-950 border border-rose-800 text-xs font-mono font-bold text-rose-300 animate-pulse">
+                        {item.concreteExample.outlierValue}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Three LLM Application Pillars */}
+                {item.llmApplicationUses && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>How Can Outlier Detection Be Used in an LLM Application?</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        3 Core Pillars
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {item.llmApplicationUses.map((use, uIdx) => (
+                        <div key={uIdx} className={`p-4 rounded-xl bg-black border ${use.border} space-y-2 hover:border-zinc-700 transition flex flex-col justify-between`}>
+                          <div className="space-y-1.5">
+                            <span className={`text-[10px] font-mono font-bold uppercase ${use.accent} block`}>
+                              Pillar {use.num}
+                            </span>
+                            <h5 className="text-xs font-bold font-mono text-white">
+                              {use.title}
+                            </h5>
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-2 border-t border-zinc-900">
+                            {use.description}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Common Outlier Detection Methods Table / Cards */}
+                {item.commonMethods && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-purple-400" />
+                        <span>Common Outlier Detection Methods</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Technique Comparison
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.commonMethods.map((m, mIdx) => (
+                        <div key={mIdx} className={`p-4 rounded-xl bg-black border ${m.border} space-y-2 hover:border-zinc-700 transition flex flex-col justify-between`}>
+                          <div className="space-y-1.5">
+                            <h5 className={`text-xs font-bold font-mono ${m.accent}`}>
+                              {m.method}
+                            </h5>
+                            <div className="p-2 rounded bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
+                              <span className="text-[10px] font-mono text-zinc-400 uppercase block font-bold">How it works:</span>
+                              {m.howItWorks}
+                            </div>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900">
+                            <span className="text-[10px] font-mono text-zinc-400 uppercase block font-bold">Typical use:</span>
+                            <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                              {m.typicalUse}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Interactive Python Code Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>outlier_guardrails.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-outlier', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-outlier' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
