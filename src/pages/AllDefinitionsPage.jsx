@@ -17218,6 +17218,247 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 130: Acceptance Criteria */}
+            {item.id === 'acceptance-criteria' && (
+              <div className="space-y-6">
+                {/* 1. Core Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Production Deployment & MLOps Gates</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Release Standards
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Acceptance Criteria
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Key Dimensions & Evaluation Gates */}
+                {item.dimensions && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Production Release Gates</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Measurable Conditions
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.dimensions.map((dim, dIdx) => (
+                        <div key={dIdx} className={`p-4 rounded-xl bg-black border ${dim.border} space-y-2 flex flex-col justify-between`}>
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono ${dim.accent}`}>
+                                {dim.name}
+                              </h5>
+                              <span className="text-[10px] font-mono text-zinc-500 uppercase">{dim.metric}</span>
+                            </div>
+                            <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                              {dim.condition}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Interactive Python Code Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>acceptance_test_gate.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-acceptance', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-acceptance' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item 131: Eigenvectors, Eigenvalues & PCA */}
+            {item.id === 'eigenvector-pca' && (
+              <div className="space-y-6">
+                {/* 1. Core Definitions Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Linear Algebra & Dimensionality Reduction</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Spectral Decomposition
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Eigenvectors, Eigenvalues & PCA
+                  </h3>
+                  
+                  {item.coreDefinitions && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                      <div className="p-3 rounded-lg bg-zinc-950 border border-amber-800/40 space-y-1">
+                        <span className="text-xs font-bold font-mono text-amber-400 uppercase block">Eigenvector</span>
+                        <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                          {item.coreDefinitions.eigenvector}
+                        </p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-zinc-950 border border-cyan-800/40 space-y-1">
+                        <span className="text-xs font-bold font-mono text-cyan-400 uppercase block">Eigenvalue</span>
+                        <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                          {item.coreDefinitions.eigenvalue}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {item.coreDefinitions?.pcaApplication && (
+                    <div className="p-3 rounded-lg bg-emerald-950/20 border border-emerald-800/40 font-sans text-xs text-zinc-200 leading-relaxed">
+                      <strong className="text-emerald-400 font-mono uppercase block mb-0.5">PCA Application:</strong>
+                      {item.coreDefinitions.pcaApplication}
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Mathematical Foundation Card */}
+                {item.mathFoundation && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-purple-400" />
+                        <span>Linear Transformation Equation</span>
+                      </h4>
+                      <code className="text-sm font-mono font-bold text-amber-300 bg-black px-2.5 py-1 rounded border border-zinc-800">
+                        {item.mathFoundation.formula}
+                      </code>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono text-zinc-300">
+                      <div className="p-2.5 rounded-lg bg-black border border-zinc-800">
+                        <span className="text-amber-400 block font-bold mb-0.5">Eigenvector (v):</span>
+                        {item.mathFoundation.vMeaning}
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-black border border-zinc-800">
+                        <span className="text-cyan-400 block font-bold mb-0.5">Eigenvalue (λ):</span>
+                        {item.mathFoundation.lambdaMeaning}
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                      {item.mathFoundation.pcaConnection}
+                    </p>
+                  </div>
+                )}
+
+                {/* 3. PCA 4-Step Pipeline Grid */}
+                {item.pcaSteps && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>PCA Algorithmic Pipeline</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                      {item.pcaSteps.map((s, sIdx) => (
+                        <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                          <span className="text-xs font-bold font-mono text-cyan-300 block">
+                            {s.step}
+                          </span>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {s.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Interactive Python Code Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>pca_reduction.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-pca', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-pca' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

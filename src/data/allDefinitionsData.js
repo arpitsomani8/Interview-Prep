@@ -126,7 +126,9 @@ export const definitionBookmarks = [
   { id: "feature-cross", label: "Feature Cross" },
   { id: "powertransformer", label: "PowerTransformer" },
   { id: "regression-vs-classification", label: "Regression vs Classification" },
-  { id: "xgboost", label: "XGBoost" }
+  { id: "xgboost", label: "XGBoost" },
+  { id: "acceptance-criteria", label: "Acceptance Criteria" },
+  { id: "eigenvector-pca", label: "Eigenvectors & PCA" }
 ];
 
 export const definitionsData = [
@@ -9817,5 +9819,131 @@ for feat, score in gain_importance.items():
     print(f"  {feat}: {score:.4f}")`
     },
     takeaway: "XGBoost dominates structured tabular workflows because it enhances traditional gradient boosted trees with second-order Taylor expansions (gradients and Hessians) and integrated L1/L2 regularization on leaf weights. It automatically models complex nonlinear interactions while offering granular feature-importance metrics (Gain, Weight, Cover) to ensure model interpretability."
+  },
+  {
+    id: "acceptance-criteria",
+    title: "Acceptance Criteria (Production ML Release & Deployment Gates)",
+    badge: "MLOps Quality Gates, SLAs & Readiness Standards",
+    summary: "Acceptance criteria are the measurable conditions that a feature or model must satisfy before the team considers it ready for release.",
+    coreDefinition: "Acceptance criteria are the measurable conditions that a feature or model must satisfy before the team considers it ready for release.",
+    dimensions: [
+      {
+        name: "Predictive Quality & Business SLA",
+        condition: "F1-Score ≥ 0.88, ROC-AUC ≥ 0.92, and no category accuracy dropping below 80% on the golden validation holdout.",
+        metric: "Statistical Evaluation",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        name: "Operational & Latency Limits",
+        condition: "P99 inference latency < 25ms under 500 QPS load test; memory footprint below 1.5 GB.",
+        metric: "System Performance",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      },
+      {
+        name: "Data & Schema Validation",
+        condition: "Zero missing values in mandatory columns; Pydantic / Great Expectations schema checks pass with 0 errors.",
+        metric: "Contract Integrity",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        name: "Safety, Fairness & Rollback Gates",
+        condition: "Automated canary deployment verification; instant rollback triggered if production error rate exceeds 0.1%.",
+        metric: "Reliability & Safety",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      }
+    ],
+    codeExample: {
+      title: "Automated Production Release Gate in Python (pytest / Great Expectations style)",
+      language: "python",
+      code: `def test_model_acceptance_criteria(candidate_model, validation_dataset):
+    """Automated gate verifying all acceptance criteria prior to production release."""
+    
+    # 1. Evaluate candidate model on holdout set
+    X_val, y_val = validation_dataset
+    metrics = candidate_model.evaluate(X_val, y_val)
+    
+    # Criterion 1: Predictive performance threshold
+    assert metrics['f1_score'] >= 0.88, f"F1 score {metrics['f1_score']} below acceptance threshold (0.88)"
+    
+    # Criterion 2: Inference latency SLA (P99 < 30ms)
+    assert metrics['p99_latency_ms'] <= 30.0, f"P99 Latency {metrics['p99_latency_ms']}ms violates SLA"
+    
+    # Criterion 3: Slice fairness / No subgroup regression
+    for group, group_acc in metrics['subgroup_accuracy'].items():
+        assert group_acc >= 0.80, f"Subgroup '{group}' accuracy {group_acc} failed minimum fairness threshold"
+        
+    print("✓ All Acceptance Criteria Satisfied: Model Approved for Canary Release.")`
+    },
+    takeaway: "Acceptance criteria convert subjective business readiness into quantifiable automated quality gates. In production machine learning, they bridge the gap between engineering, product, and compliance by establishing hard constraints across predictive accuracy, latency SLAs, data contract integrity, and zero-downtime rollback capabilities."
+  },
+  {
+    id: "eigenvector-pca",
+    title: "Eigenvectors, Eigenvalues & PCA (Dimensionality Reduction)",
+    badge: "Linear Algebra Transformations & Variance Maximization",
+    summary: "An eigenvector is a non-zero vector whose direction stays the same after a particular linear transformation. Its length may change. An eigenvalue tells you how much that eigenvector is scaled. One important application is PCA (Principal Component Analysis), which reduces the number of features in a dataset while preserving as much variation in the data as possible.",
+    coreDefinitions: {
+      eigenvector: "An eigenvector is a non-zero vector whose direction stays the same after a particular linear transformation. Its length may change.",
+      eigenvalue: "An eigenvalue tells you how much that eigenvector is scaled.",
+      pcaApplication: "One important application is PCA (Principal Component Analysis), which reduces the number of features in a dataset while preserving as much variation in the data as possible."
+    },
+    mathFoundation: {
+      formula: "A v = λ v",
+      vMeaning: "v = Eigenvector (direction invariant under linear operator A)",
+      lambdaMeaning: "λ = Eigenvalue (scalar scale factor scaling eigenvector v)",
+      pcaConnection: "In PCA, the matrix A is the sample Covariance Matrix. The eigenvectors represent the principal axes of maximum variance, and their corresponding eigenvalues quantify the amount of total variance captured along each axis."
+    },
+    pcaSteps: [
+      {
+        step: "1. Mean Centering & Standardization",
+        desc: "Center features to zero mean and scale to unit variance so high-magnitude units do not dominate."
+      },
+      {
+        step: "2. Covariance Matrix Computation",
+        desc: "Compute Σ = (1/n) X^T X to capture all pairwise feature correlations and spreads."
+      },
+      {
+        step: "3. Eigendecomposition",
+        desc: "Solve Σ v = λ v to find orthogonal eigenvectors (principal components) and eigenvalues."
+      },
+      {
+        step: "4. Projection & Compression",
+        desc: "Sort components by descending eigenvalue λ and project data onto top k eigenvectors to compress dimensions."
+      }
+    ],
+    codeExample: {
+      title: "PCA Dimensionality Reduction with Scikit-Learn in Python",
+      language: "python",
+      code: `import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+# High-dimensional sample data (5 features per observation)
+X = np.array([
+    [2.5, 2.4, 1.2, 0.5, 3.1],
+    [0.5, 0.7, 0.2, 0.1, 0.9],
+    [2.2, 2.9, 1.1, 0.4, 2.8],
+    [1.9, 2.2, 0.9, 0.3, 2.4],
+    [3.1, 3.0, 1.5, 0.7, 3.9],
+    [2.3, 2.7, 1.0, 0.4, 2.9]
+])
+
+# 1. Standardize features
+X_scaled = StandardScaler().fit_transform(X)
+
+# 2. PCA: Reduce from 5 features to 2 principal components
+pca = PCA(n_components=2)
+X_reduced = pca.fit_transform(X_scaled)
+
+# 3. Eigenvalues & Explained Variance Ratio
+print("Original shape:", X.shape)
+print("Reduced shape (2 PCs):", X_reduced.shape)
+print("Explained Variance Ratio per Component:", np.round(pca.explained_variance_ratio_, 4))
+print(f"Total Preserved Variance: {np.sum(pca.explained_variance_ratio_)*100:.1f}%")`
+    },
+    takeaway: "Eigenvectors and eigenvalues represent the invariant directions and magnitude scaling factors of linear transformations. In Principal Component Analysis (PCA), eigendecomposition of the data covariance matrix identifies the orthogonal directions of maximal variance, enabling dimensionality reduction that compresses collinear features while retaining the core informational signal."
   }
 ];
