@@ -131,7 +131,8 @@ export const definitionBookmarks = [
   { id: "eigenvector-pca", label: "Eigenvectors & PCA" },
   { id: "tensor", label: "Tensor & TensorFlow" },
   { id: "security-and-error-handling", label: "Security & Error Handling" },
-  { id: "cross-encoder", label: "Cross-Encoder" }
+  { id: "cross-encoder", label: "Cross-Encoder" },
+  { id: "kmeans", label: "K-means Clustering" }
 ];
 
 export const definitionsData = [
@@ -10263,5 +10264,70 @@ for rank, (doc, score) in enumerate(ranked_results, 1):
     print(f"  [{rank}] Score: {score:.4f} | {doc[:75]}...")`
     },
     takeaway: "While bi-encoders enable scalable vector search over millions of documents via independent embeddings, cross-encoders achieve peak semantic accuracy by processing query and candidate tokens together through all Transformer attention layers. In production RAG, using cross-encoders as a Stage-2 reranker yields optimal retrieval quality without sacrificing overall system latency."
+  },
+  {
+    id: "kmeans",
+    title: "K-means Clustering (Unsupervised Partitioning & Centroid Optimization)",
+    badge: "Centroid-Based Partitioning & Vector Quantization",
+    summary: "K-means is an unsupervised learning algorithm that groups similar data points into K clusters. For a fashion catalog, you might cluster product embeddings to discover groups of visually similar designs without manually labeling every image.",
+    coreDefinition: "K-means is an unsupervised learning algorithm that groups similar data points into K clusters.",
+    fashionExample: "For a fashion catalog, you might cluster product embeddings to discover groups of visually similar designs without manually labeling every image.",
+    howItWorksSteps: [
+      {
+        step: "1. Choose the number of clusters, (K).",
+        desc: "Determine K either using domain requirements or evaluation heuristics like the Elbow Method (inertia) and Silhouette Score.",
+        accent: "text-amber-400"
+      },
+      {
+        step: "2. Initialize (K) centroids.",
+        desc: "Place K initial cluster center seeds in the feature space (commonly via k-means++ to maximize initial inter-centroid distance).",
+        accent: "text-cyan-400"
+      },
+      {
+        step: "3. Assign each data point to its nearest centroid.",
+        desc: "Compute Euclidean distance from every sample to all K centroids and assign each sample to the nearest cluster index.",
+        accent: "text-blue-400"
+      },
+      {
+        step: "4. Recalculate each centroid as the mean of its assigned points.",
+        desc: "Update the centroid coordinates to the geometric center (mean vector) of all data points currently belonging to that cluster.",
+        accent: "text-purple-400"
+      },
+      {
+        step: "5. Repeat until the assignments or centroids stabilize.",
+        desc: "Iterate steps 3 and 4 until cluster assignments stop shifting or centroid position drift falls below tolerance (tol).",
+        accent: "text-emerald-400"
+      }
+    ],
+    codeExample: {
+      title: "K-means Clustering with Scikit-Learn in Python",
+      language: "python",
+      code: `import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+# Example fashion product embedding features (e.g. 6 catalog items, 4 dimensions)
+X = np.array([
+    [0.12, 0.45, 0.78, 0.33],
+    [0.15, 0.42, 0.81, 0.30],
+    [0.88, 0.92, 0.14, 0.05],
+    [0.85, 0.95, 0.12, 0.08],
+    [0.45, 0.11, 0.65, 0.72],
+    [0.48, 0.15, 0.62, 0.70]
+])
+
+# Scale features so Euclidean distances are not distorted by disparate feature magnitudes
+X_scaled = StandardScaler().fit_transform(X)
+
+model = KMeans(
+    n_clusters=4,
+    random_state=42,
+    n_init=10
+)
+
+cluster_ids = model.fit_predict(X_scaled)
+print(cluster_ids)`
+    },
+    takeaway: "K-means minimizes within-cluster sum-of-squares (inertia) by iteratively shifting cluster centroids to the mean of assigned data points. It is the industry benchmark for unsupervised segmentation, customer cohort discovery, vector quantization in approximate search, and visual grouping of catalog embeddings."
   }
 ];
