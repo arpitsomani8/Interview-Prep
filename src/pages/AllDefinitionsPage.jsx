@@ -55,7 +55,13 @@ export default function AllDefinitionsPage() {
       const matchBadge = item.badge?.toLowerCase().includes(q);
       const matchSummary = item.summary?.toLowerCase().includes(q);
       const matchCode = item.code?.toLowerCase().includes(q);
-      return matchTitle || matchBadge || matchSummary || matchCode;
+      return (
+        matchTitle ||
+        matchBadge ||
+        matchSummary ||
+        matchCode ||
+        JSON.stringify(item).toLowerCase().includes(q)
+      );
     });
   }, [searchQuery]);
 
@@ -1100,6 +1106,124 @@ export default function AllDefinitionsPage() {
                     ))}
                   </ul>
                 </div>
+
+                {/* RAG Failure: Diagnosis, Safe Fallbacks & Monitoring */}
+                {item.ragFailure && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/90 border border-amber-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Bug className="w-4 h-4 text-amber-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+                          {item.ragFailure.headline}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-amber-300 uppercase bg-amber-950/60 px-2.5 py-1 rounded border border-amber-800/60 shrink-0 self-start sm:self-auto">
+                        System Resiliency
+                      </span>
+                    </div>
+
+                    {/* Verbatim Alert */}
+                    <div className="p-4 rounded-xl bg-black border border-amber-800/50 space-y-1.5">
+                      <div className="flex items-start gap-2.5">
+                        <span className="text-amber-400 text-sm mt-0.5">⚠️</span>
+                        <div>
+                          <p className="text-xs sm:text-sm font-semibold text-amber-200 font-sans leading-relaxed">
+                            {item.ragFailure.verbatim}
+                          </p>
+                          <p className="text-xs text-zinc-400 font-mono mt-1">
+                            {item.ragFailure.subtitle}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 4 Diagnostic Pillars */}
+                    <div className="space-y-2 pt-1">
+                      <h5 className="text-xs font-bold text-zinc-300 font-mono uppercase tracking-wider">
+                        4 Diagnostic Failure Pillars (Where RAG Breaks Down)
+                      </h5>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        {item.ragFailure.diagnosticPillars.map((pillar, pIdx) => (
+                          <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition space-y-2.5 flex flex-col justify-between">
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <h6 className={`text-xs font-bold font-mono ${pillar.accent}`}>
+                                  {pillar.name}
+                                </h6>
+                                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
+                                  {pillar.category}
+                                </span>
+                              </div>
+                              <div className="text-[11px] text-zinc-400">
+                                <span className="text-zinc-500 font-mono">Symptoms: </span>
+                                <span className="text-zinc-300 font-sans">{pillar.symptoms}</span>
+                              </div>
+                              <ul className="space-y-1 pt-1">
+                                {pillar.causes.map((c, cIdx) => (
+                                  <li key={cIdx} className="text-[11px] text-zinc-400 flex items-start gap-1.5 leading-relaxed">
+                                    <span className="text-amber-400/80">•</span>
+                                    <span>{c}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-300">
+                              <strong className="text-amber-400 font-mono">Mitigation: </strong>
+                              <span>{pillar.mitigation}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Safe Fallbacks and Monitoring Tactics */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2">
+                      {/* Safe Fallbacks */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                        <div className="flex items-center gap-2 border-b border-zinc-800/80 pb-2">
+                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                          <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                            Safe Fallback Strategies
+                          </h5>
+                        </div>
+                        <div className="space-y-2.5">
+                          {item.ragFailure.safeFallbacks.map((fb, fbIdx) => (
+                            <div key={fbIdx} className="space-y-1">
+                              <span className="text-xs font-bold text-emerald-300 font-mono">
+                                • {fb.title}
+                              </span>
+                              <p className="text-[11px] text-zinc-400 pl-3 leading-relaxed">
+                                {fb.desc}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Monitoring Tactics */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                        <div className="flex items-center gap-2 border-b border-zinc-800/80 pb-2">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                            Production Monitoring & Tracing
+                          </h5>
+                        </div>
+                        <div className="space-y-2.5">
+                          {item.ragFailure.monitoringTactics.map((mon, mIdx) => (
+                            <div key={mIdx} className="space-y-1">
+                              <span className="text-xs font-bold text-cyan-300 font-mono">
+                                • {mon.title}
+                              </span>
+                              <p className="text-[11px] text-zinc-400 pl-3 leading-relaxed">
+                                {mon.desc}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -2504,6 +2628,92 @@ export default function AllDefinitionsPage() {
                         {item.simpleRagProgram.executionSummary}
                       </div>
                     </div>
+                  </div>
+                )}
+
+                {/* LLM Production Failure: Discrete Category Handling */}
+                {item.llmProductionFailure && (
+                  <div className="space-y-5 p-5 rounded-2xl bg-zinc-950/90 border border-rose-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-rose-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-rose-400 font-mono">
+                          {item.llmProductionFailure.headline}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-rose-300 uppercase bg-rose-950/60 px-2.5 py-1 rounded border border-rose-800/60 shrink-0 self-start sm:self-auto">
+                        SRE & Fault Tolerance
+                      </span>
+                    </div>
+
+                    {/* Verbatim Alert */}
+                    <div className="p-4 rounded-xl bg-black border border-rose-800/50 space-y-1.5">
+                      <div className="flex items-start gap-2.5">
+                        <span className="text-rose-400 text-sm mt-0.5">⚠️</span>
+                        <div>
+                          <p className="text-xs sm:text-sm font-semibold text-rose-200 font-sans leading-relaxed">
+                            {item.llmProductionFailure.verbatim}
+                          </p>
+                          <p className="text-xs text-zinc-400 font-mono mt-1">
+                            {item.llmProductionFailure.subtitle}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 5 Distinct Failure Categories */}
+                    <div className="space-y-3 pt-1">
+                      <h5 className="text-xs font-bold text-zinc-300 font-mono uppercase tracking-wider">
+                        5 Separate Production Failure Modes & Handling Strategies
+                      </h5>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                        {item.llmProductionFailure.failureCategories.map((cat, cIdx) => (
+                          <div
+                            key={cIdx}
+                            className={`p-4 rounded-xl bg-black border ${cat.border} hover:border-zinc-700 transition space-y-2.5 flex flex-col justify-between`}
+                          >
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between gap-2">
+                                <h6 className={`text-xs font-bold font-mono ${cat.accent}`}>
+                                  {cat.mode}
+                                </h6>
+                                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
+                                  {cat.badge}
+                                </span>
+                              </div>
+                              <div className="text-[11px] text-zinc-400">
+                                <span className="text-zinc-500 font-mono">Root Cause: </span>
+                                <span className="text-zinc-300 font-sans">{cat.rootCause}</span>
+                              </div>
+                            </div>
+                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-300 leading-relaxed">
+                              <strong className="text-cyan-400 font-mono block mb-1">Separate Handling:</strong>
+                              <span>{cat.separateHandling}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Production Resilience Checklist */}
+                    {item.llmProductionFailure.productionResilienceChecklist && (
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                            Production Resilience Architecture Checklist
+                          </h5>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {item.llmProductionFailure.productionResilienceChecklist.map((chk, kIdx) => (
+                            <div key={kIdx} className="text-xs text-zinc-300 flex items-start gap-2 bg-zinc-950/80 p-2.5 rounded-lg border border-zinc-800/80">
+                              <span className="text-emerald-400 mt-0.5">•</span>
+                              <span className="leading-relaxed">{chk}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -7325,6 +7535,92 @@ export default function AllDefinitionsPage() {
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}
                 </div>
+
+                {/* LLM Production Failure: Discrete Category Handling */}
+                {item.llmProductionFailure && (
+                  <div className="space-y-5 p-5 rounded-2xl bg-zinc-950/90 border border-rose-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-rose-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-rose-400 font-mono">
+                          {item.llmProductionFailure.headline}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-rose-300 uppercase bg-rose-950/60 px-2.5 py-1 rounded border border-rose-800/60 shrink-0 self-start sm:self-auto">
+                        SRE & Fault Tolerance
+                      </span>
+                    </div>
+
+                    {/* Verbatim Alert */}
+                    <div className="p-4 rounded-xl bg-black border border-rose-800/50 space-y-1.5">
+                      <div className="flex items-start gap-2.5">
+                        <span className="text-rose-400 text-sm mt-0.5">⚠️</span>
+                        <div>
+                          <p className="text-xs sm:text-sm font-semibold text-rose-200 font-sans leading-relaxed">
+                            {item.llmProductionFailure.verbatim}
+                          </p>
+                          <p className="text-xs text-zinc-400 font-mono mt-1">
+                            {item.llmProductionFailure.subtitle}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 5 Distinct Failure Categories */}
+                    <div className="space-y-3 pt-1">
+                      <h5 className="text-xs font-bold text-zinc-300 font-mono uppercase tracking-wider">
+                        5 Separate Production Failure Modes & Handling Strategies
+                      </h5>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                        {item.llmProductionFailure.failureCategories.map((cat, cIdx) => (
+                          <div
+                            key={cIdx}
+                            className={`p-4 rounded-xl bg-black border ${cat.border} hover:border-zinc-700 transition space-y-2.5 flex flex-col justify-between`}
+                          >
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between gap-2">
+                                <h6 className={`text-xs font-bold font-mono ${cat.accent}`}>
+                                  {cat.mode}
+                                </h6>
+                                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
+                                  {cat.badge}
+                                </span>
+                              </div>
+                              <div className="text-[11px] text-zinc-400">
+                                <span className="text-zinc-500 font-mono">Root Cause: </span>
+                                <span className="text-zinc-300 font-sans">{cat.rootCause}</span>
+                              </div>
+                            </div>
+                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-300 leading-relaxed">
+                              <strong className="text-cyan-400 font-mono block mb-1">Separate Handling:</strong>
+                              <span>{cat.separateHandling}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Production Resilience Checklist */}
+                    {item.llmProductionFailure.productionResilienceChecklist && (
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
+                            Production Resilience Architecture Checklist
+                          </h5>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {item.llmProductionFailure.productionResilienceChecklist.map((chk, kIdx) => (
+                            <div key={kIdx} className="text-xs text-zinc-300 flex items-start gap-2 bg-zinc-950/80 p-2.5 rounded-lg border border-zinc-800/80">
+                              <span className="text-emerald-400 mt-0.5">•</span>
+                              <span className="leading-relaxed">{chk}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 

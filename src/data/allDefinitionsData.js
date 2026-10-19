@@ -761,7 +761,98 @@ print(f"Indexed {len(chunks)} chunks.")`,
       "client.embeddings.create() turns every passage into a numerical vector.",
       "collection.add() stores each passage, its vector, and its source.",
       "PersistentClient saves the database locally so we can reuse it when the API starts."
-    ]
+    ],
+    ragFailure: {
+      headline: "RAG Failure Diagnosis & Resiliency Architecture",
+      verbatim: "RAG failure: Diagnose retrieval, context, generation, or infrastructure; use safe fallbacks and monitoring.",
+      subtitle: "When a RAG system provides an incorrect, slow, or degraded answer, systematically isolate the issue into one of four discrete failure points instead of treating it as a black-box LLM error.",
+      diagnosticPillars: [
+        {
+          name: "1. Retrieval Failure",
+          category: "Search & Ingestion",
+          badge: "Retrieval",
+          accent: "text-amber-400",
+          symptoms: "Missing information, low relevance scores, irrelevant passages retrieved.",
+          causes: [
+            "Documents missing from knowledge base or vector index out of sync.",
+            "Chunk size too small (fragmented context) or too large (noise obscures answers).",
+            "Embedding model domain mismatch (e.g. general embeddings on medical/legal jargon).",
+            "Suboptimal top-k threshold (too low misses evidence; too high introduces noise)."
+          ],
+          mitigation: "Implement hybrid search (BM25 lexical + dense vector embeddings), evaluate Recall@k on golden queries, and add cross-encoder reranking."
+        },
+        {
+          name: "2. Context Failure",
+          category: "Prompt & Attention",
+          badge: "Context",
+          accent: "text-cyan-400",
+          symptoms: "LLM ignores retrieved evidence or truncates context window.",
+          causes: [
+            "Context window overflow when stuffing too many retrieved passages.",
+            "'Lost-in-the-middle' phenomenon where critical middle chunks are neglected.",
+            "Conflicting or contradictory passages across retrieved documents.",
+            "Excessive conversational history diluting query intent."
+          ],
+          mitigation: "Rerank and place highest-scoring chunks near prompt boundaries, compress context via summarization, and enforce metadata filters by document version/tenant."
+        },
+        {
+          name: "3. Generation Failure",
+          category: "Model Reasoning",
+          badge: "Generation",
+          accent: "text-purple-400",
+          symptoms: "Hallucinations, unsupported claims, format/schema violations, refusal.",
+          causes: [
+            "LLM relies on parametric pre-training rather than grounding strictly on retrieved context.",
+            "Ambiguous reasoning in multi-hop questions requiring cross-document synthesis.",
+            "Safety filter false-positives or prompt injection triggering evasive refusals.",
+            "Unconstrained output failing downstream JSON parsers."
+          ],
+          mitigation: "Enforce strict system prompt grounding ('Only answer using provided context; state unknown if missing'), employ chain-of-thought, and use structured output validation."
+        },
+        {
+          name: "4. Infrastructure Failure",
+          category: "Systems & Network",
+          badge: "Infrastructure",
+          accent: "text-rose-400",
+          symptoms: "High latency, connection timeouts, 5xx server errors, rate limits.",
+          causes: [
+            "Vector database cold starts, index lockups, or connection pool exhaustion.",
+            "Embedding API or LLM endpoint latency spikes or 429 rate limits.",
+            "Network partitions between API gateway, vector store, and LLM provider.",
+            "Unbounded concurrent inference requests exhausting GPU memory."
+          ],
+          mitigation: "Deploy health-check circuit breakers, cache frequent embeddings/queries, configure horizontal pod autoscaling, and provision dedicated inference capacity."
+        }
+      ],
+      safeFallbacks: [
+        {
+          title: "Semantic & Exact Cache",
+          desc: "Serve verified pre-computed answers from Redis or vector cache when similarity exceeds 0.95 or during backend degradation."
+        },
+        {
+          title: "Deterministic Keyword / Rule Fallback",
+          desc: "If vector search fails or yields low confidence (<0.65 cosine score), fall back to standard keyword search (BM25) or static handbook links."
+        },
+        {
+          title: "Safe Model Refusal & Escalation",
+          desc: "Output a deterministic fallback message ('I cannot verify this policy in our records') and route the query to a human specialist."
+        }
+      ],
+      monitoringTactics: [
+        {
+          title: "Retrieval Quality (RAG Triad)",
+          desc: "Continuously score Context Relevance (are chunks relevant to query?), Groundedness / Faithfulness (is answer supported by chunks?), and Answer Relevance (does it answer question?)."
+        },
+        {
+          title: "End-to-End Latency Tracing",
+          desc: "Dissect latency into embedding generation time, vector DB search time, reranking latency, Time To First Token (TTFT), and total streaming duration."
+        },
+        {
+          title: "Automated Drift & Error Alerts",
+          desc: "Alert when average cosine similarity drops below threshold, when 429/5xx rates increase, or when user thumbs-down / citation mismatch rates spike."
+        }
+      ]
+    }
   },
   {
     id: "embedding",
@@ -1652,6 +1743,64 @@ print(response.output_text)`,
       runCmd: "python main.py",
       exampleInput: "How long do customers have to request a refund?",
       executionSummary: "The program embeds the question, compares it against the policy chunks, selects the most similar ones, and sends them to the LLM."
+    },
+    llmProductionFailure: {
+      headline: "LLM Production Failure: Discrete Category Handling",
+      verbatim: "LLM production failure: Handle timeouts, rate limits, outages, invalid responses, and hallucinations separately.",
+      subtitle: "In production, treating all LLM failures as generic errors causes system brittleness. Each failure mode has distinct root causes, SLAs, and dedicated mitigation architectures.",
+      failureCategories: [
+        {
+          mode: "1. Timeouts",
+          badge: "Latency & SLA",
+          accent: "text-amber-400",
+          border: "border-amber-800/50",
+          bg: "bg-amber-950/10",
+          rootCause: "Long generation sequences, peak upstream cloud latency, queuing delays, or network stalls.",
+          separateHandling: "Configure aggressive per-request timeouts (e.g. 5-8s TTFT, 15s total) with exponential backoff. Monitor Time-To-First-Token (TTFT) via streaming. If timeout fires, immediately cancel the stream and failover to a faster, smaller model (e.g. GPT-4o-mini / Claude Haiku) or return a cached response."
+        },
+        {
+          mode: "2. Rate Limits (429 / TPM / RPM)",
+          badge: "Capacity & Quota",
+          accent: "text-cyan-400",
+          border: "border-cyan-800/50",
+          bg: "bg-cyan-950/10",
+          rootCause: "Burst traffic exceeding Tokens Per Minute (TPM) or Requests Per Minute (RPM) provisioned tier limits.",
+          separateHandling: "Implement client-side token bucket rate limiters. Maintain multi-key rotation and multi-region endpoint pools (e.g., East US + West US + Europe). Apply jittered exponential backoff retries with Retry-After header parsing so requests do not thundering-herd."
+        },
+        {
+          mode: "3. Outages (500 / 503 / Cloud Downtime)",
+          badge: "High Availability",
+          accent: "text-rose-400",
+          border: "border-rose-800/50",
+          bg: "bg-rose-950/10",
+          rootCause: "Provider API complete service disruptions, cloud regional outages, or internal server crashes.",
+          separateHandling: "Implement multi-provider failover routing (e.g., primary: Azure OpenAI → secondary: OpenAI Direct → tertiary: AWS Bedrock or self-hosted vLLM). Wrap upstream endpoints in circuit breaker patterns (e.g. open circuit after 3 consecutive 5xx errors to prevent cascading caller thread starvation)."
+        },
+        {
+          mode: "4. Invalid Responses (JSON/Schema Violations)",
+          badge: "Contract & Parsing",
+          accent: "text-purple-400",
+          border: "border-purple-800/50",
+          bg: "bg-purple-950/10",
+          rootCause: "Truncated tokens, markdown fences wrapping raw JSON, unexpected schemas, or safety guardrail refusals.",
+          separateHandling: "Enforce JSON mode or Structured Outputs (Pydantic / JSON schema). Validate responses through strict parsers; upon schema validation failure, trigger an immediate reflection retry prompt passing the parser error back to the model ('Your previous JSON was missing key X. Reformat strictly: ...'). Have deterministic default schema fallbacks."
+        },
+        {
+          mode: "5. Hallucinations (Factual Inaccuracies)",
+          badge: "Grounding & Trust",
+          accent: "text-emerald-400",
+          border: "border-emerald-800/50",
+          bg: "bg-emerald-950/10",
+          rootCause: "Parametric knowledge extrapolation, ungrounded prompts, reasoning errors, or high temperature settings.",
+          separateHandling: "Separate from infrastructure errors entirely: enforce strict grounding prompts ('Answer ONLY with evidence from sources'), lower temperature to 0.0-0.2 for factual extraction, implement post-generation citation checkers (e.g., SelfCheckGPT, Faithfulness scoring), and refuse to display answers failing citation thresholds."
+        }
+      ],
+      productionResilienceChecklist: [
+        "Circuit Breakers: Tripped after N consecutive 5xx/timeout errors to prevent downstream thread starvation.",
+        "Tiered Model Cascade: Fallback from flagship reasoning models to smaller, faster, lower-cost models.",
+        "Structured Schema Gate: Strict Pydantic parsing with automated self-correction reflection loop.",
+        "Grounding Gate: Faithfulness evaluation score > 0.85 required before serving generated text to end users."
+      ]
     }
   },
   {
@@ -4627,7 +4776,65 @@ def health_check():
         detail: "Combines prompt/completion token expenses and tool execution costs divided strictly by successfully resolved tasks."
       }
     ],
-    takeaway: "Never evaluate a production agent on conversational fluency alone. A production-ready evaluation system tracks quantitative task completion, tool precision, retrieval recall, factual grounding, p95 tail latencies, and unit cost per completed task."
+    takeaway: "Never evaluate a production agent on conversational fluency alone. A production-ready evaluation system tracks quantitative task completion, tool precision, retrieval recall, factual grounding, p95 tail latencies, and unit cost per completed task.",
+    llmProductionFailure: {
+      headline: "LLM Production Failure: Discrete Category Handling",
+      verbatim: "LLM production failure: Handle timeouts, rate limits, outages, invalid responses, and hallucinations separately.",
+      subtitle: "In production, treating all LLM failures as generic errors causes system brittleness. Each failure mode has distinct root causes, SLAs, and dedicated mitigation architectures.",
+      failureCategories: [
+        {
+          mode: "1. Timeouts",
+          badge: "Latency & SLA",
+          accent: "text-amber-400",
+          border: "border-amber-800/50",
+          bg: "bg-amber-950/10",
+          rootCause: "Long generation sequences, peak upstream cloud latency, queuing delays, or network stalls.",
+          separateHandling: "Configure aggressive per-request timeouts (e.g. 5-8s TTFT, 15s total) with exponential backoff. Monitor Time-To-First-Token (TTFT) via streaming. If timeout fires, immediately cancel the stream and failover to a faster, smaller model (e.g. GPT-4o-mini / Claude Haiku) or return a cached response."
+        },
+        {
+          mode: "2. Rate Limits (429 / TPM / RPM)",
+          badge: "Capacity & Quota",
+          accent: "text-cyan-400",
+          border: "border-cyan-800/50",
+          bg: "bg-cyan-950/10",
+          rootCause: "Burst traffic exceeding Tokens Per Minute (TPM) or Requests Per Minute (RPM) provisioned tier limits.",
+          separateHandling: "Implement client-side token bucket rate limiters. Maintain multi-key rotation and multi-region endpoint pools (e.g., East US + West US + Europe). Apply jittered exponential backoff retries with Retry-After header parsing so requests do not thundering-herd."
+        },
+        {
+          mode: "3. Outages (500 / 503 / Cloud Downtime)",
+          badge: "High Availability",
+          accent: "text-rose-400",
+          border: "border-rose-800/50",
+          bg: "bg-rose-950/10",
+          rootCause: "Provider API complete service disruptions, cloud regional outages, or internal server crashes.",
+          separateHandling: "Implement multi-provider failover routing (e.g., primary: Azure OpenAI → secondary: OpenAI Direct → tertiary: AWS Bedrock or self-hosted vLLM). Wrap upstream endpoints in circuit breaker patterns (e.g. open circuit after 3 consecutive 5xx errors to prevent cascading caller thread starvation)."
+        },
+        {
+          mode: "4. Invalid Responses (JSON/Schema Violations)",
+          badge: "Contract & Parsing",
+          accent: "text-purple-400",
+          border: "border-purple-800/50",
+          bg: "bg-purple-950/10",
+          rootCause: "Truncated tokens, markdown fences wrapping raw JSON, unexpected schemas, or safety guardrail refusals.",
+          separateHandling: "Enforce JSON mode or Structured Outputs (Pydantic / JSON schema). Validate responses through strict parsers; upon schema validation failure, trigger an immediate reflection retry prompt passing the parser error back to the model ('Your previous JSON was missing key X. Reformat strictly: ...'). Have deterministic default schema fallbacks."
+        },
+        {
+          mode: "5. Hallucinations (Factual Inaccuracies)",
+          badge: "Grounding & Trust",
+          accent: "text-emerald-400",
+          border: "border-emerald-800/50",
+          bg: "bg-emerald-950/10",
+          rootCause: "Parametric knowledge extrapolation, ungrounded prompts, reasoning errors, or high temperature settings.",
+          separateHandling: "Separate from infrastructure errors entirely: enforce strict grounding prompts ('Answer ONLY with evidence from sources'), lower temperature to 0.0-0.2 for factual extraction, implement post-generation citation checkers (e.g., SelfCheckGPT, Faithfulness scoring), and refuse to display answers failing citation thresholds."
+        }
+      ],
+      productionResilienceChecklist: [
+        "Circuit Breakers: Tripped after N consecutive 5xx/timeout errors to prevent downstream thread starvation.",
+        "Tiered Model Cascade: Fallback from flagship reasoning models to smaller, faster, lower-cost models.",
+        "Structured Schema Gate: Strict Pydantic parsing with automated self-correction reflection loop.",
+        "Grounding Gate: Faithfulness evaluation score > 0.85 required before serving generated text to end users."
+      ]
+    }
   },
   {
     id: "caching",
