@@ -128,7 +128,8 @@ export const definitionBookmarks = [
   { id: "regression-vs-classification", label: "Regression vs Classification" },
   { id: "xgboost", label: "XGBoost" },
   { id: "acceptance-criteria", label: "Acceptance Criteria" },
-  { id: "eigenvector-pca", label: "Eigenvectors & PCA" }
+  { id: "eigenvector-pca", label: "Eigenvectors & PCA" },
+  { id: "tensor", label: "Tensor & TensorFlow" }
 ];
 
 export const definitionsData = [
@@ -9945,5 +9946,105 @@ print("Explained Variance Ratio per Component:", np.round(pca.explained_variance
 print(f"Total Preserved Variance: {np.sum(pca.explained_variance_ratio_)*100:.1f}%")`
     },
     takeaway: "Eigenvectors and eigenvalues represent the invariant directions and magnitude scaling factors of linear transformations. In Principal Component Analysis (PCA), eigendecomposition of the data covariance matrix identifies the orthogonal directions of maximal variance, enabling dimensionality reduction that compresses collinear features while retaining the core informational signal."
+  },
+  {
+    id: "tensor",
+    title: "Tensor & TensorFlow (Deep Learning Data Containers & tf.keras)",
+    badge: "Multidimensional Arrays, Neural Computation & High-Level APIs",
+    summary: "A tensor is a container for numerical data that can have zero, one, two, or more dimensions. It is a generalization of scalars, vectors, and matrices. Neural networks process numerical data. Tensors represent that data, as well as model weights, intermediate calculations, and outputs. TensorFlow is an open-source machine learning framework that provides tools to build, train, evaluate, and run machine learning and deep learning models. A commonly used high-level API is tf.keras, which makes neural network development easier.",
+    coreDefinition: "A tensor is a container for numerical data that can have zero, one, two, or more dimensions. It is a generalization of scalars, vectors, and matrices.",
+    neuralNetworkRole: "Neural networks process numerical data. Tensors represent that data, as well as model weights, intermediate calculations, and outputs.",
+    tensorflowDefinition: "TensorFlow is an open-source machine learning framework. It provides tools to build, train, evaluate, and run machine learning and deep learning models.",
+    kerasNote: "A commonly used high-level API is tf.keras, which makes neural network development easier.",
+    tensorDimensions: [
+      {
+        rank: "0D Tensor",
+        name: "Scalar",
+        shape: "()",
+        example: "42 or 3.1415",
+        useCase: "Single loss value, learning rate, threshold scalar.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        rank: "1D Tensor",
+        name: "Vector",
+        shape: "(n,)",
+        example: "[0.12, -0.45, 0.88]",
+        useCase: "Single feature vector, word embedding, model bias vector.",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      },
+      {
+        rank: "2D Tensor",
+        name: "Matrix",
+        shape: "(samples, features)",
+        example: "[[1, 2], [3, 4]]",
+        useCase: "Tabular datasets, dense layer weight matrices W.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      },
+      {
+        rank: "3D Tensor",
+        name: "3D Tensor / Sequence",
+        shape: "(samples, timesteps, features)",
+        example: "Batched NLP text, stock time-series",
+        useCase: "Sequential inputs to LSTM, GRU, or Transformer attention blocks.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      },
+      {
+        rank: "4D Tensor",
+        name: "4D Tensor / Vision Batch",
+        shape: "(batch_size, height, width, channels)",
+        example: "(32, 224, 224, 3)",
+        useCase: "Batches of RGB images processed by Convolutional Networks (CNNs).",
+        accent: "text-rose-400",
+        border: "border-rose-800/50"
+      },
+      {
+        rank: "5D Tensor",
+        name: "5D Tensor / Video Batch",
+        shape: "(batch_size, frames, height, width, channels)",
+        example: "(16, 60, 224, 224, 3)",
+        useCase: "Batches of temporal video clips or 3D medical MRI/CT scans.",
+        accent: "text-blue-400",
+        border: "border-blue-800/50"
+      }
+    ],
+    codeExample: {
+      title: "Tensors & tf.keras Neural Network Pipeline in Python",
+      language: "python",
+      code: `import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+# 1. TENSORS: Containers of numerical data across dimensions
+scalar_0d = tf.constant(42.0)                                    # Shape: ()
+vector_1d = tf.constant([1.0, 2.0, 3.0])                         # Shape: (3,)
+matrix_2d = tf.constant([[1.0, 2.0], [3.0, 4.0]])                 # Shape: (2, 2)
+tensor_4d = tf.zeros(shape=(32, 224, 224, 3))                     # Batch of 32 RGB images
+
+print(f"Scalar rank: {scalar_0d.ndim}, shape: {scalar_0d.shape}")
+print(f"Matrix rank: {matrix_2d.ndim}, shape: {matrix_2d.shape}")
+print(f"Image Batch rank: {tensor_4d.ndim}, shape: {tensor_4d.shape}")
+
+# 2. tf.keras: High-level API for rapid neural network development
+# Tensors represent inputs, weights, intermediate activations, and outputs
+model = keras.Sequential([
+    layers.Input(shape=(10,)),                 # Accepts 2D batches (batch_size, 10)
+    layers.Dense(32, activation='relu'),       # Weight tensor W: (10, 32), Bias b: (32,)
+    layers.Dense(1, activation='sigmoid')      # Output probability tensor: (batch_size, 1)
+])
+
+model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+model.summary()`
+    },
+    takeaway: "Tensors form the mathematical substrate of all deep learning architectures. By generalizing multidimensional data arrays from scalars and vectors up to N-dimensional hypercubes, tensors standardize input features, weight matrices, and gradient propagations. TensorFlow and its high-level API tf.keras leverage this abstraction to execute accelerated computational graphs seamlessly across CPUs, GPUs, and TPUs."
   }
 ];
