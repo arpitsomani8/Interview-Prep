@@ -1890,6 +1890,79 @@ print(response.output_text)`,
         "Structured Schema Gate: Strict Pydantic parsing with automated self-correction reflection loop.",
         "Grounding Gate: Faithfulness evaluation score > 0.85 required before serving generated text to end users."
       ]
+    },
+    gpuMemoryOptimization: {
+      headline: "LLM GPU Memory Dynamics & Optimization Strategies",
+      question1: "Why do LLMs need so much GPU memory?",
+      intro: "Three main reasons:",
+      threeReasons: [
+        {
+          num: 1,
+          title: "Model weights",
+          desc: "The GPU must store model parameters, or parts of them.",
+          detail: "A 70-billion-parameter model in FP16 (2 bytes per parameter) requires ~140 GB of VRAM solely to load the uncompressed weights into GPU memory before processing any request tokens.",
+          accent: "text-amber-400",
+          border: "border-amber-800/50",
+          badge: "Static Parameter Footprint"
+        },
+        {
+          num: 2,
+          title: "Activations and attention-related memory",
+          desc: "Training needs intermediate values for backpropagation; long sequences can increase memory usage substantially.",
+          detail: "During inference and training, intermediate activations and the Key-Value (KV) cache for all attention heads across all layers must be kept in VRAM. For long context windows, standard self-attention memory scales quadratically O(L^2) without memory-efficient attention.",
+          accent: "text-cyan-400",
+          border: "border-cyan-800/50",
+          badge: "Dynamic KV-Cache & Activations"
+        },
+        {
+          num: 3,
+          title: "Gradients and optimizer states",
+          desc: "Training often requires additional memory beyond the weights themselves.",
+          detail: "Full parameter training with AdamW requires storing 32-bit gradients (4 bytes/param) and 2 optimizer momentum states (8 bytes/param), raising total memory requirements to 16–20 bytes per parameter—quadrupling weight size.",
+          accent: "text-rose-400",
+          border: "border-rose-800/50",
+          badge: "Training State Overhead"
+        }
+      ],
+      question2: "How do you reduce GPU usage?",
+      reductionTechniques: [
+        {
+          point: "Use a smaller model when it meets the quality requirements.",
+          detail: "Evaluate whether a high-performance 7B–8B model (e.g., LLaMA-3.1-8B, Mistral-7B) or Small Language Model (SLM) achieves acceptable accuracy on task-specific metrics before provisioning costly 70B+ clusters.",
+          badge: "Model Selection",
+          accent: "text-emerald-400"
+        },
+        {
+          point: "Quantize weights, such as using 8-bit or 4-bit representations when appropriate.",
+          detail: "Post-training quantization (AWQ, GPTQ, bitsandbytes, FP8) shrinks weight footprints by 50% to 75% (e.g., 70B in 4-bit runs in ~35-40 GB VRAM instead of 140 GB) with near-zero degradation in practical downstream tasks.",
+          badge: "Weight Quantization",
+          accent: "text-amber-400"
+        },
+        {
+          point: "Use LoRA/PEFT for fine-tuning rather than updating every parameter.",
+          detail: "Low-Rank Adaptation freezes 99%+ of the base weights and only trains low-rank adapter matrices (r = 8–64), reducing gradient and optimizer VRAM overhead by over 90% and enabling fine-tuning on a single consumer GPU.",
+          badge: "Parameter-Efficient Tuning",
+          accent: "text-purple-400"
+        },
+        {
+          point: "Reduce batch size or sequence length if memory is the bottleneck.",
+          detail: "Lower concurrent batch size, truncate unnecessary system prompt history, and enforce maximum output token limits to instantly curb peak dynamic activation spikes and prevent Out-Of-Memory (OOM) crashes.",
+          badge: "Batch & Context Bounds",
+          accent: "text-blue-400"
+        },
+        {
+          point: "Use efficient attention implementations and optimized inference runtimes.",
+          detail: "Deploy high-throughput inference engines like vLLM (PagedAttention), FlashAttention-2/3, TensorRT-LLM, or TGI. PagedAttention eliminates internal KV-cache memory fragmentation and boosts GPU memory utilization from ~20% to ~96%.",
+          badge: "PagedAttention & vLLM",
+          accent: "text-cyan-400"
+        },
+        {
+          point: "Measure GPU memory, latency, and throughput before choosing a deployment configuration.",
+          detail: "Profile real-world Time-To-First-Token (TTFT), tokens/second per GPU, and peak VRAM allocation under realistic concurrency using nvidia-smi, nvtop, and Prometheus/Grafana before finalizing production hardware sizing.",
+          badge: "Benchmarking & Profiling",
+          accent: "text-rose-400"
+        }
+      ]
     }
   },
   {

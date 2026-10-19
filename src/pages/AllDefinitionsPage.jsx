@@ -2856,6 +2856,95 @@ export default function AllDefinitionsPage() {
                     )}
                   </div>
                 )}
+
+                {/* GPU Memory Dynamics & Reduction Strategies */}
+                {item.gpuMemoryOptimization && (
+                  <div className="space-y-6 p-5 rounded-2xl bg-zinc-950/90 border border-amber-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Cpu className="w-4 h-4 text-amber-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+                          {item.gpuMemoryOptimization.headline}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-amber-300 uppercase bg-amber-950/60 px-2.5 py-1 rounded border border-amber-800/60 shrink-0 self-start sm:self-auto">
+                        Hardware Sizing & VRAM
+                      </span>
+                    </div>
+
+                    {/* Part 1: Why do LLMs need so much GPU memory? */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h5 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                          <Sliders className="w-3.5 h-3.5 text-amber-400" />
+                          <span>{item.gpuMemoryOptimization.question1}</span>
+                        </h5>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                          {item.gpuMemoryOptimization.intro}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                        {item.gpuMemoryOptimization.threeReasons.map((reason, rIdx) => (
+                          <div key={rIdx} className={`p-4 rounded-xl bg-black border ${reason.border} space-y-2 flex flex-col justify-between hover:border-zinc-700 transition`}>
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className={`text-xs font-bold font-mono ${reason.accent}`}>
+                                  {reason.num}. {reason.title}
+                                </span>
+                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                  {reason.badge}
+                                </span>
+                              </div>
+                              <p className="text-xs text-zinc-200 font-semibold leading-relaxed">
+                                {reason.desc}
+                              </p>
+                            </div>
+                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-400 font-mono leading-relaxed">
+                              {reason.detail}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Part 2: How do you reduce GPU usage? */}
+                    <div className="space-y-3 pt-2">
+                      <div className="flex items-center justify-between border-t border-zinc-800/80 pt-4">
+                        <h5 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                          <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>{item.gpuMemoryOptimization.question2}</span>
+                        </h5>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                          6 Mitigation Strategies
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {item.gpuMemoryOptimization.reductionTechniques.map((tech, tIdx) => (
+                          <div key={tIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-emerald-500/40 transition flex flex-col justify-between">
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 ${tech.accent}`}>
+                                  {tech.badge}
+                                </span>
+                                <span className="text-[10px] font-mono text-zinc-500">
+                                  #{tIdx + 1}
+                                </span>
+                              </div>
+                              <p className="text-xs text-zinc-100 font-medium leading-relaxed">
+                                • {tech.point}
+                              </p>
+                            </div>
+                            <div className="p-2 rounded bg-zinc-950 border border-zinc-900 text-[11px] text-zinc-400 leading-relaxed font-sans">
+                              {tech.detail}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
