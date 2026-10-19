@@ -18706,6 +18706,210 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
+            {/* K-Fold Cross-Validation */}
+            {item.id === 'k-fold' && (
+              <div className="space-y-6">
+                {/* 1. Core Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Model Validation & Resampling Strategy</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Generalization Assessment
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    K-Fold Cross-Validation (Model Validation, Stratification & Leakage Prevention)
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                  <div className="p-3 rounded-lg bg-zinc-950 border border-cyan-900/40 text-xs text-cyan-200/90 leading-relaxed font-sans">
+                    <strong className="text-cyan-400 font-mono uppercase block mb-0.5">Why Cross-Validation Over Single Split:</strong>
+                    A single 80/20 train/test split can be biased or misleading depending on which rows randomly land in the test set. K-Fold trains and validates across K disjoint partitions, delivering an unbiased mean score alongside standard deviation to verify model stability across subsets.
+                  </div>
+                </div>
+
+                {/* 2. 5-Step Cross-Validation Workflow */}
+                {item.kFoldSteps && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>The 5-Step Cross-Validation Cycle</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Zero Leakage Workflow
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                      {item.kFoldSteps.map((s, sIdx) => (
+                        <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-mono font-bold text-amber-400">{s.step}</span>
+                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-medium">
+                                {s.badge}
+                              </span>
+                            </div>
+                            <h5 className="text-xs font-bold text-white font-mono">{s.title}</h5>
+                            <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{s.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. The 5 Major K-Fold Variations */}
+                {item.variations && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Workflow className="w-3.5 h-3.5 text-purple-400" />
+                        <span>The 5 K-Fold Strategies: Choosing the Right Variant</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Problem-Driven Selection
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.variations.map((v, vIdx) => (
+                        <div key={vIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono text-white">{v.name}</span>
+                              <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${v.accent}`}>
+                                {v.badge}
+                              </span>
+                            </div>
+                            <div className="p-2 rounded-lg bg-zinc-950 border border-zinc-800/80 text-[11px] text-zinc-300 leading-relaxed font-sans">
+                              <strong className="text-zinc-200 block mb-0.5 font-mono text-[10px] uppercase">Mechanism:</strong>
+                              {v.mechanism}
+                            </div>
+                            <div className="text-[11px] text-emerald-300/90 leading-relaxed font-sans">
+                              <strong className="text-emerald-400 font-mono text-[10px] uppercase block">Best For:</strong>
+                              {v.idealFor}
+                            </div>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-800/80 text-[10px] text-zinc-400 italic">
+                            ⚠️ {v.warning}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Comprehensive Validation Comparison Matrix Table */}
+                {item.comparisonMatrix && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Validation Methods Architectural Matrix</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        6 Evaluation Dimensions
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                      <table className="w-full text-left text-xs font-sans border-collapse">
+                        <thead>
+                          <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-300">
+                            <th className="p-2.5 font-semibold text-cyan-300">Evaluation Dimension</th>
+                            <th className="p-2.5 font-semibold text-zinc-300">Simple Train/Test (70/30)</th>
+                            <th className="p-2.5 font-semibold text-blue-300">Standard K-Fold</th>
+                            <th className="p-2.5 font-semibold text-emerald-300">Stratified K-Fold</th>
+                            <th className="p-2.5 font-semibold text-purple-300">Group K-Fold</th>
+                            <th className="p-2.5 font-semibold text-amber-300">TimeSeriesSplit</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 bg-black">
+                          {item.comparisonMatrix.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/30 transition-colors">
+                              <td className="p-2.5 font-mono text-cyan-400 font-medium whitespace-nowrap">{row.dimension}</td>
+                              <td className="p-2.5 text-zinc-300">{row.simpleSplit}</td>
+                              <td className="p-2.5 text-blue-200/90">{row.standardKFold}</td>
+                              <td className="p-2.5 text-emerald-200/90">{row.stratifiedKFold}</td>
+                              <td className="p-2.5 text-purple-200/90">{row.groupKFold}</td>
+                              <td className="p-2.5 text-amber-200/90">{row.timeSeriesSplit}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Critical Production Pitfalls */}
+                {item.pitfalls && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                        <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                        <span>Critical Cross-Validation Traps & Interview Pitfalls</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
+                        Senior ML Defense
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {item.pitfalls.map((p, pIdx) => (
+                        <div key={pIdx} className="p-3.5 rounded-xl bg-black border border-rose-900/40 space-y-2">
+                          <h5 className="text-xs font-bold font-mono text-rose-300">{p.title}</h5>
+                          <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{p.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Production Python Pipeline Code Block */}
+                {item.pythonCode && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <span className="text-xs font-mono font-bold text-emerald-400 flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Production Python Pipeline: Leakage-Proof Stratified K-Fold</span>
+                      </span>
+                      <button
+                        onClick={() => handleCopyCode(item.pythonCode, item.id)}
+                        className="px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] font-mono text-zinc-300 border border-zinc-700 flex items-center gap-1.5 transition cursor-pointer"
+                      >
+                        {copiedId === item.id ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span className="text-emerald-400">Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3 text-zinc-400" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-zinc-300 overflow-x-auto leading-relaxed max-h-96">
+                      <code>{item.pythonCode}</code>
+                    </pre>
+                  </div>
+                )}
+
+                {/* 7. Architecture Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
             {/* Item 135: K-means Clustering */}
             {item.id === 'kmeans' && (
               <div className="space-y-6">

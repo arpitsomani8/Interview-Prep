@@ -348,6 +348,10 @@ export const definitionBookmarks = [
     "label": "Joblib"
   },
   {
+    "id": "k-fold",
+    "label": "K-Fold Cross-Validation"
+  },
+  {
     "id": "kmeans",
     "label": "K-means Clustering"
   },
@@ -11338,6 +11342,233 @@ for rank, (doc, score) in enumerate(ranked_results, 1):
     print(f"  [{rank}] Score: {score:.4f} | {doc[:75]}...")`
     },
     takeaway: "While bi-encoders enable scalable vector search over millions of documents via independent embeddings, cross-encoders achieve peak semantic accuracy by processing query and candidate tokens together through all Transformer attention layers. In production RAG, using cross-encoders as a Stage-2 reranker yields optimal retrieval quality without sacrificing overall system latency."
+  },
+  {
+    id: "k-fold",
+    title: "K-Fold Cross-Validation (Model Validation, Stratification & Leakage Prevention)",
+    badge: "Model Validation, Resampling & Generalization",
+    summary: "K-Fold Cross-Validation is a robust statistical resampling technique that splits a dataset into K non-overlapping subsets ('folds') to train and validate a model K separate times. By averaging the validation scores across all K folds, it provides an honest, low-variance estimate of how the model will perform on unseen production data while guarding against lucky train/test splits.",
+    coreDefinition: "K-Fold Cross-Validation is a statistical resampling procedure where a dataset of N observations is randomly partitioned into K equal-sized subsets (folds). The model is trained K separate times: in each iteration i, fold i serves as the hold-out validation set, while the remaining K-1 folds are pooled together as the training set. The final generalization metric is computed as the mean and standard deviation across all K validation scores.",
+    kFoldSteps: [
+      {
+        step: "01",
+        title: "Partition Dataset",
+        desc: "Shuffle data with a fixed random seed and partition into K equal-sized subsets (commonly K=5 or K=10).",
+        badge: "K Chunks"
+      },
+      {
+        step: "02",
+        title: "Hold-Out Assignment",
+        desc: "For iteration i (from 1 to K), reserve Fold i exclusively for validation; use the other K-1 folds for training.",
+        badge: "Split Isolation"
+      },
+      {
+        step: "03",
+        title: "In-Fold Preprocessing",
+        desc: "Fit scalers, imputers, and encoders strictly on the K-1 training folds ONLY, then transform the validation fold (avoids data leakage).",
+        badge: "Leakage Guard"
+      },
+      {
+        step: "04",
+        title: "Train & Evaluate",
+        desc: "Fit the model on the transformed training folds, run predictions on validation fold i, and record performance metric (ROC-AUC / F1 / RMSE).",
+        badge: "Model Fit"
+      },
+      {
+        step: "05",
+        title: "Aggregate & Deploy",
+        desc: "Calculate average score (mean) and variance (std dev). Retrain a final production model on 100% of available data.",
+        badge: "Mean & Std Dev"
+      }
+    ],
+    variations: [
+      {
+        name: "Standard K-Fold (KFold)",
+        badge: "Balanced / Regression",
+        accent: "border-blue-800/60 text-blue-400 bg-blue-950/20",
+        mechanism: "Randomly partitions rows into K chunks without checking target class frequencies.",
+        idealFor: "Regression problems (continuous targets like house prices) or perfectly balanced classification tasks.",
+        warning: "Dangerous on imbalanced data: a rare class (e.g. 1% fraud) may have zero instances in some validation folds."
+      },
+      {
+        name: "Stratified K-Fold (StratifiedKFold)",
+        badge: "Imbalanced Classification",
+        accent: "border-emerald-800/60 text-emerald-400 bg-emerald-950/20",
+        mechanism: "Maintains the exact percentage of each target class across every single fold (e.g. 95% negative, 5% positive in all folds).",
+        idealFor: "Real-world classification, fraud detection, medical diagnosis, click-through rate modeling.",
+        warning: "The mandatory gold standard for classification in ML interviews."
+      },
+      {
+        name: "Group K-Fold (GroupKFold)",
+        badge: "Entity / Patient Grouping",
+        accent: "border-purple-800/60 text-purple-400 bg-purple-950/20",
+        mechanism: "Ensures that all rows sharing the same group identifier (e.g. patient_id, user_id, device_id) appear exclusively in either training or validation.",
+        idealFor: "Medical records (multiple visits per patient), multi-session user analytics, multi-camera tracking.",
+        warning: "Prevents the model from memorizing patient-specific quirks rather than learning true disease markers."
+      },
+      {
+        name: "Time-Series Split (TimeSeriesSplit)",
+        badge: "Temporal / Financial Data",
+        accent: "border-amber-800/60 text-amber-400 bg-amber-950/20",
+        mechanism: "Forward-chaining / expanding window cross-validation where validation data is strictly chronologically after training data (t_train < t_val).",
+        idealFor: "Stock market forecasting, hourly electricity load, supply chain inventory demand.",
+        warning: "Never use standard K-Fold on time-series; shuffling across time introduces fatal lookahead bias."
+      },
+      {
+        name: "Repeated K-Fold (RepeatedKFold)",
+        badge: "Small Datasets (N < 1000)",
+        accent: "border-rose-800/60 text-rose-400 bg-rose-950/20",
+        mechanism: "Executes K-Fold cross-validation N times with different random seeds (e.g. 5 folds x 10 repeats = 50 model fits).",
+        idealFor: "Small sample sizes where results are sensitive to a particular random partition.",
+        warning: "Higher compute overhead (N * K fits), but produces narrow, statistically robust confidence intervals."
+      }
+    ],
+    comparisonMatrix: [
+      {
+        dimension: "Splitting Logic",
+        simpleSplit: "Single 70/30 or 80/20 random split",
+        standardKFold: "K equal random partitions",
+        stratifiedKFold: "K partitions preserving target class ratios",
+        groupKFold: "K partitions ensuring entity IDs don't cross splits",
+        timeSeriesSplit: "Expanding temporal windows (t_train < t_val)"
+      },
+      {
+        dimension: "Data Leakage Risk",
+        simpleSplit: "Moderate (single seed bias)",
+        standardKFold: "Low (if preprocessing inside fold)",
+        stratifiedKFold: "Low (if preprocessing inside fold)",
+        groupKFold: "Zero entity leakage across patients/users",
+        timeSeriesSplit: "Zero temporal lookahead bias"
+      },
+      {
+        dimension: "Class Imbalance Safety",
+        simpleSplit: "Unsafe without stratify=y",
+        standardKFold: "Unsafe (minority class may be missing)",
+        stratifiedKFold: "100% Safe (uniform class ratio per fold)",
+        groupKFold: "Depends on group label distribution",
+        timeSeriesSplit: "Requires careful temporal stratification"
+      },
+      {
+        dimension: "Compute Cost",
+        simpleSplit: "1x Model Fit",
+        standardKFold: "K x Model Fits (e.g. 5x or 10x)",
+        stratifiedKFold: "K x Model Fits",
+        groupKFold: "K x Model Fits",
+        timeSeriesSplit: "K x Model Fits"
+      },
+      {
+        dimension: "Variance Estimation",
+        simpleSplit: "None (single score, no variance)",
+        standardKFold: "Provides mean +/- standard deviation",
+        stratifiedKFold: "Provides mean +/- standard deviation",
+        groupKFold: "Provides mean +/- standard deviation",
+        timeSeriesSplit: "Provides temporal stability drift"
+      },
+      {
+        dimension: "Primary Production Use",
+        simpleSplit: "Quick baselines & massive datasets (> 10M rows)",
+        standardKFold: "General regression & balanced tabular ML",
+        stratifiedKFold: "Production classification & fraud detection",
+        groupKFold: "Healthcare, biometric, multi-session user data",
+        timeSeriesSplit: "Stock market, crypto, IoT, sensor telemetry"
+      }
+    ],
+    pitfalls: [
+      {
+        title: "1. Global Preprocessing Leakage (The Cardinal Sin)",
+        desc: "Calling scaler.fit_transform(X) or imputer.fit(X) on the entire dataset BEFORE splitting into folds leaks validation fold mean and variance into the training set. This gives unrealistically high CV scores that drop drastically in production. ALWAYS fit preprocessing transformers strictly inside each training fold using Scikit-Learn Pipelines."
+      },
+      {
+        title: "2. The 'Which K to Choose?' Trade-Off",
+        desc: "K=2 trains on only 50% of data, resulting in high pessimistic bias. K=N (Leave-One-Out) is computationally prohibitive on large datasets and has high variance (each training set is 99.9% identical). K=5 or K=10 is the universally proven sweet spot balancing low bias, reasonable variance, and computational efficiency."
+      },
+      {
+        title: "3. Retraining the Final Production Model",
+        desc: "Cross-validation is an evaluation and model selection tool—it does NOT output a single production model (it produces K temporary models). Once optimal hyperparameters and expected ROC-AUC are verified via CV, you must fit a fresh final model on 100% of your training dataset before saving and deploying to production."
+      }
+    ],
+    pythonCode: `# ==============================================================================
+# PRODUCTION K-FOLD CROSS-VALIDATION PIPELINE (WITH STRATIFICATION & LEAKAGE GUARD)
+# ==============================================================================
+import numpy as np
+import pandas as pd
+from sklearn.datasets import make_classification
+from sklearn.model_selection import StratifiedKFold, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score, f1_score
+
+# 1. Generate Synthetic Imbalanced Dataset (e.g., 90% Clean, 10% Fraudulent)
+X, y = make_classification(
+    n_samples=2000, 
+    n_features=12, 
+    n_informative=8, 
+    n_redundant=4,
+    weights=[0.90, 0.10],  # 10% minority fraud class
+    random_state=42
+)
+
+# Introduce 5% artificial missing values (NaNs) to test leakage-proof imputation
+mask = np.random.rand(*X.shape) < 0.05
+X[mask] = np.nan
+
+print(f"Dataset Shape: {X.shape} | Target Fraud Rate: {y.mean():.1%}")
+
+# 2. Build Leakage-Proof Scikit-Learn Pipeline
+# Preprocessing (imputer + scaler) is fitted ONLY on training folds during CV!
+model_pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler()),
+    ('classifier', LogisticRegression(class_weight='balanced', max_iter=1000, random_state=42))
+])
+
+# 3. Configure 5-Fold Stratified Cross-Validation
+N_SPLITS = 5
+skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=42)
+
+fold_auc_scores = []
+fold_f1_scores = []
+
+print(f"\n--- Running {N_SPLITS}-Fold Stratified Cross-Validation ---")
+for fold, (train_idx, val_idx) in enumerate(skf.split(X, y), 1):
+    X_train, X_val = X[train_idx], X[val_idx]
+    y_train, y_val = y[train_idx], y[val_idx]
+    
+    # Verify stratification: minority class ratio must be identical in each fold
+    val_fraud_pct = y_val.mean() * 100
+    
+    # Fit pipeline strictly on training fold
+    model_pipeline.fit(X_train, y_train)
+    
+    # Predict probabilities and classes on hold-out validation fold
+    y_val_probs = model_pipeline.predict_proba(X_val)[:, 1]
+    y_val_preds = model_pipeline.predict(X_val)
+    
+    # Compute metrics
+    auc = roc_auc_score(y_val, y_val_probs)
+    f1 = f1_score(y_val, y_val_preds)
+    
+    fold_auc_scores.append(auc)
+    fold_f1_scores.append(f1)
+    
+    print(f"  Fold {fold}: Validation Fraud % = {val_fraud_pct:.1f}% | ROC-AUC = {auc:.4f} | F1 = {f1:.4f}")
+
+# 4. Aggregate Cross-Validation Results
+mean_auc = np.mean(fold_auc_scores)
+std_auc = np.std(fold_auc_scores)
+mean_f1 = np.mean(fold_f1_scores)
+
+print(f"\n[CV Summary Results]")
+print(f"  Mean ROC-AUC: {mean_auc:.4f} (+/- {std_auc:.4f})")
+print(f"  Mean F1-Score: {mean_f1:.4f}")
+
+# 5. Final Retraining on 100% Data for Production Deployment
+print("\nRetraining final production model on 100% of available data...")
+final_production_pipeline = model_pipeline.fit(X, y)
+print("Pipeline ready for serialization (joblib/pickle) and inference serving!")`,
+    takeaway: "K-Fold Cross-Validation is the foundational bedrock of reliable machine learning evaluation. It eliminates the random sample bias of single train/test splits, provides honest variance estimates, and surfaces true model generalization. Always use StratifiedKFold for classification, GroupKFold for multi-sample entities, and TimeSeriesSplit for temporal data—and always encapsulate feature transforms inside Scikit-Learn Pipelines to prevent fatal preprocessing leakage."
   },
   {
     id: "kmeans",
