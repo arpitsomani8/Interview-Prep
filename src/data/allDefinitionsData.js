@@ -97,7 +97,8 @@ export const definitionBookmarks = [
   { id: "react-pattern", label: "ReAct" },
   { id: "cot-chain-of-thought", label: "COT / Chain of Thought" },
   { id: "bagging", label: "Bagging" },
-  { id: "knn", label: "KNN" }
+  { id: "knn", label: "KNN" },
+  { id: "random-forest", label: "Random Forest" }
 ];
 
 export const definitionsData = [
@@ -7401,5 +7402,92 @@ predictions = model.predict(X_test)`
       }
     ],
     takeaway: "KNN is a non-parametric, instance-based lazy learner that predicts targets using majority vote or averaging across K nearest neighbors in a metric distance space. In production, feature normalization via StandardScaler is mandatory, and spatial indexing structures (KD-Trees, Ball-Trees) are required to accelerate query latency."
+  },
+  {
+    id: "random-forest",
+    title: "Random Forest Algorithm (Bootstrap Aggregating + Random Subspaces)",
+    badge: "Ensemble Learning, Bagging & Feature Subsampling",
+    summary: "Random Forest algorithm combines many decision trees to make a more robust prediction than an individual tree often can. It introduces dual randomness: bootstrap sampling on rows and random feature subsampling at every split to de-correlate trees.",
+    coreDefinition: "Random Forest algorithm. Random Forest combines many decision trees to make a more robust prediction than an individual tree often can.",
+    pseudocode: `INPUT: Training data X, labels y, number of trees T
+FOR each tree from 1 to T:
+    1. Create a bootstrap sample from the training data
+    2. Start building a decision tree
+    3. At each split:
+         Select a random subset of features
+         Choose a split according to the tree's criterion
+    4. Grow the tree using the chosen stopping rules
+FOR a new input:
+    Get a prediction from every tree
+IF classification:
+    Return the majority vote (or aggregate class probabilities)
+IF regression:
+    Return the average of tree predictions
+RETURN final prediction`,
+    codeExample: {
+      title: "RandomForestClassifier with scikit-learn",
+      language: "python",
+      code: `from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+
+model = RandomForestClassifier(
+    n_estimators=100,
+    max_depth=10,
+    min_samples_leaf=2,
+    random_state=42,
+    n_jobs=-1
+)
+
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+
+print(classification_report(y_test, predictions))`
+    },
+    parameterExplanations: [
+      {
+        param: "n_estimators=100",
+        meaning: "Build 100 trees.",
+        detail: "More trees generally improve generalization and stability without risk of overfitting, plateauing once variance is minimized.",
+        accent: "text-amber-400"
+      },
+      {
+        param: "max_depth=10",
+        meaning: "Limit each tree's depth.",
+        detail: "Prevents individual trees from growing excessively deep and memorizing training noise, acting as a form of pre-pruning.",
+        accent: "text-blue-400"
+      },
+      {
+        param: "min_samples_leaf=2",
+        meaning: "Require at least two training examples in a leaf.",
+        detail: "Guarantees that terminal nodes contain at least 2 samples, smoothing leaf estimates and preventing single-sample leaf splits.",
+        accent: "text-emerald-400"
+      },
+      {
+        param: "random_state=42",
+        meaning: "Make the randomized process reproducible.",
+        detail: "Fixes the random seed for both bootstrap data sampling and feature selection subsets, ensuring identical reproducible results across runs.",
+        accent: "text-purple-400"
+      },
+      {
+        param: "n_jobs=-1",
+        meaning: "Use available CPU cores for parallelizable work.",
+        detail: "Since each tree is trained completely independently of all others, training scales linearly across all available processor cores.",
+        accent: "text-cyan-400"
+      }
+    ],
+    dualRandomnessMechanism: [
+      {
+        title: "1. Bootstrap Sampling (Row Randomness)",
+        desc: "Each tree trains on a random sample of size N drawn with replacement (~63.2% unique data points, ~36.8% out-of-bag).",
+        badge: "Data Diversity"
+      },
+      {
+        title: "2. Random Subspace Method (Feature Randomness)",
+        desc: "At every candidate split, only a random subset of m features (typically m = sqrt(p) for classification, p/3 for regression) is considered. This de-correlates trees by preventing strong dominant features from causing identical splits across the forest.",
+        badge: "De-Correlation"
+      }
+    ],
+    takeaway: "Random Forest combines bootstrap aggregating (Bagging) with random feature subsampling at each decision split. By forcing trees to consider different features, it de-correlates individual models, dramatically lowering ensemble variance while preserving low bias."
   }
 ];

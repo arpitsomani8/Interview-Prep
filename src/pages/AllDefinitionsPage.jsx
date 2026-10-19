@@ -12877,6 +12877,158 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 101: Random Forest */}
+            {item.id === 'random-forest' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-emerald-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Core Definition</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold">
+                      Bagging + Random Subspaces
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Dual Randomness Mechanism */}
+                {item.dualRandomnessMechanism && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>The Dual Randomness Mechanism</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        Tree De-correlation
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.dualRandomnessMechanism.map((mech, mIdx) => (
+                        <div key={mIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition flex flex-col justify-between">
+                          <div className="flex items-center justify-between">
+                            <h5 className="text-xs font-bold font-mono text-emerald-300">
+                              {mech.title}
+                            </h5>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {mech.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                            {mech.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Pseudocode & Code Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Pseudocode Box */}
+                  {item.pseudocode && (
+                    <div className="space-y-2 p-4 rounded-2xl bg-zinc-950 border border-zinc-800">
+                      <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                          <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Random Forest Pseudocode</span>
+                        </h4>
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                          Logic Flow
+                        </span>
+                      </div>
+                      <pre className="p-3 rounded-xl bg-black border border-zinc-900 text-xs font-mono text-amber-200/90 whitespace-pre-wrap leading-relaxed overflow-x-auto">
+                        {item.pseudocode}
+                      </pre>
+                    </div>
+                  )}
+
+                  {/* scikit-learn Code Example Box */}
+                  {item.codeExample && (
+                    <div className="space-y-2 p-4 rounded-2xl bg-zinc-950 border border-zinc-800 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                            <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>{item.codeExample.title}</span>
+                          </h4>
+                          <button
+                            onClick={() => handleCopyCode('code-rf', item.codeExample.code)}
+                            className="flex items-center gap-1 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                          >
+                            {copiedId === 'code-rf' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-400" />
+                                <span>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                <span>Copy</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <pre className="p-3 rounded-xl bg-black border border-zinc-900 text-xs font-mono text-emerald-300 whitespace-pre-wrap leading-relaxed overflow-x-auto mt-2">
+                          {item.codeExample.code}
+                        </pre>
+                      </div>
+                      <span className="text-[11px] font-mono text-zinc-500 pt-2 block">
+                        Parallelized fitting via n_jobs=-1 with comprehensive classification report
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 4. What the Parameters Mean */}
+                {item.parameterExplanations && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-purple-400" />
+                        <span>What the Parameters Mean</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Hyperparameter Guide
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+                      {item.parameterExplanations.map((p, pIdx) => (
+                        <div key={pIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition flex flex-col justify-between">
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${p.accent}`}>
+                                {p.param}
+                              </span>
+                            </div>
+                            <h5 className="text-xs font-bold text-zinc-200 font-sans">
+                              {p.meaning}
+                            </h5>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-1 border-t border-zinc-900">
+                            {p.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
