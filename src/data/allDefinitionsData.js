@@ -105,7 +105,8 @@ export const definitionBookmarks = [
   { id: "sft-peft", label: "SFT / PEFT" },
   { id: "reinforcement-learning", label: "Reinforcement Learning" },
   { id: "machine-learning-types", label: "ML Types & RLHF" },
-  { id: "hallucination", label: "Hallucination" }
+  { id: "hallucination", label: "Hallucination" },
+  { id: "ranking-and-reranking", label: "Ranking & Reranking" }
 ];
 
 export const definitionsData = [
@@ -8145,5 +8146,77 @@ def generate_grounded_response(query, retrieved_chunks):
     return llm.chat.completions.create(model="gpt-4o", messages=messages, temperature=0.0)`
     },
     takeaway: "LLM hallucinations originate from the fundamental mismatch between statistical token continuation and truth verification. While RAG grounds models on real enterprise documents, it merely shifts the failure mode from parametric confabulation to context misinterpretation. Combining high-precision retrieval with strict prompt grounding, citation enforcement, and explicit permission to abstain is essential for high-stakes AI."
+  },
+  {
+    id: "ranking-and-reranking",
+    title: "Ranking vs Reranking in Information Retrieval & RAG",
+    badge: "Two-Stage Search, Bi-Encoders & Cross-Encoders",
+    summary: "Ranking means ordering candidate results by relevance or another objective. Reranking means taking an initial set of retrieved results and scoring or ordering them again using a potentially more detailed relevance method.",
+    coreDefinition: "Ranking means ordering candidate results by relevance or another objective. Reranking means taking an initial set of retrieved results and scoring or ordering them again using a potentially more detailed relevance method.",
+    coreConcepts: [
+      {
+        term: "Ranking",
+        definition: "Ranking means ordering candidate results by relevance or another objective.",
+        architecture: "First-Stage Retrieval (High Recall, Low Latency)",
+        mechanism: "Computes fast approximate relevance across millions of documents using vector dot-products (Bi-encoders like BGE, OpenAI ada/text-embedding-3) or lexical search (BM25, TF-IDF). Returns top 50–100 candidates in milliseconds.",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50",
+        badge: "First Stage (Filter & Retrieve)"
+      },
+      {
+        term: "Reranking",
+        definition: "Reranking means taking an initial set of retrieved results and scoring or ordering them again using a potentially more detailed relevance method.",
+        architecture: "Second-Stage Scoring (High Precision, Deep Cross-Attention)",
+        mechanism: "Passes the query and candidate documents jointly into a heavy Cross-Encoder model (e.g., Cohere Rerank, BGE-Reranker-large). Computes all-to-all token cross-attention to re-order the top 50 candidates down to the top 3–5 most factual passages for the LLM.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50",
+        badge: "Second Stage (Precision Scoring)"
+      }
+    ],
+    twoStageComparison: [
+      {
+        dimension: "Core Goal",
+        ranking: "Maximize Recall (ensure relevant docs aren't missed)",
+        reranking: "Maximize Precision (ensure top 3–5 docs are factual)"
+      },
+      {
+        dimension: "Search Space",
+        ranking: "Entire corpus (millions to billions of docs)",
+        reranking: "Truncated candidate pool (typically 20–100 chunks)"
+      },
+      {
+        dimension: "Underlying Model",
+        ranking: "Bi-Encoder (independent query & doc vectors) or BM25",
+        reranking: "Cross-Encoder (joint full query-document attention)"
+      },
+      {
+        dimension: "Latency Cost",
+        ranking: "Ultra-fast (5ms – 20ms using HNSW vector indexes)",
+        reranking: "Compute-heavy (30ms – 100ms on GPU per batch)"
+      }
+    ],
+    codeExample: {
+      title: "Production Two-Stage Retrieval (Bi-Encoder + Cross-Encoder Reranker)",
+      language: "python",
+      code: `from sentence_transformers import CrossEncoder
+
+# Stage 1: Initial Ranking / Vector Search (Retrieves top 50 candidates)
+# query_vec = embed_model.encode(query)
+# candidate_docs = vector_db.similarity_search(query_vec, top_k=50)
+
+# Stage 2: Reranking with deep Cross-Encoder
+reranker = CrossEncoder("BAAI/bge-reranker-large")
+
+# Construct (query, candidate) sentence pairs for joint attention
+pairs = [[query, doc.page_content] for doc in candidate_docs]
+scores = reranker.predict(pairs)
+
+# Order candidate results by second-stage relevance score
+ranked_results = sorted(zip(candidate_docs, scores), key=lambda x: x[1], reverse=True)
+
+# Select top 5 pristine passages for LLM context injection
+top_passages = [doc for doc, score in ranked_results[:5]]`
+    },
+    takeaway: "In modern production search and RAG pipelines, single-stage vector search alone often suffers from semantic drift and false positives. Combining first-stage Ranking (high-recall Bi-encoders filtering millions of items) with second-stage Reranking (high-precision Cross-encoders re-ordering the top 50 candidates) yields the optimal balance of sub-second latency and pinpoint factual accuracy."
   }
 ];
