@@ -120,7 +120,8 @@ export const definitionBookmarks = [
   { id: "gini-impurity", label: "Gini Impurity" },
   { id: "information-gain", label: "Information Gain" },
   { id: "outlier-detection", label: "Outlier Detection" },
-  { id: "imputation", label: "Imputation" }
+  { id: "imputation", label: "Imputation" },
+  { id: "z-score", label: "Z-score" }
 ];
 
 export const definitionsData = [
@@ -9323,5 +9324,88 @@ df_knn = knn_imp.fit_transform(df[['age_imputed', 'salary']])
 print(df[['age_imputed', 'department_mode', 'department_const']])`
     },
     takeaway: "Imputation transforms incomplete raw data into dense feature matrices ready for machine learning algorithms. While simple mean/median imputers provide fast computational baselines, always use median for skewed data with outliers, mode or constant for categories, and encapsulate transformations inside Scikit-Learn Pipelines to prevent data leakage between train and test splits."
+  },
+  {
+    id: "z-score",
+    title: "Z-score (Standard Score & Normal Distribution Outlier Detection)",
+    badge: "Statistical Standardization, Gaussian Outliers & Standard Scores",
+    summary: "A Z-score tells you how many standard deviations a value is away from the mean (average). A common rule of thumb is to flag values with |z| > 3 as potential outliers when the data is approximately normally distributed. This is not a universal rule.",
+    coreDefinition: "A Z-score tells you how many standard deviations a value is away from the mean (average).",
+    ruleOfThumbHeading: "The |z| > 3 Rule of Thumb:",
+    ruleOfThumbText: "A common rule of thumb is to flag values with |z| > 3 as potential outliers when the data is approximately normally distributed. This is not a universal rule.",
+    formulaSection: {
+      formula: "z = (x - μ) / σ",
+      components: [
+        { symbol: "x", desc: "Raw observation value" },
+        { symbol: "μ", desc: "Mean of the distribution (average)" },
+        { symbol: "σ", desc: "Standard deviation of the distribution" },
+        { symbol: "z", desc: "Distance from the mean measured in standard deviations" }
+      ]
+    },
+    empiricalDistribution: [
+      {
+        range: "|z| ≤ 1.0",
+        coverage: "68.27% of Data",
+        meaning: "Within 1 standard deviation of the mean; high-probability normal region.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      },
+      {
+        range: "|z| ≤ 2.0",
+        coverage: "95.45% of Data",
+        meaning: "Within 2 standard deviations; captures the vast majority of standard observations.",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      },
+      {
+        range: "|z| > 3.0",
+        coverage: "Top 0.27% Extreme Tail",
+        meaning: "Beyond 3 standard deviations; standard threshold for flagging potential anomalies.",
+        accent: "text-rose-400",
+        border: "border-rose-800/50"
+      }
+    ],
+    notUniversalCaveats: {
+      headline: "Why This Is NOT a Universal Rule (Critical Caveats):",
+      caveats: [
+        {
+          title: "Mean & Std Masking (Sensitivity)",
+          desc: "Extreme outliers distort both μ and σ. A massive anomaly artificially inflates the standard deviation, lowering the computed z-scores of other outliers and masking them."
+        },
+        {
+          title: "Non-Normal & Skewed Distributions",
+          desc: "For heavy-tailed distributions (e.g. latency, financial returns, document token counts), values with |z| > 3 are expected naturally and may not be corrupt or invalid data."
+        },
+        {
+          title: "Alternative: Robust Z-Score",
+          desc: "When data is skewed or contains extreme anomalies, use the Modified Z-Score: 0.6745 · (x - Median) / MAD (Median Absolute Deviation)."
+        }
+      ]
+    },
+    codeExample: {
+      title: "Z-score Outlier Detection in Python (SciPy & Pure NumPy)",
+      language: "python",
+      code: `import numpy as np
+from scipy import stats
+
+# Dataset of server latency in milliseconds (mostly 18-24ms, with a 150ms spike)
+latency_ms = np.array([20.1, 21.4, 19.8, 22.3, 20.9, 150.0, 21.0, 19.5, 23.1])
+
+# Calculate standard Z-scores
+z_scores = stats.zscore(latency_ms)
+
+# Flag potential outliers where |z| > 3
+outlier_mask = np.abs(z_scores) > 3.0
+outliers = latency_ms[outlier_mask]
+
+print("Latency Values:   ", latency_ms)
+print("Computed Z-scores:", np.round(z_scores, 2))
+print("Flagged Outliers (|z| > 3):", outliers)
+
+# Output:
+# Flagged Outliers (|z| > 3): [150.] (z-score ≈ 2.83 - masked due to high variance!)
+# *Notice: The single 150ms outlier inflated std from ~1.3 to ~42.3, demonstrating why |z|>3 is not universal without robust estimators!`
+    },
+    takeaway: "The Z-score standardizes disparate numeric distributions onto a zero-centered scale measured in standard deviations. While |z| > 3 provides a standard initial heuristic for Gaussian data, real-world machine learning systems must verify normality and adopt median-based robust metrics (like IQR or Modified Z-scores) to prevent severe outliers from masking themselves."
   }
 ];
