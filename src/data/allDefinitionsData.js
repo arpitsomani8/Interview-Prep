@@ -86,7 +86,8 @@ export const definitionBookmarks = [
   { id: "clip", label: "CLIP" },
   { id: "production-handling", label: "Production Handling" },
   { id: "top-k-top-p", label: "Top-K / Top-P" },
-  { id: "temperature", label: "Temperature" }
+  { id: "temperature", label: "Temperature" },
+  { id: "pydantic", label: "Pydantic" }
 ];
 
 export const definitionsData = [
@@ -6250,5 +6251,121 @@ async def analyze_defect(req: DefectAnalysisRequest):
       }
     ],
     takeaway: "Mastering LLM inference requires combining decoding hyperparameters with strict schema engineering. Temperature controls probability sharpness, Top-K and Top-P restrict the candidate search space, Frequency and Presence penalties eradicate repetition loops, and Pydantic guarantees rock-solid, typed API contracts in production FastAPI services."
+  },
+  {
+    id: "pydantic",
+    title: "Pydantic (Data Validation & FastAPI Type Contracts)",
+    badge: "Python Typing, Rust-Powered Core & Schema Contracts",
+    summary: "Pydantic is a Python library used to validate data, enforce types, and convert input data into structured Python objects. FastAPI uses Pydantic models to define request bodies, serialize response schemas, and generate interactive OpenAPI documentation.",
+    coreDefinition: "Pydantic is a Python library used to validate data, enforce types, and convert input data into structured Python objects.",
+    howToUseQuestion: "How do you use Pydantic with FastAPI?",
+    code: `from fastapi import FastAPI
+from pydantic import BaseModel, Field
+
+app = FastAPI()
+
+
+class PredictionRequest(BaseModel):
+    parcel_id: str = Field(min_length=1)
+    confidence_threshold: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0
+    )
+
+
+class PredictionResponse(BaseModel):
+    parcel_id: str
+    prediction: str
+    confidence: float
+
+
+@app.post("/predict", response_model=PredictionResponse)
+def predict(request: PredictionRequest):
+    # Placeholder prediction; replace with actual model inference.
+    return PredictionResponse(
+        parcel_id=request.parcel_id,
+        prediction="damaged",
+        confidence=0.92
+    )`,
+    keyMechanisms: [
+      {
+        title: "1. Request Parsing & Type Coercion",
+        detail: "When a JSON payload arrives via HTTP POST, FastAPI passes the raw dictionary into `PredictionRequest`. Pydantic automatically parses strings into floats, validates string length constraints (`min_length=1`), and applies default values (`default=0.5`).",
+        accent: "text-emerald-400",
+        badge: "Input Parsing"
+      },
+      {
+        title: "2. Automatic 422 HTTP Error Handling",
+        detail: "If a client sends an invalid payload (e.g., `confidence_threshold: 1.5` which violates `le=1.0` or missing `parcel_id`), Pydantic immediately aborts the handler and returns a clean, structured JSON error with HTTP 422 Unprocessable Entity.",
+        accent: "text-rose-400",
+        badge: "Validation Guard"
+      },
+      {
+        title: "3. Outgoing Serialization (response_model)",
+        detail: "`response_model=PredictionResponse` guarantees that returned data strictly conforms to the expected output schema. It filters out internal attributes, formats numbers, and ensures downstream clients receive guaranteed JSON structures.",
+        accent: "text-blue-400",
+        badge: "Output Sanitization"
+      },
+      {
+        title: "4. Automatic OpenAPI & Swagger Generation",
+        detail: "FastAPI reads the Pydantic type annotations and `Field` constraints to auto-generate the complete OpenAPI JSON schema and interactive interactive documentation at `/docs` (Swagger UI) and `/redoc`.",
+        accent: "text-purple-400",
+        badge: "Interactive Docs"
+      }
+    ],
+    fieldConstraintsCheatSheet: [
+      {
+        constraint: "min_length / max_length",
+        appliesTo: "str, bytes, list",
+        example: "parcel_id: str = Field(min_length=1, max_length=64)",
+        behavior: "Guarantees strings are not empty and prevents buffer overflow / DB column truncation."
+      },
+      {
+        constraint: "ge / gt / le / lt",
+        appliesTo: "int, float, Decimal",
+        example: "confidence: float = Field(ge=0.0, le=1.0)",
+        behavior: "Enforces mathematical range (e.g. probability bounds: greater-equal 0.0 and less-equal 1.0)."
+      },
+      {
+        constraint: "pattern (regex)",
+        appliesTo: "str",
+        example: "sku: str = Field(pattern=r'^PKG-[0-9]{5}$') ",
+        behavior: "Enforces strict regular expression matching for product codes, tracking numbers, or emails."
+      },
+      {
+        constraint: "default / default_factory",
+        appliesTo: "Any",
+        example: "timestamp: datetime = Field(default_factory=datetime.utcnow)",
+        behavior: "Provides safe fallback values or dynamic factory generators for missing JSON fields."
+      }
+    ],
+    pydanticVsOthers: [
+      {
+        aspect: "Runtime Type Validation",
+        pydantic: "Yes: Strict Rust-powered parsing & coercion at runtime",
+        dataclass: "No: Types are purely static hints; no runtime enforcement",
+        dict: "No: Completely untyped; requires manual checks"
+      },
+      {
+        aspect: "FastAPI Integration",
+        pydantic: "Native 1st class: auto request/response mapping & docs",
+        dataclass: "Supported but limited documentation and constraint features",
+        dict: "Requires manual request body reading and validation"
+      },
+      {
+        aspect: "Error Reporting",
+        pydantic: "Rich structured JSON errors with field paths (loc, msg, type)",
+        dataclass: "Raises generic TypeErrors or passes silently",
+        dict: "Raises KeyError or requires manual error crafting"
+      },
+      {
+        aspect: "Performance",
+        pydantic: "Blazing fast: Pydantic v2 core is compiled in Rust",
+        dataclass: "Pure Python instantiation",
+        dict: "Standard Python dictionary lookup"
+      }
+    ],
+    takeaway: "In modern production Python architectures, Pydantic acts as the definitive data boundary contract. Paired with FastAPI, it guarantees end-to-end type safety, rejects malformed payloads with 422 status codes, protects model inference pipelines from invalid inputs, and automatically documents your service via OpenAPI."
   }
 ];

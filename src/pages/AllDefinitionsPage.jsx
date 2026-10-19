@@ -10527,6 +10527,234 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 90: Pydantic & FastAPI */}
+            {item.id === 'pydantic' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-emerald-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Core Definition</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                      Python Data Validation
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. How do you use Pydantic with FastAPI? - Code Implementation */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.howToUseQuestion}</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                      FastAPI + Pydantic
+                    </span>
+                  </div>
+
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>fastapi_prediction_service.py</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-pydantic', item.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-pydantic' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                      {item.code}
+                    </pre>
+                  </div>
+                </div>
+
+                {/* 3. Key Architectural Mechanisms */}
+                {item.keyMechanisms && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>How FastAPI Uses Pydantic Under the Hood</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        4-Step Lifecycle
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.keyMechanisms.map((mech, mIdx) => (
+                        <div key={mIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
+                          <div className="flex items-center justify-between">
+                            <h5 className={`text-xs font-bold font-mono ${mech.accent}`}>
+                              {mech.title}
+                            </h5>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black border border-zinc-800 text-zinc-400">
+                              {mech.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {mech.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Field Constraints Cheat Sheet */}
+                {item.fieldConstraintsCheatSheet && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Pydantic Field() Constraints Cheat Sheet</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Production Guardrails
+                      </span>
+                    </div>
+
+                    <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                          <tr>
+                            <th className="py-3 px-3 font-semibold text-amber-400 w-1/4">Constraint</th>
+                            <th className="py-3 px-3 font-semibold text-cyan-400 w-1/6">Applies To</th>
+                            <th className="py-3 px-3 font-semibold text-emerald-400 w-1/3">Code Example</th>
+                            <th className="py-3 px-3 font-semibold text-zinc-300">Production Behavior</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.fieldConstraintsCheatSheet.map((fc, fIdx) => (
+                            <tr key={fIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-3 px-3 font-mono font-bold text-amber-300">
+                                {fc.constraint}
+                              </td>
+                              <td className="py-3 px-3 font-mono text-cyan-300">
+                                {fc.appliesTo}
+                              </td>
+                              <td className="py-3 px-3 font-mono text-emerald-300 text-[11px]">
+                                {fc.example}
+                              </td>
+                              <td className="py-3 px-3 text-zinc-300 text-xs">
+                                {fc.behavior}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 md:hidden">
+                      {item.fieldConstraintsCheatSheet.map((fc, fIdx) => (
+                        <div key={fIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold font-mono text-amber-400">{fc.constraint}</span>
+                            <span className="text-[10px] font-mono text-cyan-300 px-2 py-0.5 rounded bg-zinc-900">{fc.appliesTo}</span>
+                          </div>
+                          <div className="p-2 rounded bg-zinc-950 font-mono text-[11px] text-emerald-300 overflow-x-auto border border-zinc-900">
+                            {fc.example}
+                          </div>
+                          <p className="text-xs text-zinc-300">{fc.behavior}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Pydantic vs dataclass vs dict Comparison */}
+                {item.pydanticVsOthers && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-purple-400" />
+                        <span>Architectural Comparison: Pydantic vs dataclass vs dict</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Interview Distinction
+                      </span>
+                    </div>
+
+                    <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                          <tr>
+                            <th className="py-3 px-3 font-semibold text-zinc-400 w-1/5">Aspect</th>
+                            <th className="py-3 px-3 font-semibold text-emerald-400 w-1/3">Pydantic (BaseModel)</th>
+                            <th className="py-3 px-3 font-semibold text-blue-400 w-1/4">Python @dataclass</th>
+                            <th className="py-3 px-3 font-semibold text-zinc-400">Plain dict</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.pydanticVsOthers.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-3 px-3 font-mono font-bold text-white align-top">
+                                {row.aspect}
+                              </td>
+                              <td className="py-3 px-3 text-emerald-200/90 align-top text-xs">
+                                {row.pydantic}
+                              </td>
+                              <td className="py-3 px-3 text-blue-200/80 align-top text-xs">
+                                {row.dataclass}
+                              </td>
+                              <td className="py-3 px-3 text-zinc-400 align-top text-xs">
+                                {row.dict}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 md:hidden">
+                      {item.pydanticVsOthers.map((row, rIdx) => (
+                        <div key={rIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2">
+                          <h6 className="text-xs font-bold text-white font-mono">{row.aspect}</h6>
+                          <div className="p-2 rounded bg-emerald-950/20 border border-emerald-900/40 text-xs text-emerald-200/90">
+                            <strong className="block text-[10px] font-mono uppercase text-emerald-400">Pydantic:</strong>
+                            {row.pydantic}
+                          </div>
+                          <div className="p-2 rounded bg-blue-950/20 border border-blue-900/40 text-xs text-blue-200/90">
+                            <strong className="block text-[10px] font-mono uppercase text-blue-400">dataclass:</strong>
+                            {row.dataclass}
+                          </div>
+                          <div className="p-2 rounded bg-zinc-900 border border-zinc-800 text-xs text-zinc-400">
+                            <strong className="block text-[10px] font-mono uppercase text-zinc-300">dict:</strong>
+                            {row.dict}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
