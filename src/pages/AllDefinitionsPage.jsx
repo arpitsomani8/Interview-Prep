@@ -10273,6 +10273,57 @@ export default function AllDefinitionsPage() {
             {/* Item 89: Temperature & Inference Hyperparameters */}
             {item.id === 'temperature' && (
               <div className="space-y-6">
+                {/* 0. Intuitive Randomness Principle Banner */}
+                {item.randomnessControl && (
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-amber-950/40 via-black to-cyan-950/40 border border-amber-600/50 space-y-2 shadow-lg shadow-amber-950/20">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold font-mono text-amber-400 uppercase flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Core Sampling Intuition</span>
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-semibold">
+                        Next-Token Entropy
+                      </span>
+                    </div>
+                    <p className="text-sm sm:text-base text-amber-200 font-semibold font-mono tracking-wide leading-relaxed">
+                      "{item.randomnessControl}"
+                    </p>
+                  </div>
+                )}
+
+                {/* 0.1 Temperature Randomness Spectrum Cards */}
+                {item.temperatureRandomnessSpectrum && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Temperature Randomness & Entropy Spectrum</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        Determinism vs Diversity
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.temperatureRandomnessSpectrum.map((spec, sIdx) => (
+                        <div key={sIdx} className={`p-3.5 rounded-xl bg-black border ${spec.border} space-y-2 hover:border-zinc-500 transition`}>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold font-mono text-white">
+                              {spec.range}
+                            </span>
+                          </div>
+                          <span className={`text-[11px] font-mono font-bold block ${spec.accent}`}>
+                            {spec.randomness}
+                          </span>
+                          <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
+                            {spec.behavior}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* 1. Core Verbatim Definitions Grid */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between border-b border-zinc-800 pb-2">

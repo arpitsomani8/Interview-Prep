@@ -6082,9 +6082,40 @@ def health_check():
     id: "temperature",
     title: "Temperature & Inference Hyperparameters (Sampling Controls & Pydantic Validation)",
     badge: "LLM Decoding, Logit Penalties & Schema Contracts",
-    summary: "Temperature controls the sharpness of the next-token probability distribution. Master the 6 core generation and schema validation primitives: Temperature, Top-K, Top-P, Frequency penalty, Presence penalty, and Pydantic validation for structured LLM outputs.",
+    summary: "Temperature controls how randomly an LLM selects the next token by adjusting the sharpness of the next-token probability distribution. Master the 6 core generation and schema validation primitives: Temperature, Top-K, Top-P, Frequency penalty, Presence penalty, and Pydantic validation for structured LLM outputs.",
+    randomnessControl: "Temperature controls how randomly an LLM selects the next token.",
+    temperatureRandomnessSpectrum: [
+      {
+        range: "T = 0.0 (Greedy Decoding)",
+        randomness: "Zero Randomness (Pure Determinism)",
+        behavior: "The model always chooses the argmax token (highest probability). Ideal for math, code, JSON extraction, and strict factual Q&A.",
+        accent: "text-blue-400",
+        border: "border-blue-900/50"
+      },
+      {
+        range: "T = 0.1 – 0.3 (Low Temperature)",
+        randomness: "Minimal Randomness",
+        behavior: "Distribution is sharpened. Highly conservative and consistent with minimal deviation. Ideal for Enterprise RAG and classification.",
+        accent: "text-emerald-400",
+        border: "border-emerald-900/50"
+      },
+      {
+        range: "T = 0.7 – 0.8 (Moderate Temperature)",
+        randomness: "Balanced Randomness",
+        behavior: "Allows creative token selections while preserving grammatical coherence. Standard default for general conversational chatbots.",
+        accent: "text-amber-400",
+        border: "border-amber-900/50"
+      },
+      {
+        range: "T = 1.0+ (High Temperature)",
+        randomness: "High Randomness (High Entropy)",
+        behavior: "Distribution is flattened. Greatly elevates diversity and serendipity, but increases hallucinations and nonsensical phrasing.",
+        accent: "text-rose-400",
+        border: "border-rose-900/50"
+      }
+    ],
     verbatimCore: [
-      { term: "Temperature", definition: "Controls the sharpness of the next-token probability distribution." },
+      { term: "Temperature", definition: "Controls the sharpness of the next-token probability distribution. Temperature controls how randomly an LLM selects the next token." },
       { term: "Top-K", definition: "Restricts sampling to the K highest-probability tokens." },
       { term: "Top-P", definition: "Restricts sampling to a probability-mass-based candidate set." },
       { term: "Frequency penalty", definition: "Discourages tokens according to how often they've appeared." },
@@ -6094,9 +6125,9 @@ def health_check():
     hyperparametersList: [
       {
         name: "Temperature",
-        verbatim: "Controls the sharpness of the next-token probability distribution.",
+        verbatim: "Controls the sharpness of the next-token probability distribution. Temperature controls how randomly an LLM selects the next token.",
         math: "P(x_i) = softmax(z_i / T) = exp(z_i / T) / sum(exp(z_j / T))",
-        mechanism: "Scales the raw unnormalized logits before the softmax layer is evaluated. When T -> 0, logits with even slight advantages become infinitely sharper, converging to greedy argmax decoding (deterministic, focused). As T increases (e.g. 0.7 - 1.2), logit differences are compressed, flattening the probability distribution across all vocabulary tokens (creative, diverse, but higher hallucination risk).",
+        mechanism: "Scales the raw unnormalized logits before the softmax layer is evaluated. Temperature controls how randomly an LLM selects the next token: When T -> 0, logits with even slight advantages become infinitely sharper, converging to greedy argmax decoding (deterministic, focused). As T increases (e.g. 0.7 - 1.2), logit differences are compressed, flattening the probability distribution across all vocabulary tokens (creative, diverse, but higher hallucination risk).",
         productionUse: "Use T = 0.0 - 0.2 for strict RAG factual Q&A, SQL generation, and code generation. Use T = 0.7 - 0.9 for creative drafting, brainstorms, and narrative generation.",
         color: "amber"
       },
