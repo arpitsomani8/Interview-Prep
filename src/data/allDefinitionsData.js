@@ -1456,16 +1456,50 @@ predictions = loaded_model.predict(X_test)`,
   },
   {
     id: "pruning",
-    title: "Pruning (Neural Network Sparsification)",
-    badge: "Model Compression & Sparsity",
-    summary: "Pruning removes selected parameters or connections from a trained neural network because they contribute relatively little to its predictions.",
+    title: "Pruning (Decision Trees & Neural Networks)",
+    badge: "Tree Regularization & Neural Network Sparsification",
+    summary: "Pruning means removing unnecessary branches or complexity from a decision tree. The goal is to reduce overfitting and help the tree generalize to unseen data. In deep learning, pruning removes redundant weights or channels from neural networks.",
+    treePruning: {
+      coreDefinition: "Pruning means removing unnecessary branches or complexity from a decision tree. The goal is to reduce overfitting and help the tree generalize to unseen data.",
+      headline: "Two Common Approaches in Tree Pruning",
+      approaches: [
+        {
+          name: "Pre-pruning",
+          desc: "Stop a tree from growing too much in the first place, using settings such as max_depth or min_samples_leaf.",
+          mechanism: "Early stopping criteria evaluated during tree construction. Prevents sub-trees from splitting when sample thresholds or depth limits are met.",
+          accent: "text-amber-400",
+          badge: "Early Stopping"
+        },
+        {
+          name: "Post-pruning",
+          desc: "Grow the tree first, then remove branches that do not provide enough benefit. Cost-complexity pruning is one example.",
+          mechanism: "Grows a full, deep tree that fits training noise, then prunes weak leaf sub-trees backward using cost-complexity pruning alpha (ccp_alpha) via cross-validation.",
+          accent: "text-cyan-400",
+          badge: "Cost-Complexity"
+        }
+      ],
+      codeExample: {
+        title: "Pre-Pruning Decision Trees with scikit-learn",
+        language: "python",
+        code: `from sklearn.tree import DecisionTreeClassifier
+
+# Limit tree growth: a form of pre-pruning
+model = DecisionTreeClassifier(
+    max_depth=5,
+    min_samples_leaf=10,
+    random_state=42
+)
+
+model.fit(X_train, y_train)`
+      }
+    },
     types: [
       {
-        name: "Unstructured Pruning",
+        name: "Unstructured Pruning (Neural Nets)",
         desc: "Removes individual weights across tensor matrices, creating scattered zeros throughout parameter matrices."
       },
       {
-        name: "Structured Pruning",
+        name: "Structured Pruning (Neural Nets)",
         desc: "Removes entire channels, convolutional filters, or attention heads from the network architecture."
       }
     ],
@@ -1473,7 +1507,8 @@ predictions = loaded_model.predict(X_test)`,
       "It can reduce model storage size when sparse weights are stored using compressed sparse matrix formats.",
       "It can reduce computation and FLOPs when the inference runtime (such as DeepSparse) supports the resulting sparsity.",
       "It helps improve inference efficiency, throughput, and reduces power consumption on edge and cloud servers."
-    ]
+    ],
+    takeaway: "Pruning eliminates complexity to prevent overfitting. In classical ML, decision tree pre-pruning (max_depth, min_samples_leaf) and post-pruning (cost-complexity pruning) prevent trees from memorizing training noise. In deep learning, weight pruning sparsifies neural networks for accelerated edge inference."
   },
   {
     id: "quantization",
