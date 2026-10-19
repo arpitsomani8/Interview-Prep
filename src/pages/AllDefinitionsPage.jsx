@@ -15145,6 +15145,147 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 117: Log Loss */}
+            {item.id === 'log-loss' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Probability Calibration & Loss Metric</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Cross-Entropy Loss
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Log Loss
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Mathematical Formulas Banner */}
+                {item.formulaSection && (
+                  <div className="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Mathematical Formulation</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Binary & Multi-Class
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1">
+                        <span className="text-[10px] font-mono uppercase text-zinc-400 block">
+                          Binary Cross-Entropy
+                        </span>
+                        <code className="text-xs font-mono text-cyan-300 block">
+                          {item.formulaSection.binaryFormula}
+                        </code>
+                      </div>
+                      <div className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1">
+                        <span className="text-[10px] font-mono uppercase text-zinc-400 block">
+                          Multi-Class Cross-Entropy
+                        </span>
+                        <code className="text-xs font-mono text-purple-300 block">
+                          {item.formulaSection.multiClassFormula}
+                        </code>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-zinc-400 font-sans">
+                      {item.formulaSection.description}
+                    </p>
+                  </div>
+                )}
+
+                {/* 3. Penalty Tiers Grid (Why Confident Wrong is Punished) */}
+                {item.penaltyTiers && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-rose-400" />
+                        <span>Asymmetric Calibration Penalty Curve (for True Class y = 1)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        -log(p) Curve
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.penaltyTiers.map((tier, tIdx) => (
+                        <div key={tIdx} className={`p-4 rounded-xl bg-black border ${tier.border} space-y-2 hover:border-zinc-700 transition flex flex-col justify-between`}>
+                          <div className="space-y-1">
+                            <h5 className={`text-xs font-bold font-mono ${tier.accent}`}>
+                              {tier.scenario}
+                            </h5>
+                            <span className="text-[11px] font-mono text-zinc-300 block">
+                              {tier.prediction}
+                            </span>
+                            <div className="p-1 rounded bg-zinc-950 border border-zinc-800 font-mono text-[11px] font-bold text-white">
+                              {tier.lossValue}
+                            </div>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-2 border-t border-zinc-900">
+                            {tier.interpretation}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Interactive Python Code Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>log_loss_calibration.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-log-loss', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-log-loss' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

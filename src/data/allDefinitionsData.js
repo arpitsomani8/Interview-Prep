@@ -113,7 +113,8 @@ export const definitionBookmarks = [
   { id: "early-stopping", label: "Early Stopping" },
   { id: "activation-functions", label: "Activation Functions" },
   { id: "regularization", label: "Regularization" },
-  { id: "logits", label: "Logits" }
+  { id: "logits", label: "Logits" },
+  { id: "log-loss", label: "Log Loss" }
 ];
 
 export const definitionsData = [
@@ -8747,5 +8748,77 @@ print("Sum:           ", np.sum(probabilities))
 # Sum:            1.0`
     },
     takeaway: "Logits are unconstrained real-valued activations that preserve the raw margin of evidence between candidates. While downstream user interfaces require normalized probabilities (via Softmax or Sigmoid), internal training losses and LLM generation pipelines (Temperature scaling, Top-K/Top-P filtering) operate directly on raw logits to maximize gradient fidelity and avoid floating-point underflow."
+  },
+  {
+    id: "log-loss",
+    title: "Log Loss (Cross-Entropy Loss & Calibration Penalties)",
+    badge: "Evaluation Metrics, Probabilistic Loss & Cross-Entropy",
+    summary: "Log loss measures how well predicted probabilities match the actual labels. It penalizes confident wrong predictions more heavily than uncertain ones.",
+    coreDefinition: "Log loss measures how well predicted probabilities match the actual labels. It penalizes confident wrong predictions more heavily than uncertain ones.",
+    formulaSection: {
+      binaryFormula: "LogLoss = - 1/N · Σ [ y_i · log(p_i) + (1 - y_i) · log(1 - p_i) ]",
+      multiClassFormula: "LogLoss = - 1/N · Σ Σ y_i,c · log(p_i,c)",
+      description: "Log loss quantifies the divergence between true binary labels y ∈ {0, 1} and predicted probabilities p ∈ (0, 1)."
+    },
+    penaltyTiers: [
+      {
+        scenario: "Confident & Correct",
+        prediction: "y = 1, Predicted p = 0.99",
+        lossValue: "Loss = -log(0.99) ≈ 0.010",
+        interpretation: "Negligible penalty. The model is rewarded for high certainty on true labels.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50"
+      },
+      {
+        scenario: "Uncertain / Hedged",
+        prediction: "y = 1, Predicted p = 0.50",
+        lossValue: "Loss = -log(0.50) ≈ 0.693",
+        interpretation: "Moderate baseline penalty. Equivalent to random coin toss certainty.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        scenario: "Wrong & Uncertain",
+        prediction: "y = 1, Predicted p = 0.20",
+        lossValue: "Loss = -log(0.20) ≈ 1.609",
+        interpretation: "Significant penalty, encouraging the model to revise its feature weights.",
+        accent: "text-orange-400",
+        border: "border-orange-800/50"
+      },
+      {
+        scenario: "Confident & Wrong (Severe)",
+        prediction: "y = 1, Predicted p = 0.01",
+        lossValue: "Loss = -log(0.01) ≈ 4.605",
+        interpretation: "Massive exponential penalty! As p -> 0 for y = 1, loss approaches infinity.",
+        accent: "text-rose-400",
+        border: "border-rose-800/50"
+      }
+    ],
+    codeExample: {
+      title: "Log Loss Calculation and Penalty Comparison in Python",
+      language: "python",
+      code: `import numpy as np
+from sklearn.metrics import log_loss
+
+# Actual ground truth labels
+y_true = [1, 1, 1, 1]
+
+# Predictions demonstrating escalating penalty for overconfidence
+y_preds = [
+    [0.99],  # Confident correct: loss ~ 0.010
+    [0.50],  # Uncertain guess:    loss ~ 0.693
+    [0.20],  # Leaning wrong:      loss ~ 1.609
+    [0.01]   # Confident wrong:    loss ~ 4.605
+]
+
+for pred in y_preds:
+    loss = log_loss([1], pred, labels=[0, 1])
+    print(f"Predicted p={pred[0]:.2f} -> Log Loss: {loss:.4f}")
+
+# Overall average log loss across all predictions
+overall_loss = log_loss(y_true, y_preds, labels=[0, 1])
+print(f"Average Log Loss: {overall_loss:.4f}")`
+    },
+    takeaway: "While 0-1 accuracy treats all mistakes equally, Log Loss (Cross-Entropy) evaluates probability calibration. By using a negative logarithmic curve, it severely penalizes models that express high certainty on incorrect outcomes. This property makes log loss the standard loss function for training classification neural networks and gradient boosted trees."
   }
 ];
