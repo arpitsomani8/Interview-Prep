@@ -13925,6 +13925,144 @@ export default function AllDefinitionsPage() {
                 </div>
               </div>
             )}
+
+            {/* Item 108: Hallucination */}
+            {item.id === 'hallucination' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-black border border-rose-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-rose-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Factual Integrity</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-semibold">
+                      Reliability & Safety
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. Why do LLMs hallucinate? */}
+                {item.whyHallucinate && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.whyHallucinate.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        Root Causes
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+                      {item.whyHallucinate.causes.map((c, cIdx) => (
+                        <div key={cIdx} className={`p-4 rounded-xl bg-black border ${c.border} space-y-1.5 hover:border-zinc-700 transition`}>
+                          <h5 className={`text-xs font-bold font-mono ${c.accent}`}>
+                            • {c.cause}
+                          </h5>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {c.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. How do you reduce hallucinations? (6 Steps) */}
+                {item.howToReduce && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.howToReduce.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Mitigation Roadmap
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                      {item.howToReduce.strategies.map((st, sIdx) => (
+                        <div key={sIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 hover:border-zinc-700 transition flex flex-col justify-between">
+                          <div className="space-y-1">
+                            <span className={`text-xs font-bold font-mono ${st.accent}`}>
+                              {st.number}. {st.name}
+                            </span>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {st.rule}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Important Callout Banner */}
+                {item.importantLimitation && (
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-amber-600/50 space-y-2">
+                    <div className="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold uppercase tracking-wider">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                      <span>{item.importantLimitation.title}</span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-amber-200 font-semibold leading-relaxed font-sans">
+                      {item.importantLimitation.callout}
+                    </p>
+                    <p className="text-xs text-zinc-400 font-sans leading-relaxed pt-1 border-t border-zinc-900">
+                      {item.importantLimitation.implication}
+                    </p>
+                  </div>
+                )}
+
+                {/* 5. Interactive Python Code Example */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>grounded_rag_prompt.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-hallucination', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-hallucination' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                        {item.codeExample.code}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

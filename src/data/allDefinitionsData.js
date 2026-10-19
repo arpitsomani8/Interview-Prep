@@ -104,7 +104,8 @@ export const definitionBookmarks = [
   { id: "tokenization", label: "Tokenization" },
   { id: "sft-peft", label: "SFT / PEFT" },
   { id: "reinforcement-learning", label: "Reinforcement Learning" },
-  { id: "machine-learning-types", label: "ML Types & RLHF" }
+  { id: "machine-learning-types", label: "ML Types & RLHF" },
+  { id: "hallucination", label: "Hallucination" }
 ];
 
 export const definitionsData = [
@@ -8036,5 +8037,113 @@ def compute_rlhf_reward(reward_score, policy_logprobs, ref_logprobs, kl_coef=0.1
     return penalized_reward`
     },
     takeaway: "Machine learning spans five foundational paradigms distinguished by how supervision is acquired: Supervised (explicit labels), Unsupervised (intrinsic patterns), Semi-supervised (label scarcity), Self-supervised (predictive pretext tasks), and Reinforcement Learning (environmental rewards). RLHF synthesizes self-supervised pretraining with human preference reward modeling via PPO to achieve safe, aligned modern LLMs."
+  },
+  {
+    id: "hallucination",
+    title: "Hallucination in LLMs (Root Causes, RAG Mitigation & Groundedness)",
+    badge: "Factual Integrity, RAG Guardrails & Verification",
+    summary: "Hallucination occurs when an AI model produces information that is false, unsupported, or fabricated but presents it as if it were correct. Why do LLMs hallucinate? They generate likely next tokens rather than verifying claims; training data is incomplete or outdated; questions are ambiguous; RAG retrieves insufficient documents; or the model misinterprets context. How do you reduce hallucinations? 1. Use RAG, 2. Improve retrieval, 3. Ground the prompt, 4. Require citations, 5. Allow abstention, and 6. Evaluate and monitor. Important: RAG reduces some hallucinations, but it does not eliminate them.",
+    coreDefinition: "Hallucination occurs when an AI model produces information that is false, unsupported, or fabricated but presents it as if it were correct.",
+    whyHallucinate: {
+      headline: "Why do LLMs hallucinate?",
+      causes: [
+        {
+          cause: "Probabilistic next-token generation",
+          detail: "They generate likely next tokens rather than automatically verifying every factual claim.",
+          accent: "text-rose-400",
+          border: "border-rose-900/40"
+        },
+        {
+          cause: "Training data limitations",
+          detail: "Their training data may be incomplete, outdated, or contradictory.",
+          accent: "text-amber-400",
+          border: "border-amber-900/40"
+        },
+        {
+          cause: "Out-of-distribution queries",
+          detail: "The question may be ambiguous or outside their knowledge.",
+          accent: "text-yellow-400",
+          border: "border-yellow-900/40"
+        },
+        {
+          cause: "Retrieval failures in RAG",
+          detail: "A RAG system may retrieve irrelevant or insufficient documents.",
+          accent: "text-cyan-400",
+          border: "border-cyan-900/40"
+        },
+        {
+          cause: "Context misinterpretation",
+          detail: "The model may misinterpret the retrieved context or ignore its constraints.",
+          accent: "text-purple-400",
+          border: "border-purple-900/40"
+        }
+      ]
+    },
+    howToReduce: {
+      headline: "How do you reduce hallucinations?",
+      strategies: [
+        {
+          number: 1,
+          name: "Use RAG",
+          rule: "Retrieve relevant, trusted documents and provide them as context to the LLM.",
+          accent: "text-blue-400"
+        },
+        {
+          number: 2,
+          name: "Improve retrieval",
+          rule: "Use appropriate chunk sizes, metadata filters, embeddings, and retrieval evaluation so the model receives relevant evidence.",
+          accent: "text-cyan-400"
+        },
+        {
+          number: 3,
+          name: "Ground the prompt",
+          rule: "Instruct the model to answer using the provided sources and state when the evidence is insufficient.",
+          accent: "text-emerald-400"
+        },
+        {
+          number: 4,
+          name: "Require citations or evidence",
+          rule: "Where supported, have the answer reference source passages and verify that the claims match them.",
+          accent: "text-amber-400"
+        },
+        {
+          number: 5,
+          name: "Allow abstention",
+          rule: "If the system cannot find reliable evidence, it should say it cannot determine the answer rather than inventing one.",
+          accent: "text-purple-400"
+        },
+        {
+          number: 6,
+          name: "Evaluate and monitor",
+          rule: "Test against questions with known answers, including misleading questions, missing documents, and conflicting sources.",
+          accent: "text-rose-400"
+        }
+      ]
+    },
+    importantLimitation: {
+      title: "Crucial Production Limitation",
+      callout: "Important: RAG reduces some hallucinations, but it does not eliminate them. A model can still misread good documents or make unsupported claims.",
+      implication: "RAG converts parametric hallucinations (inventing facts from memory) into contextual hallucinations (misattributing or warping retrieved evidence). Verification layers (e.g. self-checking, NLI citation check) remain mandatory."
+    },
+    codeExample: {
+      title: "Production Grounded Prompt with Strict Abstention Policy",
+      language: "python",
+      code: `SYSTEM_PROMPT = """You are a grounded enterprise assistant.
+Answer the user's question ONLY using the factual context provided below.
+Rules:
+1. Every factual statement MUST cite the source passage [Doc ID].
+2. If the context does not contain enough evidence to answer, state:
+   "I cannot determine the answer based on the provided documents."
+3. Never make assumptions, extrapolate, or bring in unverified external knowledge."""
+
+def generate_grounded_response(query, retrieved_chunks):
+    context_str = "\\n\\n".join([f"[{c['id']}]: {c['text']}" for c in retrieved_chunks])
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": f"Context:\\n{context_str}\\n\\nQuestion: {query}"}
+    ]
+    return llm.chat.completions.create(model="gpt-4o", messages=messages, temperature=0.0)`
+    },
+    takeaway: "LLM hallucinations originate from the fundamental mismatch between statistical token continuation and truth verification. While RAG grounds models on real enterprise documents, it merely shifts the failure mode from parametric confabulation to context misinterpretation. Combining high-precision retrieval with strict prompt grounding, citation enforcement, and explicit permission to abstain is essential for high-stakes AI."
   }
 ];
