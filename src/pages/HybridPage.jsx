@@ -149,22 +149,43 @@ export default function HybridPage() {
             Click any concept bookmark below to jump directly to its technical breakdown and interview defense rationale:
           </p>
 
-          {/* Clickable Bookmark Badges */}
-          <div className="flex flex-wrap gap-2.5 pt-1">
-            {hybridData.bookmarkedConcepts.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToId(item.id)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 border cursor-pointer ${
-                  activeBookmark === item.id
-                    ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/10'
-                    : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:border-cyan-500/50 hover:bg-zinc-800 hover:text-white'
-                }`}
-              >
-                <Bookmark className={`w-3.5 h-3.5 ${activeBookmark === item.id ? 'text-cyan-400 fill-cyan-400' : 'text-cyan-400'}`} />
-                <span>{item.title}</span>
-              </button>
-            ))}
+          {/* Clickable Bookmark Badges with Alphabet-Change Comma Separators */}
+          <div className="flex flex-wrap items-center gap-2.5 pt-1">
+            {hybridData.bookmarkedConcepts.map((item, index) => {
+              const getInitial = (str) => {
+                if (!str) return '';
+                const ch = str.trim().charAt(0).toUpperCase();
+                return /[A-Z]/.test(ch) ? ch : '#';
+              };
+              const currentInitial = getInitial(item.title);
+              const nextItem = hybridData.bookmarkedConcepts[index + 1];
+              const nextInitial = nextItem ? getInitial(nextItem.title) : null;
+              const isAlphabetChange = nextInitial && currentInitial !== nextInitial;
+
+              return (
+                <React.Fragment key={item.id}>
+                  <button
+                    onClick={() => scrollToId(item.id)}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 border cursor-pointer ${
+                      activeBookmark === item.id
+                        ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/10'
+                        : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:border-cyan-500/50 hover:bg-zinc-800 hover:text-white'
+                    }`}
+                  >
+                    <Bookmark className={`w-3.5 h-3.5 ${activeBookmark === item.id ? 'text-cyan-400 fill-cyan-400' : 'text-cyan-400'}`} />
+                    <span>{item.title}</span>
+                  </button>
+                  {isAlphabetChange && (
+                    <span
+                      aria-hidden="true"
+                      className="self-center text-cyan-400 font-bold text-base px-1 select-none font-mono"
+                    >
+                      ,
+                    </span>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </div>
         </div>
 
