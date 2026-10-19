@@ -69,12 +69,12 @@ export default function YoloPage() {
               <span>Real-World Execution Trace</span>
             </div>
             <h2 className="text-base sm:text-lg font-bold text-white tracking-tight flex flex-wrap items-center gap-2">
-              <span>Incident Trigger:</span>
-              <span className="text-amber-400 font-mono text-xs sm:text-sm">{yoloData.userExample.query}</span>
+              <span>Real-World Incident:</span>
+              <span className="text-amber-400 font-mono text-xs sm:text-sm">"{yoloData.userExample.query}"</span>
             </h2>
           </div>
           <span className="text-xs font-mono text-zinc-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800 self-start sm:self-auto">
-            Latency: {yoloData.userExample.latency}
+            Total Pipeline Reaction Time: &lt; 25ms
           </span>
         </div>
 
@@ -113,7 +113,7 @@ export default function YoloPage() {
           <div className="rounded-xl bg-zinc-950 border border-zinc-800 p-5 space-y-2.5">
             <div className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>PLC Diverter Action & Physical Response</span>
+              <span>Pneumatic Diverter Action & Physical Response</span>
             </div>
             <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed bg-black/50 p-3.5 rounded-lg border border-zinc-800/80 italic">
               "{yoloData.userExample.sampleOutput.diverterAction}"
@@ -124,15 +124,16 @@ export default function YoloPage() {
           <div className="rounded-xl bg-zinc-950 border border-zinc-800 p-5 space-y-2.5">
             <div className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>On-Premises PostgreSQL Record & Damage Claim</span>
+              <span>Recorded in Local PostgreSQL (inspections table)</span>
             </div>
             <div className="text-xs font-mono bg-black/50 p-3.5 rounded-lg border border-zinc-800/80 space-y-1 text-zinc-300">
               <div><span className="text-zinc-500">Inspection ID:</span> <span className="text-white font-bold">{yoloData.userExample.sampleOutput.inspectionRecord.inspection_id}</span></div>
               <div><span className="text-zinc-500">Conveyor:</span> {yoloData.userExample.sampleOutput.inspectionRecord.conveyor_line}</div>
-              <div><span className="text-zinc-500">Defect:</span> <span className="text-amber-400 font-bold">{yoloData.userExample.sampleOutput.inspectionRecord.defect_class}</span></div>
-              <div><span className="text-zinc-500">Latency:</span> {yoloData.userExample.sampleOutput.inspectionRecord.inference_latency} ({yoloData.userExample.sampleOutput.inspectionRecord.diverter_latency})</div>
-              <div><span className="text-zinc-500">Claim:</span> <span className="text-cyan-400">{yoloData.userExample.sampleOutput.inspectionRecord.carrier_claim}</span></div>
-              <div><span className="text-zinc-500">Status:</span> <span className="text-emerald-400 font-bold">{yoloData.userExample.sampleOutput.inspectionRecord.database_status}</span></div>
+              <div><span className="text-zinc-500">Defect Detected:</span> <span className="text-amber-400 font-bold">{yoloData.userExample.sampleOutput.inspectionRecord.defect_class}</span></div>
+              <div><span className="text-zinc-500">CPU Inference:</span> {yoloData.userExample.sampleOutput.inspectionRecord.inference_latency}</div>
+              <div><span className="text-zinc-500">Total Reaction:</span> <span className="text-emerald-400 font-semibold">{yoloData.userExample.sampleOutput.inspectionRecord.diverter_latency}</span></div>
+              <div><span className="text-zinc-500">Carrier Claim:</span> <span className="text-cyan-400">{yoloData.userExample.sampleOutput.inspectionRecord.carrier_claim}</span></div>
+              <div><span className="text-zinc-500">Database Status:</span> <span className="text-emerald-400 font-bold">{yoloData.userExample.sampleOutput.inspectionRecord.database_status}</span></div>
             </div>
           </div>
         </div>
