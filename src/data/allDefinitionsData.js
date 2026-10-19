@@ -122,7 +122,8 @@ export const definitionBookmarks = [
   { id: "outlier-detection", label: "Outlier Detection" },
   { id: "imputation", label: "Imputation" },
   { id: "z-score", label: "Z-score" },
-  { id: "iqr", label: "IQR & Binning" }
+  { id: "iqr", label: "IQR & Binning" },
+  { id: "feature-cross", label: "Feature Cross" }
 ];
 
 export const definitionsData = [
@@ -9497,5 +9498,80 @@ df['business_rule'] = pd.cut(df['age'], bins=bins, labels=labels)
 print(df[['age', 'equal_width', 'equal_freq', 'business_rule']])`
     },
     takeaway: "IQR provides an outlier detection mechanism resistant to extreme values because it relies exclusively on order percentiles (Q1 and Q3) rather than the mean. Binning complements this by converting noisy, high-variance continuous numbers into discrete, interpretable categories—whether by equal interval width, balanced sample frequency, or explicit domain-driven business rules."
+  },
+  {
+    id: "feature-cross",
+    title: "Feature Cross (Feature Interactions & Problem Formulation)",
+    badge: "Nonlinear Feature Engineering, Interaction Terms & Target Formulation",
+    summary: "A feature cross combines two or more features to represent their interaction. Features (X) are the input information the model uses to make a prediction. Label (y) is the outcome you want the model to predict. The business problem determines the label. The features are chosen based on what information is available and valid at prediction time.",
+    coreDefinition: "A feature cross combines two or more features to represent their interaction.",
+    featuresVsLabel: {
+      features: {
+        symbol: "Features (X)",
+        definition: "Features (X) are the input information the model uses to make a prediction.",
+        selectionRule: "The features are chosen based on what information is available and valid at prediction time."
+      },
+      label: {
+        symbol: "Label (y)",
+        definition: "Label (y) is the outcome you want the model to predict.",
+        selectionRule: "The business problem determines the label."
+      }
+    },
+    predictionTimeValidity: {
+      headline: "Golden Rule of Prediction-Time Validity (Leakage Prevention)",
+      rule: "Features must ONLY utilize information available and valid at the exact moment inference is called in production. If a feature is generated after the prediction event (e.g., using 'delivery completion timestamp' to predict parcel transit delay at dispatch), it causes devastating Target Leakage."
+    },
+    interactionTypes: [
+      {
+        name: "Categorical × Categorical",
+        example: "[Device = Mobile] × [Country = US] → [US_Mobile]",
+        benefit: "Allows linear models to assign specific distinct weights to compound segments without complex neural networks.",
+        accent: "text-amber-400",
+        border: "border-amber-800/50"
+      },
+      {
+        name: "Binned Numeric × Binned Numeric",
+        example: "[Binned_Latitude] × [Binned_Longitude] → [Neighborhood_Block]",
+        benefit: "Enables models to capture geographic micro-clusters (e.g. housing valuation) that individual coordinates cannot separate linearly.",
+        accent: "text-cyan-400",
+        border: "border-cyan-800/50"
+      },
+      {
+        name: "Numeric × Categorical",
+        example: "[Income] × [Subscription_Tier = Enterprise] → Interaction Term",
+        benefit: "Captures varying slopes and price sensitivities across distinct customer segments.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50"
+      }
+    ],
+    codeExample: {
+      title: "Feature Cross & Interaction Terms in Python (Pandas & Scikit-Learn)",
+      language: "python",
+      code: `import pandas as pd
+from sklearn.preprocessing import PolynomialFeatures
+
+# E-commerce customer data available at checkout (prediction time)
+df = pd.DataFrame({
+    'device': ['Mobile', 'Desktop', 'Mobile', 'Desktop'],
+    'region': ['US', 'EU', 'EU', 'US'],
+    'cart_value': [45.0, 120.0, 30.0, 250.0],
+    'is_prime': [1, 0, 1, 1]
+})
+
+# 1. Categorical Feature Cross (Device x Region)
+df['device_x_region'] = df['device'] + '_' + df['region']
+
+# 2. Binned Feature Cross (e.g. Cart Tier x Prime Status)
+df['cart_tier'] = pd.cut(df['cart_value'], bins=[0, 50, 150, 500], labels=['Low', 'Mid', 'High'])
+df['cart_tier_x_prime'] = df['cart_tier'].astype(str) + '_Prime=' + df['is_prime'].astype(str)
+
+# 3. Numeric Interaction Cross via Scikit-Learn PolynomialFeatures
+poly = PolynomialFeatures(degree=2, interaction_only=True, include_bias=False)
+numeric_interactions = poly.fit_transform(df[['cart_value', 'is_prime']])
+
+print(df[['device_x_region', 'cart_tier_x_prime']])
+print("Interaction Terms:\\n", poly.get_feature_names_out(['cart_value', 'is_prime']))`
+    },
+    takeaway: "Feature crosses encode domain interactions directly into the representation space, providing linear models with the ability to learn nonlinear decision boundaries at minimal latency. In every applied machine learning system, the business objective strictly dictates the label (y), while prediction-time validity strictly governs feature (X) eligibility to avoid catastrophic target leakage."
   }
 ];
