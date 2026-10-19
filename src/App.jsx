@@ -5,10 +5,9 @@ import IntroPage from './pages/IntroPage';
 import FashionPage from './pages/FashionPage';
 import HybridPage from './pages/HybridPage';
 import YoloPage from './pages/YoloPage';
-import EdaPage from './pages/EdaPage';
 import AllDefinitionsPage from './pages/AllDefinitionsPage';
 
-const VALID_TABS = ['intro', 'fashion', 'hybrid', 'yolo', 'eda', 'all-definitions'];
+const VALID_TABS = ['intro', 'fashion', 'hybrid', 'yolo', 'all-definitions'];
 
 function getTabFromHash() {
   const hash = window.location.hash || '';
@@ -20,7 +19,7 @@ function getTabFromHash() {
     .replace(/\/+$/, '')
     .trim()
     .toLowerCase();
-  if (raw === 'definitions' || raw === 'all-definitions') return 'all-definitions';
+  if (raw === 'eda' || raw === 'definitions' || raw === 'all-definitions') return 'all-definitions';
   return VALID_TABS.includes(raw) ? raw : 'intro';
 }
 
@@ -29,7 +28,6 @@ const PAGE_TITLES = {
   fashion: 'Fashion AI Copilot | Multimodal AI Search Blueprint',
   hybrid: 'Hybrid AI Engine | Dynamic Schema ML & RAG',
   yolo: 'YOLO + DeepSparse | Real-Time Edge Computer Vision',
-  eda: 'EDA Master Blueprint | Exploratory Data Analysis & Statistics',
   'all-definitions': 'Master Interview Vault | Complete Reference Guide',
 };
 
@@ -77,7 +75,6 @@ export default function App() {
           {activeTab === 'fashion' && <FashionPage />}
           {activeTab === 'hybrid' && <HybridPage />}
           {activeTab === 'yolo' && <YoloPage />}
-          {activeTab === 'eda' && <EdaPage />}
           {activeTab === 'all-definitions' && <AllDefinitionsPage />}
         </ErrorBoundary>
       </main>
