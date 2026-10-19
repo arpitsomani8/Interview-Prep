@@ -2646,20 +2646,70 @@ export default function AllDefinitionsPage() {
                       </span>
                     </div>
 
-                    {/* Verbatim Alert */}
-                    <div className="p-4 rounded-xl bg-black border border-rose-800/50 space-y-1.5">
-                      <div className="flex items-start gap-2.5">
-                        <span className="text-rose-400 text-sm mt-0.5">⚠️</span>
-                        <div>
-                          <p className="text-xs sm:text-sm font-semibold text-rose-200 font-sans leading-relaxed">
-                            {item.llmProductionFailure.verbatim}
-                          </p>
-                          <p className="text-xs text-zinc-400 font-mono mt-1">
-                            {item.llmProductionFailure.subtitle}
-                          </p>
+                    {/* Failure Dichotomy Question & Principle */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h5 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                          <Bug className="w-3.5 h-3.5 text-rose-400" />
+                          <span>{item.llmProductionFailure.question || "What if the LLM itself fails in production?"}</span>
+                        </h5>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
+                          Failure Taxonomy
+                        </span>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-black border border-rose-900/50 space-y-2">
+                        <div className="flex items-start gap-2.5">
+                          <span className="text-rose-400 font-bold text-base leading-none mt-0.5">⚠️</span>
+                          <div>
+                            <p className="text-xs sm:text-sm text-rose-200 font-sans font-semibold leading-relaxed">
+                              {item.llmProductionFailure.coreDichotomy || "An LLM can fail in different ways, so I would distinguish between service failure and answer-quality failure."}
+                            </p>
+                            <p className="text-xs text-zinc-400 font-mono mt-1">
+                              {item.llmProductionFailure.verbatim}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
+
+                    {/* Two Failure Types: Service Failure vs Quality Failure */}
+                    {item.llmProductionFailure.twoFailureTypes && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {item.llmProductionFailure.twoFailureTypes.map((ft, fIdx) => (
+                          <div
+                            key={fIdx}
+                            className={`p-4 rounded-xl bg-black border ${ft.border} hover:border-zinc-700 transition space-y-3 flex flex-col justify-between`}
+                          >
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <h6 className={`text-xs font-bold font-mono uppercase tracking-wider ${ft.accent}`}>
+                                  • {ft.type}
+                                </h6>
+                                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
+                                  {ft.badge}
+                                </span>
+                              </div>
+                              <p className="text-xs text-zinc-200 font-sans font-medium leading-relaxed">
+                                {ft.summary}
+                              </p>
+                              <ul className="space-y-1 pt-1">
+                                {ft.items.map((it, itIdx) => (
+                                  <li key={itIdx} className="text-[11px] text-zinc-400 flex items-start gap-1.5 leading-relaxed">
+                                    <span className="text-rose-400/80">•</span>
+                                    <span>{it}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-300">
+                              <strong className="text-cyan-400 font-mono block mb-0.5">Handling Strategy:</strong>
+                              <span>{ft.handlingStrategy}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
                     {/* 5 Distinct Failure Categories */}
                     <div className="space-y-3 pt-1">
@@ -7551,20 +7601,70 @@ export default function AllDefinitionsPage() {
                       </span>
                     </div>
 
-                    {/* Verbatim Alert */}
-                    <div className="p-4 rounded-xl bg-black border border-rose-800/50 space-y-1.5">
-                      <div className="flex items-start gap-2.5">
-                        <span className="text-rose-400 text-sm mt-0.5">⚠️</span>
-                        <div>
-                          <p className="text-xs sm:text-sm font-semibold text-rose-200 font-sans leading-relaxed">
-                            {item.llmProductionFailure.verbatim}
-                          </p>
-                          <p className="text-xs text-zinc-400 font-mono mt-1">
-                            {item.llmProductionFailure.subtitle}
-                          </p>
+                    {/* Failure Dichotomy Question & Principle */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h5 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                          <Bug className="w-3.5 h-3.5 text-rose-400" />
+                          <span>{item.llmProductionFailure.question || "What if the LLM itself fails in production?"}</span>
+                        </h5>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
+                          Failure Taxonomy
+                        </span>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-black border border-rose-900/50 space-y-2">
+                        <div className="flex items-start gap-2.5">
+                          <span className="text-rose-400 font-bold text-base leading-none mt-0.5">⚠️</span>
+                          <div>
+                            <p className="text-xs sm:text-sm text-rose-200 font-sans font-semibold leading-relaxed">
+                              {item.llmProductionFailure.coreDichotomy || "An LLM can fail in different ways, so I would distinguish between service failure and answer-quality failure."}
+                            </p>
+                            <p className="text-xs text-zinc-400 font-mono mt-1">
+                              {item.llmProductionFailure.verbatim}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
+
+                    {/* Two Failure Types: Service Failure vs Quality Failure */}
+                    {item.llmProductionFailure.twoFailureTypes && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {item.llmProductionFailure.twoFailureTypes.map((ft, fIdx) => (
+                          <div
+                            key={fIdx}
+                            className={`p-4 rounded-xl bg-black border ${ft.border} hover:border-zinc-700 transition space-y-3 flex flex-col justify-between`}
+                          >
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <h6 className={`text-xs font-bold font-mono uppercase tracking-wider ${ft.accent}`}>
+                                  • {ft.type}
+                                </h6>
+                                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
+                                  {ft.badge}
+                                </span>
+                              </div>
+                              <p className="text-xs text-zinc-200 font-sans font-medium leading-relaxed">
+                                {ft.summary}
+                              </p>
+                              <ul className="space-y-1 pt-1">
+                                {ft.items.map((it, itIdx) => (
+                                  <li key={itIdx} className="text-[11px] text-zinc-400 flex items-start gap-1.5 leading-relaxed">
+                                    <span className="text-rose-400/80">•</span>
+                                    <span>{it}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-300">
+                              <strong className="text-cyan-400 font-mono block mb-0.5">Handling Strategy:</strong>
+                              <span>{ft.handlingStrategy}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
                     {/* 5 Distinct Failure Categories */}
                     <div className="space-y-3 pt-1">

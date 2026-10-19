@@ -1746,9 +1746,42 @@ print(response.output_text)`,
       executionSummary: "The program embeds the question, compares it against the policy chunks, selects the most similar ones, and sends them to the LLM."
     },
     llmProductionFailure: {
+      question: "What if the LLM itself fails in production?",
+      coreDichotomy: "An LLM can fail in different ways, so I would distinguish between service failure and answer-quality failure.",
       headline: "LLM Production Failure: Discrete Category Handling",
       verbatim: "LLM production failure: Handle timeouts, rate limits, outages, invalid responses, and hallucinations separately.",
       subtitle: "In production, treating all LLM failures as generic errors causes system brittleness. Each failure mode has distinct root causes, SLAs, and dedicated mitigation architectures.",
+      twoFailureTypes: [
+        {
+          type: "Service failure",
+          badge: "Infrastructure & Systems",
+          accent: "text-rose-400",
+          border: "border-rose-800/50",
+          summary: "Timeout, rate limit, provider outage, authentication error, or server error.",
+          items: [
+            "Timeout (TTFT > SLA / network stalls)",
+            "Rate limit (429 TPM/RPM quota exceeded)",
+            "Provider outage (503 Service Unavailable / regional downtime)",
+            "Authentication error (expired API key / IAM token renewal failure)",
+            "Server error (500 internal server error from upstream model endpoint)"
+          ],
+          handlingStrategy: "Handled at the platform/SRE layer: set aggressive client timeouts, multi-region key rotation, circuit breakers, multi-provider failover routing, and token bucket queues."
+        },
+        {
+          type: "Quality failure",
+          badge: "Generation & Grounding",
+          accent: "text-amber-400",
+          border: "border-amber-800/50",
+          summary: "Hallucinations, irrelevant answers, malformed output, or ignoring instructions.",
+          items: [
+            "Hallucinations (invented facts, non-existent policy citations)",
+            "Irrelevant answers (off-topic or non-responsive completions)",
+            "Malformed output (broken JSON, missing closing brackets, schema violations)",
+            "Ignoring instructions (prompt drift, safety filter false-positives, refusal)"
+          ],
+          handlingStrategy: "Handled at the application & prompt layer: strict grounding constraints ('only use provided context'), temperature reduction (0.0-0.2), Pydantic structured output gates, automated reflection retry loops, and deterministic fallback responses."
+        }
+      ],
       failureCategories: [
         {
           mode: "1. Timeouts",
@@ -4779,9 +4812,42 @@ def health_check():
     ],
     takeaway: "Never evaluate a production agent on conversational fluency alone. A production-ready evaluation system tracks quantitative task completion, tool precision, retrieval recall, factual grounding, p95 tail latencies, and unit cost per completed task.",
     llmProductionFailure: {
+      question: "What if the LLM itself fails in production?",
+      coreDichotomy: "An LLM can fail in different ways, so I would distinguish between service failure and answer-quality failure.",
       headline: "LLM Production Failure: Discrete Category Handling",
       verbatim: "LLM production failure: Handle timeouts, rate limits, outages, invalid responses, and hallucinations separately.",
       subtitle: "In production, treating all LLM failures as generic errors causes system brittleness. Each failure mode has distinct root causes, SLAs, and dedicated mitigation architectures.",
+      twoFailureTypes: [
+        {
+          type: "Service failure",
+          badge: "Infrastructure & Systems",
+          accent: "text-rose-400",
+          border: "border-rose-800/50",
+          summary: "Timeout, rate limit, provider outage, authentication error, or server error.",
+          items: [
+            "Timeout (TTFT > SLA / network stalls)",
+            "Rate limit (429 TPM/RPM quota exceeded)",
+            "Provider outage (503 Service Unavailable / regional downtime)",
+            "Authentication error (expired API key / IAM token renewal failure)",
+            "Server error (500 internal server error from upstream model endpoint)"
+          ],
+          handlingStrategy: "Handled at the platform/SRE layer: set aggressive client timeouts, multi-region key rotation, circuit breakers, multi-provider failover routing, and token bucket queues."
+        },
+        {
+          type: "Quality failure",
+          badge: "Generation & Grounding",
+          accent: "text-amber-400",
+          border: "border-amber-800/50",
+          summary: "Hallucinations, irrelevant answers, malformed output, or ignoring instructions.",
+          items: [
+            "Hallucinations (invented facts, non-existent policy citations)",
+            "Irrelevant answers (off-topic or non-responsive completions)",
+            "Malformed output (broken JSON, missing closing brackets, schema violations)",
+            "Ignoring instructions (prompt drift, safety filter false-positives, refusal)"
+          ],
+          handlingStrategy: "Handled at the application & prompt layer: strict grounding constraints ('only use provided context'), temperature reduction (0.0-0.2), Pydantic structured output gates, automated reflection retry loops, and deterministic fallback responses."
+        }
+      ],
       failureCategories: [
         {
           mode: "1. Timeouts",
