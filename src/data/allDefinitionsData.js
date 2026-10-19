@@ -142,7 +142,8 @@ export const definitionBookmarks = [
   { id: "polling", label: "Polling & Response Consistency" },
   { id: "ai-evaluation", label: "AI Evaluation" },
   { id: "production-ai-playbook", label: "Production AI Playbook & Trade-offs" },
-  { id: "random-variable", label: "Random Variable" }
+  { id: "random-variable", label: "Random Variable" },
+  { id: "expectation", label: "Expectation" }
 ];
 
 export const definitionsData = [
@@ -11418,5 +11419,110 @@ print(f"E[Defects] = {np.mean(discrete_defects):.2f}, Var(Defects) = {np.var(dis
 print(f"E[Weight]  = {np.mean(continuous_weights):.2f} kg, Var(Weight)  = {np.var(continuous_weights):.2f}")`
     },
     takeaway: "In statistical modeling and machine learning, recognizing whether your feature or target is a discrete or continuous random variable determines your choice of probability distribution (e.g., Bernoulli/Poisson vs. Gaussian), evaluation metrics, and objective loss function (Cross-Entropy vs. MSE)."
+  },
+  {
+    id: "expectation",
+    title: "Expectation (Expected Value, Long-Run Averages & Linearity of Expectation)",
+    badge: "Probability Theory & Mathematical Foundations",
+    summary: "Expectation (expected value) is the long-run average value we expect from a random variable. It is an average, so it can be a value that never occurs in an individual observation.",
+    coreDefinition: "Expectation (expected value): Expectation is the long-run average value we expect from a random variable.",
+    occurrenceQuestion: {
+      question: "Is expectation always an outcome that can actually occur?",
+      answer: "No. It is an average, so it can be a value that never occurs in an individual observation.",
+      classicExample: "Consider rolling a fair 6-sided die. The possible outcomes are strictly {1, 2, 3, 4, 5, 6}. The expected value is E[X] = (1 + 2 + 3 + 4 + 5 + 6) / 6 = 3.5. You can roll the die a million times and you will never roll a 3.5 in any single trial.",
+      otherExamples: [
+        "Average household children: e.g. 2.3 children per household (no family has 2.3 children).",
+        "Average defects per shipping pallet: e.g. 0.4 defects (each pallet has 0, 1, 2... defects).",
+        "Coin toss binary indicator: E[X] = 0.5 where outcomes are strictly 0 (Tails) or 1 (Heads)."
+      ]
+    },
+    mathematicalFormulas: [
+      {
+        type: "Discrete Expectation",
+        formula: "E[X] = sum_{i} x_i P(X = x_i)",
+        desc: "Weighted sum of all countable values multiplied by their respective probabilities."
+      },
+      {
+        type: "Continuous Expectation",
+        formula: "E[X] = int_{-infty}^{infty} x f(x) dx",
+        desc: "Integral of x weighted by its continuous probability density function f(x)."
+      },
+      {
+        type: "Law of the Unconscious Statistician (LOTUS)",
+        formula: "E[g(X)] = sum g(x) P(x)  |  int g(x) f(x) dx",
+        desc: "Allows computing the expected value of a transformed function g(X) without finding the distribution of g(X) first."
+      }
+    ],
+    coreProperties: [
+      {
+        property: "Linearity of Expectation",
+        formula: "E[aX + bY + c] = aE[X] + bE[Y] + c",
+        importance: "The single most powerful property in probability. It holds whether X and Y are independent or correlated!",
+        badge: "Crucial Property"
+      },
+      {
+        property: "Multiplication (Independent)",
+        formula: "E[XY] = E[X] * E[Y]",
+        importance: "Holds when X and Y are statistically independent (or uncorrelated: Cov(X,Y) = 0).",
+        badge: "Independence"
+      },
+      {
+        property: "Constant Rule",
+        formula: "E[c] = c",
+        importance: "The expected value of a deterministic constant is simply the constant itself.",
+        badge: "Deterministic"
+      },
+      {
+        property: "Variance Relationship",
+        formula: "Var(X) = E[(X - E[X])^2] = E[X^2] - (E[X])^2",
+        importance: "Variance is defined as the expected squared deviation from the expected value.",
+        badge: "Variance Foundation"
+      },
+      {
+        property: "Law of Large Numbers (LLN)",
+        formula: "lim_{n -> infty} (1/n) sum_{i=1}^n X_i = E[X]",
+        importance: "As sample size grows to infinity, empirical sample mean converges almost surely to the true theoretical expectation.",
+        badge: "Convergence"
+      }
+    ],
+    mlRelevance: [
+      {
+        area: "Empirical Risk Minimization (ERM)",
+        role: "Machine learning training minimizes expected loss over data distribution: R(f) = E_{(X,Y)}[L(f(X), Y)]. Since true distribution is unknown, we approximate it using the sample mean (Empirical Risk): (1/N) * sum L(f(x_i), y_i)."
+      },
+      {
+        area: "Reinforcement Learning (RL)",
+        role: "Policy gradient and Q-learning algorithms are designed to find policy parameters theta that maximize expected cumulative discounted reward: J(theta) = E_{tau ~ pi_theta}[R(tau)]."
+      },
+      {
+        area: "Variational Inference & Generative Models",
+        role: "VAEs optimize the Evidence Lower Bound (ELBO), which computes expected log-likelihood under variational posterior q(z|x): E_{z ~ q}[log p(x|z)] - D_KL(q(z|x) || p(z))."
+      }
+    ],
+    codeExample: {
+      title: "Verifying Expectation & Non-Occurring Values in Python",
+      language: "python",
+      code: `import numpy as np
+
+# Set seed for reproducible simulation
+np.random.seed(42)
+
+# 1. Roll a fair 6-sided die 100,000 times
+rolls = np.random.randint(1, 7, size=100000)
+
+# Theoretical expectation: (1 + 2 + 3 + 4 + 5 + 6) / 6 = 3.5
+theoretical_expected_value = 3.5
+empirical_mean = np.mean(rolls)
+
+print(f"Theoretical E[X]: {theoretical_expected_value}")
+print(f"Empirical Mean (100k rolls): {empirical_mean:.4f}")
+print(f"Can 3.5 occur in any single roll? {3.5 in rolls}")
+# Output: False! 3.5 never occurs in any individual trial.
+
+# 2. Linearity of Expectation: E[2X + 5] = 2*E[X] + 5 = 2*(3.5) + 5 = 12.0
+transformed = 2 * rolls + 5
+print(f"Empirical E[2X + 5]: {np.mean(transformed):.4f} (Theoretical: 12.0)")`
+    },
+    takeaway: "Expectation is a summary statistic of long-run behavior, not a prediction of any single realization. In machine learning, almost every optimization objective—from cross-entropy loss to reinforcement learning value functions and generative models—is formulated as an expectation over underlying data distributions."
   }
 ];
