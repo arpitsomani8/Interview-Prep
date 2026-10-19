@@ -100,7 +100,8 @@ export const definitionBookmarks = [
   { id: "knn", label: "KNN" },
   { id: "random-forest", label: "Random Forest" },
   { id: "gradient-descent", label: "Gradient Descent" },
-  { id: "design-patterns", label: "Design Patterns" }
+  { id: "design-patterns", label: "Design Patterns" },
+  { id: "tokenization", label: "Tokenization" }
 ];
 
 export const definitionsData = [
@@ -7684,5 +7685,94 @@ class RAGPipeline:
       }
     ],
     takeaway: "In production AI systems, classic software design patterns solve real infrastructure bottlenecks: Singleton prevents wasteful GPU/RAM reloading of heavy model weights; Factory abstracts multi-provider LLM vendor switching; and Strategy enables dynamic interchangeability across RAG retrieval mechanisms without refactoring the generation engine."
+  },
+  {
+    id: "tokenization",
+    title: "Tokenization in LLMs (Subword Encoding & Vocabulary Mapping)",
+    badge: "NLP Foundations, BPE, WordPiece & SentencePiece",
+    summary: "Tokenization is the process of breaking text into smaller units called tokens so a model can process it. How does tokenization work in an LLM? Input text: 'I love machine learning!' -> Tokenizer: Splits text into model-specific tokens -> Token IDs: Each token maps to an integer in the model's vocabulary -> Model input processing: Token IDs are converted into learned representations used by the model. These are tokenization approaches or tools commonly associated with modern language models: BPE, WordPiece, and SentencePiece.",
+    coreDefinition: "Tokenization is the process of breaking text into smaller units called tokens so a model can process it.",
+    howItWorksInLLM: {
+      headline: "How does tokenization work in an LLM?",
+      exampleText: "I love machine learning!",
+      steps: [
+        {
+          stage: "1. Input text",
+          content: "I love machine learning!",
+          desc: "Raw, human-readable string passed by the user or upstream application.",
+          accent: "text-zinc-200"
+        },
+        {
+          stage: "2. Tokenizer",
+          content: "Splits text into model-specific tokens.",
+          desc: "Breaks raw string into subword chunks based on learned vocabulary merges (e.g. ['I', ' love', ' machine', ' learning', '!']).",
+          accent: "text-amber-400"
+        },
+        {
+          stage: "3. Token IDs",
+          content: "Each token maps to an integer in the model's vocabulary.",
+          desc: "Transforms textual subword tokens into discrete integer indices (e.g. [40, 3021, 5842, 4673, 0]).",
+          accent: "text-cyan-400"
+        },
+        {
+          stage: "4. Model input processing",
+          content: "Token IDs are converted into learned representations used by the model.",
+          desc: "Looks up each Token ID in an embedding matrix (E in R^{V x d}), adding positional encodings before feeding into transformer attention layers.",
+          accent: "text-emerald-400"
+        }
+      ]
+    },
+    modernApproaches: [
+      {
+        name: "BPE (Byte Pair Encoding)",
+        summary: "Repeatedly merges frequently occurring symbol sequences to form vocabulary tokens.",
+        details: "Starts with individual characters or bytes as base vocabulary, counting character pairs and iteratively merging the most frequent pairs into single subwords. Powers GPT-2, GPT-3, GPT-4 (via tiktoken), and LLaMA.",
+        accent: "text-purple-400",
+        border: "border-purple-800/50",
+        models: "GPT-4, LLaMA, RoBERTa"
+      },
+      {
+        name: "WordPiece",
+        summary: "Uses subword units selected through a learned vocabulary-building procedure.",
+        details: "Similar to BPE, but scores candidate merges based on likelihood under a language model rather than pure frequency count alone. Continuation subwords are denoted with '##' (e.g. 'learning' -> ['learn', '##ing']).",
+        accent: "text-blue-400",
+        border: "border-blue-800/50",
+        models: "BERT, DistilBERT"
+      },
+      {
+        name: "SentencePiece",
+        summary: "A tokenizer framework that can train subword tokenizers directly from raw text, commonly using algorithms such as BPE or Unigram.",
+        details: "Language-agnostic framework that treats whitespace as a normal character ('_') rather than relying on language-specific rule-based pre-tokenization. Seamlessly handles multilingual text without language tokenizers.",
+        accent: "text-emerald-400",
+        border: "border-emerald-800/50",
+        models: "T5, ALBERT, LLaMA tokenizer backend"
+      }
+    ],
+    codeExample: {
+      title: "Interactive Tokenization & Embedding Lookup in Python (tiktoken)",
+      language: "python",
+      code: `import tiktoken
+
+# Load modern GPT-4 BPE tokenizer (cl100k_base)
+enc = tiktoken.get_encoding("cl100k_base")
+
+# 1. Raw Text
+text = "I love machine learning!"
+
+# 2. Tokenizer splits into tokens and assigns Token IDs
+token_ids = enc.encode(text)
+print("Token IDs: ", token_ids)
+# Output: [40, 3021, 5842, 4673, 0]
+
+# 3. Inspect individual subword string chunks
+tokens = [enc.decode([tid]) for tid in token_ids]
+print("Tokens:    ", tokens)
+# Output: ['I', ' love', ' machine', ' learning', '!']
+
+# 4. Round-trip lossless decode
+decoded_text = enc.decode(token_ids)
+assert decoded_text == text`
+    },
+    takeaway: "Tokenization bridges discrete human text with continuous vector space. Modern LLMs rely on subword algorithms (BPE, WordPiece, SentencePiece) because they prevent Out-of-Vocabulary (OOV) errors while maintaining a compact vocabulary (typically 32k–128k tokens) that balances sequence length against embedding table memory."
   }
 ];
