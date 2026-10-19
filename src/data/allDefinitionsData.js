@@ -147,7 +147,8 @@ export const definitionBookmarks = [
   { id: "variance", label: "Variance" },
   { id: "bias-weight", label: "Bias & Weights" },
   { id: "flip-flop-latch", label: "Flip-Flop vs. Latch" },
-  { id: "underfitting-overfitting", label: "Underfitting & Overfitting" }
+  { id: "underfitting-overfitting", label: "Underfitting & Overfitting" },
+  { id: "adapters", label: "Adapters" }
 ];
 
 export const definitionsData = [
@@ -12096,5 +12097,110 @@ evaluate_model(degree=15, alpha=0.0, name="High-Degree Poly")
 evaluate_model(degree=4, alpha=0.5, name="Regularized Poly")`
     },
     takeaway: "Model generalization is governed by diagnosing the gap between training and validation loss curves. When both losses are high, the model is underfitting and requires greater expressiveness, richer features, or reduced regularization. When training loss is low but validation loss spikes, the model is overfitting and must be constrained via regularization (L1/L2, dropout), data augmentation, early stopping, and leak-free split validation."
+  },
+  {
+    id: "adapters",
+    title: "Adapters (Parameter-Efficient Bottleneck Modules & Task Transfer)",
+    badge: "Parameter-Efficient Fine-Tuning (PEFT) & Neural Bottlenecks",
+    summary: "Adapters are small trainable neural-network modules added to a pretrained model so it can learn a new task or domain without updating all the original model parameters.",
+    coreDefinition: "Adapters are small trainable neural-network modules added to a pretrained model so it can learn a new task or domain without updating all the original model parameters.",
+    howAdaptersWork: {
+      question: "How do adapters work?",
+      architecture: "A common adapter design uses a small bottleneck network:",
+      steps: [
+        {
+          num: "1",
+          step: "Hidden Representation",
+          detail: "The original model produces a hidden representation.",
+          subtext: "Activations emerge from the Transformer self-attention or feed-forward layer.",
+          accent: "text-amber-400"
+        },
+        {
+          num: "2",
+          step: "Down-Projection Bottleneck",
+          detail: "The adapter projects that representation into a smaller dimension.",
+          subtext: "Linear down-projection W_down (e.g. from d=4096 down to bottleneck m=64).",
+          accent: "text-blue-400"
+        },
+        {
+          num: "3",
+          step: "Nonlinear Transformation",
+          detail: "A nonlinear transformation learns task-specific information.",
+          subtext: "Applies an activation function (e.g. GeLU or ReLU) to model non-linear task dynamics.",
+          accent: "text-purple-400"
+        },
+        {
+          num: "4",
+          step: "Up-Projection & Integration",
+          detail: "The result is projected back to the original dimension and incorporated into the model's representation.",
+          subtext: "Linear up-projection W_up (m -> d) plus a residual connection: h_out = h_orig + Adapter(h_orig).",
+          accent: "text-emerald-400"
+        }
+      ],
+      frozenRule: "The original model weights are usually frozen while the adapter parameters are trained."
+    },
+    whyUseAdapters: {
+      question: "Why use adapters?",
+      benefits: [
+        {
+          title: "Lower training cost",
+          detail: "Fewer parameters to update.",
+          badge: "Compute Savings",
+          accent: "text-emerald-400"
+        },
+        {
+          title: "Less memory",
+          detail: "Often requires less optimizer state and training memory.",
+          badge: "VRAM Reduction",
+          accent: "text-cyan-400"
+        },
+        {
+          title: "Task specialization",
+          detail: "Different adapters can be trained for different tasks.",
+          badge: "Domain Expertise",
+          accent: "text-amber-400"
+        },
+        {
+          title: "Modularity",
+          detail: "Adapters can sometimes be switched without maintaining a completely separate full model for every task.",
+          badge: "Multi-Tenant Serving",
+          accent: "text-purple-400"
+        }
+      ],
+      caveat: "Adapters still require training data and compute, and their effectiveness depends on the task and architecture."
+    },
+    codeExample: {
+      title: "PyTorch Implementation of a Houlsby / Bottleneck Adapter Module",
+      language: "python",
+      code: `import torch
+import torch.nn as nn
+
+class BottleneckAdapter(nn.Module):
+    def __init__(self, d_model=4096, bottleneck_dim=64):
+        super().__init__()
+        # 1. Down-projection: projects hidden representation to smaller dimension
+        self.down_proj = nn.Linear(d_model, bottleneck_dim)
+        # 2. Nonlinear transformation learns task-specific information
+        self.act = nn.GELU()
+        # 3. Up-projection back to original model dimension
+        self.up_proj = nn.Linear(bottleneck_dim, d_model)
+        
+    def forward(self, x):
+        # Bottleneck transformation + residual skip connection
+        residual = x
+        adapter_out = self.up_proj(self.act(self.down_proj(x)))
+        return residual + adapter_out
+
+# Example: Freezing base model & training only adapter parameters
+base_dim = 1024
+adapter = BottleneckAdapter(d_model=base_dim, bottleneck_dim=32)
+
+x = torch.randn(2, 16, base_dim)  # [batch_size, seq_len, d_model]
+output = adapter(x)
+print(f"Input shape: {x.shape} -> Output shape: {output.shape}")
+print(f"Trainable adapter params: {sum(p.numel() for p in adapter.parameters() if p.requires_grad):,}")
+# Base model weights remain 100% frozen!`
+    },
+    takeaway: "Adapters introduce parameter efficiency through modular bottleneck layers. By freezing billions of pretrained parameters and training only compact down-and-up projections (typically <1% of the model's footprint), engineering teams achieve task specialization, drastically reduced VRAM overhead, and seamless hot-swappable multi-task serving."
   }
 ];
