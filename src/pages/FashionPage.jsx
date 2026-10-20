@@ -22,27 +22,6 @@ export default function FashionPage() {
 
   return (
     <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
-      {/* Title */}
-      <div className="space-y-2">
-        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-[11px] font-semibold uppercase tracking-wider">
-          <Layers className="w-3 h-3" />
-          <span>Project 1 Master Blueprint</span>
-        </div>
-        <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-          {fashionData.title}
-        </h1>
-      </div>
-
-      {/* Target Resume Bullet Point */}
-      <div className="rounded-2xl bg-[#0a0a0c] border border-cyan-500/30 p-6 shadow-xl">
-        <div className="text-xs uppercase tracking-wider text-cyan-400 font-bold mb-2 flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-cyan-400" />
-          <span>Target Resume Bullet Point to Defend</span>
-        </div>
-        <p className="text-base sm:text-lg text-zinc-100 font-medium italic">
-          "{fashionData.resumeBullet}"
-        </p>
-      </div>
 
       {/* 90-Second Interview Script Banner (AI/ML Model Flow First) */}
       <div className="rounded-2xl bg-[#0a0a0c] border border-indigo-500/30 p-6 sm:p-8 space-y-4 shadow-xl">
