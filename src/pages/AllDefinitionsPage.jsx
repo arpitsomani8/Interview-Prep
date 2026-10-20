@@ -50,12 +50,25 @@ export default function AllDefinitionsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const getEffectiveId = (id) => {
+    if (id === 'tree-of-thought' || id === 'graph-of-thoughts') return 'cot-chain-of-thought';
+    return id;
+  };
+
+  const selectBookmark = (id) => {
+    setActiveBookmark(id);
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const el = document.getElementById('active-content-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    });
+  };
+
   const scrollToId = (id) => {
-    const el = document.getElementById(id) || document.getElementById(id === 'tree-of-thought' || id === 'graph-of-thoughts' ? 'cot-chain-of-thought' : id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setActiveBookmark(id);
-    }
+    selectBookmark(id);
   };
 
   const scrollToBookmarks = () => {
@@ -71,23 +84,42 @@ export default function AllDefinitionsPage() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const filteredDefinitions = useMemo(() => {
+  // Filter bookmarks in the bookmarks bar when searching
+  const filteredBookmarks = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
-    if (!q) return definitionsData;
-    return definitionsData.filter((item) => {
-      const matchTitle = item.title.toLowerCase().includes(q);
-      const matchBadge = item.badge?.toLowerCase().includes(q);
-      const matchSummary = item.summary?.toLowerCase().includes(q);
-      const matchCode = item.code?.toLowerCase().includes(q);
+    if (!q) return definitionBookmarks;
+    return definitionBookmarks.filter((item) => {
+      const def = definitionsData.find(d => 
+        d.id === item.id || 
+        (d.id === 'cot-chain-of-thought' && (item.id === 'tree-of-thought' || item.id === 'graph-of-thoughts'))
+      );
       return (
-        matchTitle ||
-        matchBadge ||
-        matchSummary ||
-        matchCode ||
-        JSON.stringify(item).toLowerCase().includes(q)
+        item.label.toLowerCase().includes(q) ||
+        (def && (
+          def.title?.toLowerCase().includes(q) ||
+          def.summary?.toLowerCase().includes(q) ||
+          def.badge?.toLowerCase().includes(q)
+        ))
       );
     });
   }, [searchQuery]);
+
+  // Laser-fast display: ONLY the active bookmark is rendered in DOM
+  const displayedDefinitions = useMemo(() => {
+    if (!activeBookmark) return [];
+    const effectiveId = getEffectiveId(activeBookmark);
+    return definitionsData.filter((item) => item.id === effectiveId);
+  }, [activeBookmark]);
+
+  // Topic Navigation (Prev / Next)
+  const currentIndex = activeBookmark 
+    ? definitionBookmarks.findIndex(b => b.id === activeBookmark) 
+    : -1;
+  const currentBookmarkObj = currentIndex >= 0 ? definitionBookmarks[currentIndex] : null;
+  const prevBookmark = currentIndex > 0 ? definitionBookmarks[currentIndex - 1] : null;
+  const nextBookmark = (currentIndex >= 0 && currentIndex < definitionBookmarks.length - 1) 
+    ? definitionBookmarks[currentIndex + 1] 
+    : null;
 
   return (
     <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
@@ -130,23 +162,42 @@ export default function AllDefinitionsPage() {
           Click any bookmark to jump directly to its complete explanation, formulas, and working code:
         </p>
 
+        {/* Search match feedback */}
+        {searchQuery && (
+          <div className="flex items-center justify-between text-xs font-mono text-zinc-400 pt-1">
+            <span>Found {filteredBookmarks.length} matching topics:</span>
+            <button 
+              onClick={() => setSearchQuery('')}
+              className="text-cyan-400 hover:text-cyan-300 underline cursor-pointer"
+            >
+              Clear Search
+            </button>
+          </div>
+        )}
+
         {/* Clickable Bookmark Badges with Alphabet-Change Line Breaks */}
         <div className="flex flex-wrap items-center gap-2 pt-1">
-          {definitionBookmarks.map((item, index) => {
+          {filteredBookmarks.length === 0 && (
+            <div className="w-full p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-400 text-center font-mono">
+              No topics found matching "{searchQuery}". <button onClick={() => setSearchQuery('')} className="text-cyan-400 underline ml-1 cursor-pointer">Clear Search</button>
+            </div>
+          )}
+
+          {filteredBookmarks.map((item, index) => {
             const getInitial = (str) => {
               if (!str) return '';
               const ch = str.trim().charAt(0).toUpperCase();
               return /[A-Z]/.test(ch) ? ch : '#';
             };
             const currentInitial = getInitial(item.label);
-            const nextItem = definitionBookmarks[index + 1];
+            const nextItem = filteredBookmarks[index + 1];
             const nextInitial = nextItem ? getInitial(nextItem.label) : null;
             const isAlphabetChange = nextInitial && currentInitial !== nextInitial;
 
             return (
               <React.Fragment key={item.id}>
                 <button
-                  onClick={() => scrollToId(item.id)}
+                  onClick={() => selectBookmark(item.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 border cursor-pointer ${
                     activeBookmark === item.id
                       ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/10'
@@ -168,18 +219,105 @@ export default function AllDefinitionsPage() {
         </div>
       </div>
 
-      {/* Main Definitions Content Cards */}
-      <div className="space-y-8">
-        {filteredDefinitions.map((item) => (
-          <div
-            key={item.id}
-            id={item.id}
-            className={`scroll-mt-24 rounded-2xl bg-[#0a0a0c] p-6 sm:p-7 space-y-5 shadow-xl transition border ${
-              activeBookmark === item.id || (item.id === 'cot-chain-of-thought' && (activeBookmark === 'tree-of-thought' || activeBookmark === 'graph-of-thoughts'))
-                ? 'border-cyan-500 shadow-cyan-500/10'
-                : 'border-zinc-800 hover:border-zinc-700'
-            }`}
-          >
+      {/* Main Definitions Content Cards (Laser-Fast Single-Section View) */}
+      <div id="active-content-section" className="space-y-6 scroll-mt-24">
+        {!activeBookmark ? (
+          /* Empty / Initial State Guide */
+          <div className="rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-8 sm:p-12 text-center space-y-4 shadow-xl">
+            <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto text-cyan-400 shadow-lg shadow-cyan-500/10">
+              <Bookmark className="w-7 h-7" />
+            </div>
+            <div className="space-y-1.5">
+              <h3 className="text-base sm:text-lg font-bold text-white font-mono">
+                Select Any Topic Bookmark Above
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto leading-relaxed">
+                To guarantee zero page lag and eliminate long roller-coaster scrolling, content is hidden by default. Click any topic bookmark above or search to instantly load only that section's complete technical breakdown, formulas, and production code.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+              <button
+                onClick={() => selectBookmark('activation-functions')}
+                className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-cyan-500/50 text-xs font-mono text-zinc-300 hover:text-white transition cursor-pointer"
+              >
+                🚀 Activation Functions
+              </button>
+              <button
+                onClick={() => selectBookmark('big-data')}
+                className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-cyan-500/50 text-xs font-mono text-zinc-300 hover:text-white transition cursor-pointer"
+              >
+                📊 Big Data (Medallion)
+              </button>
+              <button
+                onClick={() => selectBookmark('pyspark')}
+                className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-cyan-500/50 text-xs font-mono text-zinc-300 hover:text-white transition cursor-pointer"
+              >
+                ⚡ PySpark
+              </button>
+              <button
+                onClick={() => selectBookmark('k-fold')}
+                className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-cyan-500/50 text-xs font-mono text-zinc-300 hover:text-white transition cursor-pointer"
+              >
+                🎯 K-Fold
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Active Topic Sticky Navigation Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-zinc-950/90 border border-cyan-800/40 backdrop-blur-md shadow-lg">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                  Chapter {currentIndex + 1} of {definitionBookmarks.length}
+                </span>
+                <span className="text-xs font-bold text-white font-mono truncate max-w-xs sm:max-w-md">
+                  {currentBookmarkObj?.label}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {prevBookmark && (
+                  <button
+                    onClick={() => selectBookmark(prevBookmark.id)}
+                    className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-300 hover:text-white border border-zinc-800 transition flex items-center gap-1 cursor-pointer"
+                    title={`Previous: ${prevBookmark.label}`}
+                  >
+                    <span>← Prev</span>
+                  </button>
+                )}
+                {nextBookmark && (
+                  <button
+                    onClick={() => selectBookmark(nextBookmark.id)}
+                    className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-300 hover:text-white border border-zinc-800 transition flex items-center gap-1 cursor-pointer"
+                    title={`Next: ${nextBookmark.label}`}
+                  >
+                    <span>Next →</span>
+                  </button>
+                )}
+                <button
+                  onClick={scrollToBookmarks}
+                  className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-400 hover:text-cyan-400 border border-zinc-800 transition flex items-center gap-1 cursor-pointer"
+                  title="Jump to Bookmarks"
+                >
+                  <span>Bookmarks ↑</span>
+                </button>
+                <button
+                  onClick={() => setActiveBookmark(null)}
+                  className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-rose-950/50 text-xs font-mono text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-900 transition flex items-center gap-1 cursor-pointer"
+                  title="Close Section"
+                >
+                  <span>✕ Close</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Render ONLY the single active definition */}
+            {displayedDefinitions.map((item) => (
+              <div
+                key={item.id}
+                id={item.id}
+                className="scroll-mt-24 rounded-2xl bg-[#0a0a0c] p-6 sm:p-7 space-y-5 shadow-2xl transition border border-cyan-500 shadow-cyan-500/10"
+              >
             {/* Header: Badge + Jump to Top */}
             <div className="flex items-center justify-between">
               <span className="text-[11px] uppercase font-mono px-2.5 py-1 rounded-md bg-zinc-900 text-cyan-300 border border-zinc-800 font-semibold">
@@ -23239,7 +23377,9 @@ export default function AllDefinitionsPage() {
             )}
 
           </div>
-        ))}
+            ))}
+          </>
+        )}
       </div>
 
       {/* Floating Scroll to Top Arrow Button (Bottom-Right, Compact) */}
