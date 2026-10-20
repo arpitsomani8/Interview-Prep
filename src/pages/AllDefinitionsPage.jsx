@@ -30,7 +30,6 @@ import {
 
 export default function AllDefinitionsPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -84,26 +83,6 @@ export default function AllDefinitionsPage() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  // Filter bookmarks in the bookmarks bar when searching
-  const filteredBookmarks = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim();
-    if (!q) return definitionBookmarks;
-    return definitionBookmarks.filter((item) => {
-      const def = definitionsData.find(d => 
-        d.id === item.id || 
-        (d.id === 'cot-chain-of-thought' && (item.id === 'tree-of-thought' || item.id === 'graph-of-thoughts'))
-      );
-      return (
-        item.label.toLowerCase().includes(q) ||
-        (def && (
-          def.title?.toLowerCase().includes(q) ||
-          def.summary?.toLowerCase().includes(q) ||
-          def.badge?.toLowerCase().includes(q)
-        ))
-      );
-    });
-  }, [searchQuery]);
-
   // Laser-fast display: ONLY the active bookmark is rendered in DOM
   const displayedDefinitions = useMemo(() => {
     if (!activeBookmark) return [];
@@ -122,75 +101,19 @@ export default function AllDefinitionsPage() {
     : null;
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
-      {/* Title Header */}
-      <div className="space-y-2">
-        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-[11px] font-semibold uppercase tracking-wider">
-          <FileCode className="w-3.5 h-3.5" />
-          <span>Core AI Engineering Vault</span>
-        </div>
-        <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-          All Definitions & Technical Master Guide
-        </h1>
-        <p className="text-xs sm:text-sm text-zinc-400 max-w-3xl">
-          Core concepts, mathematical formulas, trade-off comparisons, and production-ready API implementations organized for high-impact interview preparation.
-        </p>
-      </div>
-
+    <div className="w-full px-4 sm:px-8 lg:px-12 py-5 space-y-6">
       {/* Bookmarks Bar on Top */}
-      <div id="bookmarks-bar" className="space-y-4 pt-1">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-400">
-            <Bookmark className="w-4 h-4 text-cyan-400" />
-            <span>Topic Bookmarks ({definitionBookmarks.length} Chapters)</span>
-          </div>
-
-          {/* Search Input */}
-          <div className="relative w-full sm:w-72">
-            <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search concepts or code..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-cyan-500 transition"
-            />
-          </div>
-        </div>
-
-        <p className="text-xs text-zinc-400">
-          Click any bookmark to jump directly to its complete explanation, formulas, and working code:
-        </p>
-
-        {/* Search match feedback */}
-        {searchQuery && (
-          <div className="flex items-center justify-between text-xs font-mono text-zinc-400 pt-1">
-            <span>Found {filteredBookmarks.length} matching topics:</span>
-            <button 
-              onClick={() => setSearchQuery('')}
-              className="text-cyan-400 hover:text-cyan-300 underline cursor-pointer"
-            >
-              Clear Search
-            </button>
-          </div>
-        )}
-
+      <div id="bookmarks-bar" className="pt-1">
         {/* Clickable Bookmark Badges with Alphabet-Change Line Breaks */}
-        <div className="flex flex-wrap items-center gap-2 pt-1">
-          {filteredBookmarks.length === 0 && (
-            <div className="w-full p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-400 text-center font-mono">
-              No topics found matching "{searchQuery}". <button onClick={() => setSearchQuery('')} className="text-cyan-400 underline ml-1 cursor-pointer">Clear Search</button>
-            </div>
-          )}
-
-          {filteredBookmarks.map((item, index) => {
+        <div className="flex flex-wrap items-center gap-2">
+          {definitionBookmarks.map((item, index) => {
             const getInitial = (str) => {
               if (!str) return '';
               const ch = str.trim().charAt(0).toUpperCase();
               return /[A-Z]/.test(ch) ? ch : '#';
             };
             const currentInitial = getInitial(item.label);
-            const nextItem = filteredBookmarks[index + 1];
+            const nextItem = definitionBookmarks[index + 1];
             const nextInitial = nextItem ? getInitial(nextItem.label) : null;
             const isAlphabetChange = nextInitial && currentInitial !== nextInitial;
 
