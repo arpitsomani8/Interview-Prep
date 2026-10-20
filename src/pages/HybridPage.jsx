@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { hybridData } from '../data/hybridData';
-import { Cpu, Bookmark, ArrowUp, ShieldCheck, MessageSquareQuote, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Bookmark, ArrowUp, MessageSquareQuote, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function HybridPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
