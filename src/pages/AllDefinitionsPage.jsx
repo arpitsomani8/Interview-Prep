@@ -144,48 +144,7 @@ export default function AllDefinitionsPage() {
 
       {/* Main Definitions Content Cards (Laser-Fast Single-Section View) */}
       <div id="active-content-section" className="space-y-6 scroll-mt-24">
-        {!activeBookmark ? (
-          /* Empty / Initial State Guide */
-          <div className="rounded-2xl bg-[#0a0a0c] border border-zinc-800 p-8 sm:p-12 text-center space-y-4 shadow-xl">
-            <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto text-cyan-400 shadow-lg shadow-cyan-500/10">
-              <Bookmark className="w-7 h-7" />
-            </div>
-            <div className="space-y-1.5">
-              <h3 className="text-base sm:text-lg font-bold text-white font-mono">
-                Select Any Topic Bookmark Above
-              </h3>
-              <p className="text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto leading-relaxed">
-                To guarantee zero page lag and eliminate long roller-coaster scrolling, content is hidden by default. Click any topic bookmark above or search to instantly load only that section's complete technical breakdown, formulas, and production code.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-              <button
-                onClick={() => selectBookmark('activation-functions')}
-                className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-cyan-500/50 text-xs font-mono text-zinc-300 hover:text-white transition cursor-pointer"
-              >
-                🚀 Activation Functions
-              </button>
-              <button
-                onClick={() => selectBookmark('big-data')}
-                className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-cyan-500/50 text-xs font-mono text-zinc-300 hover:text-white transition cursor-pointer"
-              >
-                📊 Big Data (Medallion)
-              </button>
-              <button
-                onClick={() => selectBookmark('pyspark')}
-                className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-cyan-500/50 text-xs font-mono text-zinc-300 hover:text-white transition cursor-pointer"
-              >
-                ⚡ PySpark
-              </button>
-              <button
-                onClick={() => selectBookmark('k-fold')}
-                className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-cyan-500/50 text-xs font-mono text-zinc-300 hover:text-white transition cursor-pointer"
-              >
-                🎯 K-Fold
-              </button>
-            </div>
-          </div>
-        ) : (
+        {activeBookmark && (
           <>
             {/* Active Topic Sticky Navigation Bar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-zinc-950/90 border border-cyan-800/40 backdrop-blur-md shadow-lg">
