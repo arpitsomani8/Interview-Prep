@@ -212,8 +212,20 @@ export const definitionBookmarks = [
     "label": "Coding Best Practices"
   },
   {
-    "id": "data-model-drift",
-    "label": "Data / Model Drift"
+    "id": "docker",
+    "label": "Docker"
+  },
+  {
+    "id": "deepsparse",
+    "label": "DeepSparse"
+  },
+  {
+    "id": "dense-sparse",
+    "label": "Dense vs. Sparse"
+  },
+  {
+    "id": "denoising",
+    "label": "Denoising"
   },
   {
     "id": "data-cleaning",
@@ -224,26 +236,6 @@ export const definitionBookmarks = [
     "label": "Debugging"
   },
   {
-    "id": "deepsparse",
-    "label": "DeepSparse"
-  },
-  {
-    "id": "denoising",
-    "label": "Denoising"
-  },
-  {
-    "id": "dense-sparse",
-    "label": "Dense vs. Sparse"
-  },
-  {
-    "id": "design-chatgpt",
-    "label": "Design ChatGPT (Conversational AI System Design)"
-  },
-  {
-    "id": "design-patterns",
-    "label": "Design Patterns"
-  },
-  {
     "id": "diffusion-model",
     "label": "Diffusion Model"
   },
@@ -252,12 +244,20 @@ export const definitionBookmarks = [
     "label": "Distillation & Quantization (Model Compression)"
   },
   {
-    "id": "docker",
-    "label": "Docker"
-  },
-  {
     "id": "document-versioning-rag",
     "label": "Document Versioning & Freshness in RAG"
+  },
+  {
+    "id": "data-model-drift",
+    "label": "Data / Model Drift"
+  },
+  {
+    "id": "design-chatgpt",
+    "label": "Design ChatGPT (Conversational AI System Design)"
+  },
+  {
+    "id": "design-patterns",
+    "label": "Design Patterns"
   },
   {
     "id": "early-stopping",
