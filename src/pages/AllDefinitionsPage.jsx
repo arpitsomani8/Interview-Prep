@@ -4324,19 +4324,6 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 35: 360° Fashion Visualization */}
-            {item.id === 'fashion-360-visualization' && (
-              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                  {item.workflowSteps.map((ws, wIdx) => (
-                    <div key={wIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
-                      <div className="text-xs font-bold text-cyan-300 font-mono">{ws.step}</div>
-                      <p className="text-xs text-zinc-400 leading-relaxed">{ws.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Item 36: Diffusion Model */}
             {item.id === 'diffusion-model' && (

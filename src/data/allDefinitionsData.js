@@ -1,9 +1,5 @@
 export const definitionBookmarks = [
   {
-    "id": "fashion-360-visualization",
-    "label": "360° Fashion Visualization"
-  },
-  {
     "id": "acceptance-criteria",
     "label": "Acceptance Criteria"
   },
@@ -3323,26 +3319,6 @@ export const definitionsData = [
         }
       ]
     }
-  },
-  {
-    "id": "fashion-360-visualization",
-    "title": "360° Fashion Visualization",
-    "badge": "Diffusion & Vision Foundation Models",
-    "summary": "360° fashion visualization using diffusion and vision foundation models allows generating photorealistic, view-consistent images of garments from all angles.",
-    "workflowSteps": [
-      {
-        "step": "1. Input product image",
-        "desc": "A photograph of the original garment, ideally with multiple reference angles, clear fabric details, and a clean background."
-      },
-      {
-        "step": "2. Generate or synthesize a view",
-        "desc": "A model generates a new view or places the garment into a target pose. The system must preserve key details such as color, pockets, seams, logos, and shape."
-      },
-      {
-        "step": "3. Review multiple views",
-        "desc": "Present front, side, and back images to the shopper, with quality checks to detect visual inconsistencies."
-      }
-    ]
   },
   {
     "id": "diffusion-model",
