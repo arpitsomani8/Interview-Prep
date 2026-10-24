@@ -772,12 +772,36 @@ export const definitionBookmarks = [
     "label": "Security & Error Handling"
   },
   {
+    "id": "transformer",
+    "label": "Transformer"
+  },
+  {
+    "id": "top-k-top-p",
+    "label": "Top-K / Top-P"
+  },
+  {
+    "id": "tokenization",
+    "label": "Tokenization"
+  },
+  {
+    "id": "tf-idf",
+    "label": "TF-IDF"
+  },
+  {
+    "id": "trimming",
+    "label": "Trimming vs Capping"
+  },
+  {
     "id": "table-parsing-rag",
     "label": "Table Parsing & Multi-Page Ingestion in RAG"
   },
   {
     "id": "temperature",
     "label": "Temperature"
+  },
+  {
+    "id": "throughput-latency",
+    "label": "Throughput / Latency"
   },
   {
     "id": "tensor",
@@ -792,48 +816,24 @@ export const definitionBookmarks = [
     "label": "Text / Image Search"
   },
   {
-    "id": "tf-idf",
-    "label": "TF-IDF"
-  },
-  {
-    "id": "throughput-latency",
-    "label": "Throughput / Latency"
-  },
-  {
-    "id": "time-space-complexity",
-    "label": "Time/Space Complexity"
-  },
-  {
-    "id": "tokenization",
-    "label": "Tokenization"
-  },
-  {
     "id": "tool-calling",
     "label": "Tool Calling & Function Calling in LLMs"
-  },
-  {
-    "id": "top-k-top-p",
-    "label": "Top-K / Top-P"
-  },
-  {
-    "id": "transformer",
-    "label": "Transformer"
   },
   {
     "id": "tree-algorithms",
     "label": "Tree Algorithms"
   },
   {
+    "id": "tuple",
+    "label": "Tuple"
+  },
+  {
     "id": "tree-of-thought",
     "label": "Tree-of-Thought (ToT)"
   },
   {
-    "id": "trimming",
-    "label": "Trimming vs Capping"
-  },
-  {
-    "id": "tuple",
-    "label": "Tuple"
+    "id": "time-space-complexity",
+    "label": "Time/Space Complexity"
   },
   {
     "id": "underfitting",
