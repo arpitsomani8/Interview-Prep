@@ -368,20 +368,20 @@ export const definitionBookmarks = [
     "label": "Hallucination"
   },
   {
-    "id": "histogram",
-    "label": "Histogram (Frequency Distribution)"
-  },
-  {
-    "id": "hpa-kubernetes-llm",
-    "label": "HPA for LLMs (Kubernetes GPU Autoscaling & KEDA)"
+    "id": "hyperparameters",
+    "label": "Hyperparameters (Epochs, Batch Size & Learning Rate)"
   },
   {
     "id": "hybrid-search",
     "label": "Hybrid Search (BM25 + Vector Search + Reranking)"
   },
   {
-    "id": "hyperparameters",
-    "label": "Hyperparameters (Epochs, Batch Size & Learning Rate)"
+    "id": "histogram",
+    "label": "Histogram (Frequency Distribution)"
+  },
+  {
+    "id": "hpa-kubernetes-llm",
+    "label": "HPA for LLMs (Kubernetes GPU Autoscaling & KEDA)"
   },
   {
     "id": "imputation",
