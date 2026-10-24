@@ -5,18 +5,11 @@ import {
   ArrowUp, 
   MessageSquareQuote, 
   Sparkles, 
-  CheckCircle2, 
-  Code2, 
-  Check, 
-  Copy,
-  Layers,
-  Terminal,
-  Cpu
+  CheckCircle2
 } from 'lucide-react';
 
 export default function ResumePage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
-  const [copied, setCopied] = useState(false);
 
   const selectBookmark = (id) => {
     if (activeBookmark === id) {
@@ -39,12 +32,6 @@ export default function ResumePage() {
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  };
-
-  const handleCopyCode = (text) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   const currentIndex = activeBookmark 
@@ -285,28 +272,6 @@ export default function ResumePage() {
           </>
         )}
       </div>
-
-      {/* Python Flask Backend Implementation Showcase */}
-      {resumeData.codeSnippet && (
-        <div className="rounded-2xl bg-[#0a0a0c] border border-cyan-500/30 p-6 sm:p-7 space-y-3 shadow-xl">
-          <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-            <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 font-bold uppercase">
-              <Code2 className="w-4 h-4" />
-              <span>{resumeData.codeSnippet.title}</span>
-            </div>
-            <button
-              onClick={() => handleCopyCode(resumeData.codeSnippet.code)}
-              className="text-xs font-mono text-zinc-400 hover:text-cyan-300 px-2.5 py-1 rounded bg-zinc-900 border border-zinc-800 flex items-center gap-1.5 transition cursor-pointer"
-            >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copied ? 'Copied' : 'Copy Code'}</span>
-            </button>
-          </div>
-          <pre className="text-xs font-mono text-cyan-200/90 bg-black/90 border border-zinc-800 p-4 rounded-xl overflow-x-auto leading-relaxed">
-            {resumeData.codeSnippet.code}
-          </pre>
-        </div>
-      )}
 
     </div>
   );
