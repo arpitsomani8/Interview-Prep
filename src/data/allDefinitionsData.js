@@ -1,23 +1,31 @@
 export const definitionBookmarks = [
   {
-    "id": "acceptance-criteria",
-    "label": "Acceptance Criteria"
-  },
-  {
-    "id": "activation-functions",
-    "label": "Activation Functions"
-  },
-  {
-    "id": "adapters",
-    "label": "Adapters"
-  },
-  {
     "id": "agentic-ai",
     "label": "Agentic AI"
   },
   {
     "id": "agentic-workflow",
     "label": "Agentic Workflow"
+  },
+  {
+    "id": "ann-cnn",
+    "label": "ANN vs. CNN"
+  },
+  {
+    "id": "async-sync",
+    "label": "Async vs. Sync"
+  },
+  {
+    "id": "auth-authorization",
+    "label": "Authentication & Authorization"
+  },
+  {
+    "id": "ai-assisted-coding-tools",
+    "label": "AI-Assisted Coding Tools"
+  },
+  {
+    "id": "ai-model",
+    "label": "AI Model"
   },
   {
     "id": "ai-evaluation",
@@ -32,32 +40,24 @@ export const definitionBookmarks = [
     "label": "AI Gateway (Routing, Caching & Cost Control)"
   },
   {
-    "id": "ai-model",
-    "label": "AI Model"
-  },
-  {
     "id": "ai-monitoring-observability",
     "label": "AI Observability (Tracing, Metrics & RAG Debugging)"
   },
   {
-    "id": "ai-assisted-coding-tools",
-    "label": "AI-Assisted Coding Tools"
+    "id": "acceptance-criteria",
+    "label": "Acceptance Criteria"
   },
   {
-    "id": "ann-cnn",
-    "label": "ANN vs. CNN"
+    "id": "activation-functions",
+    "label": "Activation Functions"
+  },
+  {
+    "id": "adapters",
+    "label": "Adapters"
   },
   {
     "id": "anova",
     "label": "ANOVA & Kruskal-Wallis"
-  },
-  {
-    "id": "async-sync",
-    "label": "Async vs. Sync"
-  },
-  {
-    "id": "auth-authorization",
-    "label": "Authentication & Authorization"
   },
   {
     "id": "automl",
