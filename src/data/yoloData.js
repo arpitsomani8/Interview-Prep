@@ -91,7 +91,19 @@ Future & In-Progress R&D:
         "In Simple Terms: Warehouses are hot and dusty environments where fragile GPUs frequently overheat and fail. DeepSparse lets us run real-time YOLO on standard, rugged office CPUs without buying expensive graphics cards.",
         "How It Works: It takes advantage of pruned models. When 75% of a model's weights are zero, DeepSparse completely skips calculating those zeroes, running 4x faster on regular Intel or AMD CPUs.",
         "Interview Answer: 'DeepSparse cut our YOLO detection time from 65ms down to just 14 milliseconds on standard CPUs, meeting our 25ms reaction deadline while saving over $150,000 in GPU hardware.'"
-      ]
+      ],
+      codeFilename: "run_deepsparse.py",
+      code: `from deepsparse import Pipeline
+
+# Load pruned & quantized YOLOv8 running on standard commodity CPU
+yolo_pipeline = Pipeline.create(
+    task="yolo",
+    model_path="zoo:cv/detection/yolov8-s/pytorch/ultralytics/coco/pruned65_quant-none"
+)
+
+# High-speed 14ms inference on 8-core Intel CPU
+outputs = yolo_pipeline(images=["parcel_frame_01.jpg"])
+boxes = outputs.boxes[0]  # [x1, y1, x2, y2, score, class_id]`
     },
     {
       id: "docker",
@@ -113,7 +125,25 @@ Future & In-Progress R&D:
         "In Simple Terms: It acts as the local brain on the warehouse floor. It receives the camera photo, sends it to the AI, logs results to the local database, and updates the operator's screen.",
         "Non-Blocking Background Tasks: Writing defect records and saving high-res photos happens in the background, so the critical 14ms AI detection loop is never delayed.",
         "Interview Answer: 'FastAPI handles local camera coordination and live operator dashboard streaming asynchronously, guaranteeing that background logging never delays our 25ms diversion deadline.'"
-      ]
+      ],
+      codeFilename: "edge_api.py",
+      code: `from fastapi import FastAPI, BackgroundTasks
+import time
+
+app = FastAPI(title="Edge Inspection Controller")
+
+def log_defect_async(image_path: str, coords: list):
+    # Non-blocking disk write & SQLite logging
+    time.sleep(0.05)
+
+@app.post("/trigger/camera")
+async def on_camera_trigger(bg_tasks: BackgroundTasks):
+    # 14ms synchronous inference step
+    defect_found, box = check_yolo_inference()
+    if defect_found:
+        fire_pneumatic_solenoid_valve()  # 4ms reaction
+        bg_tasks.add_task(log_defect_async, "frame.jpg", box)
+    return {"status": "ok", "diverted": defect_found}`
     },
     {
       id: "gpt-vision",

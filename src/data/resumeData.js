@@ -87,7 +87,26 @@ Throughout development, we collaborated closely on frontend usability—introduc
         "In Simple Terms: Flask is our lightweight Python engine that listens for requests from React, checks that the user's data is clean, and saves or formats their resume.",
         "Why Flask: Flask is minimal and unopinionated. It gave us complete control over API routes and easy integration with Python templating and PDF libraries without the heavy overhead of monolithic frameworks.",
         "Interview Answer: 'We chose Flask for its simplicity and fast execution. We organized endpoints using Flask Blueprints and CORS middleware to cleanly decouple the Python backend from our React client.'"
-      ]
+      ],
+      codeFilename: "app.py",
+      code: `from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)  # Enable cross-origin requests from React client
+
+@app.route("/api/v1/resume/generate", methods=["POST"])
+def generate_resume():
+    payload = request.get_json()
+    if not payload or "personal_info" not in payload:
+        return jsonify({"error": "Invalid resume payload"}), 400
+    
+    # Process user experience, skills, and generate ATS PDF
+    return jsonify({
+        "status": "success",
+        "message": "Resume generated successfully",
+        "download_url": "/downloads/resume_ats.pdf"
+    }), 200`
     },
     {
       id: "dynamic-resume-engine",
@@ -98,7 +117,21 @@ Throughout development, we collaborated closely on frontend usability—introduc
         "In Simple Terms: It works like a digital mail merge. We built clean HTML/CSS resume templates with placeholders, and Jinja2 dynamically fills in the user's name, bullet points, and dates.",
         "ATS (Applicant Tracking System) Friendly: The templates use standard semantic HTML tags and standard fonts so automated job application scanners can easily parse the candidate's work history.",
         "Interview Answer: 'Our dynamic engine combines Jinja2 templating with server-side PDF generation, allowing users to swap templates instantly while guaranteeing ATS readability.'"
-      ]
+      ],
+      codeFilename: "pdf_compiler.py",
+      code: `from jinja2 import Environment, FileSystemLoader
+import weasyprint
+
+env = Environment(loader=FileSystemLoader("templates"))
+template = env.get_template("ats_modern.html")
+
+def compile_pdf(user_data: dict) -> bytes:
+    # 1. Render semantic HTML/CSS with Jinja2 placeholders
+    rendered_html = template.render(**user_data)
+    
+    # 2. Compile to pixel-perfect, ATS-parseable PDF
+    pdf_bytes = weasyprint.HTML(string=rendered_html).write_pdf()
+    return pdf_bytes`
     },
     {
       id: "usability-ux",

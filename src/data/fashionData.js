@@ -125,7 +125,22 @@ export const fashionData = {
         "In Simple Terms: Think of it as a specialized search engine for numbers. It stores the 1024-number style vectors of our 10,000 clothing items and instantly finds the closest matches.",
         "Why Embedded Mode: It runs directly inside our Python process using HNSW in-memory indexing. This means zero network hops, sub-5ms retrieval, and zero cloud hosting fees for vector storage.",
         "Interview Answer: 'We chose ChromaDB for Project 1 because our catalog of 10,000 garments easily fits into in-memory HNSW graphs. Running ChromaDB embedded in FastAPI cut vector query latency to 4ms with zero external infrastructure overhead.'"
-      ]
+      ],
+      codeFilename: "vector_store.py",
+      code: `import chromadb
+
+client = chromadb.PersistentClient(path="./chroma_db")
+collection = client.get_or_create_collection(
+    name="fashion_catalog",
+    metadata={"hnsw:space": "cosine"}
+)
+
+# Sub-5ms in-memory similarity retrieval
+results = collection.query(
+    query_embeddings=[query_vector],
+    n_results=10,
+    include=["documents", "metadatas", "distances"]
+)`
     },
     {
       "id": "cosine-similarity",
@@ -169,7 +184,24 @@ export const fashionData = {
         "In Simple Terms: It acts like the project manager. It guides the user's search step-by-step: first search vectors, then verify warehouse stock, then ask GPT-4o for styling notes, and finally display results.",
         "Handling Dead Ends with Loops: If a customer searches for something completely out of stock, LangGraph loops back and suggests similar in-stock alternatives instead of failing.",
         "Interview Answer: 'LangGraph gives us stateful, cyclic workflow control with clean fallback paths if search filters return zero items.'"
-      ]
+      ],
+      codeFilename: "workflow_graph.py",
+      code: `from langgraph.graph import StateGraph, END
+from typing import TypedDict, List
+
+class FashionSearchState(TypedDict):
+    query: str
+    top_matches: List[dict]
+    in_stock: bool
+    stylist_summary: str
+
+workflow = StateGraph(FashionSearchState)
+workflow.add_node("vector_search", search_chromadb_step)
+workflow.add_node("verify_stock", verify_sql_inventory_step)
+workflow.add_node("stylist_review", gpt4o_stylist_step)
+
+# Conditional edge: loops if stock empty
+workflow.add_conditional_edges("verify_stock", check_inventory_threshold)`
     },
     {
       "id": "late-vector-fusion",

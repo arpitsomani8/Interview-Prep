@@ -105,7 +105,19 @@ To make the platform production-ready, we containerized the entire backend using
         "In Simple Terms: It's the front door of our application. It receives incoming data, checks that the numbers and fields are correct, and hands them to the AI engine instantly.",
         "Why We Chose It: It supports asynchronous requests natively, meaning it can process thousands of client requests simultaneously without waiting or freezing.",
         "Interview Answer: 'FastAPI provides asynchronous request handling, automatic Pydantic validation, and instant Swagger API documentation out-of-the-box.'"
-      ]
+      ],
+      codeFilename: "main.py",
+      code: `from fastapi import FastAPI, Header, HTTPException
+from pydantic import BaseModel
+
+app = FastAPI(title="Hybrid Decision Engine")
+
+@app.post("/api/v1/score")
+async def score_record(payload: dict, x_tenant_id: str = Header(...)):
+    if not x_tenant_id:
+        raise HTTPException(status_code=400, detail="Missing tenant header")
+    # Sub-millisecond routing to tenant dedicated database
+    return {"tenant": x_tenant_id, "score": 0.94, "latency_ms": 1.2}`
     },
     {
       id: "lightgbm",
@@ -116,7 +128,22 @@ To make the platform production-ready, we containerized the entire backend using
         "In Simple Terms: While LLMs are great for reading text, LightGBM is the champion for structured spreadsheets and tabular database records (like loan amounts, credit scores, and transaction history).",
         "Why We Chose It Over XGBoost: It groups continuous numbers into quick bins (histograms), making it train 7x faster and run predictions in under 2 milliseconds without needing an expensive GPU.",
         "Interview Answer: 'LightGBM gives us sub-2ms CPU inference and superior accuracy on tabular enterprise data, completely avoiding expensive GPU hosting bills.'"
-      ]
+      ],
+      codeFilename: "train_lightgbm.py",
+      code: `import lightgbm as lgb
+from sklearn.model_selection import train_test_split
+
+# Train tabular gradient boosting model (< 2ms CPU inference)
+clf = lgb.LGBMClassifier(
+    n_estimators=100,
+    learning_rate=0.05,
+    num_leaves=31,
+    boosting_type="gbdt"
+)
+clf.fit(X_train, y_train)
+
+# Fast probability inference
+fraud_prob = clf.predict_proba(X_test)[:, 1]`
     },
     {
       id: "llama",
@@ -171,7 +198,15 @@ To make the platform production-ready, we containerized the entire backend using
         "In Simple Terms: Think of it as a security guard at the door. If someone submits an order with a negative price, missing email, or malformed date, Pydantic immediately rejects it with a clear error message.",
         "Why It's Fast: Pydantic v2 was rewritten in Rust, validating hundreds of fields in less than 0.5 milliseconds with near-zero CPU usage.",
         "Interview Answer: 'Pydantic enforces strict type safety and value bounds at the API boundary, keeping corrupted records from ever reaching our database or ML models.'"
-      ]
+      ],
+      codeFilename: "schemas.py",
+      code: `from pydantic import BaseModel, Field
+
+class TransactionPayload(BaseModel):
+    transaction_id: str = Field(..., min_length=8)
+    amount_usd: float = Field(..., gt=0.0)
+    user_country: str = Field(default="US", min_length=2, max_length=2)
+    device_risk_score: float = Field(default=0.0, ge=0.0, le=1.0)`
     },
     {
       id: "rag",

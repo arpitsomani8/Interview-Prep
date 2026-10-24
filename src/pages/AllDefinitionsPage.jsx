@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { definitionBookmarks, definitionsData } from '../data/allDefinitionsData';
+import CodeHighlight from '../components/CodeHighlight';
 import { 
   FileCode, 
   Bookmark, 
@@ -619,9 +620,7 @@ export default function AllDefinitionsPage() {
                       )}
                     </button>
                   </div>
-                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                    {item.code}
-                  </pre>
+                  <CodeHighlight code={item.code} />
                 </div>
 
                 {/* Explanation: What just happened? */}
@@ -675,9 +674,7 @@ export default function AllDefinitionsPage() {
                       )}
                     </button>
                   </div>
-                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                    {item.code}
-                  </pre>
+                  <CodeHighlight code={item.code} />
                 </div>
 
                 {/* Architectural Notes */}
@@ -723,9 +720,7 @@ export default function AllDefinitionsPage() {
                       )}
                     </button>
                   </div>
-                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                    {item.code}
-                  </pre>
+                  <CodeHighlight code={item.code} />
                 </div>
 
                 {/* Key Advantages */}
@@ -1466,9 +1461,7 @@ export default function AllDefinitionsPage() {
                             {/* Code snippet for metadata */}
                             {st.codeSnippet && (
                               <div className="pt-1">
-                                <pre className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-[10px] text-cyan-200 overflow-x-auto leading-relaxed">
-                                  {st.codeSnippet}
-                                </pre>
+                                <CodeHighlight code={st.codeSnippet} />
                               </div>
                             )}
 
@@ -1800,9 +1793,7 @@ export default function AllDefinitionsPage() {
                         )}
                       </button>
                     </div>
-                    <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                      {item.minimalRetrievalCode}
-                    </pre>
+                    <CodeHighlight code={item.minimalRetrievalCode} />
                   </div>
                 </div>
 
@@ -1884,9 +1875,7 @@ export default function AllDefinitionsPage() {
                       )}
                     </button>
                   </div>
-                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                    {item.ingestCode}
-                  </pre>
+                  <CodeHighlight code={item.ingestCode} />
                 </div>
 
                 {/* Ingest Takeaways */}
@@ -2180,9 +2169,7 @@ export default function AllDefinitionsPage() {
                       )}
                     </button>
                   </div>
-                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                    {item.mainCode}
-                  </pre>
+                  <CodeHighlight code={item.mainCode} />
                 </div>
 
                 {/* Run Command & Source Citations Note */}
@@ -2317,9 +2304,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                        {item.sentenceTransformersExample.code}
-                      </pre>
+                      <CodeHighlight code={item.sentenceTransformersExample.code} />
                     </div>
 
                     <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
@@ -2780,9 +2765,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                        {item.pipelineConcept.importSnippet}
-                      </pre>
+                      <CodeHighlight code={item.pipelineConcept.importSnippet} />
                     </div>
 
                     {/* Advantages */}
@@ -2833,9 +2816,7 @@ export default function AllDefinitionsPage() {
                         )}
                       </button>
                     </div>
-                    <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                      {item.coreSnippet}
-                    </pre>
+                    <CodeHighlight code={item.coreSnippet} />
                   </div>
                 )}
 
@@ -2863,9 +2844,7 @@ export default function AllDefinitionsPage() {
                       )}
                     </button>
                   </div>
-                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                    {item.code}
-                  </pre>
+                  <CodeHighlight code={item.code} />
                 </div>
 
                 {/* Explanation points */}
@@ -2999,9 +2978,7 @@ export default function AllDefinitionsPage() {
                               )}
                             </button>
                           </div>
-                          <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                            {item.treePruning.codeExample.code}
-                          </pre>
+                          <CodeHighlight code={item.treePruning.codeExample.code} />
                         </div>
                       </div>
                     )}
@@ -3468,9 +3445,7 @@ export default function AllDefinitionsPage() {
                             )}
                           </button>
                         </div>
-                        <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                          {item.simpleLlmProgram.code}
-                        </pre>
+                        <CodeHighlight code={item.simpleLlmProgram.code} />
                       </div>
                       <p className="text-[11px] text-zinc-400 font-mono italic">
                         * {item.simpleLlmProgram.modelNote}
@@ -3623,9 +3598,7 @@ export default function AllDefinitionsPage() {
                             )}
                           </button>
                         </div>
-                        <pre className="p-4 text-xs font-mono text-emerald-200 overflow-x-auto leading-relaxed">
-                          {item.simpleRagProgram.code}
-                        </pre>
+                        <CodeHighlight code={item.simpleRagProgram.code} />
                       </div>
                     </div>
 
@@ -4076,9 +4049,7 @@ export default function AllDefinitionsPage() {
                             )}
                           </button>
                         </div>
-                        <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                          {item.simpleTransformerApp.code}
-                        </pre>
+                        <CodeHighlight code={item.simpleTransformerApp.code} />
                       </div>
                     </div>
 
@@ -4224,9 +4195,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                        {item.pytorchExample.code}
-                      </pre>
+                      <CodeHighlight code={item.pytorchExample.code} />
                     </div>
 
                     <div className="p-3 rounded-lg bg-black/60 border border-zinc-800/80 text-[11px] text-zinc-300 font-mono leading-relaxed">
@@ -4519,9 +4488,7 @@ export default function AllDefinitionsPage() {
                       )}
                     </button>
                   </div>
-                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                    {item.toolCode}
-                  </pre>
+                  <CodeHighlight code={item.toolCode} />
                 </div>
 
                 {/* StateGraph Code Block */}
@@ -4548,9 +4515,7 @@ export default function AllDefinitionsPage() {
                       )}
                     </button>
                   </div>
-                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                    {item.graphCode}
-                  </pre>
+                  <CodeHighlight code={item.graphCode} />
                 </div>
 
                 {/* Q&A Takeaways */}
@@ -4632,9 +4597,7 @@ export default function AllDefinitionsPage() {
                         )}
                       </button>
                     </div>
-                    <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                      {item.featureScaling.code}
-                    </pre>
+                    <CodeHighlight code={item.featureScaling.code} />
                   </div>
 
                   {/* When to Scale */}
@@ -4690,9 +4653,7 @@ export default function AllDefinitionsPage() {
                         )}
                       </button>
                     </div>
-                    <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                      {item.vectorNormalization.code}
-                    </pre>
+                    <CodeHighlight code={item.vectorNormalization.code} />
                   </div>
 
                   {/* Vector Normalization Takeaway */}
@@ -4784,9 +4745,7 @@ export default function AllDefinitionsPage() {
                         )}
                       </button>
                     </div>
-                    <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                      {item.code}
-                    </pre>
+                    <CodeHighlight code={item.code} />
                   </div>
                 </div>
 
@@ -5182,9 +5141,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-amber-200/90 overflow-x-auto leading-relaxed">
-                        {item.boto3Example.code}
-                      </pre>
+                      <CodeHighlight code={item.boto3Example.code} />
                     </div>
 
                     <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
@@ -5408,9 +5365,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                        {item.pytorchExample.code}
-                      </pre>
+                      <CodeHighlight code={item.pytorchExample.code} />
                     </div>
                   </div>
                 )}
@@ -5518,9 +5473,7 @@ export default function AllDefinitionsPage() {
                             )}
                           </button>
                         </div>
-                        <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                          {item.handsOnServer.code}
-                        </pre>
+                        <CodeHighlight code={item.handsOnServer.code} />
                       </div>
                       <div className="p-3 rounded-lg bg-black/60 border border-zinc-800/80 text-[11px] text-zinc-400 leading-relaxed font-sans">
                         <strong className="text-cyan-400 font-mono">@mcp.tool() Mechanism: </strong>
@@ -5836,9 +5789,7 @@ export default function AllDefinitionsPage() {
                         )}
                       </button>
                     </div>
-                    <pre className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-zinc-300 overflow-x-auto leading-relaxed max-h-96">
-                      <code>{item.pythonCode}</code>
-                    </pre>
+                    <CodeHighlight code={item.pythonCode} />
                   </div>
                 )}
 
@@ -5912,9 +5863,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                        {item.hashChainDemo.code}
-                      </pre>
+                      <CodeHighlight code={item.hashChainDemo.code} />
                     </div>
                   </div>
                 )}
@@ -6114,9 +6063,7 @@ export default function AllDefinitionsPage() {
                           <span>{item.handsOnCode.filename} (k-NN Cosine Similarity)</span>
                         </div>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                        {item.handsOnCode.code}
-                      </pre>
+                      <CodeHighlight code={item.handsOnCode.code} />
                     </div>
 
                     <div className="p-3 rounded-lg bg-black/60 border border-zinc-800/80 text-[11px] text-zinc-400 leading-relaxed font-sans">
@@ -6276,9 +6223,7 @@ export default function AllDefinitionsPage() {
                           <span>{item.handsOnScript.filename}</span>
                         </div>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                        {item.handsOnScript.code}
-                      </pre>
+                      <CodeHighlight code={item.handsOnScript.code} />
                     </div>
 
                     <div className="p-3 rounded-lg bg-black/60 border border-zinc-800/80 text-[11px] text-zinc-400 leading-relaxed font-sans">
@@ -7462,9 +7407,7 @@ export default function AllDefinitionsPage() {
                       )}
                     </button>
                   </div>
-                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                    {item.codeExample}
-                  </pre>
+                  <CodeHighlight code={item.codeExample} />
                 </div>
 
                 {/* Tuple vs List Comparison Table */}
@@ -7583,9 +7526,7 @@ export default function AllDefinitionsPage() {
                       )}
                     </button>
                   </div>
-                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                    {item.codeExample}
-                  </pre>
+                  <CodeHighlight code={item.codeExample} />
                 </div>
 
                 {/* Essential Methods Table */}
@@ -7713,9 +7654,7 @@ export default function AllDefinitionsPage() {
                             )}
                           </button>
                         </div>
-                        <pre className="p-3.5 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                          {t.code}
-                        </pre>
+                        <CodeHighlight code={t.code} />
                       </div>
                     </div>
                   ))}
@@ -7871,9 +7810,7 @@ export default function AllDefinitionsPage() {
                       )}
                     </button>
                   </div>
-                  <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed">
-                    {item.profilingCode}
-                  </pre>
+                  <CodeHighlight code={item.profilingCode} />
                 </div>
 
                 {/* 6 Steps to Manage Complexity in Production */}
@@ -8135,9 +8072,7 @@ export default function AllDefinitionsPage() {
                           <p className="text-xs text-zinc-300 leading-relaxed font-sans">
                             {item.dbQueryMechanics.vectorQuery.explanation}
                           </p>
-                          <pre className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-[11px] text-cyan-300 overflow-x-auto leading-relaxed">
-                            {item.dbQueryMechanics.vectorQuery.sqlSnippet}
-                          </pre>
+                          <CodeHighlight code={item.dbQueryMechanics.vectorQuery.sqlSnippet} />
                           <div className="text-[11px] font-mono text-zinc-400">
                             Key Clause: <code className="text-amber-300">{item.dbQueryMechanics.vectorQuery.clause}</code>
                           </div>
@@ -8174,9 +8109,7 @@ export default function AllDefinitionsPage() {
                           <p className="text-xs text-zinc-300 leading-relaxed font-sans">
                             {item.dbQueryMechanics.relationalQuery.explanation}
                           </p>
-                          <pre className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-[11px] text-purple-300 overflow-x-auto leading-relaxed">
-                            {item.dbQueryMechanics.relationalQuery.sqlSnippet}
-                          </pre>
+                          <CodeHighlight code={item.dbQueryMechanics.relationalQuery.sqlSnippet} />
                           <div className="text-[11px] font-mono text-zinc-400">
                             Key Clause: <code className="text-amber-300">{item.dbQueryMechanics.relationalQuery.clause}</code>
                           </div>
@@ -8487,9 +8420,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed h-full">
-                        {item.dockerfileCode}
-                      </pre>
+                      <CodeHighlight code={item.dockerfileCode} />
                     </div>
 
                     {/* Directives Breakdown */}
@@ -8757,9 +8688,7 @@ export default function AllDefinitionsPage() {
                     </div>
                     <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
                       <div className="lg:col-span-7">
-                        <pre className="p-3 rounded-lg bg-zinc-950 border border-zinc-800/80 font-mono text-xs text-cyan-200 overflow-x-auto leading-relaxed">
-                          {item.healthEndpoint.codeSnippet}
-                        </pre>
+                        <CodeHighlight code={item.healthEndpoint.codeSnippet} />
                       </div>
                       <div className="lg:col-span-5 text-xs text-zinc-300 font-sans leading-relaxed">
                         {item.healthEndpoint.desc}
@@ -11934,9 +11863,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {ex.code}
-                      </pre>
+                      <CodeHighlight code={ex.code} />
                     </div>
                   </div>
                 ))}
@@ -12003,9 +11930,7 @@ export default function AllDefinitionsPage() {
                         )}
                       </button>
                     </div>
-                    <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                      {item.code}
-                    </pre>
+                    <CodeHighlight code={item.code} />
                   </div>
                 </div>
 
@@ -12257,9 +12182,7 @@ export default function AllDefinitionsPage() {
                                 {opt.badge}
                               </span>
                             </div>
-                            <pre className="p-2 rounded bg-zinc-950 border border-zinc-800/80 text-[10px] font-mono text-emerald-300 overflow-x-auto">
-                              <code>{opt.code}</code>
-                            </pre>
+                            <CodeHighlight code={opt.code} />
                             <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{opt.impact}</p>
                           </div>
                         </div>
@@ -12293,9 +12216,7 @@ export default function AllDefinitionsPage() {
                         )}
                       </button>
                     </div>
-                    <pre className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-zinc-300 overflow-x-auto leading-relaxed max-h-96">
-                      <code>{item.pythonCode}</code>
-                    </pre>
+                    <CodeHighlight code={item.pythonCode} />
                   </div>
                 )}
 
@@ -12672,9 +12593,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.peftCodeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.peftCodeExample.code} />
                     </div>
                   </div>
                 )}
@@ -13112,9 +13031,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -13284,9 +13201,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -13397,9 +13312,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
 
                     {/* Output Features & Matrix Inspection */}
@@ -13964,9 +13877,7 @@ export default function AllDefinitionsPage() {
                         <span>{copiedId === item.id ? 'Copied' : 'Copy Code'}</span>
                       </button>
                     </div>
-                    <pre className="text-[11px] font-mono text-cyan-200/90 bg-black/90 border border-zinc-800/90 p-3.5 rounded-xl overflow-x-auto leading-relaxed shadow-inner">
-                      {item.code}
-                    </pre>
+                    <CodeHighlight code={item.code} />
                   </div>
                 )}
 
@@ -14151,9 +14062,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -14314,9 +14223,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-3 rounded-xl bg-black border border-zinc-900 text-xs font-mono text-emerald-300 whitespace-pre-wrap leading-relaxed overflow-x-auto">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   )}
                 </div>
@@ -14484,9 +14391,7 @@ export default function AllDefinitionsPage() {
                             )}
                           </button>
                         </div>
-                        <pre className="p-3 rounded-xl bg-black border border-zinc-900 text-xs font-mono text-emerald-300 whitespace-pre-wrap leading-relaxed overflow-x-auto mt-2">
-                          {item.codeExample.code}
-                        </pre>
+                        <CodeHighlight code={item.codeExample.code} />
                       </div>
                       <span className="text-[11px] font-mono text-zinc-500 pt-2 block">
                         Parallelized fitting via n_jobs=-1 with comprehensive classification report
@@ -14698,9 +14603,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -14811,9 +14714,7 @@ export default function AllDefinitionsPage() {
                                 )}
                               </button>
                             </div>
-                            <pre className="p-3 text-[11px] font-mono text-emerald-300 overflow-x-auto leading-relaxed bg-black/50">
-                              {ex.code}
-                            </pre>
+                            <CodeHighlight code={ex.code} />
                           </div>
                         </div>
                       ))}
@@ -14949,9 +14850,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -15132,9 +15031,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -15282,9 +15179,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -15419,9 +15314,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -15557,9 +15450,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -15700,9 +15591,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -15849,9 +15738,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -15985,9 +15872,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -16108,9 +15993,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -16227,9 +16110,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -16355,9 +16236,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -16459,9 +16338,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.sklearnSection.code}
-                      </pre>
+                      <CodeHighlight code={item.sklearnSection.code} />
                     </div>
                   </div>
                 )}
@@ -16502,9 +16379,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.kerasSection.code}
-                      </pre>
+                      <CodeHighlight code={item.kerasSection.code} />
                     </div>
 
                     <div className="space-y-2 pt-1">
@@ -16639,9 +16514,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -16780,9 +16653,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -16932,9 +16803,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -17112,9 +16981,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -17340,9 +17207,7 @@ export default function AllDefinitionsPage() {
                         <span>{copiedId === item.id ? 'Copied' : 'Copy Code'}</span>
                       </button>
                     </div>
-                    <pre className="text-[11px] font-mono text-cyan-200/90 bg-black/90 border border-zinc-800/90 p-3.5 rounded-xl overflow-x-auto leading-relaxed shadow-inner">
-                      {item.code}
-                    </pre>
+                    <CodeHighlight code={item.code} />
                   </div>
                 )}
 
@@ -17500,9 +17365,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -17656,9 +17519,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -17831,9 +17692,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -17955,9 +17814,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -18089,9 +17946,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -18280,9 +18135,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -18448,9 +18301,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -18594,9 +18445,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -18800,9 +18649,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -18945,9 +18792,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -19045,9 +18890,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -19186,9 +19029,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -19305,9 +19146,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -19412,9 +19251,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -19550,9 +19387,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -19755,9 +19590,7 @@ export default function AllDefinitionsPage() {
                         )}
                       </button>
                     </div>
-                    <pre className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-zinc-300 overflow-x-auto leading-relaxed max-h-96">
-                      <code>{item.pythonCode}</code>
-                    </pre>
+                    <CodeHighlight code={item.pythonCode} />
                   </div>
                 )}
 
@@ -19853,9 +19686,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -19965,9 +19796,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -20088,9 +19917,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -20207,9 +20034,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -20323,9 +20148,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -20433,9 +20256,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -20603,9 +20424,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -20757,9 +20576,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -20922,9 +20739,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -21665,9 +21480,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -21865,9 +21678,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -22059,9 +21870,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -22289,9 +22098,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -22435,9 +22242,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -22633,9 +22438,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -22832,9 +22635,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -22955,9 +22756,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-purple-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -23543,9 +23342,7 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 text-xs font-mono text-cyan-300 overflow-x-auto leading-relaxed">
-                        {item.codeExample.code}
-                      </pre>
+                      <CodeHighlight code={item.codeExample.code} />
                     </div>
                   </div>
                 )}
@@ -24344,9 +24141,7 @@ export default function AllDefinitionsPage() {
                         <span>{copiedId === item.id ? 'Copied' : 'Copy Code'}</span>
                       </button>
                     </div>
-                    <pre className="text-[11px] font-mono text-cyan-200/90 bg-black/90 border border-zinc-800/90 p-3.5 rounded-xl overflow-x-auto leading-relaxed shadow-inner">
-                      {item.code}
-                    </pre>
+                    <CodeHighlight code={item.code} />
                   </div>
                 )}
               </div>

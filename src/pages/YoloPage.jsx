@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { yoloData } from '../data/yoloData';
-import { Bookmark, ArrowUp, MessageSquareQuote, Sparkles, CheckCircle2 } from 'lucide-react';
+import CodeHighlight from '../components/CodeHighlight';
+import { Bookmark, ArrowUp, MessageSquareQuote, Sparkles, CheckCircle2, Code2 } from 'lucide-react';
 
 export default function YoloPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
@@ -280,6 +281,16 @@ export default function YoloPage() {
                     </li>
                   ))}
                 </ul>
+
+                {currentBookmarkObj.code && (
+                  <div className="pt-2 space-y-1.5 border-t border-zinc-800/80">
+                    <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-cyan-400">
+                      <Code2 className="w-3.5 h-3.5" />
+                      <span>Implementation: {currentBookmarkObj.codeFilename || 'main.py'}</span>
+                    </div>
+                    <CodeHighlight code={currentBookmarkObj.code} filename={currentBookmarkObj.codeFilename || 'main.py'} showHeader={true} />
+                  </div>
+                )}
               </div>
             </>
           )}
