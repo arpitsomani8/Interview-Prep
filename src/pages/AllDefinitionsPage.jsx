@@ -1813,6 +1813,33 @@ export default function AllDefinitionsPage() {
                     )}
                   </div>
                 )}
+
+                {/* Target Interview Questions for RAG */}
+                {item.interviewAnswers && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 space-y-3 shadow-lg">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Terminal className="w-4 h-4 text-amber-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+                        Target System Design Interview Questions (How to Defend RAG)
+                      </h4>
+                    </div>
+
+                    <div className="space-y-3">
+                      {item.interviewAnswers.map((qa, qIdx) => (
+                        <div key={qIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                          <p className="text-xs font-bold text-white flex items-start gap-2">
+                            <span className="text-amber-400 font-mono">Q{qIdx + 1}:</span>
+                            <span>{qa.question}</span>
+                          </p>
+                          <p className="text-xs text-zinc-300 leading-relaxed pl-6 border-l-2 border-amber-500/30">
+                            <span className="text-amber-300 font-mono font-semibold">Answer: </span>
+                            {qa.answer}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -23448,6 +23475,33 @@ export default function AllDefinitionsPage() {
                     </li>
                   ))}
                 </ul>
+
+                {/* Target Interview Questions & Answers */}
+                {item.interviewAnswers && item.id !== 'chatbot-architecture' && item.id !== 'rag' && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 space-y-3 shadow-lg mt-3">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Terminal className="w-4 h-4 text-amber-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+                        Target Interview Questions (How to Defend)
+                      </h4>
+                    </div>
+
+                    <div className="space-y-3">
+                      {item.interviewAnswers.map((qa, qIdx) => (
+                        <div key={qIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                          <p className="text-xs font-bold text-white flex items-start gap-2">
+                            <span className="text-amber-400 font-mono">Q{qIdx + 1}:</span>
+                            <span>{qa.question}</span>
+                          </p>
+                          <p className="text-xs text-zinc-300 leading-relaxed pl-6 border-l-2 border-amber-500/30">
+                            <span className="text-amber-300 font-mono font-semibold">Answer: </span>
+                            {qa.answer}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Python Implementation Box with Copy Button */}
                 {item.code && (
