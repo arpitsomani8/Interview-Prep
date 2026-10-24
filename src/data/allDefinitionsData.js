@@ -668,10 +668,6 @@ export const definitionBookmarks = [
     "label": "Quantization"
   },
   {
-    "id": "r2-score",
-    "label": "R² Score"
-  },
-  {
     "id": "rag",
     "label": "RAG"
   },
@@ -680,20 +676,28 @@ export const definitionBookmarks = [
     "label": "RAG Architectures (8 Patterns & Failure Symptoms Solved)"
   },
   {
-    "id": "random-forest",
-    "label": "Random Forest"
-  },
-  {
-    "id": "random-variable",
-    "label": "Random Variable"
-  },
-  {
     "id": "ranking-reranking",
     "label": "Ranking / Reranking"
   },
   {
     "id": "ranking-and-reranking",
     "label": "Ranking & Reranking"
+  },
+  {
+    "id": "regularization",
+    "label": "Regularization"
+  },
+  {
+    "id": "r2-score",
+    "label": "R² Score"
+  },
+  {
+    "id": "random-forest",
+    "label": "Random Forest"
+  },
+  {
+    "id": "random-variable",
+    "label": "Random Variable"
   },
   {
     "id": "react-pattern",
@@ -708,10 +712,6 @@ export const definitionBookmarks = [
     "label": "Regression vs Classification"
   },
   {
-    "id": "regularization",
-    "label": "Regularization"
-  },
-  {
     "id": "reinforcement-learning",
     "label": "Reinforcement Learning"
   },
@@ -720,16 +720,16 @@ export const definitionBookmarks = [
     "label": "Repetition Penalty & Decoding Strategies"
   },
   {
-    "id": "rest-api-vs-fastapi",
-    "label": "REST API vs FastAPI"
-  },
-  {
     "id": "retrieval-algorithms",
     "label": "Retrieval Algorithms (Dense Vector, BM25 & Hybrid Retrieval)"
   },
   {
     "id": "roc-auc",
     "label": "ROC-AUC"
+  },
+  {
+    "id": "rest-api-vs-fastapi",
+    "label": "REST API vs FastAPI"
   },
   {
     "id": "system-scaling",
