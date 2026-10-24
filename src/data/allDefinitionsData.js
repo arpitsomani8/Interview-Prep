@@ -492,12 +492,28 @@ export const definitionBookmarks = [
     "label": "Lexical Search"
   },
   {
-    "id": "map-evaluation",
-    "label": "mAP (Mean Average Precision)"
+    "id": "model-choice",
+    "label": "Model Choice"
   },
   {
-    "id": "data-visualization",
-    "label": "Matplotlib & Seaborn"
+    "id": "multi-tenant",
+    "label": "Multi-Tenant"
+  },
+  {
+    "id": "multi-agent-orchestration",
+    "label": "Multi-Agent Orchestration"
+  },
+  {
+    "id": "machine-learning-types",
+    "label": "ML Types & RLHF"
+  },
+  {
+    "id": "modified-z-score",
+    "label": "Modified Z-Score"
+  },
+  {
+    "id": "map-evaluation",
+    "label": "mAP (Mean Average Precision)"
   },
   {
     "id": "mcp",
@@ -512,28 +528,12 @@ export const definitionBookmarks = [
     "label": "Mitigation Strategies"
   },
   {
-    "id": "machine-learning-types",
-    "label": "ML Types & RLHF"
-  },
-  {
-    "id": "model-choice",
-    "label": "Model Choice"
-  },
-  {
-    "id": "modified-z-score",
-    "label": "Modified Z-Score"
-  },
-  {
-    "id": "multi-agent-orchestration",
-    "label": "Multi-Agent Orchestration"
-  },
-  {
-    "id": "multi-tenant",
-    "label": "Multi-Tenant"
-  },
-  {
     "id": "multivariate",
     "label": "Multivariate Analysis"
+  },
+  {
+    "id": "data-visualization",
+    "label": "Matplotlib & Seaborn"
   },
   {
     "id": "ngram-bigram",
