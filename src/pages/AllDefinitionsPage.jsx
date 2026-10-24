@@ -25,13 +25,24 @@ import {
   Workflow,
   GitBranch,
   Network,
-  Table
+  Table,
+  Bot,
+  DollarSign,
+  Activity,
+  Lock,
+  Server,
+  Eye,
+  ZoomIn,
+  Maximize2,
+  X
 } from 'lucide-react';
 
 export default function AllDefinitionsPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [selectedChatbotDiagram, setSelectedChatbotDiagram] = useState(0);
+  const [zoomedImage, setZoomedImage] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -725,6 +736,168 @@ export default function AllDefinitionsPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Custom Renderer: Enterprise Chatbot Architecture with Diagram Showcase */}
+            {item.id === 'chatbot-architecture' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Interactive Architectural Diagrams Showcase */}
+                {item.architectureDiagrams && (
+                  <div className="rounded-2xl bg-gradient-to-b from-zinc-900/90 to-black border border-cyan-500/40 p-4 sm:p-6 shadow-2xl space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-cyan-400" />
+                        <h3 className="text-sm sm:text-base font-bold text-white uppercase tracking-wider font-mono">
+                          Architecture Visual Blueprints
+                        </h3>
+                      </div>
+                      {/* Diagram Selector Tabs */}
+                      <div className="flex items-center gap-1.5 p-1 bg-black/80 rounded-xl border border-zinc-800">
+                        {item.architectureDiagrams.map((diag, idx) => (
+                          <button
+                            key={diag.id}
+                            onClick={() => setSelectedChatbotDiagram(idx)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                              selectedChatbotDiagram === idx
+                                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-md'
+                                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                            }`}
+                          >
+                            <span>{diag.id === 'edge-security' ? 'Step 14: Edge Security' : 'Step 13: Cost & FinOps'}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Active Diagram Display Card */}
+                    {(() => {
+                      const activeDiag = item.architectureDiagrams[selectedChatbotDiagram] || item.architectureDiagrams[0];
+                      const base = import.meta.env.BASE_URL || '/';
+                      const imgSrc = base.endsWith('/') ? `${base}${activeDiag.image}` : `${base}/${activeDiag.image}`;
+                      return (
+                        <div className="space-y-3">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-bold uppercase">
+                                {activeDiag.badge}
+                              </span>
+                              <h4 className="text-sm font-bold text-white mt-1">
+                                {activeDiag.title}
+                              </h4>
+                            </div>
+                            <button
+                              onClick={() => setZoomedImage({ src: imgSrc, title: activeDiag.title })}
+                              className="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1 px-2.5 py-1 rounded bg-zinc-900 border border-zinc-700 transition cursor-pointer self-start sm:self-auto"
+                            >
+                              <ZoomIn className="w-3.5 h-3.5" />
+                              <span>Enlarge Diagram</span>
+                            </button>
+                          </div>
+
+                          {/* Image Box */}
+                          <div
+                            onClick={() => setZoomedImage({ src: imgSrc, title: activeDiag.title })}
+                            className="relative group cursor-zoom-in rounded-xl overflow-hidden border border-zinc-800 bg-black/60 shadow-inner flex items-center justify-center p-2"
+                          >
+                            <img
+                              src={imgSrc}
+                              alt={activeDiag.title}
+                              className="w-full max-h-[460px] object-contain rounded-lg transition-transform duration-300 group-hover:scale-[1.01]"
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center pointer-events-none">
+                              <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 text-cyan-300 text-xs font-mono px-3 py-1.5 rounded-full border border-cyan-500/40 flex items-center gap-1.5 shadow-lg">
+                                <Maximize2 className="w-3.5 h-3.5" />
+                                <span>Click to inspect full resolution</span>
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Highlight Alert Box */}
+                          <div className="p-3.5 rounded-xl bg-zinc-950 border border-cyan-900/50 flex items-start gap-2.5">
+                            <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                            <div>
+                              <strong className="text-cyan-300 font-mono text-xs uppercase block">Key Diagram Focus: {activeDiag.highlight}</strong>
+                              <p className="text-xs text-zinc-300 mt-1 leading-relaxed">
+                                {activeDiag.description}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+
+                {/* 2. Complete Architectural Breakdown (All 15 Components across 4 Layers) */}
+                {item.architectureLayers && (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Layers className="w-4 h-4 text-emerald-400" />
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                        Complete Architecture Breakdown (Every Portion Explained)
+                      </h3>
+                    </div>
+
+                    <div className="space-y-4">
+                      {item.architectureLayers.map((layer, lIdx) => (
+                        <div key={lIdx} className={`p-4 sm:p-5 rounded-2xl bg-black border ${layer.color.split(' ')[0]} space-y-3 shadow-lg`}>
+                          <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                            <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                              <span>{layer.layerName}</span>
+                            </h4>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
+                              {layer.badge}
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {layer.components.map((comp, cIdx) => (
+                              <div key={cIdx} className="p-3.5 rounded-xl bg-zinc-950/80 border border-zinc-800/80 space-y-1.5">
+                                <div className="flex items-center justify-between">
+                                  <h5 className="text-xs font-bold text-white">{comp.name}</h5>
+                                  <span className="text-[9px] font-mono uppercase text-cyan-400 px-1.5 py-0.5 rounded bg-cyan-950/40 border border-cyan-800/40">
+                                    {comp.role}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-zinc-300 leading-relaxed">
+                                  {comp.details}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Target Interview Questions & Answers */}
+                {item.interviewAnswers && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 space-y-3 shadow-lg">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Terminal className="w-4 h-4 text-amber-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+                        Target System Design Interview Questions (How to Defend)
+                      </h4>
+                    </div>
+
+                    <div className="space-y-3">
+                      {item.interviewAnswers.map((qa, qIdx) => (
+                        <div key={qIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                          <p className="text-xs font-bold text-white flex items-start gap-2">
+                            <span className="text-amber-400 font-mono">Q{qIdx + 1}:</span>
+                            <span>{qa.question}</span>
+                          </p>
+                          <p className="text-xs text-zinc-300 leading-relaxed pl-6 border-l-2 border-amber-500/30">
+                            <span className="text-amber-300 font-mono font-semibold">Answer: </span>
+                            {qa.answer}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -23305,6 +23478,34 @@ export default function AllDefinitionsPage() {
           </>
         )}
       </div>
+
+      {/* High-Resolution Diagram Enlarge Modal */}
+      {zoomedImage && (
+        <div
+          onClick={() => setZoomedImage(null)}
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-4 cursor-zoom-out"
+        >
+          <div className="relative max-w-6xl w-full max-h-[92vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
+            <div className="w-full flex items-center justify-between mb-2 text-zinc-300 font-mono text-xs px-2">
+              <span className="font-bold text-cyan-400">{zoomedImage.title}</span>
+              <button
+                onClick={() => setZoomedImage(null)}
+                className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-white flex items-center gap-1 cursor-pointer transition"
+              >
+                <X className="w-4 h-4" />
+                <span>Close (Esc)</span>
+              </button>
+            </div>
+            <div className="overflow-auto max-h-[85vh] w-full flex items-center justify-center border border-cyan-500/30 rounded-2xl bg-zinc-950 p-2 shadow-2xl">
+              <img
+                src={zoomedImage.src}
+                alt={zoomedImage.title}
+                className="max-h-[82vh] w-auto object-contain rounded-lg shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Floating Scroll to Top Arrow Button (Bottom-Left, Compact) */}
       {showScrollTop && (

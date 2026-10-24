@@ -140,6 +140,10 @@ export const definitionBookmarks = [
     "label": "Centroid"
   },
   {
+    "id": "chatbot-architecture",
+    "label": "Chatbot Architecture (Enterprise Multi-Agent Banking System)"
+  },
+  {
     "id": "chroma-db",
     "label": "ChromaDB (Embedded & Open-Source Vector DB)"
   },
@@ -13502,5 +13506,164 @@ export const definitionsData = [
       "Interview Answer (How to Defend): 'When deploying our AI application to Azure production, we implemented an airtight defense-in-depth architecture: First, we eliminated all hardcoded API keys by binding our FastAPI container to an Azure Managed Identity with least-privilege RBAC. Second, we placed Azure OpenAI, PostgreSQL, and Blob Storage behind Azure Private Endpoints inside our private VNet with public internet access disabled. Third, all public traffic was routed through Azure API Management and WAF for OWASP filtering and rate-limiting. Finally, we enabled Azure AI Content Safety to intercept prompt injection attempts and guaranteed enterprise compliance with zero model training on customer data.'"
     ],
     "code": "# ==============================================================================\n# SECURE PRODUCTION AZURE DEPLOYMENT: MANAGED IDENTITY, KEY VAULT & CONTENT SAFETY\n# ==============================================================================\nimport os\nfrom azure.identity import DefaultAzureCredential\nfrom azure.keyvault.secrets import SecretClient\nfrom azure.storage.blob import BlobServiceClient\nfrom azure.ai.contentsafety import ContentSafetyClient\nfrom azure.ai.contentsafety.models import AnalyzeTextOptions\nfrom openai import AzureOpenAI\n\n# 1. Zero-Trust Authentication: Managed Identity (NO HARDCODED API KEYS)\n# In production on Azure Container Apps / AKS, DefaultAzureCredential automatically\n# discovers the container's System-Assigned Managed Identity via Entra ID (Azure AD).\ncredential = DefaultAzureCredential()\n\n# 2. Retrieve Database Connection Strings from Azure Key Vault over Private Link\nKEY_VAULT_URL = os.environ.get(\"KEY_VAULT_URL\", \"https://kv-production-ai-vault.vault.azure.net/\")\nsecret_client = SecretClient(vault_url=KEY_VAULT_URL, credential=credential)\ndb_connection_string = secret_client.get_secret(\"Postgres-ConnectionString\").value\n\n# 3. Secure Azure OpenAI Client via Token-Based Managed Identity\n# Connects to a Private Endpoint (e.g. https://openai-corp-ai.privatelink.openai.azure.com/)\nopenai_client = AzureOpenAI(\n    azure_endpoint=os.environ.get(\"AZURE_OPENAI_ENDPOINT\", \"https://openai-corp-ai.openai.azure.com/\"),\n    azure_ad_token_provider=credential.get_token(\"https://cognitiveservices.azure.com/.default\"),\n    api_version=\"2024-02-15-preview\"\n)\n\n# 4. Azure AI Content Safety: Prompt Injection & Jailbreak Defense\ncontent_safety_client = ContentSafetyClient(\n    endpoint=os.environ.get(\"AZURE_CONTENT_SAFETY_ENDPOINT\", \"https://safety-production-ai.cognitiveservices.azure.com/\"),\n    credential=credential\n)\n\ndef inspect_user_prompt_security(user_text: str) -> bool:\n    \"\"\"Blocks prompt injection, jailbreaks, and harmful inputs before calling LLM.\"\"\"\n    request = AnalyzeTextOptions(text=user_text)\n    analysis = content_safety_client.analyze_text(request)\n    \n    # Block if any category exceeds enterprise risk threshold (Severity >= 2)\n    for category in [analysis.hate_result, analysis.self_harm_result, analysis.sexual_result, analysis.violence_result]:\n        if category and category.severity >= 2:\n            return False  # Input rejected\n    return True\n\n# 5. Execute Enterprise LLM Completion with Clean Inputs\nsample_prompt = \"Find matching summer floral blouses in catalog.\"\nif inspect_user_prompt_security(sample_prompt):\n    response = openai_client.chat.completions.create(\n        model=\"gpt-4o\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"You are a professional fashion assistant. Rely only on retrieved context.\"},\n            {\"role\": \"user\", \"content\": sample_prompt}\n        ],\n        temperature=0.2\n    )\n    print(\"Secured Generation:\", response.choices[0].message.content)\nelse:\n    print(\"Security Alert: Prompt violated Azure Content Safety guardrails.\")"
+  },
+  {
+    "id": "chatbot-architecture",
+    "title": "Enterprise Multi-Agent Chatbot Architecture (Edge Security, MCP & FinOps)",
+    "badge": "Production Multi-Agent Architecture, Model Context Protocol & Edge Defense",
+    "summary": "A production-grade, multi-agent conversational AI blueprint for high-security enterprise banking. Features Edge Layer security (WAF, DDoS, rate limiting), Bank IdP OAuth2 authentication, a central Coordinator Agent orchestrating specialized sub-agents (Accounts, Transactions, Service) over Model Context Protocol (MCP) servers, PII redaction, hybrid LLM routing (Self-Hosted vs. Third-Party), and comprehensive observability with real-time FinOps cost tracking.",
+    "architectureDiagrams": [
+      {
+        "id": "edge-security",
+        "title": "Step 14: Edge Layer Security & Gateway Architecture",
+        "image": "images/chatbot_architecture_edge_security.jpg",
+        "highlight": "Edge Layer (WAF, DDoS, Rate Limits, API Gateway) & Bank Identity Provider",
+        "badge": "Edge Security Perimeter",
+        "description": "Illustrates the perimeter security defenses protecting the conversational platform from internet threats before requests ever touch internal microservices or LLMs."
+      },
+      {
+        "id": "cost-observability",
+        "title": "Step 13: Cost Tracker, Observability & Preventing 'A Bill That Tripled'",
+        "image": "images/chatbot_architecture_cost_observability.jpg",
+        "highlight": "Cost Tracker & Real-Time Token Telemetry",
+        "badge": "FinOps & Cost Governance",
+        "description": "Highlights the FinOps observability layer needed to prevent the common multi-agent pitfall where recursive loops, uncompressed prompts, and unmanaged tool calls cause monthly cloud LLM bills to triple."
+      }
+    ],
+    "architectureLayers": [
+      {
+        "layerName": "1. Edge & Client Security Perimeter",
+        "badge": "Perimeter Defense",
+        "color": "border-cyan-500/40 bg-cyan-950/20 text-cyan-400",
+        "components": [
+          {
+            "name": "User Interface (Chat)",
+            "role": "Frontend Client Layer",
+            "details": "The web portal, mobile banking app, or embedded conversational widget where customers type queries or issue voice commands. Connects via secure WebSockets or Server-Sent Events (SSE) for low-latency streaming responses with typing indicators, markdown rendering, and local session resumption."
+          },
+          {
+            "name": "Edge Layer (WAF, DDoS, Rate Limits, API Gateway)",
+            "role": "Step 14 Core Highlight",
+            "details": "The first line of defense at the network boundary. Web Application Firewall (WAF) inspects incoming payloads for OWASP Top 10 exploits (SQLi, XSS, SSRF). DDoS mitigation absorbs volumetric layer 3/4/7 floods. Rate limiting uses token-bucket algorithms (e.g. max 20 prompts/min per IP/token) to prevent denial-of-wallet attacks. The API Gateway terminates SSL/TLS (TLS 1.3 only) and acts as an authenticated reverse proxy."
+          },
+          {
+            "name": "Authentication (Bank's Identity Provider / IdP)",
+            "role": "Identity & Token Minting",
+            "details": "Integrates with enterprise IAM systems (Microsoft Entra ID, PingFederate, Okta, or internal Core Banking IAM) using OAuth2 / OpenID Connect (OIDC). Authenticates users via biometric or Multi-Factor Authentication (MFA) and issues short-lived, cryptographically signed JSON Web Tokens (JWT) containing user ID, customer information file ID (CIF_ID), and assigned scopes."
+          },
+          {
+            "name": "Internal API Ingress",
+            "role": "Backend Routing & Decoupling",
+            "details": "The internal microservice entry point behind the private network boundary. Validates incoming JWT signatures against the IdP public keys, strips client-side transport headers, and forwards sanitized requests into the agentic runtime via high-performance internal gRPC / REST endpoints."
+          }
+        ]
+      },
+      {
+        "layerName": "2. Agentic Orchestration & Governance Core",
+        "badge": "Autonomous Decision Core",
+        "color": "border-emerald-500/40 bg-emerald-950/20 text-emerald-400",
+        "components": [
+          {
+            "name": "Coordinator Agent (Supervisor)",
+            "role": "Central Orchestrator & Router",
+            "details": "The central intelligence of the multi-agent system. Instead of giving a single giant prompt all banking tools, the Coordinator classifies customer intent (e.g. 'inquiry', 'transaction', 'complaint'), breaks compound multi-part requests into discrete sub-tasks, delegates to specialized domain sub-agents, and synthesizes individual sub-agent responses into a unified, polite customer answer."
+          },
+          {
+            "name": "Authorisation Layer",
+            "role": "Least Privilege & BOLA Defense",
+            "details": "Even when authenticated, an agent must never execute an action without explicit authorization. This layer verifies that the authenticated user actually owns the target account number (Broken Object Level Authorization / IDOR prevention) and possesses requisite entitlements (e.g. viewing balance vs. transferring funds)."
+          },
+          {
+            "name": "PII Redaction & Data Anonymization",
+            "role": "Privacy & Compliance Filter",
+            "details": "Scans raw customer messages using named entity recognition (NER / Presidio) and regex patterns to mask sensitive Personally Identifiable Information (16-digit credit card numbers, CVVs, SSNs, Aadhaar, phone numbers) before sending prompts to LLMs. Tokenized placeholders (e.g. [MASKED_ACCOUNT_1]) are held in a secure ephemeral vault and re-hydrated only in the final client response."
+          },
+          {
+            "name": "Agent Evaluation Suite",
+            "role": "Real-Time Safety & Hallucination Guardrail",
+            "details": "A dual-stage evaluation engine (e.g. NeMo Guardrails, Azure AI Content Safety, Llama Guard). Inspects incoming prompts for adversarial jailbreaks and prompt injections. Simultaneously validates agent outputs before tool execution to verify factual grounding, ensure tone compliance, and block hallucinated promises or financial advice."
+          },
+          {
+            "name": "Hybrid LLM Tier (Self-Hosted vs. Third-Party)",
+            "role": "Smart Model Routing",
+            "details": "Employs dynamic model routing: Highly sensitive customer banking data (transactions, KYC, account balances) routes exclusively to Self-Hosted LLMs (e.g. LLaMA 3 70B, Mistral Large on vLLM/TensorRT-LLM) running inside the bank's air-gapped private cloud for 100% data residency compliance. Non-sensitive general reasoning or stylistic chit-chat can be routed to Third-Party Frontier LLMs (e.g. GPT-4o, Claude 3.5) for superior linguistic fluency."
+          },
+          {
+            "name": "Session Store",
+            "role": "Stateful Multi-Turn Memory",
+            "details": "A low-latency in-memory data store (Redis / DynamoDB) storing two critical state layers: 1. Conversation History (sliding window of multi-turn user/assistant exchanges with semantic summarization). 2. Inter-Agent Shared State (passing validated context like customer_cif, authenticated_tier, active_flow, and collected form fields between the Coordinator and sub-agents)."
+          }
+        ]
+      },
+      {
+        "layerName": "3. Specialized Multi-Agent & Model Context Protocol (MCP) Tier",
+        "badge": "Domain Execution",
+        "color": "border-purple-500/40 bg-purple-950/20 text-purple-400",
+        "components": [
+          {
+            "name": "Accounts Agent & Accounts MCP Server",
+            "role": "Account Ledger Operations",
+            "details": "The Accounts Agent has specialized system instructions and few-shot examples for financial ledger queries. It communicates with the Accounts MCP Server over the open Model Context Protocol (JSON-RPC), invoking strictly typed tools like 'get_account_balance' and 'fetch_interest_accruals' mapped to downstream Core Banking APIs."
+          },
+          {
+            "name": "Transaction Agent & Transactions MCP Server",
+            "role": "Financial Audit & History",
+            "details": "Hardened agent specialized in monetary audit trails. Connects to the Transactions MCP Server to query 'get_recent_transactions', 'filter_by_date_range', and 'generate_statement_pdf'. Enforces idempotency keys on every transaction request to eliminate duplicate processing."
+          },
+          {
+            "name": "Service Agent & Service MCP Server",
+            "role": "Customer Operations & Requests",
+            "details": "Manages banking service requests through the Service MCP Server: 1. Change of Address (requires multi-step address verification). 2. Cheque book request (validates eligible account types and postage logistics). 3. KYC update (initiates secure document upload sessions and video KYC appointments)."
+          },
+          {
+            "name": "Core Banking Systems (CBS)",
+            "role": "System of Record",
+            "details": "The bank's foundational transactional backends (e.g. Finacle, Temenos, SAP Banking). MCP servers act as standardized adapters, translating high-level agent tool calls into secure, audited mainframe and REST API transactions."
+          }
+        ]
+      },
+      {
+        "layerName": "4. Observability & FinOps Governance",
+        "badge": "Step 13: Preventing Runaway Bills",
+        "color": "border-amber-500/40 bg-amber-950/20 text-amber-400",
+        "components": [
+          {
+            "name": "Observability Engine",
+            "role": "End-to-End Distributed Tracing",
+            "details": "Collects full telemetry across two distinct planes: 1. AI Telemetry: Logs prompt tokens, completion tokens, agent-to-agent delegation latency, tool execution payloads, and guardrail verdicts via OpenTelemetry and Langfuse. 2. Infrastructure Telemetry: Real-time Prometheus/Grafana tracking of CPU, RAM, GPU VRAM cache usage, and container health."
+          },
+          {
+            "name": "Cost Tracker ('Step 13: A Bill That Tripled')",
+            "role": "FinOps & Token Budget Guardrails",
+            "details": "Why do multi-agent bills triple? 1. Recursive loops: An agent repeatedly calls tools in an endless retry loop. 2. Context bloat: Passing massive conversation histories and dozens of tool definitions on every single LLM call. 3. Over-provisioned models: Using $15/M token frontier models for simple classification tasks. The Cost Tracker enforces: semantic caching (saving 25-30% of calls), token budget caps per user session ($0.05 max), hard recursion limits (max 5 iterations), and routing to lightweight 8B models for basic intent routing."
+          }
+        ]
+      }
+    ],
+    "interviewAnswers": [
+      {
+        "question": "Why divide the system into a Coordinator Agent and specialized sub-agents with MCP servers instead of a single large LLM agent?",
+        "answer": "A single monolithic agent with 30+ tools suffers from severe 'tool selection confusion', high hallucination rates, and massive context bloat (consuming thousands of tokens on every call just declaring schemas). The Coordinator pattern delegates to role-specialized sub-agents that only possess 2-3 relevant tools. Model Context Protocol (MCP) standardizes tool interfaces, isolates backend banking APIs from prompt changes, and enforces schema validation before any API is called."
+      },
+      {
+        "question": "In the diagram, what is the role of Step 14: Edge Layer Security?",
+        "answer": "The Edge Layer sits outside the application boundary, combining WAF, DDoS mitigation, rate-limiting, and API Gateway. It absorbs volumetric attacks at edge points of presence, enforces token-bucket rate limits to prevent denial-of-wallet cost attacks, validates Bank IdP OAuth2 tokens, and terminates TLS. This ensures that unauthorized or malicious requests are rejected before incurring any internal compute or LLM token costs."
+      },
+      {
+        "question": "Explain Step 13: 'A bill that tripled'. How does this happen in production and how does the Cost Tracker fix it?",
+        "answer": "Bills triple in multi-agent architectures due to: 1) Agent deadlocks and cyclic tool-calling loops; 2) Naive context expansion where every sub-agent inherits the entire multi-turn chat history; 3) Unnecessary use of expensive frontier models for basic routing. We mitigate this using our Cost Tracker: enforcing a hard loop budget (max 5 tool calls), semantic caching in Redis for common FAQs (0 token cost), context pruning (passing only relevant extracted entities to sub-agents), and routing intent triage to fast self-hosted 8B models."
+      }
+    ],
+    "details": [
+      "In Simple Terms: This is an enterprise-grade banking chatbot architecture. A customer's message enters through an Edge Security shield (WAF + Rate Limiter), logs in via the bank's official identity provider, and reaches a Coordinator Agent. The Coordinator acts like a smart bank manager: it redacts private information (like credit card numbers), checks customer permissions, and assigns the task to a specialized sub-agent (Accounts, Transactions, or Customer Service) using Model Context Protocol (MCP) servers.",
+      "Perimeter Security (Step 14: Edge Layer Security): Before a user's prompt ever reaches an LLM, the Edge Layer inspects it with a Web Application Firewall (WAF) to block SQL injections and malicious code. It enforces token-bucket rate limiting (e.g. 20 prompts/minute) to stop hackers from draining the bank's API budget. It terminates TLS 1.3 encryption and validates the customer's bank identity token (OAuth2/JWT).",
+      "Supervisor & Sub-Agent Pattern: Instead of having one giant, confused AI trying to do everything, the Coordinator Agent analyzes the request and routes it to the right specialist: the Accounts Agent (for balances), Transaction Agent (for account statements), or Service Agent (for chequebooks and address changes). Each sub-agent communicates through an MCP (Model Context Protocol) Server, which acts as a secure translator between the AI and the bank's internal core banking databases.",
+      "Data Privacy & PII Redaction: Customer bank records are strictly protected. The PII Redaction engine automatically masks sensitive details (account numbers, credit cards, SSNs) before sending text to the LLM. Furthermore, high-sensitivity banking tasks route to a Self-Hosted LLM (like LLaMA on private on-prem GPUs) so confidential financial records never leave the bank's network.",
+      "Authorisation & IDOR Defense: Even after the user logs in, the Authorisation layer checks every single sub-agent tool call to verify that the customer actually owns the requested account ID, completely blocking Insecure Direct Object Reference (IDOR / BOLA) vulnerabilities.",
+      "Why Did the Bill Triple? (Step 13: Cost Tracker & FinOps): In poorly designed multi-agent systems, agents can get stuck in infinite loops, re-send the entire chat history on every turn, and call expensive $15/M token models for simple tasks—causing monthly cloud bills to triple! The Cost Tracker solves this with 4 hard guardrails: 1) Semantic caching in Redis (saves 25-30% of queries with zero token spend); 2) Hard iteration limits (max 5 turns per request); 3) Context compression (sliding memory); 4) Dynamic model routing (simple balance checks use cheap 8B models).",
+      "Observability & Tracing: The system tracks every prompt, token count, tool call, latency, and guardrail check using OpenTelemetry and Langfuse, while Prometheus monitors CPU, memory, and GPU utilization in real time.",
+      "Interview Answer: 'Our banking chatbot utilizes a multi-agent Coordinator-Worker pattern protected by an Edge Security Layer (WAF, rate limits, OAuth2 IdP). The Coordinator sanitizes PII, validates permissions, and delegates to domain-specialized Accounts, Transaction, and Service agents via Model Context Protocol (MCP) servers. To prevent spiraling API bills (Step 13), our Cost Tracker enforces semantic caching, strict recursion limits, and smart model routing between self-hosted and frontier LLMs.'"
+    ],
+    "code": "# ==============================================================================\n# ENTERPRISE MULTI-AGENT BANKING CHATBOT: COORDINATOR, MCP & COST TRACKER\n# ==============================================================================\nimport re\nimport time\nfrom typing import Dict, Any, List, Optional\nfrom dataclasses import dataclass, field\n\n# 1. FinOps Cost Tracker (Preventing \"A Bill That Tripled\")\n@dataclass\nclass CostTracker:\n    budget_per_session_usd: float = 0.05\n    current_session_cost_usd: float = 0.0\n    total_tokens_used: int = 0\n    max_agent_iterations: int = 5\n    \n    # Pricing per 1K tokens\n    PRICING = {\n        \"self_hosted_8b\": {\"prompt\": 0.0001, \"completion\": 0.0002},\n        \"frontier_gpt4o\": {\"prompt\": 0.0025, \"completion\": 0.0100}\n    }\n\n    def record_usage(self, model: str, prompt_tokens: int, completion_tokens: int):\n        rates = self.PRICING.get(model, self.PRICING[\"self_hosted_8b\"])\n        cost = (prompt_tokens / 1000 * rates[\"prompt\"]) + (completion_tokens / 1000 * rates[\"completion\"])\n        self.current_session_cost_usd += cost\n        self.total_tokens_used += (prompt_tokens + completion_tokens)\n        \n        if self.current_session_cost_usd > self.budget_per_session_usd:\n            raise RuntimeError(f\"FinOps Alert: Session budget ${self.budget_per_session_usd} exceeded!\")\n\n# 2. PII Redaction Engine (Sanitizing Customer Secrets before LLM)\nclass PIIRedactionEngine:\n    CARD_REGEX = re.compile(r'\\b(?:\\d{4}[ -]?){3}\\d{4}\\b')\n    SSN_REGEX = re.compile(r'\\b\\d{3}-\\d{2}-\\d{4}\\b')\n\n    @classmethod\n    def redact(cls, text: str) -> str:\n        text = cls.CARD_REGEX.sub(\"[MASKED_CARD_NUMBER]\", text)\n        text = cls.SSN_REGEX.sub(\"[MASKED_SSN]\", text)\n        return text\n\n# 3. Model Context Protocol (MCP) Mock Tools for Banking Services\nclass BankingMCPServers:\n    @staticmethod\n    def accounts_mcp_balance_enquiry(cif_id: str, account_id: str) -> Dict[str, Any]:\n        \"\"\"Tool: balance_enquiry via Accounts MCP Server\"\"\"\n        return {\"account_id\": account_id, \"available_balance\": 4820.50, \"currency\": \"USD\", \"status\": \"ACTIVE\"}\n\n    @staticmethod\n    def transactions_mcp_statement(cif_id: str, account_id: str, days: int = 30) -> Dict[str, Any]:\n        \"\"\"Tool: statement_request via Transactions MCP Server\"\"\"\n        return {\"account_id\": account_id, \"period_days\": days, \"download_url\": \"https://secure.bank.com/stmt/9421.pdf\"}\n\n    @staticmethod\n    def service_mcp_cheque_book(cif_id: str, account_id: str, leaves: int = 50) -> Dict[str, Any]:\n        \"\"\"Tool: cheque_book_request via Service MCP Server\"\"\"\n        return {\"status\": \"DISPATCHED\", \"request_id\": \"CHK_8820\", \"leaves\": leaves, \"est_delivery_days\": 3}\n\n# 4. Coordinator Agent (Supervisor Orchestration with Authorisation & Routing)\nclass BankingCoordinatorAgent:\n    def __init__(self, cost_tracker: CostTracker):\n        self.cost_tracker = cost_tracker\n        self.mcp = BankingMCPServers()\n        self.session_store = {}\n\n    def authorize_request(self, user_jwt_cif: str, target_account_id: str) -> bool:\n        \"\"\"Authorisation check: Verifies authenticated user owns the target account.\"\"\"\n        authorized_accounts = {\"CIF_4589\": [\"ACC_9921\", \"ACC_1145\"]}\n        return target_account_id in authorized_accounts.get(user_jwt_cif, [])\n\n    def handle_user_query(self, user_cif: str, raw_message: str) -> Dict[str, Any]:\n        # Step A: PII Redaction\n        clean_prompt = PIIRedactionEngine.redact(raw_message)\n        print(f\"[PII Guard] Sanitized Prompt: {clean_prompt}\")\n\n        # Step B: Record FinOps cost for intent classification (Using cheap fast model)\n        self.cost_tracker.record_usage(\"self_hosted_8b\", prompt_tokens=180, completion_tokens=30)\n\n        # Step C: Intent Classification & Delegation\n        target_account = \"ACC_9921\"\n        if not self.authorize_request(user_cif, target_account):\n            return {\"error\": \"Authorisation Failed: Account does not belong to authenticated user.\"}\n\n        # Step D: Route to specialized Sub-Agent & execute MCP Tool\n        if \"balance\" in clean_prompt.lower():\n            result = self.mcp.accounts_mcp_balance_enquiry(cif_id=user_cif, account_id=target_account)\n            response_text = f\"Your available balance for account {target_account} is ${result['available_balance']:,.2f} {result['currency']}.\"\n        elif \"cheque\" in clean_prompt.lower():\n            result = self.mcp.service_mcp_cheque_book(cif_id=user_cif, account_id=target_account, leaves=25)\n            response_text = f\"Your cheque book request (ID: {result['request_id']}) has been processed and will arrive in {result['est_delivery_days']} business days.\"\n        else:\n            response_text = \"I can assist you with Balance Enquiries, Recent Transactions, and Cheque Book requests.\"\n\n        # Step E: Update Session Store & FinOps tracking\n        self.session_store[\"last_interaction\"] = time.time()\n        print(f\"[FinOps] Session Spend: ${self.cost_tracker.current_session_cost_usd:.5f} | Tokens: {self.cost_tracker.total_tokens_used}\")\n\n        return {\"answer\": response_text, \"session_cost_usd\": self.cost_tracker.current_session_cost_usd}\n\n# Execution Demonstration\ntracker = CostTracker(budget_per_session_usd=0.05)\nagent = BankingCoordinatorAgent(cost_tracker=tracker)\n\nres1 = agent.handle_user_query(\"CIF_4589\", \"Check balance on ACC_9921, my card is 4532-1122-3344-5566\")\nprint(\"Response 1:\", res1[\"answer\"])\n\nres2 = agent.handle_user_query(\"CIF_4589\", \"Please send a new cheque book for ACC_9921\")\nprint(\"Response 2:\", res2[\"answer\"])"
   }
 ];
