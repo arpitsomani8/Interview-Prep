@@ -716,6 +716,10 @@ export const definitionBookmarks = [
     "label": "REST API vs FastAPI"
   },
   {
+    "id": "retrieval-algorithms",
+    "label": "Retrieval Algorithms (Dense Vector, BM25 & Hybrid Retrieval)"
+  },
+  {
     "id": "roc-auc",
     "label": "ROC-AUC"
   },
@@ -1859,7 +1863,92 @@ export const definitionsData = [
         "mechanism": "An autonomous agent (using LangGraph / ReAct) dynamically decides whether retrieval is needed at all, selects between multiple specialized vector databases, evaluates its own answers, and executes multi-turn reflection loops until satisfied.",
         "symptomSolved": "Symptom it fixes: Rigid pipeline waste. Some simple questions ('Hello', 'What is your name?') need zero retrieval, while complex analytical requests require 3 rounds of iterative tool searches and reflection. Most powerful architecture, but requires strict loop budget guards."
       }
-    ]
+    ],
+    "retrievalAlgorithms": {
+      "title": "Core Retrieval Algorithms: Dense Vector, BM25 & Hybrid Retrieval",
+      "badge": "Search & Ingestion Engine Modalities",
+      "summary": "In modern RAG and enterprise search, retrieval algorithms dictate how relevant context is extracted from massive corpora. The 3 dominant paradigms are Dense Vector Retrieval (nearest-neighbor search using embeddings), BM25 (keyword-based ranking via term frequency), and Hybrid Retrieval (combining keyword and vector search with Reciprocal Rank Fusion).",
+      "algorithms": [
+        {
+          "id": "dense",
+          "step": 1,
+          "name": "Dense Vector Retrieval",
+          "type": "Semantic Similarity",
+          "badge": "Nearest-Neighbor on Embeddings",
+          "border": "border-cyan-500/40",
+          "accent": "text-cyan-400",
+          "bgBadge": "bg-cyan-950/80 text-cyan-300 border-cyan-800",
+          "mechanism": "Nearest-neighbor search using high-dimensional continuous embeddings.",
+          "howItWorks": "Text queries and document chunks are converted into fixed-length floating-point vectors (e.g., 768 or 1536 dims) using bi-encoders (e.g. OpenAI text-embedding-3-small, BGE-large, Nomic). An Approximate Nearest Neighbor (ANN) index (HNSW, IVF-PQ) computes cosine similarity or dot product distance to find semantically related chunks.",
+          "pros": "Understands synonyms, paraphrasing, semantic context, and cross-lingual meaning. Does not require exact keyword overlaps (e.g., maps 'automobile maintenance' to 'car servicing').",
+          "cons": "Vocabulary blindness: smooths over exact alphanumeric tokens, specific error codes (ERR_502_TIMEOUT), part numbers, SKU codes, and rare proper nouns.",
+          "failureScenario": "User asks: 'How do I resolve ERR_9024_FAILED?'. Vector search retrieves general server connection chunks that mention error handling, but misses the exact chunk containing 'ERR_9024_FAILED'."
+        },
+        {
+          "id": "bm25",
+          "step": 2,
+          "name": "BM25 (Sparse Keyword Retrieval)",
+          "type": "Lexical Exact Matching",
+          "badge": "Term Frequency Probabilistic Ranking",
+          "border": "border-amber-500/40",
+          "accent": "text-amber-400",
+          "bgBadge": "bg-amber-950/80 text-amber-300 border-amber-800",
+          "mechanism": "Keyword-based ranking evaluating term frequency (TF), inverse document frequency (IDF), and document length normalization.",
+          "howItWorks": "Scores documents based on the exact presence of query terms using probabilistic weighting. It saturates term frequency using parameter k1 (preventing repeated words from dominating) and penalizes abnormally verbose documents using parameter b.",
+          "pros": "Deterministic, sub-millisecond execution on CPU, and zero embedding API cost. Perfect for exact error codes, legal statute numbers, part SKUs, and rare technical keywords.",
+          "cons": "Vocabulary mismatch problem: completely fails if the query words do not match the exact document words (e.g., searching for 'cancel subscription' misses documents mentioning 'terminate membership'). Zero understanding of synonyms.",
+          "failureScenario": "User asks: 'How do I renew my auto policy?'. Document states 'Vehicle insurance policy extension procedures'. BM25 scores this 0 because zero lexical tokens overlap."
+        },
+        {
+          "id": "hybrid",
+          "step": 3,
+          "name": "Hybrid Retrieval",
+          "type": "Multi-Modal Fusion",
+          "badge": "Best-of-Both-Worlds Fusion",
+          "border": "border-emerald-500/40",
+          "accent": "text-emerald-400",
+          "bgBadge": "bg-emerald-950/80 text-emerald-300 border-emerald-800",
+          "mechanism": "Combines keyword-based BM25 and vector-based semantic retrieval to eliminate single-modality blindspots.",
+          "howItWorks": "Executes BM25 sparse search and dense embedding search concurrently across the index. Merges both candidate lists using Reciprocal Rank Fusion (RRF: score = 1 / (60 + rank)) or alpha-weighted convex combination (score = α · score_dense + (1 - α) · score_bm25).",
+          "pros": "Eliminates both the vocabulary mismatch problem and semantic token blurring. Consistently yields the highest Mean Reciprocal Rank (MRR) and Recall@K in enterprise benchmarks.",
+          "cons": "Requires maintaining dual indexing pipelines (inverted index like Elasticsearch/Lucene alongside a vector store like Pinecone/ChromaDB/pgvector) and tuning fusion parameters.",
+          "failureScenario": "Solves both failure modes: catches the exact SKU 'PROD_992' via BM25 while simultaneously pulling conceptually related chunks about 'warranty coverage' via dense vectors."
+        }
+      ],
+      "comparisonTable": [
+        {
+          "dimension": "Primary Mechanism",
+          "dense": "Nearest-Neighbor search on continuous vectors (Cosine/Dot Product)",
+          "bm25": "Inverted index term frequency & IDF with saturation tuning",
+          "hybrid": "Concurrent BM25 + Dense ANN search merged via RRF"
+        },
+        {
+          "dimension": "Semantic Understanding",
+          "dense": "High (captures synonyms, intent, and concept relationships)",
+          "bm25": "None (treats tokens as discrete, independent symbols)",
+          "hybrid": "High (dense channel provides semantic comprehension)"
+        },
+        {
+          "dimension": "Exact Keyword / SKU Matching",
+          "dense": "Weak (tends to blur specific alphanumeric sequences)",
+          "bm25": "Flawless (exact character-level token match)",
+          "hybrid": "Flawless (sparse channel guarantees exact hits)"
+        },
+        {
+          "dimension": "Compute & Latency",
+          "dense": "Moderate (requires GPU/CPU vector embeddings & ANN search)",
+          "bm25": "Extremely low (CPU inverted index lookup in <2ms)",
+          "hybrid": "Moderate (parallel query execution + rank merging)"
+        },
+        {
+          "dimension": "Production Recommendation",
+          "dense": "Adequate for generic conversational FAQs",
+          "bm25": "Great for log analysis, code search, and catalog search",
+          "hybrid": "Enterprise Gold Standard for RAG pipelines"
+        }
+      ],
+      "pythonCode": "from rank_bm25 import BM25Okapi\nimport numpy as np\n\n# 1. Corpus of Documents\ndocuments = [\n    \"Error code ERR_502 occurs when the upstream gateway times out.\",\n    \"Vehicle insurance policy extension procedures and payment plans.\",\n    \"How to troubleshoot server 502 bad gateway connection issues.\",\n    \"Automobile collision coverage and annual deductible rates.\"\n]\n\ntokenized_corpus = [doc.lower().split(\" \") for doc in documents]\n\n# 2. BM25 (Sparse Keyword Retrieval)\nbm25 = BM25Okapi(tokenized_corpus)\nquery = \"troubleshoot ERR_502 timeout\"\ntokenized_query = query.lower().split(\" \")\nbm25_scores = bm25.get_scores(tokenized_query)\nbm25_ranked = np.argsort(bm25_scores)[::-1]  # Highest to lowest\n\n# 3. Dense Vector Retrieval (Mocked embeddings)\n# In production: embeddings = model.encode(documents)\ndense_scores = np.array([0.82, 0.12, 0.88, 0.10])\ndense_ranked = np.argsort(dense_scores)[::-1]\n\n# 4. Hybrid Retrieval via Reciprocal Rank Fusion (RRF)\n# Formula: RRF_Score(d) = sum(1 / (k + rank(d))) with k = 60\nk = 60\nrrf_scores = {}\n\nfor rank, doc_idx in enumerate(bm25_ranked):\n    rrf_scores[doc_idx] = rrf_scores.get(doc_idx, 0) + (1.0 / (k + rank + 1))\n\nfor rank, doc_idx in enumerate(dense_ranked):\n    rrf_scores[doc_idx] = rrf_scores.get(doc_idx, 0) + (1.0 / (k + rank + 1))\n\n# Final Hybrid Ranking\nhybrid_ranked = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)\nprint(\"Top Hybrid Chunk:\", documents[hybrid_ranked[0][0]])"
+    }
   },
   {
     "id": "embedding",
@@ -14086,5 +14175,114 @@ export const definitionsData = [
         "answer": "1) Naive RAG: Baseline (embed, pull top-K, generate); let it fail first to identify the bottleneck. 2) Hybrid RAG: Solves missed alphanumeric IDs/error codes by combining BM25 keyword matching with dense vectors. 3) Reranked RAG: Solves candidate ordering failures (where the right doc ranked 8th and missed top-K) using a cross-encoder. 4) Multi-Query RAG: Solves query phrasing sensitivity by generating 3-5 alternative queries. 5) Hierarchical RAG: Solves context loss by matching small child chunks but feeding parent sections to the model. 6) Corrective RAG (CRAG): Solves confident hallucination on bad data by evaluating retrieval relevance before generation. 7) Graph RAG: Solves multi-document relational dependencies using knowledge graphs. 8) Agentic RAG: Solves rigid workflows by letting an autonomous agent decide whether to retrieve, retry, or reflect."
       }
     ]
+  },
+  {
+    "id": "retrieval-algorithms",
+    "title": "Retrieval Algorithms (Dense Vector, BM25 & Hybrid Retrieval)",
+    "badge": "RAG Retrieval Modalities, Lexical Search & Semantic Vector Fusion",
+    "summary": "Comprehensive guide to the 3 core retrieval algorithms in enterprise RAG and search systems: Dense Vector Retrieval (nearest-neighbor search using continuous embeddings), BM25 (sparse keyword-based probabilistic ranking), and Hybrid Retrieval (combining keyword and vector search via Reciprocal Rank Fusion).",
+    "retrievalAlgorithms": {
+      "title": "Core Retrieval Algorithms: Dense Vector, BM25 & Hybrid Retrieval",
+      "badge": "Search & Ingestion Engine Modalities",
+      "summary": "In modern RAG and enterprise search, retrieval algorithms dictate how relevant context is extracted from massive corpora. The 3 dominant paradigms are Dense Vector Retrieval (nearest-neighbor search using embeddings), BM25 (keyword-based ranking via term frequency), and Hybrid Retrieval (combining keyword and vector search with Reciprocal Rank Fusion).",
+      "algorithms": [
+        {
+          "id": "dense",
+          "step": 1,
+          "name": "Dense Vector Retrieval",
+          "type": "Semantic Similarity",
+          "badge": "Nearest-Neighbor on Embeddings",
+          "border": "border-cyan-500/40",
+          "accent": "text-cyan-400",
+          "bgBadge": "bg-cyan-950/80 text-cyan-300 border-cyan-800",
+          "mechanism": "Nearest-neighbor search using high-dimensional continuous embeddings.",
+          "howItWorks": "Text queries and document chunks are converted into fixed-length floating-point vectors (e.g., 768 or 1536 dims) using bi-encoders (e.g. OpenAI text-embedding-3-small, BGE-large, Nomic). An Approximate Nearest Neighbor (ANN) index (HNSW, IVF-PQ) computes cosine similarity or dot product distance to find semantically related chunks.",
+          "pros": "Understands synonyms, paraphrasing, semantic context, and cross-lingual meaning. Does not require exact keyword overlaps (e.g., maps 'automobile maintenance' to 'car servicing').",
+          "cons": "Vocabulary blindness: smooths over exact alphanumeric tokens, specific error codes (ERR_502_TIMEOUT), part numbers, SKU codes, and rare proper nouns.",
+          "failureScenario": "User asks: 'How do I resolve ERR_9024_FAILED?'. Vector search retrieves general server connection chunks that mention error handling, but misses the exact chunk containing 'ERR_9024_FAILED'."
+        },
+        {
+          "id": "bm25",
+          "step": 2,
+          "name": "BM25 (Sparse Keyword Retrieval)",
+          "type": "Lexical Exact Matching",
+          "badge": "Term Frequency Probabilistic Ranking",
+          "border": "border-amber-500/40",
+          "accent": "text-amber-400",
+          "bgBadge": "bg-amber-950/80 text-amber-300 border-amber-800",
+          "mechanism": "Keyword-based ranking evaluating term frequency (TF), inverse document frequency (IDF), and document length normalization.",
+          "howItWorks": "Scores documents based on the exact presence of query terms using probabilistic weighting. It saturates term frequency using parameter k1 (preventing repeated words from dominating) and penalizes abnormally verbose documents using parameter b.",
+          "pros": "Deterministic, sub-millisecond execution on CPU, and zero embedding API cost. Perfect for exact error codes, legal statute numbers, part SKUs, and rare technical keywords.",
+          "cons": "Vocabulary mismatch problem: completely fails if the query words do not match the exact document words (e.g., searching for 'cancel subscription' misses documents mentioning 'terminate membership'). Zero understanding of synonyms.",
+          "failureScenario": "User asks: 'How do I renew my auto policy?'. Document states 'Vehicle insurance policy extension procedures'. BM25 scores this 0 because zero lexical tokens overlap."
+        },
+        {
+          "id": "hybrid",
+          "step": 3,
+          "name": "Hybrid Retrieval",
+          "type": "Multi-Modal Fusion",
+          "badge": "Best-of-Both-Worlds Fusion",
+          "border": "border-emerald-500/40",
+          "accent": "text-emerald-400",
+          "bgBadge": "bg-emerald-950/80 text-emerald-300 border-emerald-800",
+          "mechanism": "Combines keyword-based BM25 and vector-based semantic retrieval to eliminate single-modality blindspots.",
+          "howItWorks": "Executes BM25 sparse search and dense embedding search concurrently across the index. Merges both candidate lists using Reciprocal Rank Fusion (RRF: score = 1 / (60 + rank)) or alpha-weighted convex combination (score = α · score_dense + (1 - α) · score_bm25).",
+          "pros": "Eliminates both the vocabulary mismatch problem and semantic token blurring. Consistently yields the highest Mean Reciprocal Rank (MRR) and Recall@K in enterprise benchmarks.",
+          "cons": "Requires maintaining dual indexing pipelines (inverted index like Elasticsearch/Lucene alongside a vector store like Pinecone/ChromaDB/pgvector) and tuning fusion parameters.",
+          "failureScenario": "Solves both failure modes: catches the exact SKU 'PROD_992' via BM25 while simultaneously pulling conceptually related chunks about 'warranty coverage' via dense vectors."
+        }
+      ],
+      "comparisonTable": [
+        {
+          "dimension": "Primary Mechanism",
+          "dense": "Nearest-Neighbor search on continuous vectors (Cosine/Dot Product)",
+          "bm25": "Inverted index term frequency & IDF with saturation tuning",
+          "hybrid": "Concurrent BM25 + Dense ANN search merged via RRF"
+        },
+        {
+          "dimension": "Semantic Understanding",
+          "dense": "High (captures synonyms, intent, and concept relationships)",
+          "bm25": "None (treats tokens as discrete, independent symbols)",
+          "hybrid": "High (dense channel provides semantic comprehension)"
+        },
+        {
+          "dimension": "Exact Keyword / SKU Matching",
+          "dense": "Weak (tends to blur specific alphanumeric sequences)",
+          "bm25": "Flawless (exact character-level token match)",
+          "hybrid": "Flawless (sparse channel guarantees exact hits)"
+        },
+        {
+          "dimension": "Compute & Latency",
+          "dense": "Moderate (requires GPU/CPU vector embeddings & ANN search)",
+          "bm25": "Extremely low (CPU inverted index lookup in <2ms)",
+          "hybrid": "Moderate (parallel query execution + rank merging)"
+        },
+        {
+          "dimension": "Production Recommendation",
+          "dense": "Adequate for generic conversational FAQs",
+          "bm25": "Great for log analysis, code search, and catalog search",
+          "hybrid": "Enterprise Gold Standard for RAG pipelines"
+        }
+      ],
+      "pythonCode": "from rank_bm25 import BM25Okapi\nimport numpy as np\n\n# 1. Corpus of Documents\ndocuments = [\n    \"Error code ERR_502 occurs when the upstream gateway times out.\",\n    \"Vehicle insurance policy extension procedures and payment plans.\",\n    \"How to troubleshoot server 502 bad gateway connection issues.\",\n    \"Automobile collision coverage and annual deductible rates.\"\n]\n\ntokenized_corpus = [doc.lower().split(\" \") for doc in documents]\n\n# 2. BM25 (Sparse Keyword Retrieval)\nbm25 = BM25Okapi(tokenized_corpus)\nquery = \"troubleshoot ERR_502 timeout\"\ntokenized_query = query.lower().split(\" \")\nbm25_scores = bm25.get_scores(tokenized_query)\nbm25_ranked = np.argsort(bm25_scores)[::-1]  # Highest to lowest\n\n# 3. Dense Vector Retrieval (Mocked embeddings)\n# In production: embeddings = model.encode(documents)\ndense_scores = np.array([0.82, 0.12, 0.88, 0.10])\ndense_ranked = np.argsort(dense_scores)[::-1]\n\n# 4. Hybrid Retrieval via Reciprocal Rank Fusion (RRF)\n# Formula: RRF_Score(d) = sum(1 / (k + rank(d))) with k = 60\nk = 60\nrrf_scores = {}\n\nfor rank, doc_idx in enumerate(bm25_ranked):\n    rrf_scores[doc_idx] = rrf_scores.get(doc_idx, 0) + (1.0 / (k + rank + 1))\n\nfor rank, doc_idx in enumerate(dense_ranked):\n    rrf_scores[doc_idx] = rrf_scores.get(doc_idx, 0) + (1.0 / (k + rank + 1))\n\n# Final Hybrid Ranking\nhybrid_ranked = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)\nprint(\"Top Hybrid Chunk:\", documents[hybrid_ranked[0][0]])"
+    },
+    "details": [
+      "1. Dense Vector Retrieval: Nearest-neighbor search using embeddings. Encodes unstructured text into dense vectors where semantic proximity correlates with conceptual similarity. Excels at intent matching, cross-lingual retrieval, and synonym mapping, but suffers from token blurring when matching exact alphanumeric identifiers.",
+      "2. BM25 (Sparse Keyword Retrieval): Keyword-based ranking using term frequency, document frequency, and document length normalization. Evaluates exact lexical presence. Flawless for exact part numbers, error codes, and customer IDs, but completely fails when queries use synonyms ('vocabulary mismatch problem').",
+      "3. Hybrid Retrieval: Combines keyword-based BM25 and vector-based semantic retrieval. Runs sparse and dense search in parallel, merging candidate lists using Reciprocal Rank Fusion (RRF) or weighted score normalization. Eliminates single-modality blindspots and serves as the production gold standard for enterprise RAG.",
+      "RRF Formula: RRF_Score(d) = sum_{m in {bm25, dense}} [1 / (60 + rank_m(d))]. This rank-based fusion avoids delicate score calibration between uncalibrated BM25 log-odds and bounded cosine similarities.",
+      "Production Best Practice: Retrieve a wide candidate pool via Hybrid Retrieval (e.g. top-25 BM25 + top-25 Dense = up to 50 candidates), deduplicate, and pass the merged set through a Cross-Encoder Reranker before feeding top 3-5 chunks to the LLM."
+    ],
+    "interviewAnswers": [
+      {
+        "question": "Compare Dense Vector Retrieval, BM25, and Hybrid Retrieval. When would you pick each?",
+        "answer": "Dense Vector Retrieval performs nearest-neighbor search using semantic embeddings (e.g., text-embedding-3 or BGE) in vector stores like ChromaDB or Pinecone. It excels at answering colloquial, paraphrased questions because it understands meaning, but it fails on exact alphanumeric codes like ERR_502 or SKU_984. BM25 is a sparse lexical algorithm that ranks documents based on exact keyword frequency and length normalization; it is unbeatable for exact serial numbers and error codes, but fails when users use synonyms. Hybrid Retrieval combines both by querying BM25 and dense vector search in parallel, fusing the results using Reciprocal Rank Fusion (RRF). In production enterprise RAG, Hybrid Retrieval is always our default because it catches both specific keywords and conceptual intent."
+      },
+      {
+        "question": "Why can't we just use dense vector search for everything in RAG?",
+        "answer": "Dense embedding models project tokens into a shared semantic latent space, which inherently compresses and blurs rare alphanumeric tokens, version numbers (v2.1.4 vs v2.1.5), error codes, and exact employee IDs. If a user asks for 'Bug #84120', dense retrieval might pull chunks about similar software bugs rather than the specific ticket #84120. BM25 or hybrid search is mandatory to guarantee exact lexical hits."
+      }
+    ],
+    "code": "from rank_bm25 import BM25Okapi\nimport numpy as np\n\n# 1. Corpus of Documents\ndocuments = [\n    \"Error code ERR_502 occurs when the upstream gateway times out.\",\n    \"Vehicle insurance policy extension procedures and payment plans.\",\n    \"How to troubleshoot server 502 bad gateway connection issues.\",\n    \"Automobile collision coverage and annual deductible rates.\"\n]\n\ntokenized_corpus = [doc.lower().split(\" \") for doc in documents]\n\n# 2. BM25 (Sparse Keyword Retrieval)\nbm25 = BM25Okapi(tokenized_corpus)\nquery = \"troubleshoot ERR_502 timeout\"\ntokenized_query = query.lower().split(\" \")\nbm25_scores = bm25.get_scores(tokenized_query)\nbm25_ranked = np.argsort(bm25_scores)[::-1]  # Highest to lowest\n\n# 3. Dense Vector Retrieval (Mocked embeddings)\n# In production: embeddings = model.encode(documents)\ndense_scores = np.array([0.82, 0.12, 0.88, 0.10])\ndense_ranked = np.argsort(dense_scores)[::-1]\n\n# 4. Hybrid Retrieval via Reciprocal Rank Fusion (RRF)\n# Formula: RRF_Score(d) = sum(1 / (k + rank(d))) with k = 60\nk = 60\nrrf_scores = {}\n\nfor rank, doc_idx in enumerate(bm25_ranked):\n    rrf_scores[doc_idx] = rrf_scores.get(doc_idx, 0) + (1.0 / (k + rank + 1))\n\nfor rank, doc_idx in enumerate(dense_ranked):\n    rrf_scores[doc_idx] = rrf_scores.get(doc_idx, 0) + (1.0 / (k + rank + 1))\n\n# Final Hybrid Ranking\nhybrid_ranked = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)\nprint(\"Top Hybrid Chunk:\", documents[hybrid_ranked[0][0]])"
   }
 ];

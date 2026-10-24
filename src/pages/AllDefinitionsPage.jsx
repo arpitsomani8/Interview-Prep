@@ -1049,6 +1049,125 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* Core Retrieval Algorithms: Dense Vector, BM25 & Hybrid Retrieval */}
+                {item.retrievalAlgorithms && (
+                  <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-cyan-500/40 shadow-2xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Database className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <span>Core Retrieval Algorithms: Dense Vector, BM25 & Hybrid Retrieval</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 shrink-0 font-semibold">
+                        Retrieval Engine Modalities
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans bg-black/60 p-3 rounded-xl border border-zinc-800">
+                      In enterprise RAG and search systems, retrieval algorithms determine how candidate documents are extracted from massive corpora.
+                      The three dominant paradigms are <strong className="text-cyan-300">Dense Vector Retrieval</strong> (nearest-neighbor search using continuous embeddings),
+                      <strong className="text-amber-300"> BM25</strong> (sparse keyword-based ranking via term frequency), and
+                      <strong className="text-emerald-300"> Hybrid Retrieval</strong> (combining keyword and vector search with Reciprocal Rank Fusion).
+                    </p>
+
+                    {/* 3 Modality Cards */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5 pt-1">
+                      {item.retrievalAlgorithms.algorithms.map((algo) => (
+                        <div
+                          key={algo.id}
+                          className={`p-4 rounded-xl bg-zinc-950/90 border ${algo.border || 'border-zinc-800'} space-y-3 hover:border-cyan-500/40 transition flex flex-col justify-between`}
+                        >
+                          <div className="space-y-2.5">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${algo.bgBadge || 'bg-zinc-900 text-zinc-300 border-zinc-800'} border`}>
+                                {algo.step}. {algo.name}
+                              </span>
+                              <span className="text-[9px] font-mono text-zinc-400 bg-black/80 px-2 py-0.5 rounded border border-zinc-800 truncate">
+                                {algo.type}
+                              </span>
+                            </div>
+
+                            {/* Mechanism */}
+                            <div className="p-2.5 rounded-lg bg-black/80 border border-zinc-900 space-y-1">
+                              <span className="text-[10px] font-mono uppercase text-zinc-400 font-semibold block">
+                                Mechanism:
+                              </span>
+                              <p className={`text-xs font-mono font-semibold ${algo.accent}`}>
+                                {algo.mechanism}
+                              </p>
+                            </div>
+
+                            <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
+                              {algo.howItWorks}
+                            </p>
+
+                            {/* Pros & Cons */}
+                            <div className="space-y-1.5 pt-1 border-t border-zinc-900">
+                              <div className="text-[11px] text-emerald-300/90 leading-relaxed font-sans">
+                                <strong className="text-emerald-400 font-mono text-[10px] uppercase">Strength: </strong>
+                                {algo.pros}
+                              </div>
+                              <div className="text-[11px] text-rose-300/90 leading-relaxed font-sans">
+                                <strong className="text-rose-400 font-mono text-[10px] uppercase">Limitation: </strong>
+                                {algo.cons}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Failure Scenario */}
+                          <div className="p-2.5 rounded-lg bg-black/90 border border-zinc-800/80 space-y-1 mt-2">
+                            <span className="text-[10px] font-mono uppercase text-amber-400 font-bold flex items-center gap-1">
+                              <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0" />
+                              <span>Real Failure Scenario:</span>
+                            </span>
+                            <p className="text-[11px] text-zinc-400 font-sans italic leading-relaxed">
+                              {algo.failureScenario}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Head-to-Head Comparison Table */}
+                    {item.retrievalAlgorithms.comparisonTable && (
+                      <div className="space-y-2 pt-2">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400 block">
+                          Head-to-Head Modality Matrix
+                        </span>
+                        <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                          <table className="w-full text-left text-xs font-sans">
+                            <thead className="bg-zinc-900/90 border-b border-zinc-800 font-mono text-[11px]">
+                              <tr>
+                                <th className="py-2.5 px-3.5 text-zinc-400 w-1/5">Dimension</th>
+                                <th className="py-2.5 px-3.5 text-cyan-300 w-1/4">Dense Vector Retrieval</th>
+                                <th className="py-2.5 px-3.5 text-amber-300 w-1/4">BM25 (Sparse Keyword)</th>
+                                <th className="py-2.5 px-3.5 text-emerald-300 w-3/10">Hybrid Retrieval</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+                              {item.retrievalAlgorithms.comparisonTable.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                  <td className="py-2.5 px-3.5 font-mono font-semibold text-white">
+                                    {row.dimension}
+                                  </td>
+                                  <td className="py-2.5 px-3.5 text-[11px] text-zinc-300 leading-relaxed">
+                                    {row.dense}
+                                  </td>
+                                  <td className="py-2.5 px-3.5 text-[11px] text-zinc-300 leading-relaxed">
+                                    {row.bm25}
+                                  </td>
+                                  <td className="py-2.5 px-3.5 text-[11px] text-emerald-200/90 font-medium leading-relaxed">
+                                    {row.hybrid}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Two Phases of RAG: Indexing & Retrieval/Generation */}
                 {item.twoPhases && (
                   <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl">
@@ -23602,6 +23721,126 @@ export default function AllDefinitionsPage() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                
+                {/* Core Retrieval Algorithms (When viewing retrieval-algorithms directly) */}
+                {item.id !== 'rag' && item.retrievalAlgorithms && (
+                  <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-cyan-500/40 shadow-2xl mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Database className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <span>Core Retrieval Algorithms: Dense Vector, BM25 & Hybrid Retrieval</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 shrink-0 font-semibold">
+                        Retrieval Engine Modalities
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans bg-black/60 p-3 rounded-xl border border-zinc-800">
+                      In enterprise RAG and search systems, retrieval algorithms determine how candidate documents are extracted from massive corpora.
+                      The three dominant paradigms are <strong className="text-cyan-300">Dense Vector Retrieval</strong> (nearest-neighbor search using continuous embeddings),
+                      <strong className="text-amber-300"> BM25</strong> (sparse keyword-based ranking via term frequency), and
+                      <strong className="text-emerald-300"> Hybrid Retrieval</strong> (combining keyword and vector search with Reciprocal Rank Fusion).
+                    </p>
+
+                    {/* 3 Modality Cards */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5 pt-1">
+                      {item.retrievalAlgorithms.algorithms.map((algo) => (
+                        <div
+                          key={algo.id}
+                          className={`p-4 rounded-xl bg-zinc-950/90 border ${algo.border || 'border-zinc-800'} space-y-3 hover:border-cyan-500/40 transition flex flex-col justify-between`}
+                        >
+                          <div className="space-y-2.5">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${algo.bgBadge || 'bg-zinc-900 text-zinc-300 border-zinc-800'} border`}>
+                                {algo.step}. {algo.name}
+                              </span>
+                              <span className="text-[9px] font-mono text-zinc-400 bg-black/80 px-2 py-0.5 rounded border border-zinc-800 truncate">
+                                {algo.type}
+                              </span>
+                            </div>
+
+                            {/* Mechanism */}
+                            <div className="p-2.5 rounded-lg bg-black/80 border border-zinc-900 space-y-1">
+                              <span className="text-[10px] font-mono uppercase text-zinc-400 font-semibold block">
+                                Mechanism:
+                              </span>
+                              <p className={`text-xs font-mono font-semibold ${algo.accent}`}>
+                                {algo.mechanism}
+                              </p>
+                            </div>
+
+                            <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
+                              {algo.howItWorks}
+                            </p>
+
+                            {/* Pros & Cons */}
+                            <div className="space-y-1.5 pt-1 border-t border-zinc-900">
+                              <div className="text-[11px] text-emerald-300/90 leading-relaxed font-sans">
+                                <strong className="text-emerald-400 font-mono text-[10px] uppercase">Strength: </strong>
+                                {algo.pros}
+                              </div>
+                              <div className="text-[11px] text-rose-300/90 leading-relaxed font-sans">
+                                <strong className="text-rose-400 font-mono text-[10px] uppercase">Limitation: </strong>
+                                {algo.cons}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Failure Scenario */}
+                          <div className="p-2.5 rounded-lg bg-black/90 border border-zinc-800/80 space-y-1 mt-2">
+                            <span className="text-[10px] font-mono uppercase text-amber-400 font-bold flex items-center gap-1">
+                              <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0" />
+                              <span>Real Failure Scenario:</span>
+                            </span>
+                            <p className="text-[11px] text-zinc-400 font-sans italic leading-relaxed">
+                              {algo.failureScenario}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Head-to-Head Comparison Table */}
+                    {item.retrievalAlgorithms.comparisonTable && (
+                      <div className="space-y-2 pt-2">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400 block">
+                          Head-to-Head Modality Matrix
+                        </span>
+                        <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                          <table className="w-full text-left text-xs font-sans">
+                            <thead className="bg-zinc-900/90 border-b border-zinc-800 font-mono text-[11px]">
+                              <tr>
+                                <th className="py-2.5 px-3.5 text-zinc-400 w-1/5">Dimension</th>
+                                <th className="py-2.5 px-3.5 text-cyan-300 w-1/4">Dense Vector Retrieval</th>
+                                <th className="py-2.5 px-3.5 text-amber-300 w-1/4">BM25 (Sparse Keyword)</th>
+                                <th className="py-2.5 px-3.5 text-emerald-300 w-3/10">Hybrid Retrieval</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+                              {item.retrievalAlgorithms.comparisonTable.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                  <td className="py-2.5 px-3.5 font-mono font-semibold text-white">
+                                    {row.dimension}
+                                  </td>
+                                  <td className="py-2.5 px-3.5 text-[11px] text-zinc-300 leading-relaxed">
+                                    {row.dense}
+                                  </td>
+                                  <td className="py-2.5 px-3.5 text-[11px] text-zinc-300 leading-relaxed">
+                                    {row.bm25}
+                                  </td>
+                                  <td className="py-2.5 px-3.5 text-[11px] text-emerald-200/90 font-medium leading-relaxed">
+                                    {row.hybrid}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
