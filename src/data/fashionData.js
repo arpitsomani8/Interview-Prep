@@ -23,6 +23,13 @@ On the Retailer Web Portal:
 • Retailers can search using text, images, or hybrid queries. We use lazy loading—showing 25 items first and loading more as they scroll—so the page stays fast and smooth at 60fps.
 • Retailers pick bulk quantities across sizes (S, M, L, XL, XXL) and checkout with email OTP. Verified orders go directly into our PostgreSQL orders table.
 
+• Production Security in Azure:
+Our entire Azure deployment adheres to a Zero-Trust defense-in-depth model:
+- Zero Hardcoded Keys: Our FastAPI backend uses Azure System-Assigned Managed Identity and Azure Key Vault to authenticate with Azure OpenAI, Azure AI Vision, and Blob Storage—meaning zero API keys or database passwords exist in our codebase or Docker containers.
+- Private Network Isolation: Azure OpenAI, PostgreSQL, Key Vault, and Blob Storage communicate over Azure Private Endpoints inside our private Virtual Network (VNet) with public internet access disabled.
+- Ingress Protection: Public traffic enters through Azure API Management fronted by an Azure Application Gateway with Web Application Firewall (WAF) to block OWASP attacks, bot traffic, and prompt injection attempts.
+- Enterprise Compliance: Customer queries and images are processed with Azure OpenAI Content Safety filters and are guaranteed by Microsoft never to be stored, retained, or used to train public foundation models.
+
 Future & In-Progress R&D:
 • For custom garments, we are building a generative pipeline using Stable Diffusion XL, ControlNet, and SAM to turn sketches into realistic photos. In parallel, we are integrating Azure AI Vision OCR to read printed slogans and quotes on t-shirts and save them in PostgreSQL, so buyers can search by exact printed text.`,
 
@@ -102,6 +109,17 @@ Future & In-Progress R&D:
         "In Simple Terms: It's like having an experienced fashion designer standing next to the shopper, answering questions like 'Will this blazer match these linen trousers?'",
         "Smart Division of Labor: GPT-4o never scans 10,000 photos itself—that would be way too slow and expensive. Instead, ChromaDB finds the top 50 matches first, and GPT-4o only reviews those top items.",
         "Interview Answer: 'We use GPT-4o for high-level styling advice, grounded directly with live inventory and fabric specs from PostgreSQL so it never invents fake prices or out-of-stock items.'"
+      ]
+    },
+    {
+      id: "azure-production-security",
+      title: "Azure Production Security",
+      badge: "Zero-Trust Enterprise Architecture",
+      summary: "Secures our AI fashion platform using Managed Identities (zero hardcoded API keys), Private Endpoints (zero public exposure), and Azure Key Vault.",
+      details: [
+        "In Simple Terms: Instead of leaving database passwords or OpenAI API keys inside our code where a hacker could find them, our Azure containers authenticate automatically using digital ID badges called Managed Identities.",
+        "Private Network Fortress: Azure OpenAI, PostgreSQL, and Blob Storage are locked inside a private Virtual Network (VNet) with Private Endpoints. Public internet access is disabled, so outsiders cannot even reach the database login screen.",
+        "Interview Answer: 'We implemented Zero-Trust on Azure: FastAPI runs with a System-Assigned Managed Identity, resources communicate over Private Endpoints with public access disabled, and Azure WAF + Content Safety protects against OWASP and prompt injection attacks.'"
       ]
     },
     {
