@@ -872,7 +872,115 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 3. Target Interview Questions & Answers */}
+                
+                {/* Design "ChatGPT" (General-Purpose Conversational AI System Architecture) */}
+                {item.designChatGptArchitecture && (
+                  <div className="space-y-5 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-cyan-500/40 shadow-2xl mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <span>{item.designChatGptArchitecture.title}</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 shrink-0 font-semibold">
+                        {item.designChatGptArchitecture.badge}
+                      </span>
+                    </div>
+
+                    {/* Requirements Banner */}
+                    {item.designChatGptArchitecture.requirements && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4 rounded-xl bg-black/80 border border-zinc-800">
+                        <div className="space-y-1.5">
+                          <span className="text-[11px] font-mono uppercase text-emerald-400 font-bold flex items-center gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Functional Requirements:</span>
+                          </span>
+                          <ul className="space-y-1 text-xs text-zinc-300 font-sans">
+                            {item.designChatGptArchitecture.requirements.functional.map((req, rIdx) => (
+                              <li key={rIdx} className="flex items-start gap-1.5 leading-relaxed">
+                                <span className="text-emerald-400 font-bold">•</span>
+                                <span>{req}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="space-y-1.5">
+                          <span className="text-[11px] font-mono uppercase text-cyan-400 font-bold flex items-center gap-1.5">
+                            <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>Non-Functional & Scale Requirements:</span>
+                          </span>
+                          <ul className="space-y-1 text-xs text-zinc-300 font-sans">
+                            {item.designChatGptArchitecture.requirements.nonFunctional.map((req, rIdx) => (
+                              <li key={rIdx} className="flex items-start gap-1.5 leading-relaxed">
+                                <span className="text-cyan-400 font-bold">•</span>
+                                <span>{req}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 5 Core Components */}
+                    <div className="space-y-3 pt-1">
+                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400 block">
+                        5 Core Architecture Pillars
+                      </span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                        {item.designChatGptArchitecture.coreComponents.map((comp) => (
+                          <div
+                            key={comp.step}
+                            className={`p-4 rounded-xl bg-zinc-950/90 border ${comp.border || 'border-zinc-800'} space-y-2.5 flex flex-col justify-between hover:border-cyan-500/40 transition`}
+                          >
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${comp.bgBadge} border`}>
+                                  STAGE {comp.step}: {comp.name}
+                                </span>
+                              </div>
+                              <p className="text-xs font-mono text-zinc-300 font-semibold leading-relaxed">
+                                {comp.mechanism}
+                              </p>
+                              <ul className="space-y-1.5 pt-1 text-[11px] text-zinc-400 font-sans border-t border-zinc-900">
+                                {comp.details.map((d, dIdx) => (
+                                  <li key={dIdx} className="flex items-start gap-1.5 leading-relaxed">
+                                    <span className="text-cyan-400 mt-0.5">•</span>
+                                    <span>{d}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Context Window Exhaustion Strategies */}
+                    {item.designChatGptArchitecture.contextExhaustionStrategies && (
+                      <div className="space-y-3 p-4 rounded-xl bg-black/90 border border-amber-500/30">
+                        <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                          <Terminal className="w-4 h-4 text-amber-400" />
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">
+                            How to Handle Conversations That Exceed Context Window Limits
+                          </h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          {item.designChatGptArchitecture.contextExhaustionStrategies.map((strat, sIdx) => (
+                            <div key={sIdx} className="p-3.5 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1.5">
+                              <h5 className="text-xs font-bold text-white font-mono text-cyan-300">{strat.strategy}</h5>
+                              <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{strat.howItWorks}</p>
+                              <div className="text-[10px] font-mono text-amber-300/90 pt-1 border-t border-zinc-900 leading-relaxed">
+                                <strong className="text-amber-400 uppercase">Trade-off: </strong>
+                                {strat.tradeoff}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+{/* 3. Target Interview Questions & Answers */}
                 {item.interviewAnswers && (
                   <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 space-y-3 shadow-lg">
                     <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
@@ -24082,6 +24190,114 @@ export default function AllDefinitionsPage() {
                               ))}
                             </tbody>
                           </table>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                
+                {/* Design "ChatGPT" (When viewing design-chatgpt directly) */}
+                {item.id !== 'chatbot-architecture' && item.designChatGptArchitecture && (
+                  <div className="space-y-5 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-cyan-500/40 shadow-2xl mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <span>{item.designChatGptArchitecture.title}</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 shrink-0 font-semibold">
+                        {item.designChatGptArchitecture.badge}
+                      </span>
+                    </div>
+
+                    {/* Requirements Banner */}
+                    {item.designChatGptArchitecture.requirements && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4 rounded-xl bg-black/80 border border-zinc-800">
+                        <div className="space-y-1.5">
+                          <span className="text-[11px] font-mono uppercase text-emerald-400 font-bold flex items-center gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Functional Requirements:</span>
+                          </span>
+                          <ul className="space-y-1 text-xs text-zinc-300 font-sans">
+                            {item.designChatGptArchitecture.requirements.functional.map((req, rIdx) => (
+                              <li key={rIdx} className="flex items-start gap-1.5 leading-relaxed">
+                                <span className="text-emerald-400 font-bold">•</span>
+                                <span>{req}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="space-y-1.5">
+                          <span className="text-[11px] font-mono uppercase text-cyan-400 font-bold flex items-center gap-1.5">
+                            <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>Non-Functional & Scale Requirements:</span>
+                          </span>
+                          <ul className="space-y-1 text-xs text-zinc-300 font-sans">
+                            {item.designChatGptArchitecture.requirements.nonFunctional.map((req, rIdx) => (
+                              <li key={rIdx} className="flex items-start gap-1.5 leading-relaxed">
+                                <span className="text-cyan-400 font-bold">•</span>
+                                <span>{req}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 5 Core Components */}
+                    <div className="space-y-3 pt-1">
+                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400 block">
+                        5 Core Architecture Pillars
+                      </span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                        {item.designChatGptArchitecture.coreComponents.map((comp) => (
+                          <div
+                            key={comp.step}
+                            className={`p-4 rounded-xl bg-zinc-950/90 border ${comp.border || 'border-zinc-800'} space-y-2.5 flex flex-col justify-between hover:border-cyan-500/40 transition`}
+                          >
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${comp.bgBadge} border`}>
+                                  STAGE {comp.step}: {comp.name}
+                                </span>
+                              </div>
+                              <p className="text-xs font-mono text-zinc-300 font-semibold leading-relaxed">
+                                {comp.mechanism}
+                              </p>
+                              <ul className="space-y-1.5 pt-1 text-[11px] text-zinc-400 font-sans border-t border-zinc-900">
+                                {comp.details.map((d, dIdx) => (
+                                  <li key={dIdx} className="flex items-start gap-1.5 leading-relaxed">
+                                    <span className="text-cyan-400 mt-0.5">•</span>
+                                    <span>{d}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Context Window Exhaustion Strategies */}
+                    {item.designChatGptArchitecture.contextExhaustionStrategies && (
+                      <div className="space-y-3 p-4 rounded-xl bg-black/90 border border-amber-500/30">
+                        <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                          <Terminal className="w-4 h-4 text-amber-400" />
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">
+                            How to Handle Conversations That Exceed Context Window Limits
+                          </h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          {item.designChatGptArchitecture.contextExhaustionStrategies.map((strat, sIdx) => (
+                            <div key={sIdx} className="p-3.5 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1.5">
+                              <h5 className="text-xs font-bold text-white font-mono text-cyan-300">{strat.strategy}</h5>
+                              <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{strat.howItWorks}</p>
+                              <div className="text-[10px] font-mono text-amber-300/90 pt-1 border-t border-zinc-900 leading-relaxed">
+                                <strong className="text-amber-400 uppercase">Trade-off: </strong>
+                                {strat.tradeoff}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}

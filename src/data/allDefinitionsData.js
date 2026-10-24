@@ -240,6 +240,10 @@ export const definitionBookmarks = [
     "label": "Dense vs. Sparse"
   },
   {
+    "id": "design-chatgpt",
+    "label": "Design ChatGPT (Conversational AI System Design)"
+  },
+  {
     "id": "design-patterns",
     "label": "Design Patterns"
   },
@@ -13979,7 +13983,116 @@ export const definitionsData = [
       "Observability & Tracing: The system tracks every prompt, token count, tool call, latency, and guardrail check using OpenTelemetry and Langfuse, while Prometheus monitors CPU, memory, and GPU utilization in real time.",
       "Interview Answer: 'Our banking chatbot utilizes a multi-agent Coordinator-Worker pattern protected by an Edge Security Layer (WAF, rate limits, OAuth2 IdP). The Coordinator sanitizes PII, validates permissions, and delegates to domain-specialized Accounts, Transaction, and Service agents via Model Context Protocol (MCP) servers. To prevent spiraling API bills (Step 13), our Cost Tracker enforces semantic caching, strict recursion limits, and smart model routing between self-hosted and frontier LLMs.'"
     ],
-    "code": "# ==============================================================================\n# ENTERPRISE MULTI-AGENT BANKING CHATBOT: COORDINATOR, MCP & COST TRACKER\n# ==============================================================================\nimport re\nimport time\nfrom typing import Dict, Any, List, Optional\nfrom dataclasses import dataclass, field\n\n# 1. FinOps Cost Tracker (Preventing \"A Bill That Tripled\")\n@dataclass\nclass CostTracker:\n    budget_per_session_usd: float = 0.05\n    current_session_cost_usd: float = 0.0\n    total_tokens_used: int = 0\n    max_agent_iterations: int = 5\n    \n    # Pricing per 1K tokens\n    PRICING = {\n        \"self_hosted_8b\": {\"prompt\": 0.0001, \"completion\": 0.0002},\n        \"frontier_gpt4o\": {\"prompt\": 0.0025, \"completion\": 0.0100}\n    }\n\n    def record_usage(self, model: str, prompt_tokens: int, completion_tokens: int):\n        rates = self.PRICING.get(model, self.PRICING[\"self_hosted_8b\"])\n        cost = (prompt_tokens / 1000 * rates[\"prompt\"]) + (completion_tokens / 1000 * rates[\"completion\"])\n        self.current_session_cost_usd += cost\n        self.total_tokens_used += (prompt_tokens + completion_tokens)\n        \n        if self.current_session_cost_usd > self.budget_per_session_usd:\n            raise RuntimeError(f\"FinOps Alert: Session budget ${self.budget_per_session_usd} exceeded!\")\n\n# 2. PII Redaction Engine (Sanitizing Customer Secrets before LLM)\nclass PIIRedactionEngine:\n    CARD_REGEX = re.compile(r'\\b(?:\\d{4}[ -]?){3}\\d{4}\\b')\n    SSN_REGEX = re.compile(r'\\b\\d{3}-\\d{2}-\\d{4}\\b')\n\n    @classmethod\n    def redact(cls, text: str) -> str:\n        text = cls.CARD_REGEX.sub(\"[MASKED_CARD_NUMBER]\", text)\n        text = cls.SSN_REGEX.sub(\"[MASKED_SSN]\", text)\n        return text\n\n# 3. Model Context Protocol (MCP) Mock Tools for Banking Services\nclass BankingMCPServers:\n    @staticmethod\n    def accounts_mcp_balance_enquiry(cif_id: str, account_id: str) -> Dict[str, Any]:\n        \"\"\"Tool: balance_enquiry via Accounts MCP Server\"\"\"\n        return {\"account_id\": account_id, \"available_balance\": 4820.50, \"currency\": \"USD\", \"status\": \"ACTIVE\"}\n\n    @staticmethod\n    def transactions_mcp_statement(cif_id: str, account_id: str, days: int = 30) -> Dict[str, Any]:\n        \"\"\"Tool: statement_request via Transactions MCP Server\"\"\"\n        return {\"account_id\": account_id, \"period_days\": days, \"download_url\": \"https://secure.bank.com/stmt/9421.pdf\"}\n\n    @staticmethod\n    def service_mcp_cheque_book(cif_id: str, account_id: str, leaves: int = 50) -> Dict[str, Any]:\n        \"\"\"Tool: cheque_book_request via Service MCP Server\"\"\"\n        return {\"status\": \"DISPATCHED\", \"request_id\": \"CHK_8820\", \"leaves\": leaves, \"est_delivery_days\": 3}\n\n# 4. Coordinator Agent (Supervisor Orchestration with Authorisation & Routing)\nclass BankingCoordinatorAgent:\n    def __init__(self, cost_tracker: CostTracker):\n        self.cost_tracker = cost_tracker\n        self.mcp = BankingMCPServers()\n        self.session_store = {}\n\n    def authorize_request(self, user_jwt_cif: str, target_account_id: str) -> bool:\n        \"\"\"Authorisation check: Verifies authenticated user owns the target account.\"\"\"\n        authorized_accounts = {\"CIF_4589\": [\"ACC_9921\", \"ACC_1145\"]}\n        return target_account_id in authorized_accounts.get(user_jwt_cif, [])\n\n    def handle_user_query(self, user_cif: str, raw_message: str) -> Dict[str, Any]:\n        # Step A: PII Redaction\n        clean_prompt = PIIRedactionEngine.redact(raw_message)\n        print(f\"[PII Guard] Sanitized Prompt: {clean_prompt}\")\n\n        # Step B: Record FinOps cost for intent classification (Using cheap fast model)\n        self.cost_tracker.record_usage(\"self_hosted_8b\", prompt_tokens=180, completion_tokens=30)\n\n        # Step C: Intent Classification & Delegation\n        target_account = \"ACC_9921\"\n        if not self.authorize_request(user_cif, target_account):\n            return {\"error\": \"Authorisation Failed: Account does not belong to authenticated user.\"}\n\n        # Step D: Route to specialized Sub-Agent & execute MCP Tool\n        if \"balance\" in clean_prompt.lower():\n            result = self.mcp.accounts_mcp_balance_enquiry(cif_id=user_cif, account_id=target_account)\n            response_text = f\"Your available balance for account {target_account} is ${result['available_balance']:,.2f} {result['currency']}.\"\n        elif \"cheque\" in clean_prompt.lower():\n            result = self.mcp.service_mcp_cheque_book(cif_id=user_cif, account_id=target_account, leaves=25)\n            response_text = f\"Your cheque book request (ID: {result['request_id']}) has been processed and will arrive in {result['est_delivery_days']} business days.\"\n        else:\n            response_text = \"I can assist you with Balance Enquiries, Recent Transactions, and Cheque Book requests.\"\n\n        # Step E: Update Session Store & FinOps tracking\n        self.session_store[\"last_interaction\"] = time.time()\n        print(f\"[FinOps] Session Spend: ${self.cost_tracker.current_session_cost_usd:.5f} | Tokens: {self.cost_tracker.total_tokens_used}\")\n\n        return {\"answer\": response_text, \"session_cost_usd\": self.cost_tracker.current_session_cost_usd}\n\n# Execution Demonstration\ntracker = CostTracker(budget_per_session_usd=0.05)\nagent = BankingCoordinatorAgent(cost_tracker=tracker)\n\nres1 = agent.handle_user_query(\"CIF_4589\", \"Check balance on ACC_9921, my card is 4532-1122-3344-5566\")\nprint(\"Response 1:\", res1[\"answer\"])\n\nres2 = agent.handle_user_query(\"CIF_4589\", \"Please send a new cheque book for ACC_9921\")\nprint(\"Response 2:\", res2[\"answer\"])"
+    "code": "# ==============================================================================\n# ENTERPRISE MULTI-AGENT BANKING CHATBOT: COORDINATOR, MCP & COST TRACKER\n# ==============================================================================\nimport re\nimport time\nfrom typing import Dict, Any, List, Optional\nfrom dataclasses import dataclass, field\n\n# 1. FinOps Cost Tracker (Preventing \"A Bill That Tripled\")\n@dataclass\nclass CostTracker:\n    budget_per_session_usd: float = 0.05\n    current_session_cost_usd: float = 0.0\n    total_tokens_used: int = 0\n    max_agent_iterations: int = 5\n    \n    # Pricing per 1K tokens\n    PRICING = {\n        \"self_hosted_8b\": {\"prompt\": 0.0001, \"completion\": 0.0002},\n        \"frontier_gpt4o\": {\"prompt\": 0.0025, \"completion\": 0.0100}\n    }\n\n    def record_usage(self, model: str, prompt_tokens: int, completion_tokens: int):\n        rates = self.PRICING.get(model, self.PRICING[\"self_hosted_8b\"])\n        cost = (prompt_tokens / 1000 * rates[\"prompt\"]) + (completion_tokens / 1000 * rates[\"completion\"])\n        self.current_session_cost_usd += cost\n        self.total_tokens_used += (prompt_tokens + completion_tokens)\n        \n        if self.current_session_cost_usd > self.budget_per_session_usd:\n            raise RuntimeError(f\"FinOps Alert: Session budget ${self.budget_per_session_usd} exceeded!\")\n\n# 2. PII Redaction Engine (Sanitizing Customer Secrets before LLM)\nclass PIIRedactionEngine:\n    CARD_REGEX = re.compile(r'\\b(?:\\d{4}[ -]?){3}\\d{4}\\b')\n    SSN_REGEX = re.compile(r'\\b\\d{3}-\\d{2}-\\d{4}\\b')\n\n    @classmethod\n    def redact(cls, text: str) -> str:\n        text = cls.CARD_REGEX.sub(\"[MASKED_CARD_NUMBER]\", text)\n        text = cls.SSN_REGEX.sub(\"[MASKED_SSN]\", text)\n        return text\n\n# 3. Model Context Protocol (MCP) Mock Tools for Banking Services\nclass BankingMCPServers:\n    @staticmethod\n    def accounts_mcp_balance_enquiry(cif_id: str, account_id: str) -> Dict[str, Any]:\n        \"\"\"Tool: balance_enquiry via Accounts MCP Server\"\"\"\n        return {\"account_id\": account_id, \"available_balance\": 4820.50, \"currency\": \"USD\", \"status\": \"ACTIVE\"}\n\n    @staticmethod\n    def transactions_mcp_statement(cif_id: str, account_id: str, days: int = 30) -> Dict[str, Any]:\n        \"\"\"Tool: statement_request via Transactions MCP Server\"\"\"\n        return {\"account_id\": account_id, \"period_days\": days, \"download_url\": \"https://secure.bank.com/stmt/9421.pdf\"}\n\n    @staticmethod\n    def service_mcp_cheque_book(cif_id: str, account_id: str, leaves: int = 50) -> Dict[str, Any]:\n        \"\"\"Tool: cheque_book_request via Service MCP Server\"\"\"\n        return {\"status\": \"DISPATCHED\", \"request_id\": \"CHK_8820\", \"leaves\": leaves, \"est_delivery_days\": 3}\n\n# 4. Coordinator Agent (Supervisor Orchestration with Authorisation & Routing)\nclass BankingCoordinatorAgent:\n    def __init__(self, cost_tracker: CostTracker):\n        self.cost_tracker = cost_tracker\n        self.mcp = BankingMCPServers()\n        self.session_store = {}\n\n    def authorize_request(self, user_jwt_cif: str, target_account_id: str) -> bool:\n        \"\"\"Authorisation check: Verifies authenticated user owns the target account.\"\"\"\n        authorized_accounts = {\"CIF_4589\": [\"ACC_9921\", \"ACC_1145\"]}\n        return target_account_id in authorized_accounts.get(user_jwt_cif, [])\n\n    def handle_user_query(self, user_cif: str, raw_message: str) -> Dict[str, Any]:\n        # Step A: PII Redaction\n        clean_prompt = PIIRedactionEngine.redact(raw_message)\n        print(f\"[PII Guard] Sanitized Prompt: {clean_prompt}\")\n\n        # Step B: Record FinOps cost for intent classification (Using cheap fast model)\n        self.cost_tracker.record_usage(\"self_hosted_8b\", prompt_tokens=180, completion_tokens=30)\n\n        # Step C: Intent Classification & Delegation\n        target_account = \"ACC_9921\"\n        if not self.authorize_request(user_cif, target_account):\n            return {\"error\": \"Authorisation Failed: Account does not belong to authenticated user.\"}\n\n        # Step D: Route to specialized Sub-Agent & execute MCP Tool\n        if \"balance\" in clean_prompt.lower():\n            result = self.mcp.accounts_mcp_balance_enquiry(cif_id=user_cif, account_id=target_account)\n            response_text = f\"Your available balance for account {target_account} is ${result['available_balance']:,.2f} {result['currency']}.\"\n        elif \"cheque\" in clean_prompt.lower():\n            result = self.mcp.service_mcp_cheque_book(cif_id=user_cif, account_id=target_account, leaves=25)\n            response_text = f\"Your cheque book request (ID: {result['request_id']}) has been processed and will arrive in {result['est_delivery_days']} business days.\"\n        else:\n            response_text = \"I can assist you with Balance Enquiries, Recent Transactions, and Cheque Book requests.\"\n\n        # Step E: Update Session Store & FinOps tracking\n        self.session_store[\"last_interaction\"] = time.time()\n        print(f\"[FinOps] Session Spend: ${self.cost_tracker.current_session_cost_usd:.5f} | Tokens: {self.cost_tracker.total_tokens_used}\")\n\n        return {\"answer\": response_text, \"session_cost_usd\": self.cost_tracker.current_session_cost_usd}\n\n# Execution Demonstration\ntracker = CostTracker(budget_per_session_usd=0.05)\nagent = BankingCoordinatorAgent(cost_tracker=tracker)\n\nres1 = agent.handle_user_query(\"CIF_4589\", \"Check balance on ACC_9921, my card is 4532-1122-3344-5566\")\nprint(\"Response 1:\", res1[\"answer\"])\n\nres2 = agent.handle_user_query(\"CIF_4589\", \"Please send a new cheque book for ACC_9921\")\nprint(\"Response 2:\", res2[\"answer\"])",
+    "designChatGptArchitecture": {
+      "title": "End-to-End Conversational AI Architecture ('ChatGPT')",
+      "badge": "5-Tier High-Concurrency Architecture",
+      "requirements": {
+        "functional": [
+          "Handle open-ended multi-turn conversations with persona consistency and factual grounding.",
+          "Maintain conversation context across long sessions within finite token limits.",
+          "Be helpful, harmless, and honest (enforced via RLHF/DPO alignment and guardrails).",
+          "Support tool use (web search, python code interpreter, DALL-E image generation)."
+        ],
+        "nonFunctional": [
+          "Scale to millions of concurrent active users (100k+ generated tokens/sec).",
+          "Ultra-low perceived latency: Time to First Token (TTFT) < 300ms via token-by-token streaming.",
+          "Zero toxic/harmful outputs or prompt injection breaches (dual moderation layers).",
+          "High availability (99.99%) with graceful queue degradation during traffic surges."
+        ]
+      },
+      "coreComponents": [
+        {
+          "step": 1,
+          "name": "Core Foundation Model & RLHF Alignment",
+          "badge": "Decoder-Only Transformer + PPO/DPO",
+          "border": "border-cyan-500/40",
+          "accent": "text-cyan-400",
+          "bgBadge": "bg-cyan-950/80 text-cyan-300 border-cyan-800",
+          "mechanism": "Massive pretraining followed by Supervised Fine-Tuning (SFT) and Reinforcement Learning from Human Feedback (RLHF).",
+          "details": [
+            "Pretraining: Autoregressive next-token prediction across multi-trillion tokens of web text, books, code, and math.",
+            "Supervised Fine-Tuning (SFT): High-quality prompt/response dialog pairs written by human experts to teach conversational turn-taking and instruction-following.",
+            "RLHF / DPO: A Reward Model trained on human preferences (thumbs up/down) trains the policy model via PPO or Direct Preference Optimization (DPO) to maximize helpfulness and eliminate hallucinations and toxicity."
+          ]
+        },
+        {
+          "step": 2,
+          "name": "Conversation State & Context Window Handling",
+          "badge": "Session Memory & Window Management",
+          "border": "border-amber-500/40",
+          "accent": "text-amber-400",
+          "bgBadge": "bg-amber-950/80 text-amber-300 border-amber-800",
+          "mechanism": "Low-latency state persistence in Redis combined with dynamic context pruning when dialogue exceeds the token window.",
+          "details": [
+            "Session Store: Client submits session_id with each message; Redis/DynamoDB caches recent turn history.",
+            "Truncation Strategy: Keep only the latest N messages (simplest, but drops foundational early instructions).",
+            "Rolling Summarization: A lightweight background model summarizes older turns (1 to k-4) into an executive 100-token context block prepended to recent raw turns.",
+            "Retrieval-Augmented Memory (Semantic History RAG): Embed all past turns into a vector database; query past conversation history to retrieve only the turns semantically relevant to the current question."
+          ]
+        },
+        {
+          "step": 3,
+          "name": "Dual Safety & Moderation Layer",
+          "badge": "Input/Output Guardrails",
+          "border": "border-rose-500/40",
+          "accent": "text-rose-400",
+          "bgBadge": "bg-rose-950/80 text-rose-300 border-rose-800",
+          "mechanism": "Ultra-fast (<15ms) specialized classifiers guarding both ingress user queries and egress generated tokens.",
+          "details": [
+            "Pre-Inference Input Filter: Small, fast classifier (DeBERTa / Azure Content Safety) screens prompt for prompt injection, jailbreaks (DAN attacks), self-harm, hate speech, and cyber threats before hitting the expensive LLM.",
+            "Post-Inference Output Filter: Streaming token inspector checks generated tokens for PII leaks (credit cards, SSNs), copyright violations, and toxic language.",
+            "Why System Prompts Aren't Enough: System prompts ('You are a helpful assistant, do not do X') can easily be bypassed via adversarial jailbreaks. Dedicated external classification guardrails are mandatory."
+          ]
+        },
+        {
+          "step": 4,
+          "name": "High-Throughput Serving & Inference Engine",
+          "badge": "vLLM, Continuous Batching & Streaming",
+          "border": "border-emerald-500/40",
+          "accent": "text-emerald-400",
+          "bgBadge": "bg-emerald-950/80 text-emerald-300 border-emerald-800",
+          "mechanism": "Distributed tensor-parallel serving cluster optimized for maximum GPU memory bandwidth utilization.",
+          "details": [
+            "PagedAttention & KV Cache (vLLM / TensorRT-LLM): Eliminates VRAM memory fragmentation, enabling 2-4x larger concurrent batch sizes.",
+            "Continuous / Iterative Batching: Inserts incoming requests into active decoding steps dynamically rather than waiting for an entire batch to finish generating.",
+            "Model Quantization (FP8 / AWQ INT4): Halves VRAM memory bandwidth requirements, doubling token generation speed without loss of reasoning capability.",
+            "Server-Sent Events (SSE) Streaming: Streams tokens back to the frontend immediately as they are decoded (30-50 tokens/sec), keeping perceived TTFT under 300ms."
+          ]
+        },
+        {
+          "step": 5,
+          "name": "Continuous RLHF Feedback Loop & Data Flywheel",
+          "badge": "Telemetry & Model Iteration",
+          "border": "border-purple-500/40",
+          "accent": "text-purple-400",
+          "bgBadge": "bg-purple-950/80 text-purple-300 border-purple-800",
+          "mechanism": "Real-time logging of user signals (thumbs up/down, copy, regenerations) to drive iterative alignment.",
+          "details": [
+            "Explicit Signals: Thumbs up / thumbs down with optional user critique.",
+            "Implicit Signals: Message regenerations (signal of dissatisfaction), user prompt edits, copy-to-clipboard (signal of success).",
+            "Data Flywheel: High-impact negative and positive pairs are anonymized and queued for human reviewer grading to fine-tune the next generation Reward Model."
+          ]
+        }
+      ],
+      "contextExhaustionStrategies": [
+        {
+          "strategy": "1. Sliding Window Truncation",
+          "howItWorks": "Drop the oldest user/assistant turns once total tokens exceed context window - margin. Keep system prompt and latest k turns.",
+          "tradeoff": "Zero compute overhead; however, causes total amnesia of initial instructions, user preferences, or file uploads discussed early in the chat."
+        },
+        {
+          "strategy": "2. Rolling Hierarchical Summarization",
+          "howItWorks": "When token threshold is reached, trigger an asynchronous background LLM call to condense turns 1 through N into an executive summary block. Inject [Summary of previous chat] + [Recent 3-5 raw turns].",
+          "tradeoff": "Preserves the essential gist of the conversation while consuming <150 tokens. Adds minor background token compute cost."
+        },
+        {
+          "strategy": "3. Semantic History Retrieval (Memory RAG)",
+          "howItWorks": "Every conversation turn is embedded and indexed in an episodic vector database (e.g. Chroma/Pinecone keyed by user_id). When user asks a question, retrieve top-3 most relevant historical turns from 20 turns ago.",
+          "tradeoff": "Maximum recall for long, multi-topic sessions. Allows user to say 'Remember the budget we talked about an hour ago?' and retrieve the exact numbers."
+        }
+      ]
+    }
   },
   {
     "id": "first-non-repeating-char",
@@ -14518,5 +14631,143 @@ export const definitionsData = [
       }
     ],
     "code": "import torch\nimport torch.nn as nn\nfrom torch.utils.data import DataLoader, TensorDataset\nfrom torch.optim.lr_scheduler import CosineAnnealingLR\n\n# 1. Hyperparameter Configurations\nEPOCHS = 10\nBATCH_SIZE = 32\nACCUMULATION_STEPS = 4  # Effective Batch Size = 32 * 4 = 128\nLEARNING_RATE = 1e-3\nPATIENCE = 3\n\n# Dummy Dataset (1000 samples, 20 features)\nX = torch.randn(1000, 20)\ny = torch.randint(0, 2, (1000,)).float()\ndataset = TensorDataset(X, y)\ntrain_loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)\n\n# Simple Model\nmodel = nn.Sequential(\n    nn.Linear(20, 64),\n    nn.ReLU(),\n    nn.Dropout(0.2),\n    nn.Linear(64, 1)\n)\n\ncriterion = nn.BCEWithLogitsLoss()\noptimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=1e-2)\nscheduler = CosineAnnealingLR(optimizer, T_max=EPOCHS, eta_min=1e-5)\n\n# Early Stopping State\nbest_val_loss = float('inf')\npatience_counter = 0\n\nprint(f\"Starting Training: {EPOCHS} Epochs | Effective Batch Size: {BATCH_SIZE * ACCUMULATION_STEPS}\")\n\nfor epoch in range(EPOCHS):\n    model.train()\n    running_loss = 0.0\n    optimizer.zero_grad()\n\n    for step, (batch_x, batch_y) in enumerate(train_loader):\n        # Forward pass\n        preds = model(batch_x).squeeze()\n        loss = criterion(preds, batch_y)\n        \n        # Scale loss for gradient accumulation\n        loss = loss / ACCUMULATION_STEPS\n        loss.backward()\n\n        # Update weights only every ACCUMULATION_STEPS\n        if (step + 1) % ACCUMULATION_STEPS == 0 or (step + 1) == len(train_loader):\n            # Gradient clipping to prevent exploding gradients\n            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)\n            optimizer.step()\n            optimizer.zero_grad()\n\n        running_loss += loss.item() * ACCUMULATION_STEPS\n\n    scheduler.step()\n    epoch_loss = running_loss / len(train_loader)\n    \n    # Mock validation loss\n    val_loss = epoch_loss * 1.05\n    print(f\"Epoch {epoch+1:02d}/{EPOCHS} | Train Loss: {epoch_loss:.4f} | LR: {scheduler.get_last_lr()[0]:.6f}\")\n\n    # Early Stopping Check\n    if val_loss < best_val_loss:\n        best_val_loss = val_loss\n        patience_counter = 0\n        # torch.save(model.state_dict(), \"best_model.pt\")\n    else:\n        patience_counter += 1\n        if patience_counter >= PATIENCE:\n            print(f\"Early stopping triggered at Epoch {epoch+1}!\")\n            break"
+  },
+  {
+    "id": "design-chatgpt",
+    "title": "Design 'ChatGPT' (A General-Purpose Conversational AI System Design)",
+    "badge": "System Design, Large Language Models, RLHF Alignment & High-Concurrency Serving",
+    "summary": "Comprehensive architectural system design for a general-purpose conversational AI ('ChatGPT') capable of handling open-ended multi-turn dialog, maintaining coherent context across sessions, enforcing safety/helpfulness/honesty via RLHF, and serving millions of concurrent users with sub-second time-to-first-token (TTFT).",
+    "designChatGptArchitecture": {
+      "title": "End-to-End Conversational AI Architecture ('ChatGPT')",
+      "badge": "5-Tier High-Concurrency Architecture",
+      "requirements": {
+        "functional": [
+          "Handle open-ended multi-turn conversations with persona consistency and factual grounding.",
+          "Maintain conversation context across long sessions within finite token limits.",
+          "Be helpful, harmless, and honest (enforced via RLHF/DPO alignment and guardrails).",
+          "Support tool use (web search, python code interpreter, DALL-E image generation)."
+        ],
+        "nonFunctional": [
+          "Scale to millions of concurrent active users (100k+ generated tokens/sec).",
+          "Ultra-low perceived latency: Time to First Token (TTFT) < 300ms via token-by-token streaming.",
+          "Zero toxic/harmful outputs or prompt injection breaches (dual moderation layers).",
+          "High availability (99.99%) with graceful queue degradation during traffic surges."
+        ]
+      },
+      "coreComponents": [
+        {
+          "step": 1,
+          "name": "Core Foundation Model & RLHF Alignment",
+          "badge": "Decoder-Only Transformer + PPO/DPO",
+          "border": "border-cyan-500/40",
+          "accent": "text-cyan-400",
+          "bgBadge": "bg-cyan-950/80 text-cyan-300 border-cyan-800",
+          "mechanism": "Massive pretraining followed by Supervised Fine-Tuning (SFT) and Reinforcement Learning from Human Feedback (RLHF).",
+          "details": [
+            "Pretraining: Autoregressive next-token prediction across multi-trillion tokens of web text, books, code, and math.",
+            "Supervised Fine-Tuning (SFT): High-quality prompt/response dialog pairs written by human experts to teach conversational turn-taking and instruction-following.",
+            "RLHF / DPO: A Reward Model trained on human preferences (thumbs up/down) trains the policy model via PPO or Direct Preference Optimization (DPO) to maximize helpfulness and eliminate hallucinations and toxicity."
+          ]
+        },
+        {
+          "step": 2,
+          "name": "Conversation State & Context Window Handling",
+          "badge": "Session Memory & Window Management",
+          "border": "border-amber-500/40",
+          "accent": "text-amber-400",
+          "bgBadge": "bg-amber-950/80 text-amber-300 border-amber-800",
+          "mechanism": "Low-latency state persistence in Redis combined with dynamic context pruning when dialogue exceeds the token window.",
+          "details": [
+            "Session Store: Client submits session_id with each message; Redis/DynamoDB caches recent turn history.",
+            "Truncation Strategy: Keep only the latest N messages (simplest, but drops foundational early instructions).",
+            "Rolling Summarization: A lightweight background model summarizes older turns (1 to k-4) into an executive 100-token context block prepended to recent raw turns.",
+            "Retrieval-Augmented Memory (Semantic History RAG): Embed all past turns into a vector database; query past conversation history to retrieve only the turns semantically relevant to the current question."
+          ]
+        },
+        {
+          "step": 3,
+          "name": "Dual Safety & Moderation Layer",
+          "badge": "Input/Output Guardrails",
+          "border": "border-rose-500/40",
+          "accent": "text-rose-400",
+          "bgBadge": "bg-rose-950/80 text-rose-300 border-rose-800",
+          "mechanism": "Ultra-fast (<15ms) specialized classifiers guarding both ingress user queries and egress generated tokens.",
+          "details": [
+            "Pre-Inference Input Filter: Small, fast classifier (DeBERTa / Azure Content Safety) screens prompt for prompt injection, jailbreaks (DAN attacks), self-harm, hate speech, and cyber threats before hitting the expensive LLM.",
+            "Post-Inference Output Filter: Streaming token inspector checks generated tokens for PII leaks (credit cards, SSNs), copyright violations, and toxic language.",
+            "Why System Prompts Aren't Enough: System prompts ('You are a helpful assistant, do not do X') can easily be bypassed via adversarial jailbreaks. Dedicated external classification guardrails are mandatory."
+          ]
+        },
+        {
+          "step": 4,
+          "name": "High-Throughput Serving & Inference Engine",
+          "badge": "vLLM, Continuous Batching & Streaming",
+          "border": "border-emerald-500/40",
+          "accent": "text-emerald-400",
+          "bgBadge": "bg-emerald-950/80 text-emerald-300 border-emerald-800",
+          "mechanism": "Distributed tensor-parallel serving cluster optimized for maximum GPU memory bandwidth utilization.",
+          "details": [
+            "PagedAttention & KV Cache (vLLM / TensorRT-LLM): Eliminates VRAM memory fragmentation, enabling 2-4x larger concurrent batch sizes.",
+            "Continuous / Iterative Batching: Inserts incoming requests into active decoding steps dynamically rather than waiting for an entire batch to finish generating.",
+            "Model Quantization (FP8 / AWQ INT4): Halves VRAM memory bandwidth requirements, doubling token generation speed without loss of reasoning capability.",
+            "Server-Sent Events (SSE) Streaming: Streams tokens back to the frontend immediately as they are decoded (30-50 tokens/sec), keeping perceived TTFT under 300ms."
+          ]
+        },
+        {
+          "step": 5,
+          "name": "Continuous RLHF Feedback Loop & Data Flywheel",
+          "badge": "Telemetry & Model Iteration",
+          "border": "border-purple-500/40",
+          "accent": "text-purple-400",
+          "bgBadge": "bg-purple-950/80 text-purple-300 border-purple-800",
+          "mechanism": "Real-time logging of user signals (thumbs up/down, copy, regenerations) to drive iterative alignment.",
+          "details": [
+            "Explicit Signals: Thumbs up / thumbs down with optional user critique.",
+            "Implicit Signals: Message regenerations (signal of dissatisfaction), user prompt edits, copy-to-clipboard (signal of success).",
+            "Data Flywheel: High-impact negative and positive pairs are anonymized and queued for human reviewer grading to fine-tune the next generation Reward Model."
+          ]
+        }
+      ],
+      "contextExhaustionStrategies": [
+        {
+          "strategy": "1. Sliding Window Truncation",
+          "howItWorks": "Drop the oldest user/assistant turns once total tokens exceed context window - margin. Keep system prompt and latest k turns.",
+          "tradeoff": "Zero compute overhead; however, causes total amnesia of initial instructions, user preferences, or file uploads discussed early in the chat."
+        },
+        {
+          "strategy": "2. Rolling Hierarchical Summarization",
+          "howItWorks": "When token threshold is reached, trigger an asynchronous background LLM call to condense turns 1 through N into an executive summary block. Inject [Summary of previous chat] + [Recent 3-5 raw turns].",
+          "tradeoff": "Preserves the essential gist of the conversation while consuming <150 tokens. Adds minor background token compute cost."
+        },
+        {
+          "strategy": "3. Semantic History Retrieval (Memory RAG)",
+          "howItWorks": "Every conversation turn is embedded and indexed in an episodic vector database (e.g. Chroma/Pinecone keyed by user_id). When user asks a question, retrieve top-3 most relevant historical turns from 20 turns ago.",
+          "tradeoff": "Maximum recall for long, multi-topic sessions. Allows user to say 'Remember the budget we talked about an hour ago?' and retrieve the exact numbers."
+        }
+      ]
+    },
+    "details": [
+      "System Requirements: A general-purpose conversational AI ('ChatGPT') must balance open-ended flexibility, strict safety guardrails, stateful memory across dialog turns, and high-concurrency token throughput across thousands of GPU nodes.",
+      "Decoupled Architecture: Never couple the frontend directly to the LLM. Modern architectures use an API Gateway / Orchestrator layer that coordinates Redis session history, pre-inference moderation, model routing, caching, and SSE token streaming.",
+      "The Memory Illusion: LLMs are completely stateless functions (f(prompt) -> tokens). The illusion of memory is maintained entirely by the application layer appending past conversation turns to the prompt input on every turn.",
+      "Context Window Overflow Solutions: 1) Sliding window truncation (fastest, forgets early turns); 2) Rolling summarization (compresses older context into a concise summary); 3) Vector memory RAG (embeds past turns into an episodic store and retrieves on demand).",
+      "Production Safety Defense: Safety cannot be left to prompt engineering alone. A hardened architecture uses dual dedicated classifiers: Input moderation (checks prompt for jailbreaks/toxicity before LLM invocation) and Output guardrails (screens tokens for PII or dangerous content before streaming to client).",
+      "Serving Architecture: Models are partitioned using Tensor Parallelism (TP) across GPUs inside a single node, and Pipeline Parallelism (PP) across nodes. Engines like vLLM use PagedAttention and continuous iteration batching to maximize hardware saturation."
+    ],
+    "interviewAnswers": [
+      {
+        "question": "How would you handle a conversation that's gotten too long for the model's context window?",
+        "answer": "In production, we have three complementary strategies: 1) Sliding Window Truncation: Drop the oldest turns and keep only the latest N messages plus the system prompt. It's fast with zero extra compute, but loses early context. 2) Rolling Summarization: When history reaches 75% of the context window, a background lightweight model condenses older turns into an executive summary block, keeping [System Prompt] + [Conversation Summary] + [Latest 3-4 Raw Turns]. 3) Semantic Memory RAG: Store the full conversation history in an external episodic vector database. When a user queries, retrieve only the top 2-3 most semantically relevant past turns from the entire session and inject them into the prompt. In production, combining rolling summarization with semantic retrieval provides the best trade-off between coherence and token economy."
+      },
+      {
+        "question": "Walk through the end-to-end flow of a user message in ChatGPT from typing to response streaming.",
+        "answer": "1) The client sends user_id, session_id, and message to the API Gateway over HTTPS. 2) Input Moderation: A lightweight classifier (<15ms) checks for prompt injection, jailbreaks, and toxicity. 3) Context Assembly: The orchestrator retrieves recent session turns and summary from Redis, assembling the final prompt within token limits. 4) Inference Engine: The prompt is routed to a vLLM GPU cluster running Continuous Batching and PagedAttention with FP8 quantization. 5) Streaming Output: Tokens are generated autoregressively and streamed back to the client via Server-Sent Events (SSE) token-by-token (TTFT < 300ms). 6) Output Guardrails: Streaming tokens are monitored for PII or policy violations. 7) Telemetry: The assistant response is saved to Redis, and user feedback (thumbs up/down) is published to Kafka for future RLHF/DPO training."
+      },
+      {
+        "question": "Why can't we just rely on the LLM's system prompt for safety, and how does the safety layer work?",
+        "answer": "System prompts are easily bypassed using adversarial attacks, role-playing jailbreaks ('Do Anything Now / DAN'), or multi-turn prompt injections. A production system must decouple safety from the generation model by running external classifiers: an Input Moderation model that screens the user prompt before it ever reaches the expensive LLM, and an Output Safety Filter that evaluates streaming tokens before display. This saves GPU compute and provides deterministic policy enforcement."
+      }
+    ],
+    "code": "import asyncio\nfrom typing import AsyncGenerator\nfrom fastapi import FastAPI, HTTPException\nfrom fastapi.responses import StreamingResponse\nfrom pydantic import BaseModel\n\napp = FastAPI(title=\"ChatGPT Orchestration Service\")\n\nclass ChatRequest(BaseModel):\n    session_id: str\n    user_prompt: str\n\n# Mock Session Cache & Moderation Layer\nSESSION_HISTORY = {}\n\nasync def safety_moderation_check(prompt: str) -> bool:\n    # In production: DeBERTa / Azure Content Safety API (<15ms)\n    banned_keywords = [\"dan jailbreak\", \"bypass safety\", \"make explosive\"]\n    return not any(bad in prompt.lower() for bad in banned_keywords)\n\ndef get_context_with_truncation(session_id: str, new_prompt: str, max_turns: int = 5) -> list:\n    history = SESSION_HISTORY.get(session_id, [])\n    history.append({\"role\": \"user\", \"content\": new_prompt})\n    \n    # Strategy: Sliding Window Truncation (Keep latest max_turns)\n    truncated = history[-max_turns:]\n    SESSION_HISTORY[session_id] = truncated\n    return truncated\n\nasync def stream_llm_response(prompt_tokens: list) -> AsyncGenerator[str, None]:\n    # Mock token-by-token streaming from vLLM / TensorRT-LLM\n    mock_tokens = [\"Hello!\", \" I\", \" am\", \" ChatGPT,\", \" your\", \" AI\", \" assistant.\", \" How\", \" can\", \" I\", \" help?\"]\n    for token in mock_tokens:\n        await asyncio.sleep(0.04)  # ~25 tokens per second\n        yield f\"data: {token}\\n\\n\"\n\n@app.post(\"/api/chat/stream\")\nasync def chat_stream_endpoint(request: ChatRequest):\n    # 1. Pre-Inference Safety Guardrail\n    if not await safety_moderation_check(request.user_prompt):\n        raise HTTPException(status_code=400, detail=\"Query flagged by Content Moderation Layer.\")\n\n    # 2. Context Assembly & Memory Management\n    context = get_context_with_truncation(request.session_id, request.user_prompt)\n\n    # 3. Server-Sent Events (SSE) Streaming Response\n    return StreamingResponse(\n        stream_llm_response(context),\n        media_type=\"text/event-stream\"\n    )"
   }
 ];
