@@ -17,6 +17,7 @@ import {
   FileCode,
   BookOpen,
   Zap,
+  ShieldCheck,
 } from 'lucide-react';
 import { programsData } from '../data/programsData';
 import VsCodeEditor from '../components/VsCodeEditor';
