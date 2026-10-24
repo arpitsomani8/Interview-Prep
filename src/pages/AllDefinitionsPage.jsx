@@ -765,6 +765,48 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* 8-Stage Production RAG Blueprint for Millions of Queries */}
+                {item.productionRagBlueprint && (
+                  <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-[#0a0a0e] border border-emerald-500/40 shadow-2xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2 text-emerald-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>{item.productionRagBlueprint.title}</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 shrink-0 font-semibold">
+                        Interviewer Master Blueprint
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-black/70 border border-emerald-900/40 space-y-1.5">
+                      <div className="text-[11px] font-mono uppercase text-emerald-400 font-bold flex items-center gap-1.5">
+                        <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Target Interview Question to Defend:</span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-zinc-200 italic font-medium leading-relaxed">
+                        "{item.productionRagBlueprint.interviewerQuestion}"
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                      {item.productionRagBlueprint.pillars.map((pil) => (
+                        <div key={pil.step} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 hover:border-emerald-500/40 transition">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-800/60">
+                              STEP {pil.step}
+                            </span>
+                            <span className="text-[10px] font-mono text-zinc-400 bg-black/90 px-2 py-0.5 rounded border border-zinc-800">
+                              {pil.focus}
+                            </span>
+                          </div>
+                          <h5 className="text-xs font-bold text-white font-mono">{pil.name}</h5>
+                          <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{pil.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Two Phases of RAG: Indexing & Retrieval/Generation */}
                 {item.twoPhases && (
                   <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl">
