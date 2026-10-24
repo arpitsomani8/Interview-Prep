@@ -552,36 +552,36 @@ export const definitionBookmarks = [
     "label": "NumPy"
   },
   {
-    "id": "ocr",
-    "label": "OCR"
-  },
-  {
-    "id": "onion-architecture",
-    "label": "Onion Architecture"
-  },
-  {
-    "id": "onnx",
-    "label": "ONNX"
-  },
-  {
-    "id": "oop-concepts",
-    "label": "OOP Concepts"
-  },
-  {
-    "id": "openai-vs-azure-ai",
-    "label": "OpenAI vs Azure AI"
-  },
-  {
-    "id": "optimization",
-    "label": "Optimization"
-  },
-  {
     "id": "outlier-detection",
     "label": "Outlier Detection"
   },
   {
     "id": "overfitting",
     "label": "Overfitting (High Variance)"
+  },
+  {
+    "id": "optimization",
+    "label": "Optimization"
+  },
+  {
+    "id": "ocr",
+    "label": "OCR"
+  },
+  {
+    "id": "onnx",
+    "label": "ONNX"
+  },
+  {
+    "id": "openai-vs-azure-ai",
+    "label": "OpenAI vs Azure AI"
+  },
+  {
+    "id": "oop-concepts",
+    "label": "OOP Concepts"
+  },
+  {
+    "id": "onion-architecture",
+    "label": "Onion Architecture"
   },
   {
     "id": "paged-attention",
