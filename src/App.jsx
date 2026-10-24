@@ -7,8 +7,9 @@ import HybridPage from './pages/HybridPage';
 import YoloPage from './pages/YoloPage';
 import ResumePage from './pages/ResumePage';
 import AllDefinitionsPage from './pages/AllDefinitionsPage';
+import ProgramsPage from './pages/ProgramsPage';
 
-const VALID_TABS = ['intro', 'fashion', 'hybrid', 'yolo', 'resume-platform', 'all-definitions'];
+const VALID_TABS = ['intro', 'fashion', 'hybrid', 'yolo', 'resume-platform', 'all-definitions', 'programs'];
 
 function getTabFromHash() {
   const hash = window.location.hash || '';
@@ -22,6 +23,7 @@ function getTabFromHash() {
     .toLowerCase();
   if (raw === 'eda' || raw === 'definitions' || raw === 'all-definitions') return 'all-definitions';
   if (raw === 'resume' || raw === 'resume-platform') return 'resume-platform';
+  if (raw === 'programs' || raw === 'python' || raw === 'coding') return 'programs';
   return VALID_TABS.includes(raw) ? raw : 'intro';
 }
 
@@ -32,6 +34,7 @@ const PAGE_TITLES = {
   yolo: 'YOLO + DeepSparse | Real-Time Edge Computer Vision',
   'resume-platform': 'Resume Platform | ReactJS & Flask Web Application',
   'all-definitions': 'Master Interview Vault | Complete Reference Guide',
+  programs: 'Python Programs & Coding Challenges | Interview Practice',
 };
 
 export default function App() {
@@ -80,6 +83,7 @@ export default function App() {
           {activeTab === 'yolo' && <YoloPage />}
           {activeTab === 'resume-platform' && <ResumePage />}
           {activeTab === 'all-definitions' && <AllDefinitionsPage />}
+          {activeTab === 'programs' && <ProgramsPage />}
         </ErrorBoundary>
       </main>
     </div>

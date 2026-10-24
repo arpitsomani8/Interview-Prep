@@ -1,4 +1,4 @@
-import { Layers, Sparkles, Cpu, Eye, FileCode, FileText } from 'lucide-react';
+import { Layers, Sparkles, Cpu, Eye, FileCode, FileText, Terminal } from 'lucide-react';
 
 export default function Header({ activeTab, setActiveTab }) {
   const tabs = [
@@ -8,6 +8,7 @@ export default function Header({ activeTab, setActiveTab }) {
     { id: 'yolo', label: 'YOLO + DeepSparse', icon: Eye },
     { id: 'resume-platform', label: 'Resume Platform', icon: FileText },
     { id: 'all-definitions', label: 'All Definitions', icon: FileCode },
+    { id: 'programs', label: 'Programs', icon: Terminal },
   ];
 
   return (
