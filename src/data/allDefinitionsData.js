@@ -428,34 +428,6 @@ export const definitionBookmarks = [
     "label": "KV Cache & PagedAttention (LLM Inference Memory)"
   },
   {
-    "id": "labeled-unlabeled-data",
-    "label": "Labeled vs Unlabeled Data"
-  },
-  {
-    "id": "langchain-langgraph",
-    "label": "LangChain / LangGraph"
-  },
-  {
-    "id": "langgraph-summarizer",
-    "label": "LangGraph Summarizer Agent & Loop Prevention"
-  },
-  {
-    "id": "latency-metrics-ttft-tpot",
-    "label": "Latency Metrics (TTFT, TPOT & P99 Tail Latency)"
-  },
-  {
-    "id": "learning-rate-epochs",
-    "label": "Learning Rate & Epochs"
-  },
-  {
-    "id": "lemmatization",
-    "label": "Lemmatization"
-  },
-  {
-    "id": "lexical-search",
-    "label": "Lexical Search"
-  },
-  {
     "id": "llm",
     "label": "LLM"
   },
@@ -472,8 +444,28 @@ export const definitionBookmarks = [
     "label": "LLM-as-a-Judge (Evaluation, Calibration & De-biasing)"
   },
   {
-    "id": "load-balancing",
-    "label": "Load Balancing"
+    "id": "lora",
+    "label": "LoRA"
+  },
+  {
+    "id": "langchain-langgraph",
+    "label": "LangChain / LangGraph"
+  },
+  {
+    "id": "langgraph-summarizer",
+    "label": "LangGraph Summarizer Agent & Loop Prevention"
+  },
+  {
+    "id": "learning-rate-epochs",
+    "label": "Learning Rate & Epochs"
+  },
+  {
+    "id": "labeled-unlabeled-data",
+    "label": "Labeled vs Unlabeled Data"
+  },
+  {
+    "id": "latency-metrics-ttft-tpot",
+    "label": "Latency Metrics (TTFT, TPOT & P99 Tail Latency)"
   },
   {
     "id": "log-loss",
@@ -488,8 +480,16 @@ export const definitionBookmarks = [
     "label": "Logits"
   },
   {
-    "id": "lora",
-    "label": "LoRA"
+    "id": "load-balancing",
+    "label": "Load Balancing"
+  },
+  {
+    "id": "lemmatization",
+    "label": "Lemmatization"
+  },
+  {
+    "id": "lexical-search",
+    "label": "Lexical Search"
   },
   {
     "id": "map-evaluation",
