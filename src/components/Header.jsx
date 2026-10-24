@@ -15,17 +15,27 @@ export default function Header({ activeTab, setActiveTab }) {
     <header className="sticky top-0 z-50 w-full bg-black/90 backdrop-blur-md border-b border-zinc-800/90 shadow-2xl shadow-black">
       <div className="w-full px-4 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between min-h-14 py-2 gap-4 flex-wrap sm:flex-nowrap">
-          {/* Logo */}
+          {/* Logo & IPL Branding */}
           <button 
             onClick={() => setActiveTab('intro')}
-            className="flex items-center cursor-pointer group flex-shrink-0"
-            title="Introduction"
-            aria-label="Go to Introduction"
+            className="flex items-center gap-2.5 cursor-pointer group flex-shrink-0 text-left"
+            title="IPL - Interview Preparation Library"
+            aria-label="IPL - Interview Preparation Library"
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-fuchsia-500 p-0.5 shadow-md shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all duration-300">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-fuchsia-500 p-0.5 shadow-md shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all duration-300 flex-shrink-0">
               <div className="w-full h-full bg-black rounded-[10px] flex items-center justify-center">
                 <Layers className="w-4 h-4 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
               </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5 leading-none">
+                <span className="text-lg font-black tracking-wider bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent group-hover:brightness-110 transition-all">
+                  IPL
+                </span>
+              </div>
+              <span className="text-[10px] font-medium text-zinc-400 tracking-tight leading-tight hidden sm:block">
+                Interview Preparation Library
+              </span>
             </div>
           </button>
 

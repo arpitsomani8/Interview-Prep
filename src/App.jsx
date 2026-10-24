@@ -29,13 +29,13 @@ function getTabFromHash() {
 }
 
 const PAGE_TITLES = {
-  intro: 'Introduction | Arpit Somani - AI Engineering',
-  fashion: 'Fashion AI Copilot | Multimodal AI Search Blueprint',
-  hybrid: 'Hybrid AI Engine | Dynamic Schema ML & RAG',
-  yolo: 'YOLO + DeepSparse | Real-Time Edge Computer Vision',
-  'resume-platform': 'Resume Platform | ReactJS & Flask Web Application',
-  'all-definitions': 'Master Interview Vault | Complete Reference Guide',
-  programs: 'Python Programs & Coding Challenges | Interview Practice',
+  intro: 'IPL - Interview Preparation Library | Introduction',
+  fashion: 'Fashion AI Copilot | IPL',
+  hybrid: 'Hybrid AI Engine | IPL',
+  yolo: 'YOLO + DeepSparse | IPL',
+  'resume-platform': 'Resume Platform | IPL',
+  'all-definitions': 'All Definitions | IPL',
+  programs: 'Python Programs | IPL',
 };
 
 export default function App() {
