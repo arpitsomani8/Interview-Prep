@@ -105,6 +105,17 @@ Future & In-Progress R&D:
       ]
     },
     {
+      id: "chromadb",
+      title: "ChromaDB",
+      badge: "Embedded Vector Database",
+      summary: "Our open-source vector store that runs directly inside our FastAPI backend, finding matching clothing designs in under 5 milliseconds.",
+      details: [
+        "In Simple Terms: Think of it as a specialized search engine for numbers. It stores the 1024-number style vectors of our 10,000 clothing items and instantly finds the closest matches.",
+        "Why Embedded Mode: It runs directly inside our Python process using HNSW in-memory indexing. This means zero network hops, sub-5ms retrieval, and zero cloud hosting fees for vector storage.",
+        "Interview Answer: 'We chose ChromaDB for Project 1 because our catalog of 10,000 garments easily fits into in-memory HNSW graphs. Running ChromaDB embedded in FastAPI cut vector query latency to 4ms with zero external infrastructure overhead.'"
+      ]
+    },
+    {
       id: "cosine-similarity",
       title: "Cosine Similarity",
       badge: "Style Match Score",
