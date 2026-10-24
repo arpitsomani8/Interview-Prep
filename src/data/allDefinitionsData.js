@@ -584,16 +584,28 @@ export const definitionBookmarks = [
     "label": "Onion Architecture"
   },
   {
-    "id": "paged-attention",
-    "label": "PagedAttention"
+    "id": "confusion-matrix-precision-recall",
+    "label": "Precision, Recall & Accuracy"
+  },
+  {
+    "id": "pydantic",
+    "label": "Pydantic"
+  },
+  {
+    "id": "pruning",
+    "label": "Pruning"
   },
   {
     "id": "pandas",
     "label": "Pandas"
   },
   {
-    "id": "permission-aware-rag",
-    "label": "Permission-Aware RAG (Access Control Lists & Document Security)"
+    "id": "python",
+    "label": "Python"
+  },
+  {
+    "id": "pyspark",
+    "label": "PySpark"
   },
   {
     "id": "pinecone",
@@ -604,20 +616,20 @@ export const definitionBookmarks = [
     "label": "Pipeline"
   },
   {
-    "id": "polling",
-    "label": "Polling & Response Consistency"
+    "id": "prompt-engineering",
+    "label": "Prompt Engineering"
   },
   {
     "id": "powertransformer",
     "label": "PowerTransformer"
   },
   {
-    "id": "confusion-matrix-precision-recall",
-    "label": "Precision, Recall & Accuracy"
-  },
-  {
     "id": "predictive-modeling",
     "label": "Predictive Modeling"
+  },
+  {
+    "id": "polling",
+    "label": "Polling & Response Consistency"
   },
   {
     "id": "production-ai-playbook",
@@ -636,28 +648,16 @@ export const definitionBookmarks = [
     "label": "Production Handling"
   },
   {
-    "id": "prompt-engineering",
-    "label": "Prompt Engineering"
-  },
-  {
-    "id": "pruning",
-    "label": "Pruning"
-  },
-  {
-    "id": "pydantic",
-    "label": "Pydantic"
-  },
-  {
-    "id": "pyspark",
-    "label": "PySpark"
-  },
-  {
-    "id": "python",
-    "label": "Python"
+    "id": "permission-aware-rag",
+    "label": "Permission-Aware RAG (Access Control Lists & Document Security)"
   },
   {
     "id": "python-memory-concurrency",
     "label": "Python Memory Management & Concurrency (GIL & Parallelism)"
+  },
+  {
+    "id": "paged-attention",
+    "label": "PagedAttention"
   },
   {
     "id": "qlora",
