@@ -980,6 +980,75 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* 8 RAG Architectures & The Exact Failure Symptom Each One Solves */}
+                {item.eightRagArchitectures && (
+                  <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-cyan-500/40 shadow-2xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <span>8 RAG Architectures & The Failure Symptom Each One Solves</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 shrink-0 font-semibold">
+                        Diagnostic Engineering Ladder
+                      </span>
+                    </div>
+
+                    {/* Subtitle / Senior AI Diagnostic Rule */}
+                    <div className="p-3.5 rounded-xl bg-black/80 border border-zinc-800 space-y-1.5">
+                      <div className="text-[11px] font-mono uppercase text-amber-400 font-bold flex items-center gap-1.5">
+                        <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                        <span>The Senior AI Engineer's Diagnostic Rule:</span>
+                      </div>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        Always build and benchmark <strong className="text-white">Naive RAG</strong> first as your baseline. Never jump to complex architectures blindly. Let Naive RAG fail before adding complexity—<strong className="text-cyan-300">how it fails serves as the exact diagnostic compass</strong> telling you which of the other seven architectures you actually need to deploy.
+                      </p>
+                    </div>
+
+                    {/* 8 Cards Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                      {item.eightRagArchitectures.map((arch) => (
+                        <div
+                          key={arch.step}
+                          className={`p-4 rounded-xl bg-zinc-950/90 border ${arch.border || 'border-zinc-800'} space-y-3 hover:border-cyan-500/50 transition flex flex-col justify-between`}
+                        >
+                          <div className="space-y-2">
+                            {/* Header: Step + Badge */}
+                            <div className="flex items-center justify-between gap-2">
+                              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${arch.bgBadge || 'bg-zinc-900 text-zinc-300 border-zinc-800'} border`}>
+                                STEP {arch.step}: {arch.name}
+                              </span>
+                              <span className="text-[9px] font-mono text-zinc-400 bg-black/80 px-2 py-0.5 rounded border border-zinc-800 truncate max-w-[170px]">
+                                {arch.badge}
+                              </span>
+                            </div>
+
+                            {/* How it works (Mechanism) */}
+                            <div className="space-y-1 pt-1">
+                              <span className="text-[10px] font-mono uppercase text-zinc-400 font-semibold block">
+                                How It Works (Mechanism):
+                              </span>
+                              <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                                {arch.mechanism}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Symptom It Fixes */}
+                          <div className="p-2.5 rounded-lg bg-black/90 border border-zinc-800/90 space-y-1">
+                            <span className={`text-[10px] font-mono uppercase font-bold flex items-center gap-1.5 ${arch.accent || 'text-cyan-400'}`}>
+                              <Bug className="w-3 h-3 shrink-0" />
+                              <span>Symptom It Fixes:</span>
+                            </span>
+                            <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
+                              {arch.symptomSolved}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Two Phases of RAG: Indexing & Retrieval/Generation */}
                 {item.twoPhases && (
                   <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-800/40 shadow-xl">
@@ -23460,6 +23529,76 @@ export default function AllDefinitionsPage() {
                           </span>
                           <h4 className="text-xs font-bold text-white mt-1.5">{stage.name}</h4>
                           <p className="text-[11px] font-mono text-zinc-400 leading-relaxed">{stage.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                
+                {/* 8 RAG Architectures & The Exact Failure Symptom Each One Solves (When viewing rag-architectures directly) */}
+                {item.id !== 'rag' && item.eightRagArchitectures && (
+                  <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-cyan-500/40 shadow-2xl mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <span>8 RAG Architectures & The Failure Symptom Each One Solves</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 shrink-0 font-semibold">
+                        Diagnostic Engineering Ladder
+                      </span>
+                    </div>
+
+                    {/* Subtitle / Senior AI Diagnostic Rule */}
+                    <div className="p-3.5 rounded-xl bg-black/80 border border-zinc-800 space-y-1.5">
+                      <div className="text-[11px] font-mono uppercase text-amber-400 font-bold flex items-center gap-1.5">
+                        <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                        <span>The Senior AI Engineer's Diagnostic Rule:</span>
+                      </div>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        Always build and benchmark <strong className="text-white">Naive RAG</strong> first as your baseline. Never jump to complex architectures blindly. Let Naive RAG fail before adding complexity—<strong className="text-cyan-300">how it fails serves as the exact diagnostic compass</strong> telling you which of the other seven architectures you actually need to deploy.
+                      </p>
+                    </div>
+
+                    {/* 8 Cards Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                      {item.eightRagArchitectures.map((arch) => (
+                        <div
+                          key={arch.step}
+                          className={`p-4 rounded-xl bg-zinc-950/90 border ${arch.border || 'border-zinc-800'} space-y-3 hover:border-cyan-500/50 transition flex flex-col justify-between`}
+                        >
+                          <div className="space-y-2">
+                            {/* Header: Step + Badge */}
+                            <div className="flex items-center justify-between gap-2">
+                              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${arch.bgBadge || 'bg-zinc-900 text-zinc-300 border-zinc-800'} border`}>
+                                STEP {arch.step}: {arch.name}
+                              </span>
+                              <span className="text-[9px] font-mono text-zinc-400 bg-black/80 px-2 py-0.5 rounded border border-zinc-800 truncate max-w-[170px]">
+                                {arch.badge}
+                              </span>
+                            </div>
+
+                            {/* How it works (Mechanism) */}
+                            <div className="space-y-1 pt-1">
+                              <span className="text-[10px] font-mono uppercase text-zinc-400 font-semibold block">
+                                How It Works (Mechanism):
+                              </span>
+                              <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                                {arch.mechanism}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Symptom It Fixes */}
+                          <div className="p-2.5 rounded-lg bg-black/90 border border-zinc-800/90 space-y-1">
+                            <span className={`text-[10px] font-mono uppercase font-bold flex items-center gap-1.5 ${arch.accent || 'text-cyan-400'}`}>
+                              <Bug className="w-3 h-3 shrink-0" />
+                              <span>Symptom It Fixes:</span>
+                            </span>
+                            <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
+                              {arch.symptomSolved}
+                            </p>
+                          </div>
                         </div>
                       ))}
                     </div>

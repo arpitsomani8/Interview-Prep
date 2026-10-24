@@ -668,6 +668,10 @@ export const definitionBookmarks = [
     "label": "RAG"
   },
   {
+    "id": "rag-architectures",
+    "label": "RAG Architectures (8 Patterns & Failure Symptoms Solved)"
+  },
+  {
     "id": "random-forest",
     "label": "Random Forest"
   },
@@ -1772,6 +1776,88 @@ export const definitionsData = [
       {
         "question": "Your chatbot takes 10 seconds to respond because you send the entire 50-page manual with every prompt. It's too slow and expensive. How would you fix it?",
         "answer": "Re-sending a 50-page manual with every prompt is paying to re-read the same book for every question. I fix this with a 6-step architectural pipeline: 1) Retrieve instead of resending: Chunk and embed the manual once, retrieving only the top 3-5 relevant chunks (~600 tokens vs 30,000 tokens). 2) Chunk with structure: Split on headings, keep titles/page numbers as metadata, and overlap lightly so steps aren't cut in half. 3) Rerank, then trim: Use a cross-encoder to reorder candidates and keep only what clears a threshold. 4) Cache what repeats: Use prompt caching for static instructions and semantic Redis caching for frequent questions. 5) Control output: Stream the response and cap max_tokens. 6) Measure: Track tokens per request, TTFT, and answer accuracy. The principle: send the model the few paragraphs that answer the question, not the whole document."
+      }
+    ],
+    "eightRagArchitectures": [
+      {
+        "step": 1,
+        "name": "Naive RAG",
+        "badge": "Baseline Architecture",
+        "accent": "text-zinc-300",
+        "border": "border-zinc-800",
+        "bgBadge": "bg-zinc-900 text-zinc-300 border-zinc-800",
+        "mechanism": "Embed the user query into dense vector space, pull the top-K nearest chunks via cosine distance, and pass them into the LLM context prompt to generate an answer.",
+        "symptomSolved": "The foundational baseline. Always start here and let it fail before adding complexity. How Naive RAG fails serves as the diagnostic signal telling you which of the next seven architectures you actually need."
+      },
+      {
+        "step": 2,
+        "name": "Hybrid RAG (Sparse + Dense)",
+        "badge": "Fixes Lexical Keyword Blindspots",
+        "accent": "text-blue-400",
+        "border": "border-blue-500/40",
+        "bgBadge": "bg-blue-950/80 text-blue-300 border-blue-800",
+        "mechanism": "Runs BM25 sparse keyword search and dense vector search in parallel, merging and scoring candidate lists using Reciprocal Rank Fusion (RRF).",
+        "symptomSolved": "Symptom it fixes: The system cannot find an exact error code (e.g. ERR_502), product SKU (PROD_0014), serial number, or rare proper name. Vector embeddings smooth over and blur precisely the specific alphanumeric tokens that needed to match exactly."
+      },
+      {
+        "step": 3,
+        "name": "Reranked RAG (Cross-Encoder)",
+        "badge": "Fixes Candidate Ordering & Thresholds",
+        "accent": "text-emerald-400",
+        "border": "border-emerald-500/40",
+        "bgBadge": "bg-emerald-950/80 text-emerald-300 border-emerald-800",
+        "mechanism": "Retrieves a wide candidate pool (top 30-50 chunks) via fast vector search, then passes each (query, document) pair through a Cross-Encoder to compute full all-to-all cross-attention and re-score relevance before sending to the model.",
+        "symptomSolved": "Symptom it fixes: The correct document was successfully retrieved by the vector index, but it was ranked 8th or 12th and fell outside your top-k cut (or suffered from Lost-in-the-Middle attention decay). Retrieval worked; ordering failed."
+      },
+      {
+        "step": 4,
+        "name": "Multi-Query RAG (Query Expansion)",
+        "badge": "Fixes Phrasing Sensitivity",
+        "accent": "text-purple-400",
+        "border": "border-purple-500/40",
+        "bgBadge": "bg-purple-950/80 text-purple-300 border-purple-800",
+        "mechanism": "Prompts a lightweight model to generate 3-5 alternative phrasings or sub-queries from different perspectives, retrieves candidate chunks for each sub-query, and deduplicates the merged set.",
+        "symptomSolved": "Symptom it fixes: The quality of the answer depends heavily on how the user happened to word their question. Small wording changes produce wild swings in retrieval recall. Cheap fix, high recall gain."
+      },
+      {
+        "step": 5,
+        "name": "Hierarchical RAG (Small-to-Big)",
+        "badge": "Fixes Context Fragmentation",
+        "accent": "text-amber-400",
+        "border": "border-amber-500/40",
+        "bgBadge": "bg-amber-950/80 text-amber-300 border-amber-800",
+        "mechanism": "Indexes small, atomic chunks (100-150 tokens) for high-precision semantic matching, with each child chunk linked to a parent section (1,000 tokens) or parent document that gets injected into the LLM prompt.",
+        "symptomSolved": "Symptom it fixes: Chunks arrive at the LLM stripped of their surrounding structure, section headers, or legal caveats—so the model reads a sub-clause out of context and loses the parent rule it belonged to."
+      },
+      {
+        "step": 6,
+        "name": "Corrective RAG (CRAG)",
+        "badge": "Fixes Confident Hallucinations on Bad Data",
+        "accent": "text-rose-400",
+        "border": "border-rose-500/40",
+        "bgBadge": "bg-rose-950/80 text-rose-300 border-rose-800",
+        "mechanism": "A lightweight evaluator checks whether retrieved chunks are actually relevant before generation. If relevant, it proceeds; if ambiguous or irrelevant, it triggers query rewriting or falls back to web search / abstention.",
+        "symptomSolved": "Symptom it fixes: Confident, convincing hallucinations built on irrelevant context. This is the critical safety layer that allows the chatbot to gracefully say 'I don't have sufficient information in the verified manuals to answer that.'"
+      },
+      {
+        "step": 7,
+        "name": "Graph RAG (Knowledge Graph Enhanced)",
+        "badge": "Fixes Multi-Hop Cross-Document Gaps",
+        "accent": "text-cyan-400",
+        "border": "border-cyan-500/40",
+        "bgBadge": "bg-cyan-950/80 text-cyan-300 border-cyan-800",
+        "mechanism": "Extracts entities, relationships, and claims during ingestion into a Knowledge Graph (e.g. Neo4j). Queries traverse entity nodes and relationship edges to retrieve connected facts rather than isolated text similarities.",
+        "symptomSolved": "Symptom it fixes: The answer spans multiple documents or requires multi-hop reasoning (e.g. 'How does Policy A affect Vendor B's subsidiary in Region C?'). Pure vector similarity cannot tell you what depends on what."
+      },
+      {
+        "step": 8,
+        "name": "Agentic RAG (Autonomous Decision Loops)",
+        "badge": "Fixes Static Single-Turn Pipelines",
+        "accent": "text-fuchsia-400",
+        "border": "border-fuchsia-500/40",
+        "bgBadge": "bg-fuchsia-950/80 text-fuchsia-300 border-fuchsia-800",
+        "mechanism": "An autonomous agent (using LangGraph / ReAct) dynamically decides whether retrieval is needed at all, selects between multiple specialized vector databases, evaluates its own answers, and executes multi-turn reflection loops until satisfied.",
+        "symptomSolved": "Symptom it fixes: Rigid pipeline waste. Some simple questions ('Hello', 'What is your name?') need zero retrieval, while complex analytical requests require 3 rounds of iterative tool searches and reflection. Most powerful architecture, but requires strict loop budget guards."
       }
     ]
   },
@@ -13894,5 +13980,111 @@ export const definitionsData = [
       }
     ],
     "code": "# ==============================================================================\n# PRODUCTION HYBRID SEARCH: BM25 + DENSE VECTOR SEARCH + RECIPROCAL RANK FUSION\n# ==============================================================================\nfrom collections import defaultdict\nfrom typing import List, Dict, Any\n\ndef reciprocal_rank_fusion(\n    bm25_results: List[str], \n    vector_results: List[str], \n    k: int = 60\n) -> List[Dict[str, Any]]:\n    \"\"\"\n    Combines ranked lists from BM25 and Vector Search using RRF.\n    Formula: score(d) = sum(1 / (k + rank))\n    \"\"\"\n    rrf_scores = defaultdict(float)\n\n    for rank, doc_id in enumerate(bm25_results, start=1):\n        rrf_scores[doc_id] += 1.0 / (k + rank)\n\n    for rank, doc_id in enumerate(vector_results, start=1):\n        rrf_scores[doc_id] += 1.0 / (k + rank)\n\n    # Sort descending by fused score\n    sorted_docs = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)\n    return [{\"doc_id\": doc_id, \"rrf_score\": round(score, 5)} for doc_id, score in sorted_docs]\n\n# Example Demonstration\nbm25_top = [\"doc_sku_401\", \"doc_overview\", \"doc_pricing\"]\nvector_top = [\"doc_overview\", \"doc_features\", \"doc_sku_401\"]\n\nfused = reciprocal_rank_fusion(bm25_top, vector_top)\nfor item in fused:\n    print(f\"Doc: {item['doc_id']} | Fused RRF Score: {item['rrf_score']}\")"
+  },
+  {
+    "id": "rag-architectures",
+    "title": "8 RAG Architectures & The Exact Failure Symptoms Each One Solves",
+    "badge": "Advanced Retrieval-Augmented Generation, Architecture Evolution & Failure Diagnostics",
+    "summary": "Comprehensive architectural breakdown of the 8 evolutionary stages of RAG systems (Naive RAG, Hybrid RAG, Reranked RAG, Multi-Query RAG, Hierarchical RAG, Corrective RAG, Graph RAG, and Agentic RAG). Maps each architecture to the exact production failure symptom it eliminates, providing a systematic engineering diagnostic roadmap.",
+    "eightRagArchitectures": [
+      {
+        "step": 1,
+        "name": "Naive RAG",
+        "badge": "Baseline Architecture",
+        "accent": "text-zinc-300",
+        "border": "border-zinc-800",
+        "bgBadge": "bg-zinc-900 text-zinc-300 border-zinc-800",
+        "mechanism": "Embed the user query into dense vector space, pull the top-K nearest chunks via cosine distance, and pass them into the LLM context prompt to generate an answer.",
+        "symptomSolved": "The foundational baseline. Always start here and let it fail before adding complexity. How Naive RAG fails serves as the diagnostic signal telling you which of the next seven architectures you actually need."
+      },
+      {
+        "step": 2,
+        "name": "Hybrid RAG (Sparse + Dense)",
+        "badge": "Fixes Lexical Keyword Blindspots",
+        "accent": "text-blue-400",
+        "border": "border-blue-500/40",
+        "bgBadge": "bg-blue-950/80 text-blue-300 border-blue-800",
+        "mechanism": "Runs BM25 sparse keyword search and dense vector search in parallel, merging and scoring candidate lists using Reciprocal Rank Fusion (RRF).",
+        "symptomSolved": "Symptom it fixes: The system cannot find an exact error code (e.g. ERR_502), product SKU (PROD_0014), serial number, or rare proper name. Vector embeddings smooth over and blur precisely the specific alphanumeric tokens that needed to match exactly."
+      },
+      {
+        "step": 3,
+        "name": "Reranked RAG (Cross-Encoder)",
+        "badge": "Fixes Candidate Ordering & Thresholds",
+        "accent": "text-emerald-400",
+        "border": "border-emerald-500/40",
+        "bgBadge": "bg-emerald-950/80 text-emerald-300 border-emerald-800",
+        "mechanism": "Retrieves a wide candidate pool (top 30-50 chunks) via fast vector search, then passes each (query, document) pair through a Cross-Encoder to compute full all-to-all cross-attention and re-score relevance before sending to the model.",
+        "symptomSolved": "Symptom it fixes: The correct document was successfully retrieved by the vector index, but it was ranked 8th or 12th and fell outside your top-k cut (or suffered from Lost-in-the-Middle attention decay). Retrieval worked; ordering failed."
+      },
+      {
+        "step": 4,
+        "name": "Multi-Query RAG (Query Expansion)",
+        "badge": "Fixes Phrasing Sensitivity",
+        "accent": "text-purple-400",
+        "border": "border-purple-500/40",
+        "bgBadge": "bg-purple-950/80 text-purple-300 border-purple-800",
+        "mechanism": "Prompts a lightweight model to generate 3-5 alternative phrasings or sub-queries from different perspectives, retrieves candidate chunks for each sub-query, and deduplicates the merged set.",
+        "symptomSolved": "Symptom it fixes: The quality of the answer depends heavily on how the user happened to word their question. Small wording changes produce wild swings in retrieval recall. Cheap fix, high recall gain."
+      },
+      {
+        "step": 5,
+        "name": "Hierarchical RAG (Small-to-Big)",
+        "badge": "Fixes Context Fragmentation",
+        "accent": "text-amber-400",
+        "border": "border-amber-500/40",
+        "bgBadge": "bg-amber-950/80 text-amber-300 border-amber-800",
+        "mechanism": "Indexes small, atomic chunks (100-150 tokens) for high-precision semantic matching, with each child chunk linked to a parent section (1,000 tokens) or parent document that gets injected into the LLM prompt.",
+        "symptomSolved": "Symptom it fixes: Chunks arrive at the LLM stripped of their surrounding structure, section headers, or legal caveats—so the model reads a sub-clause out of context and loses the parent rule it belonged to."
+      },
+      {
+        "step": 6,
+        "name": "Corrective RAG (CRAG)",
+        "badge": "Fixes Confident Hallucinations on Bad Data",
+        "accent": "text-rose-400",
+        "border": "border-rose-500/40",
+        "bgBadge": "bg-rose-950/80 text-rose-300 border-rose-800",
+        "mechanism": "A lightweight evaluator checks whether retrieved chunks are actually relevant before generation. If relevant, it proceeds; if ambiguous or irrelevant, it triggers query rewriting or falls back to web search / abstention.",
+        "symptomSolved": "Symptom it fixes: Confident, convincing hallucinations built on irrelevant context. This is the critical safety layer that allows the chatbot to gracefully say 'I don't have sufficient information in the verified manuals to answer that.'"
+      },
+      {
+        "step": 7,
+        "name": "Graph RAG (Knowledge Graph Enhanced)",
+        "badge": "Fixes Multi-Hop Cross-Document Gaps",
+        "accent": "text-cyan-400",
+        "border": "border-cyan-500/40",
+        "bgBadge": "bg-cyan-950/80 text-cyan-300 border-cyan-800",
+        "mechanism": "Extracts entities, relationships, and claims during ingestion into a Knowledge Graph (e.g. Neo4j). Queries traverse entity nodes and relationship edges to retrieve connected facts rather than isolated text similarities.",
+        "symptomSolved": "Symptom it fixes: The answer spans multiple documents or requires multi-hop reasoning (e.g. 'How does Policy A affect Vendor B's subsidiary in Region C?'). Pure vector similarity cannot tell you what depends on what."
+      },
+      {
+        "step": 8,
+        "name": "Agentic RAG (Autonomous Decision Loops)",
+        "badge": "Fixes Static Single-Turn Pipelines",
+        "accent": "text-fuchsia-400",
+        "border": "border-fuchsia-500/40",
+        "bgBadge": "bg-fuchsia-950/80 text-fuchsia-300 border-fuchsia-800",
+        "mechanism": "An autonomous agent (using LangGraph / ReAct) dynamically decides whether retrieval is needed at all, selects between multiple specialized vector databases, evaluates its own answers, and executes multi-turn reflection loops until satisfied.",
+        "symptomSolved": "Symptom it fixes: Rigid pipeline waste. Some simple questions ('Hello', 'What is your name?') need zero retrieval, while complex analytical requests require 3 rounds of iterative tool searches and reflection. Most powerful architecture, but requires strict loop budget guards."
+      }
+    ],
+    "details": [
+      "The Diagnostic Mindset: Knowing how to build RAG is easy. Debugging RAG is where senior AI engineering begins. You don't randomly tweak chunk sizes or swap embedding models—you observe how Naive RAG fails, and that failure symptom dictates which of the other 7 architectures to deploy.",
+      "1. Naive RAG: The simple baseline (embed query -> top-K chunks -> LLM). Always test this first. Its failures serve as the diagnostic compass.",
+      "2. Hybrid RAG (Sparse + Dense): Fixes missing exact keywords, alphanumeric SKUs, error codes, and serial numbers that dense embeddings blur.",
+      "3. Reranked RAG (Cross-Encoder): Fixes candidate ordering failures where the correct document was retrieved 8th and pushed out of top-K or lost in the middle.",
+      "4. Multi-Query RAG: Fixes query formulation sensitivity where retrieval success hinges on how the user happened to word their question.",
+      "5. Hierarchical RAG (Small-to-Big): Fixes context fragmentation where child chunks arrive without parent section headers or legal caveats.",
+      "6. Corrective RAG (CRAG): Fixes confident hallucinations on irrelevant context by validating retrieval relevance and enabling clean abstention ('I do not have this information').",
+      "7. Graph RAG: Fixes multi-hop cross-document reasoning where vector similarity cannot capture relational dependencies across entities.",
+      "8. Agentic RAG: Fixes rigid pipeline limitations by letting an agent decide if retrieval is needed, run multiple search rounds, and self-reflect.",
+      "Interview Answer: 'When designing or debugging RAG, we follow an 8-architecture diagnostic ladder: Naive RAG is the baseline. If exact alphanumeric codes fail, we add Hybrid BM25. If relevant docs rank too low, we add Cross-Encoder Reranking. If phrasing changes results, we add Multi-Query expansion. If context is lost, we use Hierarchical chunking. If hallucinations occur on poor retrieval, we add Corrective RAG. If relationships span documents, we deploy Graph RAG. And for multi-step reasoning, we use Agentic RAG.'"
+    ],
+    "interviewAnswers": [
+      {
+        "question": "Walk me through the 8 RAG architectures and the failure symptom each one handles.",
+        "answer": "1) Naive RAG: Baseline (embed, pull top-K, generate); let it fail first to identify the bottleneck. 2) Hybrid RAG: Solves missed alphanumeric IDs/error codes by combining BM25 keyword matching with dense vectors. 3) Reranked RAG: Solves candidate ordering failures (where the right doc ranked 8th and missed top-K) using a cross-encoder. 4) Multi-Query RAG: Solves query phrasing sensitivity by generating 3-5 alternative queries. 5) Hierarchical RAG: Solves context loss by matching small child chunks but feeding parent sections to the model. 6) Corrective RAG (CRAG): Solves confident hallucination on bad data by evaluating retrieval relevance before generation. 7) Graph RAG: Solves multi-document relational dependencies using knowledge graphs. 8) Agentic RAG: Solves rigid workflows by letting an autonomous agent decide whether to retrieve, retry, or reflect."
+      }
+    ]
   }
 ];
