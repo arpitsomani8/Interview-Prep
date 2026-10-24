@@ -384,20 +384,20 @@ export const definitionBookmarks = [
     "label": "HPA for LLMs (Kubernetes GPU Autoscaling & KEDA)"
   },
   {
-    "id": "imputation",
-    "label": "Imputation"
-  },
-  {
     "id": "inference",
     "label": "Inference"
   },
   {
-    "id": "information-gain",
-    "label": "Information Gain"
+    "id": "imputation",
+    "label": "Imputation"
   },
   {
     "id": "iqr",
     "label": "IQR & Binning"
+  },
+  {
+    "id": "information-gain",
+    "label": "Information Gain"
   },
   {
     "id": "joblib",
