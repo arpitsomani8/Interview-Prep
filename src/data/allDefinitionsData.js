@@ -732,36 +732,24 @@ export const definitionBookmarks = [
     "label": "REST API vs FastAPI"
   },
   {
-    "id": "system-scaling",
-    "label": "Scaling"
-  },
-  {
-    "id": "scikit-learn",
-    "label": "Scikit-Learn"
-  },
-  {
-    "id": "security-and-error-handling",
-    "label": "Security & Error Handling"
-  },
-  {
     "id": "self-attention",
     "label": "Self-Attention"
-  },
-  {
-    "id": "sft-peft",
-    "label": "SFT / PEFT"
   },
   {
     "id": "similarity-semantic-search",
     "label": "Similarity / Semantic Search"
   },
   {
-    "id": "skewed-data",
-    "label": "Skewed Data (Left, Normal, Right)"
+    "id": "system-scaling",
+    "label": "Scaling"
   },
   {
-    "id": "sql-postgres",
-    "label": "SQL (PostgreSQL)"
+    "id": "sft-peft",
+    "label": "SFT / PEFT"
+  },
+  {
+    "id": "skewed-data",
+    "label": "Skewed Data (Left, Normal, Right)"
   },
   {
     "id": "stemming",
@@ -770,6 +758,18 @@ export const definitionBookmarks = [
   {
     "id": "strands",
     "label": "Strands Agents SDK"
+  },
+  {
+    "id": "sql-postgres",
+    "label": "SQL (PostgreSQL)"
+  },
+  {
+    "id": "scikit-learn",
+    "label": "Scikit-Learn"
+  },
+  {
+    "id": "security-and-error-handling",
+    "label": "Security & Error Handling"
   },
   {
     "id": "table-parsing-rag",
