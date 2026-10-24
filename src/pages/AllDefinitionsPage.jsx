@@ -112,45 +112,96 @@ export default function AllDefinitionsPage() {
     ? definitionBookmarks[currentIndex + 1] 
     : null;
 
+  // Group bookmarks by initial letter (A-Z)
+  const alphabetGroups = useMemo(() => {
+    const groups = [];
+    let currentGroup = null;
+
+    const getInitial = (str) => {
+      if (!str) return '#';
+      const ch = str.trim().charAt(0).toUpperCase();
+      return /[A-Z]/.test(ch) ? ch : '#';
+    };
+
+    for (const item of definitionBookmarks) {
+      const initial = getInitial(item.label);
+      if (!currentGroup || currentGroup.letter !== initial) {
+        currentGroup = { letter: initial, items: [] };
+        groups.push(currentGroup);
+      }
+      currentGroup.items.push(item);
+    }
+    return groups;
+  }, []);
+
+  const jumpToLetter = (letter) => {
+    const el = document.getElementById(`alphabet-row-${letter}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div className="w-full px-4 sm:px-8 lg:px-12 py-5 space-y-6">
-      {/* Bookmarks Bar on Top */}
-      <div id="bookmarks-bar" className="pt-1">
-        {/* Clickable Bookmark Badges with Alphabet-Change Line Breaks */}
-        <div className="flex flex-wrap items-center gap-2">
-          {definitionBookmarks.map((item, index) => {
-            const getInitial = (str) => {
-              if (!str) return '';
-              const ch = str.trim().charAt(0).toUpperCase();
-              return /[A-Z]/.test(ch) ? ch : '#';
-            };
-            const currentInitial = getInitial(item.label);
-            const nextItem = definitionBookmarks[index + 1];
-            const nextInitial = nextItem ? getInitial(nextItem.label) : null;
-            const isAlphabetChange = nextInitial && currentInitial !== nextInitial;
+      {/* Bookmarks Bar on Top with A-Z Quick Jump Index & Column-Structured Rows */}
+      <div id="bookmarks-bar" className="space-y-4 pt-1">
+        {/* Quick Alphabet Jump Index Ribbon (A B C D ... Z) */}
+        <div className="flex items-center gap-1.5 flex-wrap p-2.5 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 shadow-md">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-cyan-400 font-bold px-2 select-none">
+            A-Z Index:
+          </span>
+          {alphabetGroups.map((group) => (
+            <button
+              key={group.letter}
+              onClick={() => jumpToLetter(group.letter)}
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-zinc-900 hover:bg-cyan-500/20 text-zinc-300 hover:text-cyan-300 border border-zinc-800 hover:border-cyan-500/50 text-xs font-black transition flex items-center justify-center cursor-pointer shadow-sm"
+              title={`Jump to section ${group.letter} (${group.items.length} topics)`}
+            >
+              {group.letter}
+            </button>
+          ))}
+        </div>
 
-            return (
-              <React.Fragment key={item.id}>
-                <button
-                  onClick={() => selectBookmark(item.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 border cursor-pointer ${
-                    activeBookmark === item.id
-                      ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/10'
-                      : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:border-cyan-500/50 hover:bg-zinc-800 hover:text-white'
-                  }`}
-                >
-                  <Bookmark className={`w-3 h-3 ${activeBookmark === item.id ? 'text-cyan-400 fill-cyan-400' : 'text-cyan-400'}`} />
-                  <span>{item.label}</span>
-                </button>
-                {isAlphabetChange && (
-                  <div
-                    aria-hidden="true"
-                    className="basis-full w-full h-2 border-b border-zinc-800/40 my-1"
-                  />
-                )}
-              </React.Fragment>
-            );
-          })}
+        {/* Structured Alphabetical Sections: Letter Column on Left, Bookmarks on Right */}
+        <div className="space-y-3">
+          {alphabetGroups.map((group) => (
+            <div
+              key={group.letter}
+              id={`alphabet-row-${group.letter}`}
+              className="flex flex-col sm:flex-row sm:items-start gap-3 p-3.5 rounded-2xl bg-zinc-950/70 border border-zinc-800/70 hover:border-zinc-700/80 transition-all scroll-mt-24 shadow-sm"
+            >
+              {/* Left Column: Letter Indicator Badge & Topic Count */}
+              <div className="flex sm:flex-col items-center justify-between sm:justify-start gap-1.5 sm:pt-0.5 flex-shrink-0 sm:w-16">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 via-zinc-900 to-indigo-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 font-black text-lg shadow-sm shadow-cyan-500/10">
+                  {group.letter}
+                </div>
+                <span className="text-[10px] font-mono text-zinc-500 font-semibold sm:text-center whitespace-nowrap">
+                  {group.items.length} {group.items.length === 1 ? 'topic' : 'topics'}
+                </span>
+              </div>
+
+              {/* Right Column / Next Cell: Bookmarks for this letter */}
+              <div className="flex-1 flex flex-wrap items-center gap-1.5 sm:gap-2">
+                {group.items.map((item) => {
+                  const isActive = activeBookmark === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => selectBookmark(item.id)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 border cursor-pointer ${
+                        isActive
+                          ? 'bg-cyan-500/25 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/20 ring-1 ring-cyan-400/40'
+                          : 'bg-zinc-900/90 border-zinc-800/90 text-zinc-300 hover:border-cyan-500/50 hover:bg-zinc-800 hover:text-white'
+                      }`}
+                    >
+                      <Bookmark className={`w-3 h-3 ${isActive ? 'text-cyan-400 fill-cyan-400' : 'text-cyan-400/70'}`} />
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
