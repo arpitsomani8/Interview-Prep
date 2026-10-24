@@ -296,6 +296,10 @@ export const definitionBookmarks = [
     "label": "Edge Cases"
   },
   {
+    "id": "fine-tuning",
+    "label": "Fine-Tuning"
+  },
+  {
     "id": "f1-score",
     "label": "F1-Score (Precision & Recall)"
   },
@@ -312,16 +316,12 @@ export const definitionBookmarks = [
     "label": "Feature Engineering (6 Pillars)"
   },
   {
-    "id": "fine-tuning",
-    "label": "Fine-Tuning"
+    "id": "flagging",
+    "label": "Flagging (Indicator Features)"
   },
   {
     "id": "first-non-repeating-char",
     "label": "First Non-Repeating Character (Python Algorithmic Problem)"
-  },
-  {
-    "id": "flagging",
-    "label": "Flagging (Indicator Features)"
   },
   {
     "id": "flip-flop-latch",
