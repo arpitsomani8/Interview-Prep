@@ -380,6 +380,10 @@ export const definitionBookmarks = [
     "label": "Hybrid Search (BM25 + Vector Search + Reranking)"
   },
   {
+    "id": "hyperparameters",
+    "label": "Hyperparameters (Epochs, Batch Size & Learning Rate)"
+  },
+  {
     "id": "imputation",
     "label": "Imputation"
   },
@@ -14398,5 +14402,121 @@ export const definitionsData = [
       }
     ],
     "pythonCode": "import math\nfrom collections import Counter\nfrom rank_bm25 import BM25Okapi\n\n# ==========================================\n# 1. High-Level Usage with rank-bm25 Library\n# ==========================================\ncorpus = [\n    \"Error code ERR_502 occurs when the upstream gateway times out.\",\n    \"Vehicle insurance policy extension procedures and payment plans.\",\n    \"How to troubleshoot server 502 bad gateway connection issues.\",\n    \"Automobile collision coverage and annual deductible rates.\"\n]\n\ntokenized_corpus = [doc.lower().split(\" \") for doc in corpus]\nbm25 = BM25Okapi(tokenized_corpus, k1=1.5, b=0.75)\n\nquery = \"troubleshoot ERR_502 timeout\"\ntokenized_query = query.lower().split(\" \")\nscores = bm25.get_scores(tokenized_query)\n\nfor idx, score in enumerate(scores):\n    print(f\"Doc {idx}: Score = {score:.4f} -> {corpus[idx]}\")\n\n# ==========================================\n# 2. Pure Python BM25 Formula Implementation\n# ==========================================\nclass PureBM25:\n    def __init__(self, corpus, k1=1.2, b=0.75):\n        self.k1 = k1\n        self.b = b\n        self.corpus = corpus\n        self.N = len(corpus)\n        self.doc_lens = [len(doc) for doc in corpus]\n        self.avgdl = sum(self.doc_lens) / self.N\n        self.doc_freqs = Counter()\n        self.term_freqs = [Counter(doc) for doc in corpus]\n        \n        for doc in corpus:\n            for term in set(doc):\n                self.doc_freqs[term] += 1\n\n    def idf(self, term):\n        n = self.doc_freqs.get(term, 0)\n        # Standard Lucene/BM25 IDF with smoothing\n        return math.log(1.0 + (self.N - n + 0.5) / (n + 0.5))\n\n    def score(self, query):\n        scores = []\n        for i, doc in enumerate(self.corpus):\n            doc_len = self.doc_lens[i]\n            score = 0.0\n            for term in query:\n                if term not in self.term_freqs[i]:\n                    continue\n                tf = self.term_freqs[i][term]\n                numerator = tf * (self.k1 + 1.0)\n                denominator = tf + self.k1 * (1.0 - self.b + self.b * (doc_len / self.avgdl))\n                score += self.idf(term) * (numerator / denominator)\n            scores.append(score)\n        return scores\n\n# Test Pure Implementation\npure_bm25 = PureBM25(tokenized_corpus, k1=1.5, b=0.75)\npure_scores = pure_bm25.score(tokenized_query)\nprint(\"\\nTop Pure BM25 Match:\", corpus[pure_scores.index(max(pure_scores))])"
+  },
+  {
+    "id": "hyperparameters",
+    "title": "Hyperparameters (Epochs, Batch Size & Learning Rate)",
+    "badge": "Machine Learning Optimization, Gradient Trajectories & Convergence Control",
+    "summary": "Hyperparameters are external configuration variables set by the machine learning engineer prior to training that govern the learning process, convergence trajectory, and model capacity. Unlike model parameters (weights and biases learned from data), hyperparameters like Learning Rate, Batch Size, and Epochs dictate optimization dynamics, GPU hardware utilization, and generalization performance.",
+    "hyperparametersTriad": {
+      "title": "The Core Machine Learning Hyperparameter Triad",
+      "pillars": [
+        {
+          "id": "learning-rate",
+          "step": 1,
+          "name": "Learning Rate (η / α)",
+          "badge": "Optimization Step Size",
+          "border": "border-cyan-500/40",
+          "accent": "text-cyan-400",
+          "bgBadge": "bg-cyan-950/80 text-cyan-300 border-cyan-800",
+          "definition": "The step size taken along the negative gradient direction during parameter updates: W_new = W_old - η · ∇L(W).",
+          "behavior": {
+            "tooHigh": "Overshoots the minimum, causes loss to oscillate violently or explode to NaN / Inf (divergence).",
+            "tooLow": "Extremely sluggish convergence, traps model in sub-optimal local minima or flat plateaus, wastes expensive GPU compute.",
+            "optimal": "Progressively descends into wide, flat basins associated with strong test-set generalization."
+          },
+          "typicalValues": "1e-3 to 1e-4 for Adam/AdamW from scratch; 1e-5 to 5e-6 for LLM fine-tuning (LoRA / SFT); 0.1 to 0.01 for SGD with momentum.",
+          "schedules": "Cosine Annealing with linear warmup (first 5-10% of total training steps) is the modern standard."
+        },
+        {
+          "id": "batch-size",
+          "step": 2,
+          "name": "Batch Size (B)",
+          "badge": "Gradient Estimation & GPU Parallelism",
+          "border": "border-amber-500/40",
+          "accent": "text-amber-400",
+          "bgBadge": "bg-amber-950/80 text-amber-300 border-amber-800",
+          "definition": "The number of training samples processed in one forward and backward pass before model weights are updated.",
+          "behavior": {
+            "smallBatch": "e.g., 16-32. High gradient noise acts as an implicit regularizer, escaping sharp minima into flatter basins for better generalization. Higher wall-clock time.",
+            "largeBatch": "e.g., 256-4096. Maximizes GPU Tensor Core parallelism and throughput, but can suffer from the 'generalization gap' (converging to sharp minima).",
+            "optimal": "Balances hardware memory limits with generalization. Scaled using the Linear Scaling Rule."
+          },
+          "linearScalingRule": "When scaling batch size by factor k, scale learning rate by k (η_new = k · η_base) along with gradual warmup.",
+          "gradientAccumulation": "Simulate large effective batch sizes on memory-constrained GPUs: run multiple micro-batches (e.g. 16) accumulating gradients before calling optimizer.step()."
+        },
+        {
+          "id": "epochs",
+          "step": 3,
+          "name": "Epochs (E)",
+          "badge": "Dataset Exposure & Overfitting Boundary",
+          "border": "border-emerald-500/40",
+          "accent": "text-emerald-400",
+          "bgBadge": "bg-emerald-950/80 text-emerald-300 border-emerald-800",
+          "definition": "One complete pass of the entire training dataset through the neural network. Total Steps = (Dataset Size / Batch Size) × Epochs.",
+          "behavior": {
+            "tooFew": "Underfitting: The model hasn't learned sufficient signal from the data; both training and validation losses remain high.",
+            "tooMany": "Overfitting: Training loss drops toward zero while validation loss starts climbing; model memorizes training noise.",
+            "optimal": "Terminated at the minimum validation loss via Early Stopping."
+          },
+          "productionNorms": "LLM pretraining often runs for only 1 epoch (Chinchilla scaling: unique tokens beat repeated passes); Fine-tuning typically runs 2–4 epochs; Tabular/CNN models train for 20–100 epochs.",
+          "earlyStopping": "Patience parameter (e.g., 5 epochs): stop training and restore best weights if validation loss does not improve for 5 consecutive epochs."
+        }
+      ],
+      "diagnosticTable": [
+        {
+          "symptom": "Loss explodes to NaN or Inf within first few iterations",
+          "likelyCause": "Learning rate is vastly too high, or unnormalized input features causing gradient explosion.",
+          "fix": "Lower learning rate by 10x, add Gradient Clipping (max_norm=1.0), and check input normalization (StandardScaler / LayerNorm)."
+        },
+        {
+          "symptom": "CUDA Out of Memory (OOM) error during training",
+          "likelyCause": "Batch size exceeds GPU VRAM capacity for the current sequence length and model size.",
+          "fix": "Decrease physical batch size, enable Gradient Accumulation, and use mixed-precision training (torch.cuda.amp / BF16)."
+        },
+        {
+          "symptom": "Training loss keeps dropping, but Validation loss begins rising",
+          "likelyCause": "Overfitting due to excessive epochs or high model capacity without regularization.",
+          "fix": "Trigger Early Stopping, restore best checkpoint, decrease epochs, and introduce Dropout, Weight Decay, or Data Augmentation."
+        },
+        {
+          "symptom": "Loss oscillates wildly and fails to converge",
+          "likelyCause": "Batch size is too small (excessive gradient noise) combined with high learning rate.",
+          "fix": "Increase batch size (or accumulation steps) to smooth gradient estimates, and apply a Learning Rate Decay schedule."
+        },
+        {
+          "symptom": "Training loss decreases at an agonizingly slow pace",
+          "likelyCause": "Learning rate is set too low, trapping optimization on flat plateau saddles.",
+          "fix": "Run a Learning Rate Range Test (Leslie Smith method) and increase learning rate by 5x-10x with warm-up."
+        }
+      ]
+    },
+    "details": [
+      "Parameters vs. Hyperparameters: Parameters (weights W and biases b) are learned automatically from data via backpropagation. Hyperparameters (learning rate, batch size, epochs, weight decay, optimizer) are chosen by the engineer before training to configure the optimization landscape.",
+      "The Linear Scaling Rule (Goyal et al., 2017): If you multiply batch size by k, multiply the learning rate by k. Because the gradient computed over a larger batch has lower variance, the model can safely take larger steps without diverging, provided a warmup phase is applied.",
+      "Learning Rate Warmup: Starting training with a high learning rate when weights are randomly initialized leads to instability. Linear warmup ramps the learning rate from 0 to peak η over the first 5% of training steps, allowing attention and batch normalization statistics to stabilize.",
+      "Gradient Accumulation Math: If GPU VRAM only fits micro-batch size b=16, but optimal generalization requires batch size B=128, you run 8 forward/backward steps with loss = loss / 8, calling optimizer.step() only once every 8 steps. This gives the exact mathematical gradient of B=128 without the VRAM cost.",
+      "Early Stopping Architecture: Monitors validation loss after every epoch. Keeps track of best_loss. If current validation loss > best_loss - min_delta for 'patience' consecutive epochs, the training loop breaks early, saving GPU cost and avoiding overfitted weights.",
+      "Interview Summary: 'In deep learning, the three core hyperparameters form a tightly coupled system: Learning rate controls optimization step size; Batch size controls gradient variance and GPU parallelism; Epochs control total data exposure. We tune learning rate with warmup and cosine decay, select batch size via hardware capacity and gradient accumulation, and safeguard epochs using early stopping.'"
+    ],
+    "interviewAnswers": [
+      {
+        "question": "What is the difference between an epoch, a batch, and an iteration (step)?",
+        "answer": "An Epoch is one complete pass through the entire training dataset. A Batch is the subset of training samples (e.g., 32 or 128) evaluated in a single forward-backward pass to compute gradients. An Iteration (or Step) is one single update of the model's weights using that batch. For example, if you have 10,000 samples and batch size is 100, one epoch consists of 100 iterations."
+      },
+      {
+        "question": "If you scale batch size from 32 to 256, what happens to training time, generalization, and how must you adjust learning rate?",
+        "answer": "Training time per epoch decreases significantly because large batches saturate GPU Tensor Cores and maximize parallel hardware throughput. However, large batches reduce gradient noise, which can cause the model to settle into sharp local minima that generalize poorly (the 'generalization gap'). To compensate, we apply the Linear Scaling Rule: scale the learning rate proportionally (8x in this case) alongside a 5-epoch gradual warmup to prevent early divergence."
+      },
+      {
+        "question": "What is Gradient Accumulation and when would you use it in production?",
+        "answer": "Gradient Accumulation is an essential technique when training large models (e.g. LLMs or vision transformers) where GPU VRAM cannot fit the desired batch size. Instead of updating weights every micro-batch, we accumulate gradients over N forward and backward passes by calling loss.backward() without zeroing the gradient, and only call optimizer.step() and optimizer.zero_grad() once every N passes. This gives the exact gradient dynamics of a large batch size while keeping VRAM usage pinned to a small micro-batch."
+      },
+      {
+        "question": "How do you systematically tune the learning rate instead of randomly guessing?",
+        "answer": "We use the Learning Rate Range Test (Leslie Smith method): initialize the model, train for one epoch while increasing the learning rate exponentially from very small (e.g. 1e-7) to very large (e.g. 10.0), and plot Loss vs. Learning Rate on a log scale. The optimal learning rate is the point of steepest descent on the curve, typically one order of magnitude below where the loss begins oscillating or exploding."
+      }
+    ],
+    "code": "import torch\nimport torch.nn as nn\nfrom torch.utils.data import DataLoader, TensorDataset\nfrom torch.optim.lr_scheduler import CosineAnnealingLR\n\n# 1. Hyperparameter Configurations\nEPOCHS = 10\nBATCH_SIZE = 32\nACCUMULATION_STEPS = 4  # Effective Batch Size = 32 * 4 = 128\nLEARNING_RATE = 1e-3\nPATIENCE = 3\n\n# Dummy Dataset (1000 samples, 20 features)\nX = torch.randn(1000, 20)\ny = torch.randint(0, 2, (1000,)).float()\ndataset = TensorDataset(X, y)\ntrain_loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)\n\n# Simple Model\nmodel = nn.Sequential(\n    nn.Linear(20, 64),\n    nn.ReLU(),\n    nn.Dropout(0.2),\n    nn.Linear(64, 1)\n)\n\ncriterion = nn.BCEWithLogitsLoss()\noptimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=1e-2)\nscheduler = CosineAnnealingLR(optimizer, T_max=EPOCHS, eta_min=1e-5)\n\n# Early Stopping State\nbest_val_loss = float('inf')\npatience_counter = 0\n\nprint(f\"Starting Training: {EPOCHS} Epochs | Effective Batch Size: {BATCH_SIZE * ACCUMULATION_STEPS}\")\n\nfor epoch in range(EPOCHS):\n    model.train()\n    running_loss = 0.0\n    optimizer.zero_grad()\n\n    for step, (batch_x, batch_y) in enumerate(train_loader):\n        # Forward pass\n        preds = model(batch_x).squeeze()\n        loss = criterion(preds, batch_y)\n        \n        # Scale loss for gradient accumulation\n        loss = loss / ACCUMULATION_STEPS\n        loss.backward()\n\n        # Update weights only every ACCUMULATION_STEPS\n        if (step + 1) % ACCUMULATION_STEPS == 0 or (step + 1) == len(train_loader):\n            # Gradient clipping to prevent exploding gradients\n            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)\n            optimizer.step()\n            optimizer.zero_grad()\n\n        running_loss += loss.item() * ACCUMULATION_STEPS\n\n    scheduler.step()\n    epoch_loss = running_loss / len(train_loader)\n    \n    # Mock validation loss\n    val_loss = epoch_loss * 1.05\n    print(f\"Epoch {epoch+1:02d}/{EPOCHS} | Train Loss: {epoch_loss:.4f} | LR: {scheduler.get_last_lr()[0]:.6f}\")\n\n    # Early Stopping Check\n    if val_loss < best_val_loss:\n        best_val_loss = val_loss\n        patience_counter = 0\n        # torch.save(model.state_dict(), \"best_model.pt\")\n    else:\n        patience_counter += 1\n        if patience_counter >= PATIENCE:\n            print(f\"Early stopping triggered at Epoch {epoch+1}!\")\n            break"
   }
 ];

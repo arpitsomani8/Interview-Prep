@@ -23938,6 +23938,156 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                
+                {/* Hyperparameters Triad (Learning Rate, Batch Size, Epochs) */}
+                {item.hyperparametersTriad && (
+                  <div className="space-y-5 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-cyan-500/40 shadow-2xl mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <span>{item.hyperparametersTriad.title}</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 shrink-0 font-semibold">
+                        Training Dynamics Triad
+                      </span>
+                    </div>
+
+                    {/* 3 Pillars: Learning Rate, Batch Size, Epochs */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-1">
+                      {item.hyperparametersTriad.pillars.map((pil) => (
+                        <div
+                          key={pil.id}
+                          className={`p-4 rounded-xl bg-zinc-950/90 border ${pil.border || 'border-zinc-800'} space-y-3 flex flex-col justify-between hover:border-cyan-500/40 transition`}
+                        >
+                          <div className="space-y-2.5">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${pil.bgBadge} border`}>
+                                STEP {pil.step}: {pil.name}
+                              </span>
+                              <span className="text-[9px] font-mono text-zinc-400 bg-black/80 px-2 py-0.5 rounded border border-zinc-800 truncate">
+                                {pil.badge}
+                              </span>
+                            </div>
+
+                            <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                              {pil.definition}
+                            </p>
+
+                            {/* Dynamics / Behavior */}
+                            <div className="space-y-1.5 p-2.5 rounded-lg bg-black/80 border border-zinc-900 text-[11px] font-sans">
+                              <span className="text-[10px] font-mono uppercase text-zinc-400 font-bold block mb-1">
+                                Optimization Dynamics:
+                              </span>
+                              {pil.behavior.tooHigh && (
+                                <div className="text-rose-300/90 leading-relaxed">
+                                  <strong className="text-rose-400 font-mono text-[10px] uppercase">Too High: </strong>
+                                  {pil.behavior.tooHigh}
+                                </div>
+                              )}
+                              {pil.behavior.tooLow && (
+                                <div className="text-amber-300/90 leading-relaxed">
+                                  <strong className="text-amber-400 font-mono text-[10px] uppercase">Too Low: </strong>
+                                  {pil.behavior.tooLow}
+                                </div>
+                              )}
+                              {pil.behavior.smallBatch && (
+                                <div className="text-cyan-300/90 leading-relaxed">
+                                  <strong className="text-cyan-400 font-mono text-[10px] uppercase">Small Batch (16-32): </strong>
+                                  {pil.behavior.smallBatch}
+                                </div>
+                              )}
+                              {pil.behavior.largeBatch && (
+                                <div className="text-amber-300/90 leading-relaxed">
+                                  <strong className="text-amber-400 font-mono text-[10px] uppercase">Large Batch (256+): </strong>
+                                  {pil.behavior.largeBatch}
+                                </div>
+                              )}
+                              {pil.behavior.tooFew && (
+                                <div className="text-rose-300/90 leading-relaxed">
+                                  <strong className="text-rose-400 font-mono text-[10px] uppercase">Too Few (Underfit): </strong>
+                                  {pil.behavior.tooFew}
+                                </div>
+                              )}
+                              {pil.behavior.tooMany && (
+                                <div className="text-amber-300/90 leading-relaxed">
+                                  <strong className="text-amber-400 font-mono text-[10px] uppercase">Too Many (Overfit): </strong>
+                                  {pil.behavior.tooMany}
+                                </div>
+                              )}
+                              {pil.behavior.optimal && (
+                                <div className="text-emerald-300/90 leading-relaxed">
+                                  <strong className="text-emerald-400 font-mono text-[10px] uppercase">Sweet Spot: </strong>
+                                  {pil.behavior.optimal}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Footer Highlights (Typical values / rules) */}
+                          <div className="p-2.5 rounded-lg bg-black/90 border border-zinc-800/80 space-y-1 mt-2 text-[10px] font-mono">
+                            {pil.typicalValues && (
+                              <div className="text-zinc-300 leading-relaxed">
+                                <span className="text-cyan-400 font-bold uppercase">Defaults: </span>
+                                <span>{pil.typicalValues}</span>
+                              </div>
+                            )}
+                            {pil.linearScalingRule && (
+                              <div className="text-zinc-300 leading-relaxed">
+                                <span className="text-amber-400 font-bold uppercase">Linear Scaling: </span>
+                                <span>{pil.linearScalingRule}</span>
+                              </div>
+                            )}
+                            {pil.productionNorms && (
+                              <div className="text-zinc-300 leading-relaxed">
+                                <span className="text-emerald-400 font-bold uppercase">Norms: </span>
+                                <span>{pil.productionNorms}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Production Diagnostic & Troubleshooting Matrix */}
+                    {item.hyperparametersTriad.diagnosticTable && (
+                      <div className="space-y-2 pt-2 border-t border-zinc-800/80">
+                        <div className="flex items-center gap-2">
+                          <Bug className="w-4 h-4 text-rose-400" />
+                          <span className="text-xs font-mono font-bold uppercase tracking-wider text-rose-400">
+                            Training Failure Modes & Hyperparameter Fixes
+                          </span>
+                        </div>
+                        <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                          <table className="w-full text-left text-xs font-sans">
+                            <thead className="bg-zinc-900/90 border-b border-zinc-800 font-mono text-[11px]">
+                              <tr>
+                                <th className="py-2.5 px-3.5 text-rose-400 w-1/4">Observed Training Symptom</th>
+                                <th className="py-2.5 px-3.5 text-amber-300 w-1/3">Root Cause</th>
+                                <th className="py-2.5 px-3.5 text-emerald-400 w-5/12">Hyperparameter Resolution</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+                              {item.hyperparametersTriad.diagnosticTable.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                  <td className="py-2.5 px-3.5 font-mono font-semibold text-rose-300">
+                                    {row.symptom}
+                                  </td>
+                                  <td className="py-2.5 px-3.5 text-[11px] text-zinc-300 leading-relaxed">
+                                    {row.likelyCause}
+                                  </td>
+                                  <td className="py-2.5 px-3.5 text-[11px] text-emerald-200/90 font-medium leading-relaxed">
+                                    {row.fix}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Bulleted Detail Points */}
                 <ul className="space-y-2.5 pt-2 border-t border-zinc-800/80">
                   {item.details.map((detail, dIdx) => (
