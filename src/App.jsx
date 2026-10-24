@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import IntroPage from './pages/IntroPage';
 import FashionPage from './pages/FashionPage';
@@ -86,6 +87,9 @@ export default function App() {
           {activeTab === 'programs' && <ProgramsPage />}
         </ErrorBoundary>
       </main>
+
+      {/* Footer covering more than half screen */}
+      <Footer />
     </div>
   );
 }
