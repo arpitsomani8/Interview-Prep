@@ -404,24 +404,24 @@ export const definitionBookmarks = [
     "label": "Joblib"
   },
   {
-    "id": "k-fold",
-    "label": "K-Fold Cross-Validation"
-  },
-  {
-    "id": "kmeans",
-    "label": "K-means Clustering"
-  },
-  {
-    "id": "kde",
-    "label": "KDE (Kernel Density Estimation)"
+    "id": "kubernetes",
+    "label": "Kubernetes"
   },
   {
     "id": "knn",
     "label": "KNN"
   },
   {
-    "id": "kubernetes",
-    "label": "Kubernetes"
+    "id": "kmeans",
+    "label": "K-means Clustering"
+  },
+  {
+    "id": "k-fold",
+    "label": "K-Fold Cross-Validation"
+  },
+  {
+    "id": "kde",
+    "label": "KDE (Kernel Density Estimation)"
   },
   {
     "id": "kv-cache",
