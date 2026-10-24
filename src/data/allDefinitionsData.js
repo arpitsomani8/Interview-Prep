@@ -260,28 +260,24 @@ export const definitionBookmarks = [
     "label": "Design Patterns"
   },
   {
+    "id": "embedding",
+    "label": "Embedding"
+  },
+  {
     "id": "early-stopping",
     "label": "Early Stopping"
-  },
-  {
-    "id": "eda",
-    "label": "EDA (13-Step Core Pipeline)"
-  },
-  {
-    "id": "edge-cases",
-    "label": "Edge Cases"
-  },
-  {
-    "id": "eigenvector-pca",
-    "label": "Eigenvectors & PCA"
   },
   {
     "id": "elastic-net",
     "label": "Elastic Net"
   },
   {
-    "id": "embedding",
-    "label": "Embedding"
+    "id": "eda",
+    "label": "EDA (13-Step Core Pipeline)"
+  },
+  {
+    "id": "eigenvector-pca",
+    "label": "Eigenvectors & PCA"
   },
   {
     "id": "entropy",
@@ -294,6 +290,10 @@ export const definitionBookmarks = [
   {
     "id": "expectation",
     "label": "Expectation"
+  },
+  {
+    "id": "edge-cases",
+    "label": "Edge Cases"
   },
   {
     "id": "f1-score",
