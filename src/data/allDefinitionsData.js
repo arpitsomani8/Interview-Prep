@@ -124,8 +124,40 @@ export const definitionBookmarks = [
     "label": "Bivariate Analysis"
   },
   {
+    "id": "chatbot-architecture",
+    "label": "Chatbot Architecture (Enterprise Multi-Agent Banking System)"
+  },
+  {
+    "id": "cicd",
+    "label": "CI/CD"
+  },
+  {
+    "id": "chroma-db",
+    "label": "ChromaDB (Embedded & Open-Source Vector DB)"
+  },
+  {
+    "id": "chunking",
+    "label": "Chunking"
+  },
+  {
+    "id": "confidence-score",
+    "label": "Confidence Score"
+  },
+  {
+    "id": "classical-ml",
+    "label": "Classical ML"
+  },
+  {
+    "id": "class-imbalance",
+    "label": "Class Imbalance"
+  },
+  {
     "id": "caching",
     "label": "Caching"
+  },
+  {
+    "id": "coherence",
+    "label": "Coherence"
   },
   {
     "id": "cardinality",
@@ -140,56 +172,12 @@ export const definitionBookmarks = [
     "label": "Centroid"
   },
   {
-    "id": "chatbot-architecture",
-    "label": "Chatbot Architecture (Enterprise Multi-Agent Banking System)"
-  },
-  {
-    "id": "chroma-db",
-    "label": "ChromaDB (Embedded & Open-Source Vector DB)"
-  },
-  {
-    "id": "chunking",
-    "label": "Chunking"
-  },
-  {
-    "id": "cicd",
-    "label": "CI/CD"
-  },
-  {
-    "id": "class-imbalance",
-    "label": "Class Imbalance"
-  },
-  {
-    "id": "classical-ml",
-    "label": "Classical ML"
-  },
-  {
     "id": "clip",
     "label": "CLIP"
   },
   {
     "id": "coco-dataset",
     "label": "COCO Dataset"
-  },
-  {
-    "id": "coding-best-practices",
-    "label": "Coding Best Practices"
-  },
-  {
-    "id": "coherence",
-    "label": "Coherence"
-  },
-  {
-    "id": "confidence-score",
-    "label": "Confidence Score"
-  },
-  {
-    "id": "connect-gpt-fastapi",
-    "label": "Connect GPT to FastAPI"
-  },
-  {
-    "id": "connect-gpt-flask",
-    "label": "Connect GPT to Flask"
   },
   {
     "id": "context-stuffing-vs-rag",
@@ -204,12 +192,24 @@ export const definitionBookmarks = [
     "label": "Cross-Encoder"
   },
   {
+    "id": "custom-model-fastapi",
+    "label": "Custom Model with FastAPI"
+  },
+  {
+    "id": "connect-gpt-fastapi",
+    "label": "Connect GPT to FastAPI"
+  },
+  {
+    "id": "connect-gpt-flask",
+    "label": "Connect GPT to Flask"
+  },
+  {
     "id": "crud-api",
     "label": "CRUD API"
   },
   {
-    "id": "custom-model-fastapi",
-    "label": "Custom Model with FastAPI"
+    "id": "coding-best-practices",
+    "label": "Coding Best Practices"
   },
   {
     "id": "data-model-drift",
