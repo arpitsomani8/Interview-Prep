@@ -536,16 +536,16 @@ export const definitionBookmarks = [
     "label": "Matplotlib & Seaborn"
   },
   {
-    "id": "ngram-bigram",
-    "label": "n-gram / Bigram"
+    "id": "normalization-scaling",
+    "label": "Normalization / Scaling"
   },
   {
     "id": "nlp-general-flow",
     "label": "NLP General Flow"
   },
   {
-    "id": "normalization-scaling",
-    "label": "Normalization / Scaling"
+    "id": "ngram-bigram",
+    "label": "n-gram / Bigram"
   },
   {
     "id": "numpy",
