@@ -80,48 +80,48 @@ export const definitionBookmarks = [
     "label": "Azure Security & Production AI Deployment"
   },
   {
-    "id": "backend-architecture",
-    "label": "Backend Architecture"
+    "id": "bias-weight",
+    "label": "Bias & Weights"
   },
   {
     "id": "bagging",
     "label": "Bagging"
   },
   {
+    "id": "boosting",
+    "label": "Boosting"
+  },
+  {
     "id": "bert",
     "label": "BERT"
-  },
-  {
-    "id": "bias-weight",
-    "label": "Bias & Weights"
-  },
-  {
-    "id": "big-data",
-    "label": "Big Data (Bronze, Silver & Gold Medallion)"
   },
   {
     "id": "binning",
     "label": "Binning (Discretization)"
   },
   {
-    "id": "bivariate",
-    "label": "Bivariate Analysis"
+    "id": "bm25",
+    "label": "BM25 (Best Matching 25 / Lexical Search Algorithm)"
+  },
+  {
+    "id": "box-cox",
+    "label": "Box-Cox Transformation"
   },
   {
     "id": "blockchain",
     "label": "Blockchain"
   },
   {
-    "id": "bm25",
-    "label": "BM25 (Best Matching 25 / Lexical Search Algorithm)"
+    "id": "backend-architecture",
+    "label": "Backend Architecture"
   },
   {
-    "id": "boosting",
-    "label": "Boosting"
+    "id": "big-data",
+    "label": "Big Data (Bronze, Silver & Gold Medallion)"
   },
   {
-    "id": "box-cox",
-    "label": "Box-Cox Transformation"
+    "id": "bivariate",
+    "label": "Bivariate Analysis"
   },
   {
     "id": "caching",
