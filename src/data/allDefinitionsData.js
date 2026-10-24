@@ -372,6 +372,10 @@ export const definitionBookmarks = [
     "label": "HPA for LLMs (Kubernetes GPU Autoscaling & KEDA)"
   },
   {
+    "id": "hybrid-search",
+    "label": "Hybrid Search (BM25 + Vector Search + Reranking)"
+  },
+  {
     "id": "imputation",
     "label": "Imputation"
   },
@@ -786,6 +790,10 @@ export const definitionBookmarks = [
   {
     "id": "tokenization",
     "label": "Tokenization"
+  },
+  {
+    "id": "tool-calling",
+    "label": "Tool Calling & Function Calling in LLMs"
   },
   {
     "id": "top-k-top-p",
@@ -3273,6 +3281,12 @@ export const definitionsData = [
         "question": "How would you improve performance?",
         "answer": "Measure retrieval and model latency separately, reduce unnecessary LLM calls, parallelize independent reads where safe, cache appropriate results, and evaluate smaller models for simpler tasks."
       }
+    ],
+    "interviewAnswers": [
+      {
+        "question": "How would you manage state, memory, and conditional routing in LangGraph?",
+        "answer": "1) State: Define a central TypedDict or Pydantic model with operator reducers (e.g. Annotated[list, operator.add]) so node updates append to messages without overwriting history. 2) Memory: Use Checkpointers (MemorySaver for dev, PostgresSaver/RedisSaver for production) keyed by thread_id for multi-turn persistence, time-travel debugging, and human-in-the-loop pauses (interrupt_before). 3) Conditional Routing: Use add_conditional_edges with router functions inspecting state values to route dynamically to tool nodes, human approval, or END, enforcing strict iteration caps (max 5) to kill infinite loops."
+      }
     ]
   },
   {
@@ -5256,7 +5270,13 @@ export const definitionsData = [
         "example": "df.groupby('category')['price'].mean()"
       }
     ],
-    "takeaway": "In production AI pipelines, raw data is never clean. Pandas serves as the primary ETL and exploratory data analysis (EDA) tool to sanitize, normalize, and inspect tabular features before feeding them into embedding generators or model trainers."
+    "takeaway": "In production AI pipelines, raw data is never clean. Pandas serves as the primary ETL and exploratory data analysis (EDA) tool to sanitize, normalize, and inspect tabular features before feeding them into embedding generators or model trainers.",
+    "interviewAnswers": [
+      {
+        "question": "How would you use Pandas for grouping, merging, filtering, and aggregation?",
+        "answer": "1) Filtering: Use boolean indexing df[(df['age'] > 25) & (df['status'] == 'ACTIVE')] or query() for readable expressions. 2) Grouping & Aggregation: Use df.groupby('dept').agg(avg_salary=('salary', 'mean'), count=('id', 'count')) or transform() to calculate group statistics while preserving the original dataframe shape. 3) Merging: Use pd.merge(df1, df2, on='user_id', how='left') for relational joins, and pd.concat([df_a, df_b], axis=0) to stack rows. 4) Optimization: Convert repeated strings to category types and use query-optimized vectorized operations over slow iterrows loops."
+      }
+    ]
   },
   {
     "id": "python",
@@ -6809,7 +6829,13 @@ export const definitionsData = [
         "desc": "Maintaining consistent, conflict-free state across asynchronous parallel workers."
       }
     ],
-    "takeaway": "Multi-agent orchestration elevates AI development from isolated prompt engineering into robust distributed systems engineering: breaking monolithic prompts into specialized agents governed by state machine graphs, deterministic routing, and recursion limits."
+    "takeaway": "Multi-agent orchestration elevates AI development from isolated prompt engineering into robust distributed systems engineering: breaking monolithic prompts into specialized agents governed by state machine graphs, deterministic routing, and recursion limits.",
+    "interviewAnswers": [
+      {
+        "question": "When would you choose a multi-agent architecture over a single agent?",
+        "answer": "Choose single agents for linear workflows with 1-4 tools. Choose multi-agent architectures when: 1) Tool schema overload: A single agent with 25+ tools suffers from prompt saturation, high hallucination rates, and tool selection errors. Multi-agent delegates to domain specialists with 2-3 tools each. 2) Conflicting persona requirements: One task requires strict code execution, another creative writing, another financial compliance. 3) Fault isolation: A failure in an analytics sub-agent does not crash the core payment agent. 4) Long-horizon iterative tasks: Where a Supervisor coordinates Planner, Researcher, and Critic agents."
+      }
+    ]
   },
   {
     "id": "coherence",
@@ -6930,7 +6956,13 @@ export const definitionsData = [
         "bestFor": "Transcripts, uninterrupted narrative streams, and conversational logs without clear formatting."
       }
     ],
-    "takeaway": "Chunking directly determines the quality ceiling of any RAG pipeline: chunks that are too large dilute vector embedding precision, while chunks that are too small amputate critical context. Optimal systems tune chunk size and overlap to match the document layout and query specificity."
+    "takeaway": "Chunking directly determines the quality ceiling of any RAG pipeline: chunks that are too large dilute vector embedding precision, while chunks that are too small amputate critical context. Optimal systems tune chunk size and overlap to match the document layout and query specificity.",
+    "interviewAnswers": [
+      {
+        "question": "What are different chunking strategies, and when would you use each?",
+        "answer": "1) Fixed-Size Chunking (e.g. 500 characters): Fast and simple for uniform text, but risks splitting sentences or table rows in half. 2) Recursive Character Chunking: Splits by paragraphs, sentences, then words, keeping natural prose boundaries intact. 3) Document-Structure / Heading-Based Chunking: Splits on H1/H2/H3 markdown headings with breadcrumb metadata; essential for technical manuals and API docs. 4) Semantic Chunking: Uses cosine distance between sequential sentence embeddings to split on topic shifts; ideal for unformatted transcripts. 5) Hierarchical / Parent-Document Chunking: Indexes small 100-token chunks for high-precision retrieval, but injects the 1,000-token parent section into the LLM prompt."
+      }
+    ]
   },
   {
     "id": "lexical-search",
@@ -11234,7 +11266,13 @@ export const definitionsData = [
         }
       ]
     },
-    "takeaway": "True system scalability in production AI combines multiple complementary patterns: horizontal stateless APIs behind a load balancer, asynchronous message queues to decouple bursty image uploads from compute-heavy YOLO/LLM inference, and autoscaling policies to dynamically adapt GPU clusters to incoming queue depth."
+    "takeaway": "True system scalability in production AI combines multiple complementary patterns: horizontal stateless APIs behind a load balancer, asynchronous message queues to decouple bursty image uploads from compute-heavy YOLO/LLM inference, and autoscaling policies to dynamically adapt GPU clusters to incoming queue depth.",
+    "interviewAnswers": [
+      {
+        "question": "How would you scale a GenAI application from thousands to millions of users?",
+        "answer": "1) Serving Optimization: Deploy models on vLLM with PagedAttention and continuous batching to 15x GPU throughput. 2) Multi-Tier Caching: Semantic caching in Redis to absorb 25-35% of identical queries at 0 token cost, plus prompt caching for static prefixes. 3) Decoupled Message Queues: Route interactive chats via WebSockets and offload batch tasks (PDF extraction, eval) to Kafka/Service Bus. 4) GPU Autoscaling: Use KEDA to autoscale Kubernetes pods based on vllm:num_requests_waiting rather than CPU. 5) Model Cascading: Route simple queries to 8B models (120 tok/sec) and reserve 70B for complex tasks."
+      }
+    ]
   },
   {
     "id": "centroid",
@@ -12991,7 +13029,13 @@ export const definitionsData = [
       "Evaluation Metrics: Must switch to Precision, Recall, F1-Score, and PR-AUC (Precision-Recall Curve). PR-AUC is far superior to ROC-AUC on imbalanced targets.",
       "Stratified Splitting: Always use StratifiedKFold to guarantee that training and testing splits maintain identical minority class proportions."
     ],
-    "code": "# Check class distribution and ratio\ncounts = df['target'].value_counts()\nprops = df['target'].value_counts(normalize=True) * 100\nimbalance_ratio = counts.iloc[0] / counts.iloc[1]\nprint(f'Imbalance Ratio: {imbalance_ratio:.2f} : 1')"
+    "code": "# Check class distribution and ratio\ncounts = df['target'].value_counts()\nprops = df['target'].value_counts(normalize=True) * 100\nimbalance_ratio = counts.iloc[0] / counts.iloc[1]\nprint(f'Imbalance Ratio: {imbalance_ratio:.2f} : 1')",
+    "interviewAnswers": [
+      {
+        "question": "How would you handle missing values, outliers, and class imbalance in an ML project?",
+        "answer": "1) Missing Values: Impute with median/mode for baselines, KNN/MICE for correlated features, add an is_missing indicator flag, or let LightGBM/XGBoost handle them natively during tree splitting. 2) Outliers: Detect with Z-score (|Z|>3) or IQR (1.5x); treat with RobustScaler, Winsorization capping at 1st/99th percentiles, or PowerTransform (never drop valid rare fraud transactions!). 3) Class Imbalance: Never use accuracy; evaluate with Macro F1 and PR-AUC. Apply class_weight='balanced', SMOTE oversampling on training splits, and calibrate decision thresholds (e.g. lowering probability cutoff to 0.15 for fraud detection)."
+      }
+    ]
   },
   {
     "id": "data-cleaning",
@@ -13423,7 +13467,13 @@ export const definitionsData = [
       "4. P95 & P99 Tail Latencies: Averages are dangerous in production because a single 10,000-token prompt can stall an entire batch. P99 measures the latency experienced by the slowest 1% of users. Defending P99 requires Chunked Prefill (splitting massive prompts into chunks so ongoing decodes aren't blocked) and request prioritization.",
       "Interview Answer: 'We split our latency SLAs into TTFT and TPOT. For interactive chat, TTFT directly impacts perceived responsiveness, so we set a p95 SLA of < 250ms using KV prefix caching and chunked prefill. For TPOT, our SLA is < 25ms/token on vLLM. By monitoring P99 latency via Prometheus, we spotted and resolved prefill starvation under burst traffic.'"
     ],
-    "code": "import time\nimport httpx\nimport numpy as np\n\nasync def benchmark_streaming_llm(endpoint_url: str, prompt: str):\n    start_time = time.perf_counter()\n    first_token_time = None\n    token_timestamps = []\n    \n    async with httpx.AsyncClient() as client:\n        async with client.stream(\"POST\", endpoint_url, json={\"prompt\": prompt}) as response:\n            async for chunk in response.aiter_lines():\n                now = time.perf_counter()\n                if first_token_time is None:\n                    first_token_time = now # TTFT Recorded\n                token_timestamps.append(now)\n                \n    total_time = time.perf_counter() - start_time\n    ttft = (first_token_time - start_time) * 1000 # in ms\n    generated_tokens = len(token_timestamps)\n    \n    # Time Per Output Token (TPOT)\n    decode_time = (total_time - (first_token_time - start_time))\n    tpot = (decode_time / (generated_tokens - 1) * 1000) if generated_tokens > 1 else 0\n    \n    # Inter-Token Latencies\n    itls = [np.diff(token_timestamps) * 1000] if len(token_timestamps) > 1 else [0]\n    \n    return {\n        \"TTFT_ms\": round(ttft, 2),\n        \"TPOT_ms\": round(tpot, 2),\n        \"Tokens_Per_Sec\": round(generated_tokens / decode_time, 2) if decode_time > 0 else 0,\n        \"Total_Latency_ms\": round(total_time * 1000, 2),\n        \"Total_Tokens\": generated_tokens\n    }\n\n# Example simulated printout:\n# {\"TTFT_ms\": 184.2, \"TPOT_ms\": 22.4, \"Tokens_Per_Sec\": 44.6, \"Total_Latency_ms\": 1140.5, \"Total_Tokens\": 43}"
+    "code": "import time\nimport httpx\nimport numpy as np\n\nasync def benchmark_streaming_llm(endpoint_url: str, prompt: str):\n    start_time = time.perf_counter()\n    first_token_time = None\n    token_timestamps = []\n    \n    async with httpx.AsyncClient() as client:\n        async with client.stream(\"POST\", endpoint_url, json={\"prompt\": prompt}) as response:\n            async for chunk in response.aiter_lines():\n                now = time.perf_counter()\n                if first_token_time is None:\n                    first_token_time = now # TTFT Recorded\n                token_timestamps.append(now)\n                \n    total_time = time.perf_counter() - start_time\n    ttft = (first_token_time - start_time) * 1000 # in ms\n    generated_tokens = len(token_timestamps)\n    \n    # Time Per Output Token (TPOT)\n    decode_time = (total_time - (first_token_time - start_time))\n    tpot = (decode_time / (generated_tokens - 1) * 1000) if generated_tokens > 1 else 0\n    \n    # Inter-Token Latencies\n    itls = [np.diff(token_timestamps) * 1000] if len(token_timestamps) > 1 else [0]\n    \n    return {\n        \"TTFT_ms\": round(ttft, 2),\n        \"TPOT_ms\": round(tpot, 2),\n        \"Tokens_Per_Sec\": round(generated_tokens / decode_time, 2) if decode_time > 0 else 0,\n        \"Total_Latency_ms\": round(total_time * 1000, 2),\n        \"Total_Tokens\": generated_tokens\n    }\n\n# Example simulated printout:\n# {\"TTFT_ms\": 184.2, \"TPOT_ms\": 22.4, \"Tokens_Per_Sec\": 44.6, \"Total_Latency_ms\": 1140.5, \"Total_Tokens\": 43}",
+    "interviewAnswers": [
+      {
+        "question": "How would you optimise latency, token usage, and inference costs?",
+        "answer": "1) Latency: Stream tokens over SSE (sub-300ms perceived TTFT), use L2-normalized dot-product HNSW search, and quantize models to AWQ 4-bit (W4A16). 2) Token Usage: Replace 50-page context stuffing with structured RAG (saving 95% of tokens), apply LLMLingua compression, and use sliding-window chat history. 3) Cost: Implement semantic Redis caching, prompt caching for static instructions, and route simple intent triage to lightweight self-hosted 8B models."
+      }
+    ]
   },
   {
     "id": "langgraph-summarizer",
@@ -13494,6 +13544,10 @@ export const definitionsData = [
       {
         "question": "What would end-to-end observability look like for a production GenAI app? What would you track across the LLM, retrieval pipeline, infrastructure, latency, cost, and failures?",
         "answer": "End-to-end GenAI observability spans 6 distinct telemetry planes: 1) LLM Telemetry: Prompt and completion token counts, model versions, prompt template commit hashes. 2) Retrieval Telemetry: Top-K chunk IDs, similarity score distributions, reranker score deltas, context compression ratios. 3) Infrastructure Telemetry: CPU, memory, GPU VRAM, KV cache block usage factor (in vLLM), and Redis cache hit rates. 4) Latency Metrics: Time To First Token (TTFT), Time Per Output Token (TPOT), and P95 end-to-end response time. 5) FinOps & Cost: Real-time spend per tenant, cost per 1K tokens, and savings from semantic caching. 6) Safety & Failures: HTTP 429 rate-limiting triggers, guardrail intervention rates (prompt injections), and asynchronous hallucination alerts."
+      },
+      {
+        "question": "How would you monitor and log an AI application in production?",
+        "answer": "Monitor across 3 core telemetry planes: 1) Distributed AI Tracing: Use OpenTelemetry/Langfuse to log complete prompt-to-response spans (chunk IDs, rerank scores, LLM parameters, tool inputs). 2) Infrastructure Telemetry: Prometheus/Grafana tracking TTFT, TPOT, requests/sec, GPU VRAM, and KV-cache block allocation. 3) Quality & Safety: Background asynchronous evaluation of the RAG Triad (Context Relevance, Groundedness, Answer Relevance), guardrail trigger rates, and user thumbs-up/down telemetry."
       }
     ]
   },
@@ -13550,6 +13604,10 @@ export const definitionsData = [
       {
         "question": "How would you implement rate limiting for an LLM app on Azure? Cover per-user limits, abuse prevention, and traffic spikes.",
         "answer": "We deploy a multi-layered rate-limiting architecture on Azure: 1) Per-User & Per-Tenant Limits via Azure API Management (APIM): We apply the <rate-limit-by-key> policy using the user's JWT subject or tenant ID. We enforce both RPM (Requests Per Minute) and TPM (Tokens Per Minute) quotas by decrementing user token balances based on response usage headers. 2) Distributed Token Bucket via Azure Cache for Redis: Multi-instance FastAPI containers use Redis Lua scripts for sub-millisecond atomic sliding-window rate limiting. 3) Abuse & DDoS Prevention: Azure Application Gateway WAF and Azure Front Door rate-limit unauthenticated public IPs (max 5 req/min) and block botnets. 4) Handling Traffic Spikes: Non-real-time requests (document analysis, batch runs) are buffered into Azure Service Bus queues, allowing backend workers to process them at a steady rate within Azure OpenAI capacity limits without dropping requests."
+      },
+      {
+        "question": "How would you handle authentication, authorization, and access control in an AI application?",
+        "answer": "1) Authentication (AuthN): Validate OAuth2 / OIDC JWT tokens minted by identity providers (Entra ID/Okta) at the API Gateway. 2) Authorization (AuthZ): Enforce least-privilege RBAC and object-level authorization (verifying the authenticated user owns the target record before executing any tool to prevent BOLA/IDOR). 3) Permission-Aware RAG: Apply single-stage metadata filtering inside the vector database traversal (allowed_groups contains user_group). 4) Tenant Isolation: Enforce dedicated namespaces in Pinecone and per-tenant databases in PostgreSQL so enterprise data never mixes."
       }
     ]
   },
@@ -13722,6 +13780,10 @@ export const definitionsData = [
       {
         "question": "Your chatbot takes 10 seconds to respond because you send the entire 50-page manual with every prompt. It's too slow and expensive. How would you fix it?",
         "answer": "Re-sending a 50-page manual with every prompt is paying to re-read the same book for every question. I fix this with a 6-step architectural pipeline: 1) Retrieve instead of resending: Chunk and embed the manual once, retrieving only the top 3-5 relevant chunks (~600 tokens vs 30,000 tokens). 2) Chunk with structure: Split on headings, keep titles/page numbers as metadata, and overlap lightly so steps aren't cut in half. 3) Rerank, then trim: Use a cross-encoder to reorder candidates and keep only what clears a threshold. 4) Cache what repeats: Use prompt caching for static instructions and semantic Redis caching for frequent questions. 5) Control output: Stream the response and cap max_tokens. 6) Measure: Track tokens per request, TTFT, and answer accuracy. The principle: send the model the few paragraphs that answer the question, not the whole document."
+      },
+      {
+        "question": "What was the biggest technical challenge in your project, and how did you solve it?",
+        "answer": "In Project 1 (Fashion AI Copilot), our biggest challenge was multi-modal late vector fusion latency. Retailers uploaded a garment image and typed modifications (e.g. 'in green linen'), but running cross-attention took 800ms+. We solved it by generating 1024-dim text and image embeddings in a shared coordinate space via Azure AI Vision, L2-normalizing vectors, and applying a weighted fusion formula (65% text, 35% image). Because normalized vectors simplify cosine similarity to a fast dot product, in-memory ChromaDB HNSW retrieval dropped from 800ms to under 5ms (a 99% speedup). In Project 2, our biggest challenge was cold-start multi-tenant onboarding, which we solved using our RAG fallback when rows < 100."
       }
     ],
     "details": [
@@ -13789,5 +13851,48 @@ export const definitionsData = [
       }
     ],
     "code": "# ==============================================================================\n# PRODUCTION FIX: RETRIEVE INSTEAD OF RESENDING (CHUNKING, RERANKING & CACHING)\n# ==============================================================================\nimport time\nfrom typing import List, Dict, Any\n# Simulated fast cross-encoder and vector store\n\nclass OptimizedManualAssistant:\n    def __init__(self, vector_store, semantic_cache):\n        self.vector_store = vector_store\n        self.semantic_cache = semantic_cache\n        self.reranker_threshold = 0.70\n\n    def answer_query(self, query: str) -> Dict[str, Any]:\n        start_time = time.time()\n\n        # Step 4: Check Semantic Cache for identical/similar previous questions\n        cached_result = self.semantic_cache.get(query, similarity_threshold=0.98)\n        if cached_result:\n            return {\n                \"answer\": cached_result, \n                \"latency_ms\": round((time.time() - start_time) * 1000, 2),\n                \"tokens_used\": 0,\n                \"source\": \"SEMANTIC_CACHE\"\n            }\n\n        # Step 1 & 2: Retrieve Top-15 Candidate Chunks (Pre-embedded by heading)\n        candidates = self.vector_store.similarity_search(query, top_k=15)\n\n        # Step 3: Cross-Encoder Rerank and Trim Below Threshold\n        # Scores each (query, chunk) pair; keeps only high-confidence matches\n        reranked = [c for c in candidates if c.get(\"rerank_score\", 0.0) >= self.reranker_threshold]\n        top_chunks = sorted(reranked, key=lambda x: x[\"rerank_score\"], reverse=True)[:3]\n\n        if not top_chunks:\n            # Fallback to top 2 if none cleared threshold\n            top_chunks = candidates[:2]\n\n        # Step 5: Construct Lean Prompt (600 tokens instead of 30,000 tokens)\n        context_text = \"\\n\\n\".join([f\"[{c['metadata']['section']} - Pg {c['metadata']['page']}]: {c['text']}\" for c in top_chunks])\n        \n        # Static prompt prefix is prompt-cached by model provider\n        messages = [\n            {\"role\": \"system\", \"content\": \"You are a concise technical manual assistant. Use only provided context.\"},\n            {\"role\": \"user\", \"content\": f\"Context:\\n{context_text}\\n\\nQuestion: {query}\"}\n        ]\n\n        # Call LLM with streaming & capped max_tokens\n        # In production: response = client.chat.completions.create(..., stream=True, max_tokens=300)\n        simulated_answer = \"To calibrate the sensor, press and hold the blue button for 3 seconds until LED turns green.\"\n        \n        # Save to semantic cache for future queries\n        self.semantic_cache.set(query, simulated_answer)\n        \n        elapsed_ms = round((time.time() - start_time) * 1000, 2)\n        return {\n            \"answer\": simulated_answer,\n            \"latency_ms\": elapsed_ms,\n            \"tokens_used\": 620,  # 98% reduction from 30,000 tokens\n            \"source\": \"RAG_RETRIEVAL\"\n        }"
+  },
+  {
+    "id": "tool-calling",
+    "title": "Tool Calling & Function Calling in LLMs (Agentic Decision Engine)",
+    "badge": "Agentic Decision Engine, JSON Schemas & Function Execution",
+    "summary": "Comprehensive technical analysis of how LLMs execute tool and function calling. Explains how the model decides when to invoke external tools via JSON schema semantic alignment, prompt instructions, tool_choice parameters, and parameter extraction, followed by host environment execution and response synthesis.",
+    "details": [
+      "Target Interview Question: 'Explain tool calling in LLMs. How does an agent decide when to use a tool?'",
+      "1. How Tool Calling Works Internally: The model does NOT execute code! The developer provides JSON Schema definitions of available functions (name, description, parameter types, required fields) in the API request. During generation, the LLM outputs a structured JSON payload containing the function name and arguments (e.g. <tool_call>{\"name\": \"get_weather\", \"arguments\": {\"city\": \"Tokyo\"}}</tool_call>). The host runtime (FastAPI / LangGraph) catches this, runs the Python code, and feeds the raw JSON return value back to the model with role: 'tool'. The LLM then synthesizes the final user answer.",
+      "2. How the Agent Decides When to Call a Tool: 1) Semantic Matching: The model compares the user query with each tool's 'description' string. Clear, precise docstrings are critical. 2) Knowledge Cutoff / Self-Awareness: Instruction-tuned models are trained to recognize when they lack real-time or private information (e.g. current stock price, user balance), shifting token probabilities toward the tool call tokens. 3) Contextual Instructions: System prompts like 'Always verify real-time inventory using check_stock before answering.'",
+      "3. Controlling Tool Selection via 'tool_choice': APIs allow controlling execution: 1) 'auto': Model decides whether to call a tool or reply directly; 2) 'required': Forces the model to call at least one tool; 3) {'type': 'function', 'function': {'name': 'xyz'}}: Hardcodes the exact tool to run; 4) 'none': Forbids tool usage.",
+      "4. Handling Multi-Tool & Parallel Calling: Modern models (GPT-4o, Claude 3.5, LLaMA 3.1) can emit multiple tool calls in a single turn (e.g. fetching balance and fetching transaction history concurrently), allowing async execution in parallel.",
+      "5. Interview Answer: 'Tool calling is a two-way protocol: the client passes JSON schemas, the LLM emits a structured call if the query semantically matches the tool description or requires external data, the backend executes the code, and the model synthesizes the answer. We control decision-making using tool_choice, clear function descriptions, and Pydantic validation.'"
+    ],
+    "interviewAnswers": [
+      {
+        "question": "Explain tool calling in LLMs. How does an agent decide when to use a tool?",
+        "answer": "Tool calling is a structured contract: 1) The developer provides JSON schemas defining available functions (name, description, parameters). 2) The LLM compares user intent against tool descriptions. If the query requires external data or matches a tool's capabilities, its attention mechanism predicts structured function-call tokens rather than conversational text. 3) The host application intercepts the call, executes the function (e.g., database query or API call), and passes the return data back with role: 'tool'. 4) The LLM reads the result and crafts the final answer. We control behavior using tool_choice ('auto', 'required', or specific function names) and enforce schema validation with Pydantic."
+      }
+    ],
+    "code": "# ==============================================================================\n# TOOL CALLING IN PYTHON: SCHEMA DEFINITION, PARSING & ASYNC EXECUTION\n# ==============================================================================\nimport json\nfrom typing import Dict, Any\n\n# 1. Define Tool JSON Schema\nTOOLS_SCHEMA = [\n    {\n        \"type\": \"function\",\n        \"function\": {\n            \"name\": \"get_stock_price\",\n            \"description\": \"Fetches real-time stock ticker price and trading volume.\",\n            \"parameters\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"ticker\": {\"type\": \"string\", \"description\": \"Stock symbol (e.g. AAPL, MSFT)\"}\n                },\n                \"required\": [\"ticker\"]\n            }\n        }\n    }\n]\n\n# 2. Local Python Tool Implementation\ndef get_stock_price(ticker: str) -> Dict[str, Any]:\n    # In production: query market API\n    return {\"ticker\": ticker.upper(), \"price\": 182.50, \"currency\": \"USD\", \"status\": \"MARKET_OPEN\"}\n\n# 3. Execution Engine: Matching Model Tool Call to Local Function\nTOOL_REGISTRY = {\n    \"get_stock_price\": get_stock_price\n}\n\ndef execute_agent_tool_call(tool_call_payload: Dict[str, Any]) -> str:\n    func_name = tool_call_payload.get(\"name\")\n    args = json.loads(tool_call_payload.get(\"arguments\", \"{}\"))\n    \n    if func_name in TOOL_REGISTRY:\n        result = TOOL_REGISTRY[func_name](**args)\n        return json.dumps(result)\n    raise ValueError(f\"Unknown tool: {func_name}\")\n\n# Simulated LLM response with tool call\nsimulated_llm_tool_call = {\n    \"name\": \"get_stock_price\",\n    \"arguments\": '{\"ticker\": \"AAPL\"}'\n}\n\ntool_output = execute_agent_tool_call(simulated_llm_tool_call)\nprint(\"Tool Execution Output (fed back to LLM):\", tool_output)"
+  },
+  {
+    "id": "hybrid-search",
+    "title": "Hybrid Search (BM25 + Dense Vector Search + Cross-Encoder Reranking)",
+    "badge": "Information Retrieval, Reciprocal Rank Fusion & Cross-Encoders",
+    "summary": "State-of-the-art information retrieval pipeline combining sparse lexical search (BM25 for exact keyword/ID matching) with dense semantic search (vector embeddings for conceptual understanding), fused via Reciprocal Rank Fusion (RRF) and refined with a cross-encoder reranker.",
+    "details": [
+      "Target Interview Question: 'Explain hybrid search using BM25, vector search, and reranking.'",
+      "1. Why Vector Search Alone Fails: Dense vector embeddings understand high-level concepts ('cold weather garments' -> 'jackets'), but fail miserably on exact alphanumeric strings, product SKUs ('PROD_9912'), error codes ('ERR_502'), model numbers, or rare proper names.",
+      "2. Why BM25 Alone Fails: BM25 uses term frequency and inverse document frequency (TF-IDF principles). It requires exact word matches. If a user asks for 'affordable lodging', BM25 misses documents containing 'budget motels'.",
+      "3. The Two-Tower Hybrid Solution: Run both retrieval pipelines simultaneously: Tower 1 (BM25) grabs top 30 keyword matches; Tower 2 (Vector Search) grabs top 30 semantic matches.",
+      "4. Reciprocal Rank Fusion (RRF): Merges the two ranked lists without needing score normalization (which is error-prone because vector cosine scores and BM25 scores have completely different distributions): RRF_Score(d) = sum(1 / (60 + rank_i(d))). Items appearing in both lists float straight to the top.",
+      "5. Stage 2: Cross-Encoder Reranker: Takes the top 30 fused candidates and runs them through a cross-encoder (e.g. BGE-Reranker-Large). Unlike bi-encoders, the cross-encoder computes full all-to-all cross-attention between every query token and document token, producing a precise 0.0 to 1.0 relevance score. Select the top 3-5 chunks for final generation.",
+      "6. Interview Answer: 'Hybrid search combines the exact-keyword precision of BM25 with the conceptual understanding of dense vector embeddings. We fuse their candidate rankings using Reciprocal Rank Fusion (RRF) and refine the top 30 results with a cross-encoder reranker, ensuring both exact SKUs and conceptual queries achieve maximum recall and precision.'"
+    ],
+    "interviewAnswers": [
+      {
+        "question": "Explain hybrid search using BM25, vector search, and reranking.",
+        "answer": "Hybrid search addresses the blind spots of individual retrievers: BM25 excels at exact keyword matching (SKUs, error codes, proper nouns) but misses synonyms; vector search understands conceptual semantics but struggles with exact alphanumeric strings. We query both in parallel, merge their rankings using Reciprocal Rank Fusion (RRF_Score = sum(1 / (60 + rank))), and pass the top 30 candidates to a Cross-Encoder reranker. The cross-encoder runs joint cross-attention over query and chunk tokens to prune candidates down to the top 3-5 high-precision chunks."
+      }
+    ],
+    "code": "# ==============================================================================\n# PRODUCTION HYBRID SEARCH: BM25 + DENSE VECTOR SEARCH + RECIPROCAL RANK FUSION\n# ==============================================================================\nfrom collections import defaultdict\nfrom typing import List, Dict, Any\n\ndef reciprocal_rank_fusion(\n    bm25_results: List[str], \n    vector_results: List[str], \n    k: int = 60\n) -> List[Dict[str, Any]]:\n    \"\"\"\n    Combines ranked lists from BM25 and Vector Search using RRF.\n    Formula: score(d) = sum(1 / (k + rank))\n    \"\"\"\n    rrf_scores = defaultdict(float)\n\n    for rank, doc_id in enumerate(bm25_results, start=1):\n        rrf_scores[doc_id] += 1.0 / (k + rank)\n\n    for rank, doc_id in enumerate(vector_results, start=1):\n        rrf_scores[doc_id] += 1.0 / (k + rank)\n\n    # Sort descending by fused score\n    sorted_docs = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)\n    return [{\"doc_id\": doc_id, \"rrf_score\": round(score, 5)} for doc_id, score in sorted_docs]\n\n# Example Demonstration\nbm25_top = [\"doc_sku_401\", \"doc_overview\", \"doc_pricing\"]\nvector_top = [\"doc_overview\", \"doc_features\", \"doc_sku_401\"]\n\nfused = reciprocal_rank_fusion(bm25_top, vector_top)\nfor item in fused:\n    print(f\"Doc: {item['doc_id']} | Fused RRF Score: {item['rrf_score']}\")"
   }
 ];
