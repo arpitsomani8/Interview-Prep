@@ -23844,6 +23844,100 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                
+                {/* BM25 Interactive Formula & Pillars Card */}
+                {item.formulaBreakdown && (
+                  <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-amber-500/40 shadow-2xl mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2 text-amber-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                        <span>{item.formulaBreakdown.title}</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800/60 shrink-0 font-semibold">
+                        Okapi BM25 Ranking Formula
+                      </span>
+                    </div>
+
+                    {/* The Mathematical Formula Box */}
+                    <div className="p-4 rounded-xl bg-black/90 border border-amber-500/30 space-y-2">
+                      <span className="text-[10px] font-mono uppercase text-amber-400 font-bold block">
+                        BM25 Score Equation:
+                      </span>
+                      <div className="font-mono text-xs sm:text-sm text-amber-200 overflow-x-auto p-2.5 bg-zinc-950 rounded-lg border border-zinc-800">
+                        {item.formulaBreakdown.formula}
+                      </div>
+                      <span className="text-[10px] font-mono uppercase text-zinc-400 font-bold block pt-1">
+                        Robertson-Spärck Jones IDF Equation:
+                      </span>
+                      <div className="font-mono text-xs text-cyan-200 overflow-x-auto p-2 bg-zinc-950 rounded-lg border border-zinc-800">
+                        {item.formulaBreakdown.idfFormula}
+                      </div>
+                    </div>
+
+                    {/* 4 Formula Parameter Explanations */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.formulaBreakdown.parameters.map((p, pIdx) => (
+                        <div key={pIdx} className="p-3.5 rounded-xl bg-zinc-950/90 border border-zinc-800 space-y-1.5">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-mono font-bold text-amber-300">{p.param}</span>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                              Default: {p.defaultVal}
+                            </span>
+                          </div>
+                          <span className="text-[11px] font-mono text-cyan-300 font-semibold block">{p.role}</span>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">{p.detail}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* 4 Core Pillars */}
+                    {item.fourCorePillars && (
+                      <div className="space-y-2 pt-2 border-t border-zinc-800/80">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400 block">
+                          4 Architectural Pillars of BM25
+                        </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                          {item.fourCorePillars.map((pil) => (
+                            <div key={pil.step} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                              <div>
+                                <div className="flex items-center justify-between gap-1 mb-1">
+                                  <span className="text-[10px] font-mono font-bold text-zinc-500">PILLAR {pil.step}</span>
+                                  <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                    {pil.badge}
+                                  </span>
+                                </div>
+                                <h5 className={`text-xs font-mono font-bold ${pil.accent}`}>{pil.name}</h5>
+                              </div>
+                              <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-1">{pil.desc}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Production Parameter Tuning Guidelines */}
+                    {item.tuningGuidelines && (
+                      <div className="space-y-2 pt-2 border-t border-zinc-800/80">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 block">
+                          Production Hyperparameter Tuning Guidelines
+                        </span>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          {item.tuningGuidelines.map((tune, tIdx) => (
+                            <div key={tIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                              <span className="text-xs font-bold text-white block">{tune.scenario}</span>
+                              <div className="flex items-center gap-2 text-[10px] font-mono">
+                                <span className="px-2 py-0.5 rounded bg-amber-950/60 text-amber-300 border border-amber-800/60 font-semibold">{tune.recommendedK1}</span>
+                                <span className="px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/60 font-semibold">{tune.recommendedB}</span>
+                              </div>
+                              <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-1">{tune.rationale}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Bulleted Detail Points */}
                 <ul className="space-y-2.5 pt-2 border-t border-zinc-800/80">
                   {item.details.map((detail, dIdx) => (

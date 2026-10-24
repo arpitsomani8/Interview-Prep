@@ -116,6 +116,10 @@ export const definitionBookmarks = [
     "label": "Blockchain"
   },
   {
+    "id": "bm25",
+    "label": "BM25 (Best Matching 25 / Lexical Search Algorithm)"
+  },
+  {
     "id": "boosting",
     "label": "Boosting"
   },
@@ -14284,5 +14288,115 @@ export const definitionsData = [
       }
     ],
     "code": "from rank_bm25 import BM25Okapi\nimport numpy as np\n\n# 1. Corpus of Documents\ndocuments = [\n    \"Error code ERR_502 occurs when the upstream gateway times out.\",\n    \"Vehicle insurance policy extension procedures and payment plans.\",\n    \"How to troubleshoot server 502 bad gateway connection issues.\",\n    \"Automobile collision coverage and annual deductible rates.\"\n]\n\ntokenized_corpus = [doc.lower().split(\" \") for doc in documents]\n\n# 2. BM25 (Sparse Keyword Retrieval)\nbm25 = BM25Okapi(tokenized_corpus)\nquery = \"troubleshoot ERR_502 timeout\"\ntokenized_query = query.lower().split(\" \")\nbm25_scores = bm25.get_scores(tokenized_query)\nbm25_ranked = np.argsort(bm25_scores)[::-1]  # Highest to lowest\n\n# 3. Dense Vector Retrieval (Mocked embeddings)\n# In production: embeddings = model.encode(documents)\ndense_scores = np.array([0.82, 0.12, 0.88, 0.10])\ndense_ranked = np.argsort(dense_scores)[::-1]\n\n# 4. Hybrid Retrieval via Reciprocal Rank Fusion (RRF)\n# Formula: RRF_Score(d) = sum(1 / (k + rank(d))) with k = 60\nk = 60\nrrf_scores = {}\n\nfor rank, doc_idx in enumerate(bm25_ranked):\n    rrf_scores[doc_idx] = rrf_scores.get(doc_idx, 0) + (1.0 / (k + rank + 1))\n\nfor rank, doc_idx in enumerate(dense_ranked):\n    rrf_scores[doc_idx] = rrf_scores.get(doc_idx, 0) + (1.0 / (k + rank + 1))\n\n# Final Hybrid Ranking\nhybrid_ranked = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)\nprint(\"Top Hybrid Chunk:\", documents[hybrid_ranked[0][0]])"
+  },
+  {
+    "id": "bm25",
+    "title": "BM25 (Best Matching 25 / Sparse Lexical Ranking Algorithm)",
+    "badge": "Probabilistic Information Retrieval, Inverted Indexes & TF-IDF Evolution",
+    "summary": "BM25 (Best Matching 25) is the industry-standard probabilistic ranking function for sparse lexical keyword retrieval used in Lucene, Elasticsearch, OpenSearch, and modern hybrid RAG pipelines. An evolution of TF-IDF, it scores candidate documents based on term frequency (with non-linear saturation controlled by k1) and document length normalization (controlled by b), providing deterministic, sub-millisecond search for exact keywords, error codes, and alphanumeric identifiers.",
+    "formulaBreakdown": {
+      "title": "The BM25 Mathematical Formula & Parameter Deconstruction",
+      "formula": "Score(D, Q) = ∑_{i=1}^n IDF(q_i) · [ f(q_i, D) · (k1 + 1) ] / [ f(q_i, D) + k1 · (1 - b + b · (|D| / avgdl)) ]",
+      "idfFormula": "IDF(q_i) = ln( (N - n(q_i) + 0.5) / (n(q_i) + 0.5) + 1 )",
+      "parameters": [
+        {
+          "param": "k1 (Term Frequency Saturation)",
+          "defaultVal": "1.2 to 2.0 (standard 1.2 or 1.5)",
+          "role": "Limits the impact of repeated query terms.",
+          "detail": "In classic TF-IDF, score grows linearly with term frequency (meaning a spammer repeating a word 50 times gets 50x the score). BM25 introduces asymptotic saturation: as frequency f(q, D) rises, the score contribution approaches an upper ceiling of (k1 + 1). Higher k1 allows term frequency to matter more; lower k1 flattens it rapidly."
+        },
+        {
+          "param": "b (Document Length Normalization)",
+          "defaultVal": "0.75 (range 0.0 to 1.0)",
+          "role": "Penalizes abnormally verbose documents.",
+          "detail": "Controls how aggressively document length is penalized relative to the corpus average length (avgdl). If b = 1.0, full length normalization is applied (a 10,000-word doc mentioning a term twice is heavily penalized vs a 50-word tweet). If b = 0.0, length normalization is completely disabled."
+        },
+        {
+          "param": "IDF(q_i) (Inverse Document Frequency)",
+          "defaultVal": "Corpus-dependent",
+          "role": "Measures token rarity and specificity.",
+          "detail": "N is the total number of documents; n(q_i) is the number of documents containing query token q_i. Rare domain terms (e.g. 'ERR_502_BAD_GATEWAY' or 'propranolol') get high IDF weights; ubiquitous words ('the', 'system', 'procedure') get near-zero IDF weights."
+        },
+        {
+          "param": "|D| / avgdl (Relative Document Length)",
+          "defaultVal": "Ratio around 1.0",
+          "role": "Ratio of current document length to corpus average.",
+          "detail": "Compares the token count of document D to the average document token count (avgdl) across the entire index, scaling the length penalty proportionally."
+        }
+      ]
+    },
+    "fourCorePillars": [
+      {
+        "step": "01",
+        "name": "Term Frequency Saturation",
+        "badge": "Anti-Keyword Stuffing",
+        "accent": "text-amber-400",
+        "desc": "Unlike raw TF which scales linearly without bound, BM25 uses a diminishing returns curve. Going from 0 to 1 mention gives a massive score jump; going from 10 to 11 mentions gives almost zero extra score."
+      },
+      {
+        "step": "02",
+        "name": "Document Length Normalization",
+        "badge": "Fairness Across Lengths",
+        "accent": "text-cyan-400",
+        "desc": "Long documents naturally contain more words by chance. BM25 normalizes by document length so that a 50-page manual doesn't outrank a precise 2-paragraph FAQ that answers the query directly."
+      },
+      {
+        "step": "03",
+        "name": "Exact Alphanumeric Matching",
+        "badge": "No Semantic Blurring",
+        "accent": "text-emerald-400",
+        "desc": "Dense embeddings group words by conceptual similarity, blurring exact characters. BM25 uses an inverted index to guarantee 100% exact retrieval on error codes (ERR_404), serial numbers, and SKUs."
+      },
+      {
+        "step": "04",
+        "name": "Deterministic & Ultra-Fast",
+        "badge": "Sub-Millisecond CPU",
+        "accent": "text-purple-400",
+        "desc": "Requires zero GPU inference or embedding API calls. Inverted index postings lists are traversed in under 2ms on commodity CPU hardware with transparent, debuggable scoring."
+      }
+    ],
+    "tuningGuidelines": [
+      {
+        "scenario": "Uniform-Sized Chunks (RAG Pipelines)",
+        "recommendedK1": "k1 = 1.2",
+        "recommendedB": "b = 0.4 to 0.5",
+        "rationale": "When documents are already pre-chunked to fixed token windows (e.g., 512 tokens with 50-token overlap), chunk length variance is low, so document length penalty (b) should be relaxed."
+      },
+      {
+        "scenario": "Heterogeneous Documents (Web Pages, Emails, Books)",
+        "recommendedK1": "k1 = 1.2 to 1.5",
+        "recommendedB": "b = 0.75",
+        "rationale": "Default Elasticsearch setting. Perfectly balances short email subjects against multi-page attached reports."
+      },
+      {
+        "scenario": "Technical Code Search & Error Logs",
+        "recommendedK1": "k1 = 1.8 to 2.0",
+        "recommendedB": "b = 0.5 to 0.6",
+        "rationale": "Repeated mentions of a specific function name or variable in a file are a strong signal of relevance, so k1 is raised to reward term frequency more generously."
+      }
+    ],
+    "details": [
+      "Definition & Lineage: BM25 (Best Matching 25) was developed in the 1990s by Stephen Robertson and Karen Spärck Jones. It is part of the Okapi BM family and represents the state of the art in probabilistic lexical retrieval.",
+      "The Saturation Effect: In standard TF-IDF, TF is linear: score = TF * IDF. If document A repeats a word 50 times, its score is 50x. BM25 replaces TF with [TF * (k1 + 1)] / [TF + k1 * normalization], creating an S-curve that asymptotically caps the maximum contribution of any single query term.",
+      "Role in Modern RAG (Hybrid Search): Pure vector search has a severe blindspot for exact alphanumeric tokens (part numbers, legal citations, error codes). In production enterprise RAG, BM25 runs concurrently with dense vector search; results are merged via Reciprocal Rank Fusion (RRF) before being passed to a cross-encoder reranker.",
+      "Inverted Index Foundation: BM25 operates on an inverted index (a hashmap of term -> list of [doc_id, positions, term_freq]). This yields O(terms) lookup latency (<2ms on millions of documents) without requiring GPU compute.",
+      "The Vocabulary Mismatch Limitation: BM25 has zero semantic understanding. If a query uses 'car' and the document says 'automobile', BM25 assigns a score of 0. This is why BM25 alone is insufficient for conversational AI and must be paired with dense embeddings in a hybrid pipeline.",
+      "Interview Summary: 'BM25 is a probabilistic lexical ranking algorithm that improves on TF-IDF in two major ways: non-linear term frequency saturation via parameter k1, and document length normalization via parameter b. In our RAG architecture, BM25 provides the sparse keyword retrieval pillar, ensuring zero missed hits on exact error codes and SKUs.'"
+    ],
+    "interviewAnswers": [
+      {
+        "question": "What is the difference between TF-IDF and BM25?",
+        "answer": "Classic TF-IDF has two fatal flaws that BM25 fixes: 1) Linear Term Frequency: In TF-IDF, a document that repeats a keyword 100 times gets 100 times the score, making it vulnerable to keyword stuffing. BM25 introduces parameter k1 (typically 1.2-1.5) to saturate term frequency asymptotically. 2) Document Length Bias: In TF-IDF, long documents naturally score higher simply because they contain more total words. BM25 introduces parameter b (typically 0.75) which penalizes documents that are longer than the average document length in the corpus."
+      },
+      {
+        "question": "What do the parameters k1 and b do in BM25, and how would you tune them?",
+        "answer": "k1 controls term frequency saturation. A small k1 (e.g. 1.0) means term frequency flattens out very quickly—mentioning a word once or ten times yields nearly the same score. A large k1 (e.g. 2.0) rewards repeated mentions more. b controls document length normalization (0 to 1.0). At b=1.0, length is fully penalized; at b=0, length normalization is turned off completely. In production RAG where chunks are uniform (e.g. 512 tokens), we lower b to 0.4-0.5 since chunk length variance is small, and keep k1 around 1.2."
+      },
+      {
+        "question": "Why do we still need BM25 when modern embedding models (e.g., OpenAI text-embedding-3) exist?",
+        "answer": "Dense embeddings map tokens into a continuous semantic latent space. This is great for understanding synonyms and colloquial intent, but it compresses and blurs rare alphanumeric tokens, error codes (like ERR_502_BAD_GATEWAY), product SKUs, and version numbers. If a customer searches for a specific error code, dense vector search often retrieves chunks about general error handling rather than the exact code. BM25 guarantees deterministic, exact character-level matches in sub-milliseconds on CPU."
+      }
+    ],
+    "pythonCode": "import math\nfrom collections import Counter\nfrom rank_bm25 import BM25Okapi\n\n# ==========================================\n# 1. High-Level Usage with rank-bm25 Library\n# ==========================================\ncorpus = [\n    \"Error code ERR_502 occurs when the upstream gateway times out.\",\n    \"Vehicle insurance policy extension procedures and payment plans.\",\n    \"How to troubleshoot server 502 bad gateway connection issues.\",\n    \"Automobile collision coverage and annual deductible rates.\"\n]\n\ntokenized_corpus = [doc.lower().split(\" \") for doc in corpus]\nbm25 = BM25Okapi(tokenized_corpus, k1=1.5, b=0.75)\n\nquery = \"troubleshoot ERR_502 timeout\"\ntokenized_query = query.lower().split(\" \")\nscores = bm25.get_scores(tokenized_query)\n\nfor idx, score in enumerate(scores):\n    print(f\"Doc {idx}: Score = {score:.4f} -> {corpus[idx]}\")\n\n# ==========================================\n# 2. Pure Python BM25 Formula Implementation\n# ==========================================\nclass PureBM25:\n    def __init__(self, corpus, k1=1.2, b=0.75):\n        self.k1 = k1\n        self.b = b\n        self.corpus = corpus\n        self.N = len(corpus)\n        self.doc_lens = [len(doc) for doc in corpus]\n        self.avgdl = sum(self.doc_lens) / self.N\n        self.doc_freqs = Counter()\n        self.term_freqs = [Counter(doc) for doc in corpus]\n        \n        for doc in corpus:\n            for term in set(doc):\n                self.doc_freqs[term] += 1\n\n    def idf(self, term):\n        n = self.doc_freqs.get(term, 0)\n        # Standard Lucene/BM25 IDF with smoothing\n        return math.log(1.0 + (self.N - n + 0.5) / (n + 0.5))\n\n    def score(self, query):\n        scores = []\n        for i, doc in enumerate(self.corpus):\n            doc_len = self.doc_lens[i]\n            score = 0.0\n            for term in query:\n                if term not in self.term_freqs[i]:\n                    continue\n                tf = self.term_freqs[i][term]\n                numerator = tf * (self.k1 + 1.0)\n                denominator = tf + self.k1 * (1.0 - self.b + self.b * (doc_len / self.avgdl))\n                score += self.idf(term) * (numerator / denominator)\n            scores.append(score)\n        return scores\n\n# Test Pure Implementation\npure_bm25 = PureBM25(tokenized_corpus, k1=1.5, b=0.75)\npure_scores = pure_bm25.score(tokenized_query)\nprint(\"\\nTop Pure BM25 Match:\", corpus[pure_scores.index(max(pure_scores))])"
   }
 ];
