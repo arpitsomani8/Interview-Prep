@@ -6,7 +6,7 @@ export default function IntroPage() {
       {/* Minimal Speech Card */}
       <div className="rounded-3xl bg-[#0a0a0c] border border-zinc-800/90 p-8 sm:p-12 space-y-5 text-zinc-200 text-base sm:text-lg leading-relaxed shadow-2xl">
         <p className="text-zinc-300 font-medium">
-          Good Afternoon,
+          Good Morning / Good Afternoon,
         </p>
 
         <p>

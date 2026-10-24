@@ -5,7 +5,7 @@ export const candidateIntro = {
   currentCompany: "Pratham Software",
   roleTitle: "Senior AI / ML & Python Backend Engineer",
   speechTitle: "Official Interview Opening Introduction Script",
-  verbatimScript: `Good Afternoon,
+  verbatimScript: `Good Morning / Good Afternoon,
 
 My name is Arpit Somani, and I’m from Bhilwara, Rajasthan. I have over four years of experience in software development, primarily working with Python, backend development, and AI/ML-based solutions.
 
