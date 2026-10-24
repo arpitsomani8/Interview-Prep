@@ -5,12 +5,20 @@ import { Bookmark, ArrowUp, MessageSquareQuote, Sparkles, CheckCircle2 } from 'l
 export default function YoloPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
 
-  const scrollToId = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setActiveBookmark(id);
+  const selectBookmark = (id) => {
+    if (activeBookmark === id) {
+      setActiveBookmark(null);
+      return;
     }
+    setActiveBookmark(id);
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const el = document.getElementById('active-content-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    });
   };
 
   const scrollToBookmarks = () => {
@@ -19,6 +27,15 @@ export default function YoloPage() {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+
+  const currentIndex = activeBookmark 
+    ? yoloData.bookmarkedConcepts.findIndex(b => b.id === activeBookmark) 
+    : -1;
+  const currentBookmarkObj = currentIndex >= 0 ? yoloData.bookmarkedConcepts[currentIndex] : null;
+  const prevBookmark = currentIndex > 0 ? yoloData.bookmarkedConcepts[currentIndex - 1] : null;
+  const nextBookmark = (currentIndex >= 0 && currentIndex < yoloData.bookmarkedConcepts.length - 1) 
+    ? yoloData.bookmarkedConcepts[currentIndex + 1] 
+    : null;
 
   return (
     <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
@@ -126,7 +143,7 @@ export default function YoloPage() {
             <span>Bookmarked Technical Concepts & Interview Defense</span>
           </div>
           <p className="text-sm text-zinc-400">
-            Click any concept bookmark below to jump directly to its technical breakdown and interview defense rationale:
+            Click any concept bookmark below to view its technical breakdown and interview defense rationale:
           </p>
 
           {/* Clickable Bookmark Badges with Alphabet-Change Comma Separators */}
@@ -145,7 +162,7 @@ export default function YoloPage() {
               return (
                 <React.Fragment key={item.id}>
                   <button
-                    onClick={() => scrollToId(item.id)}
+                    onClick={() => selectBookmark(item.id)}
                     className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 border cursor-pointer ${
                       activeBookmark === item.id
                         ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/10'
@@ -167,22 +184,75 @@ export default function YoloPage() {
           </div>
         </div>
 
-        {/* Detailed Concept Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {yoloData.bookmarkedConcepts.map((item) => (
-            <div
-              key={item.id}
-              id={item.id}
-              className={`scroll-mt-24 rounded-2xl bg-[#0a0a0c] p-6 sm:p-7 space-y-4 shadow-xl transition flex flex-col justify-between border ${
-                activeBookmark === item.id
-                  ? 'border-cyan-500 shadow-cyan-500/10'
-                  : 'border-zinc-800 hover:border-zinc-700'
-              }`}
-            >
-              <div className="space-y-3">
+        {/* Concept Content Section: Hidden Initially until a Bookmark is Clicked */}
+        <div id="active-content-section" className="space-y-4 scroll-mt-24 pt-2">
+          {!activeBookmark && (
+            <div className="rounded-2xl border border-dashed border-zinc-800 bg-zinc-950/40 p-8 text-center space-y-2">
+              <Bookmark className="w-8 h-8 text-cyan-500/60 mx-auto" />
+              <h4 className="text-sm font-semibold text-zinc-300">Select a Technical Bookmark Above</h4>
+              <p className="text-xs text-zinc-500 max-w-md mx-auto">
+                Click any of the {yoloData.bookmarkedConcepts.length} bookmarked architecture concepts above to reveal its detailed technical defense and implementation rationale.
+              </p>
+            </div>
+          )}
+
+          {currentBookmarkObj && (
+            <>
+              {/* Active Topic Sticky Navigation Bar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-zinc-950/90 border border-cyan-800/40 backdrop-blur-md shadow-lg">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                    Concept {currentIndex + 1} of {yoloData.bookmarkedConcepts.length}
+                  </span>
+                  <span className="text-xs font-bold text-white font-mono truncate max-w-xs sm:max-w-md">
+                    {currentBookmarkObj.title}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {prevBookmark && (
+                    <button
+                      onClick={() => selectBookmark(prevBookmark.id)}
+                      className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-300 hover:text-white border border-zinc-800 transition flex items-center gap-1 cursor-pointer"
+                      title={`Previous: ${prevBookmark.title}`}
+                    >
+                      <span>← Prev</span>
+                    </button>
+                  )}
+                  {nextBookmark && (
+                    <button
+                      onClick={() => selectBookmark(nextBookmark.id)}
+                      className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-300 hover:text-white border border-zinc-800 transition flex items-center gap-1 cursor-pointer"
+                      title={`Next: ${nextBookmark.title}`}
+                    >
+                      <span>Next →</span>
+                    </button>
+                  )}
+                  <button
+                    onClick={scrollToBookmarks}
+                    className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-400 hover:text-cyan-400 border border-zinc-800 transition flex items-center gap-1 cursor-pointer"
+                    title="Jump to Bookmarks"
+                  >
+                    <span>Bookmarks ↑</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveBookmark(null)}
+                    className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-rose-950/50 text-xs font-mono text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-900 transition flex items-center gap-1 cursor-pointer"
+                    title="Close Section"
+                  >
+                    <span>✕ Close</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* ONLY Render Active Bookmark Card */}
+              <div
+                id={currentBookmarkObj.id}
+                className="scroll-mt-24 rounded-2xl bg-[#0a0a0c] p-6 sm:p-8 space-y-5 shadow-2xl transition border border-cyan-500 shadow-cyan-500/10"
+              >
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] uppercase font-mono px-2.5 py-1 rounded-md bg-zinc-900 text-cyan-300 border border-zinc-800 font-semibold">
-                    {item.badge}
+                    {currentBookmarkObj.badge}
                   </span>
                   <button
                     onClick={scrollToBookmarks}
@@ -193,24 +263,26 @@ export default function YoloPage() {
                     <ArrowUp className="w-3 h-3" />
                   </button>
                 </div>
-                <h3 className="text-xl font-bold text-white tracking-tight">
-                  {item.title}
-                </h3>
-                <p className="text-xs sm:text-sm text-cyan-400/90 font-medium italic bg-cyan-950/20 border border-cyan-900/40 rounded-lg p-2.5">
-                  {item.summary}
-                </p>
-              </div>
+                <div className="space-y-2">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                    {currentBookmarkObj.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-cyan-400/90 font-medium italic bg-cyan-950/20 border border-cyan-900/40 rounded-lg p-3">
+                    {currentBookmarkObj.summary}
+                  </p>
+                </div>
 
-              <ul className="space-y-2.5 pt-3 border-t border-zinc-800/80">
-                {item.details.map((detail, dIdx) => (
-                  <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
-                    <span className="text-cyan-400 font-bold mt-0.5">•</span>
-                    <span>{detail}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+                <ul className="space-y-3 pt-3 border-t border-zinc-800/80">
+                  {currentBookmarkObj.details.map((detail, dIdx) => (
+                    <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
+                      <span className="text-cyan-400 font-bold mt-0.5 text-base leading-none">•</span>
+                      <span>{detail}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
