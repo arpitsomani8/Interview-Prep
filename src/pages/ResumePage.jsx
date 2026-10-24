@@ -173,16 +173,6 @@ export default function ResumePage() {
 
       {/* Concept Content Section: Hidden Initially until a Bookmark is Clicked */}
       <div id="active-content-section" className="space-y-4 scroll-mt-24 pt-2">
-        {!activeBookmark && (
-          <div className="rounded-2xl border border-dashed border-zinc-800 bg-zinc-950/40 p-8 text-center space-y-2">
-            <Bookmark className="w-8 h-8 text-cyan-500/60 mx-auto" />
-            <h4 className="text-sm font-semibold text-zinc-300">Select an Engineering Concept Above</h4>
-            <p className="text-xs text-zinc-500 max-w-md mx-auto">
-              Click any of the {resumeData.bookmarkedConcepts.length} concepts above to inspect its full-stack implementation details and interview defense.
-            </p>
-          </div>
-        )}
-
         {currentBookmarkObj && (
           <>
             {/* Active Topic Sticky Navigation Bar */}
