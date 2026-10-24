@@ -6,7 +6,6 @@ import {
   MessageSquareQuote, 
   Sparkles, 
   CheckCircle2, 
-  FileText, 
   Code2, 
   Check, 
   Copy,
@@ -59,29 +58,6 @@ export default function ResumePage() {
 
   return (
     <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
-
-      {/* Target Resume Bullet Points Card */}
-      <div className="rounded-2xl bg-[#0a0a0c] border border-cyan-500/30 p-6 sm:p-7 space-y-4 shadow-xl">
-        <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-          <div className="flex items-center gap-2 text-cyan-400 font-bold text-sm uppercase tracking-wider font-mono">
-            <FileText className="w-4 h-4" />
-            <span>Target Resume Bullet Points to Defend</span>
-          </div>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-            ReactJS + Flask Full-Stack
-          </span>
-        </div>
-        <div className="space-y-2.5">
-          {resumeData.resumeBullets.map((bullet, idx) => (
-            <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/80">
-              <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-              <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
-                {bullet}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* 90-Second Interview Script Banner */}
       <div className="rounded-2xl bg-[#0a0a0c] border border-indigo-500/30 p-6 sm:p-8 space-y-4 shadow-xl">
