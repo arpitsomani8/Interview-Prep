@@ -332,8 +332,8 @@ export const definitionBookmarks = [
     "label": "Frontier LLMs (OpenAI, Claude, Gemini)"
   },
   {
-    "id": "gaussian-distribution",
-    "label": "Gaussian Distribution"
+    "id": "gradient-descent",
+    "label": "Gradient Descent"
   },
   {
     "id": "genai-vs-traditional-ai",
@@ -356,12 +356,12 @@ export const definitionBookmarks = [
     "label": "GPU / CUDA"
   },
   {
-    "id": "gradient-descent",
-    "label": "Gradient Descent"
-  },
-  {
     "id": "graph-of-thoughts",
     "label": "Graph-of-Thoughts (GoT)"
+  },
+  {
+    "id": "gaussian-distribution",
+    "label": "Gaussian Distribution"
   },
   {
     "id": "hallucination",
