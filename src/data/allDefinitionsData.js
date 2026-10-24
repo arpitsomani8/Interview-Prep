@@ -848,12 +848,12 @@ export const definitionBookmarks = [
     "label": "Univariate Analysis"
   },
   {
-    "id": "update-deployed-model",
-    "label": "Update a Deployed Model"
-  },
-  {
     "id": "uvicorn",
     "label": "Uvicorn"
+  },
+  {
+    "id": "update-deployed-model",
+    "label": "Update a Deployed Model"
   },
   {
     "id": "variance",
