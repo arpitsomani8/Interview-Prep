@@ -103,6 +103,17 @@ export const introData = {
         "Strict on-premises PostgreSQL server (<1ms LAN latency, 100% offline uptime)",
         "High-speed OCR waybill recovery for orphan cartons with damaged barcodes"
       ]
+    },
+    {
+      id: "resume-platform",
+      title: "Resume Platform",
+      category: "Full-Stack Web Application (ReactJS + Flask)",
+      stack: ["ReactJS", "Python", "Flask", "Jinja2", "RESTful APIs", "WeasyPrint", "Modern CSS"],
+      highlights: [
+        "Designed and developed a web application using ReactJS and Flask to facilitate resume creation and management for users",
+        "Implemented backend APIs to handle user data input and generate dynamic, customized resumes",
+        "Collaborated on frontend development to ensure a seamless user experience, with a strong focus on usability and visual appeal"
+      ]
     }
   ]
 };

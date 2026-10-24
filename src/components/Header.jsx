@@ -1,4 +1,4 @@
-import { Layers, Sparkles, Cpu, Eye, FileCode } from 'lucide-react';
+import { Layers, Sparkles, Cpu, Eye, FileCode, FileText } from 'lucide-react';
 
 export default function Header({ activeTab, setActiveTab }) {
   const tabs = [
@@ -6,6 +6,7 @@ export default function Header({ activeTab, setActiveTab }) {
     { id: 'fashion', label: 'Fashion AI Copilot', icon: Layers },
     { id: 'hybrid', label: 'Hybrid AI Engine', icon: Cpu },
     { id: 'yolo', label: 'YOLO + DeepSparse', icon: Eye },
+    { id: 'resume-platform', label: 'Resume Platform', icon: FileText },
     { id: 'all-definitions', label: 'All Definitions', icon: FileCode },
   ];
 
