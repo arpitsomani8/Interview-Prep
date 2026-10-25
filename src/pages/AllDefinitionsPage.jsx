@@ -14763,7 +14763,29 @@ export default function AllDefinitionsPage() {
                   </p>
                 </div>
 
-                {/* 2. The Two Phases of Bagging */}
+                {/* 2. What is Bootstrap Sampling? */}
+                {item.bootstrapSampling && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-amber-950/20 border border-amber-800/40 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold font-mono text-amber-400 uppercase flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-amber-400" />
+                        <span>What is Bootstrap Sampling?</span>
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        With Replacement
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-amber-200/90 font-semibold font-sans leading-relaxed">
+                      {item.bootstrapSampling.definition}
+                    </p>
+                    <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-2 border-t border-amber-900/40">
+                      <strong className="text-amber-300 font-mono">Out-of-Bag (OOB) Rule: </strong>
+                      {item.bootstrapSampling.oobNote}
+                    </p>
+                  </div>
+                )}
+
+                {/* 3. The Two Core Phases of Bagging */}
                 {item.twoPhases && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -14801,7 +14823,114 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 3. Why Bagging Works (Mathematical & Systems Drivers) */}
+                {/* 4. Why do we use Bagging? */}
+                {item.whyUseBagging && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.whyUseBagging.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Key Motivations
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1">
+                      {item.whyUseBagging.reasons.map((r, rIdx) => (
+                        <div key={rIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                            <h5 className={`text-xs font-bold font-mono ${r.accent}`}>
+                              {r.title}
+                            </h5>
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {r.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/95 leading-relaxed font-sans flex items-start gap-2.5">
+                      <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-amber-400 font-mono uppercase text-[10px] block mb-0.5">Important Caveat:</strong>
+                        {item.whyUseBagging.caution}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Bagging vs Random Forest (Key Interview Distinction) */}
+                {item.baggingVsRandomForest && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.baggingVsRandomForest.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Interview Distinction
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-400 font-sans italic">
+                      {item.baggingVsRandomForest.intro}
+                    </p>
+
+                    <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                          <tr>
+                            <th className="py-3 px-3 font-semibold text-zinc-400 w-1/4">Feature</th>
+                            <th className="py-3 px-3 font-semibold text-amber-400 w-3/8">Bagging</th>
+                            <th className="py-3 px-3 font-semibold text-cyan-400 w-3/8">Random Forest</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.baggingVsRandomForest.table.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-3.5 px-3 font-mono font-bold text-white align-top">
+                                {row.feature}
+                              </td>
+                              <td className="py-3.5 px-3 text-amber-200/90 align-top text-xs leading-relaxed font-sans">
+                                {row.bagging}
+                              </td>
+                              <td className="py-3.5 px-3 text-cyan-200/90 align-top text-xs leading-relaxed font-sans">
+                                {row.randomForest}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 md:hidden">
+                      {item.baggingVsRandomForest.table.map((row, rIdx) => (
+                        <div key={rIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2">
+                          <h6 className="text-xs font-bold text-white font-mono">{row.feature}</h6>
+                          <div className="p-2 rounded bg-amber-950/20 border border-amber-900/40 text-xs text-amber-200/90">
+                            <strong className="block text-[10px] uppercase font-mono text-amber-400">Bagging:</strong>
+                            {row.bagging}
+                          </div>
+                          <div className="p-2 rounded bg-cyan-950/20 border border-cyan-900/40 text-xs text-cyan-200/90">
+                            <strong className="block text-[10px] uppercase font-mono text-cyan-400">Random Forest:</strong>
+                            {row.randomForest}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Remember Callout */}
+                    <div className="p-3.5 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono flex items-center gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+                      <span>{item.baggingVsRandomForest.remember}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Why Bagging Works (Mathematical & Systems Drivers) */}
                 {item.whyBaggingWorks && (
                   <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -14829,7 +14958,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 4. Bagging vs Boosting Comparison Table */}
+                {/* 7. Bagging vs Boosting Comparison Table */}
                 {item.baggingVsBoosting && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -14887,7 +15016,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 5. Python Code Example (scikit-learn) */}
+                {/* 8. Python Code Example (scikit-learn) */}
                 {item.codeExample && (
                   <div className="space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
@@ -14922,7 +15051,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 6. Takeaway Banner */}
+                {/* 9. Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}

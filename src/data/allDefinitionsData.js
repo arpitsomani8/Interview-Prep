@@ -9162,10 +9162,14 @@ export const definitionsData = [
     "badge": "Ensemble Learning, Parallel Sampling & Random Forests",
     "summary": "Bagging stands for Bootstrap Aggregating. It is an ensemble learning technique that trains multiple models on different bootstrap samples of the training data and combines their predictions. Its primary goal is to reduce variance and eliminate overfitting in high-variance base estimators.",
     "coreDefinition": "Bagging stands for Bootstrap Aggregating. It is an ensemble learning technique that trains multiple models on different bootstrap samples of the training data and combines their predictions.",
+    "bootstrapSampling": {
+      "definition": "Bootstrap sampling creates a random sample from the original dataset with replacement.",
+      "oobNote": "Each bootstrap sample contains ~63.2% unique training instances; the remaining ~36.8% form Out-of-Bag (OOB) samples used for built-in cross-validation."
+    },
     "twoPhases": [
       {
         "phase": "1. Bootstrap Sampling",
-        "role": "Draws B random subsets of size N with replacement from the training dataset.",
+        "role": "Bootstrap sampling creates a random sample from the original dataset with replacement.",
         "math": "Each bootstrap sample contains ~63.2% unique training instances; the remaining ~36.8% form Out-of-Bag (OOB) samples.",
         "accent": "text-amber-400",
         "badge": "Sampling with Replacement"
@@ -9178,6 +9182,64 @@ export const definitionsData = [
         "badge": "Ensemble Aggregation"
       }
     ],
+    "whyUseBagging": {
+      "title": "Why do we use Bagging?",
+      "reasons": [
+        {
+          "title": "Reduces variance",
+          "desc": "Often makes predictions less sensitive to the particular training sample.",
+          "accent": "text-cyan-400"
+        },
+        {
+          "title": "Improves stability",
+          "desc": "Combining models can reduce the impact of individual model errors.",
+          "accent": "text-emerald-400"
+        },
+        {
+          "title": "Helps control overfitting",
+          "desc": "Particularly with unstable learners such as decision trees.",
+          "accent": "text-purple-400"
+        },
+        {
+          "title": "Supports parallel training",
+          "desc": "The individual models can often be trained independently.",
+          "accent": "text-amber-400"
+        }
+      ],
+      "caution": "Bagging does not guarantee better performance. Its benefits depend on the models, data, and how correlated the models' errors are."
+    },
+    "baggingVsRandomForest": {
+      "title": "Bagging vs Random Forest",
+      "intro": "This is an important interview distinction.",
+      "table": [
+        {
+          "feature": "Concept",
+          "bagging": "General ensemble technique",
+          "randomForest": "Specific bagging-based tree ensemble"
+        },
+        {
+          "feature": "Bootstrap samples",
+          "bagging": "Commonly used",
+          "randomForest": "Commonly used by default"
+        },
+        {
+          "feature": "Random feature selection",
+          "bagging": "Not required",
+          "randomForest": "Random subsets of features considered at splits"
+        },
+        {
+          "feature": "Base learners",
+          "bagging": "Can be many model types",
+          "randomForest": "Decision trees"
+        },
+        {
+          "feature": "Main benefit",
+          "bagging": "Reduce variance through aggregation",
+          "randomForest": "Reduce tree correlation and improve ensemble performance"
+        }
+      ],
+      "remember": "Remember: Random Forest is a popular example of bagging, but bagging is a broader technique."
+    },
     "whyBaggingWorks": [
       {
         "concept": "Variance Reduction",
