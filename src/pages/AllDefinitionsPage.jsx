@@ -8103,7 +8103,7 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 65: Async vs. Sync */}
+            {/* Item 65: Async/Sync */}
             {item.id === 'async-sync' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
                 {/* Sync vs Async Dual Cards */}

@@ -9,7 +9,7 @@ export const definitionBookmarks = [
   },
   {
     "id": "async-sync",
-    "label": "Async vs. Sync"
+    "label": "Async/Sync"
   },
   {
     "id": "auth-authorization",
@@ -5719,7 +5719,7 @@ export const definitionsData = [
   },
   {
     "id": "async-sync",
-    "title": "Async vs. Sync Execution & Database Querying",
+    "title": "Async/Sync Execution & Database Querying",
     "badge": "Concurrency & Database Querying",
     "summary": "Synchronous code executes sequentially and blocks while waiting for I/O, whereas Asynchronous code yields control to the event loop during I/O operations, unlocking massive request concurrency.",
     "coreConcepts": [
