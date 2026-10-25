@@ -13571,66 +13571,83 @@ export default function AllDefinitionsPage() {
             {/* Item 93: BERT & Text Preprocessing */}
             {item.id === 'bert' && (
               <div className="space-y-6">
-                {/* 0. Top Callout: BERT pretraining: MLM and NSP */}
-                {item.pretrainingCallout && (
-                  <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-black to-purple-950/40 border border-cyan-700/60 space-y-3.5 shadow-xl">
+                {/* 1. Core Definition Banner */}
+                {item.coreDefinition && (
+                  <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Core Definition</span>
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                        Bidirectional Encoder
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
+                      {item.coreDefinition}
+                    </p>
+                  </div>
+                )}
+
+                {/* 2. The Two Original BERT Pretraining Tasks */}
+                {item.twoOriginalPretrainingTasks && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-xl">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                       <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-cyan-400" />
-                        <span>{item.pretrainingCallout.title}</span>
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.twoOriginalPretrainingTasks.title}</span>
                       </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                        Core Pretraining
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Pretraining Objectives
                       </span>
                     </div>
 
-                    <div className="space-y-2.5">
-                      {item.pretrainingCallout.bullets.map((b, bIdx) => (
-                        <div key={bIdx} className="p-3.5 rounded-xl bg-black/90 border border-zinc-800/90 flex items-start gap-3">
-                          <span className={`text-xs font-mono font-bold uppercase shrink-0 mt-0.5 px-2 py-0.5 rounded ${b.label === 'MLM' ? 'bg-cyan-950 text-cyan-300 border border-cyan-800' : 'bg-purple-950 text-purple-300 border border-purple-800'}`}>
-                            • {b.label}:
-                          </span>
-                          <p className="text-xs sm:text-sm text-zinc-100 font-medium leading-relaxed font-sans">
-                            {b.text}
-                          </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.twoOriginalPretrainingTasks.tasks.map((t, tIdx) => (
+                        <div key={tIdx} className={`p-4 rounded-xl bg-black border ${t.border} space-y-3 flex flex-col justify-between hover:border-zinc-700 transition`}>
+                          <div className="space-y-2.5">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs sm:text-sm font-bold font-mono ${t.accent}`}>
+                                {t.letter}. {t.name}
+                              </h5>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {t.badge}
+                              </span>
+                            </div>
+
+                            <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                              {t.description}
+                            </p>
+
+                            {/* Example for MLM */}
+                            {t.example && (
+                              <div className="p-3 rounded-lg bg-zinc-950 border border-cyan-900/40 space-y-1.5">
+                                <span className="text-[10px] uppercase font-mono font-bold text-cyan-400 block">
+                                  Example:
+                                </span>
+                                <div className="text-xs font-mono text-zinc-300 bg-black/60 p-2 rounded border border-zinc-900">
+                                  {t.example.sentence}
+                                </div>
+                                <p className="text-xs text-emerald-300/90 font-sans italic pt-0.5">
+                                  {t.example.prediction}
+                                </p>
+                              </div>
+                            )}
+
+                            {/* Evolution note for NSP */}
+                            {t.evolution && (
+                              <div className="p-3 rounded-lg bg-zinc-950 border border-purple-900/40 text-xs text-purple-200/90 font-sans leading-relaxed">
+                                {t.evolution}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* 1. Core Verbatim Definitions Grid */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Core NLP Encoders & Preprocessing Definitions</span>
-                    </h4>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
-                      Verbatim Reference
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                    {item.verbatimCore.map((c, cIdx) => (
-                      <div key={cIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-amber-500/40 transition">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold font-mono text-amber-400 uppercase">
-                            {c.term}
-                          </span>
-                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
-                            #{cIdx + 1}
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
-                          “{c.definition}”
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* 2. Text Preprocessing Pipeline */}
+                {/* 3. Text Preprocessing Pipeline */}
                 {item.textPreprocessing && (
                   <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -13662,7 +13679,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 3. Bidirectional Context & Polysemy Resolution */}
+                {/* 4. Bidirectional Context & Polysemy Resolution */}
                 {item.bidirectionalContext && (
                   <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 shadow-lg">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -13720,51 +13737,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 3.1 Pretraining Objectives: MLM and NSP */}
-                {item.pretrainingObjectives && (
-                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-lg">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                        <Zap className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>{item.pretrainingObjectives.headline}</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                        Self-Supervised Pretraining
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                      {item.pretrainingObjectives.summary}
-                    </p>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {item.pretrainingObjectives.objectives.map((obj, oIdx) => (
-                        <div key={oIdx} className={`p-4 rounded-xl bg-black border ${obj.border} space-y-2.5 flex flex-col justify-between hover:border-zinc-600 transition`}>
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className={`text-xs sm:text-sm font-bold font-mono ${obj.accent} uppercase block`}>
-                                {obj.name}
-                              </span>
-                              <span className="text-[9px] font-mono text-zinc-400 uppercase bg-zinc-900 px-1.5 py-0.5 rounded border border-zinc-800">
-                                {obj.badge}
-                              </span>
-                            </div>
-
-                            <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs sm:text-sm font-semibold text-white font-sans leading-relaxed">
-                              "{obj.definition}"
-                            </div>
-
-                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                              {obj.mechanism}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. Is BERT an Embedding? Architectural Distinction */}
+                {/* 5. Is BERT an Embedding? Architectural Distinction */}
                 {item.isBertAnEmbedding && (
                   <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-lg">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -13804,7 +13777,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 5. Takeaway Banner */}
+                {/* 6. Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}

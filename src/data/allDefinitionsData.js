@@ -8646,33 +8646,6 @@ export const definitionsData = [
     "title": "BERT (Bidirectional Encoder Representations from Transformers) & Text Preprocessing",
     "badge": "NLP Encoders, Contextual Embeddings & Polysemy Resolution",
     "summary": "BERT: “A pretrained bidirectional Transformer encoder that creates contextual token representations.” It processes text by looking at both left and right context simultaneously, resolving word sense ambiguity and generating rich embeddings for downstream NLP tasks.",
-    "verbatimCore": [
-      {
-        "term": "BERT",
-        "definition": "A pretrained bidirectional Transformer encoder that creates contextual token representations."
-      },
-      {
-        "term": "Preprocessing",
-        "definition": "Preparing raw text for an NLP task through appropriate cleaning, normalization, tokenization, and sometimes stemming or lemmatization."
-      },
-      {
-        "term": "BERT pretraining: MLM and NSP",
-        "definition": "MLM: Mask some tokens and train the model to predict them from context. | NSP: In the original BERT setup, predict whether one segment follows another in the original text."
-      }
-    ],
-    "pretrainingCallout": {
-      "title": "BERT pretraining: MLM and NSP",
-      "bullets": [
-        {
-          "label": "MLM",
-          "text": "Mask some tokens and train the model to predict them from context."
-        },
-        {
-          "label": "NSP",
-          "text": "In the original BERT setup, predict whether one segment follows another in the original text."
-        }
-      ]
-    },
     "textPreprocessing": {
       "headline": "Text Preprocessing in Modern NLP",
       "definition": "Text preprocessing is the process of cleaning and preparing text before feeding it into an NLP or machine-learning pipeline.",
@@ -8707,30 +8680,6 @@ export const definitionsData = [
         "resolution": "BERT can produce different contextual representations for bank depending on the surrounding words."
       }
     },
-    "pretrainingObjectives": {
-      "headline": "BERT pretraining: MLM and NSP",
-      "summary": "In the original BERT setup, pretraining is powered by two self-supervised objectives:",
-      "objectives": [
-        {
-          "code": "MLM",
-          "name": "Masked Language Modeling (MLM)",
-          "definition": "Mask some tokens and train the model to predict them from context.",
-          "mechanism": "Randomly masks 15% of all input tokens (80% replaced with [MASK], 10% replaced with random token, 10% kept unchanged). The model relies on bidirectional context from both directions to reconstruct the original tokens via cross-entropy loss.",
-          "badge": "Bidirectional Token Reconstruction",
-          "accent": "text-cyan-400",
-          "border": "border-cyan-800/50"
-        },
-        {
-          "code": "NSP",
-          "name": "Next Sentence Prediction (NSP)",
-          "definition": "In the original BERT setup, predict whether one segment follows another in the original text.",
-          "mechanism": "Feeds sentence pairs A and B separated by a [SEP] token (50% true consecutive pairs with IsNext label, 50% random sentence from corpus with NotNext label). The [CLS] token vector trains a binary classifier to understand sentence relationships.",
-          "badge": "Inter-Sentence Relationship",
-          "accent": "text-purple-400",
-          "border": "border-purple-800/50"
-        }
-      ]
-    },
     "isBertAnEmbedding": {
       "question": "Is BERT an embedding?",
       "importantDistinction": "There is an important distinction:",
@@ -8754,7 +8703,34 @@ export const definitionsData = [
       ],
       "conclusion": "So, yes, BERT can be used to produce embeddings, but BERT and an embedding are not the same thing."
     },
-    "takeaway": "BERT is a bidirectional Transformer encoder that produces contextual token representations by looking at both left and right context simultaneously. While BERT can generate embeddings via pooling, it is fundamentally a language model; for production semantic search and vector retrieval, specialized Siamese architectures like Sentence-BERT (SBERT) should be utilized."
+    "takeaway": "BERT is a bidirectional Transformer encoder that produces contextual token representations by looking at both left and right context simultaneously. While BERT can generate embeddings via pooling, it is fundamentally a language model; for production semantic search and vector retrieval, specialized Siamese architectures like Sentence-BERT (SBERT) should be utilized.",
+    "coreDefinition": "A pretrained bidirectional Transformer encoder that creates contextual token representations.",
+    "twoOriginalPretrainingTasks": {
+      "title": "The two original BERT pretraining tasks",
+      "tasks": [
+        {
+          "letter": "A",
+          "name": "Masked Language Modeling (MLM)",
+          "description": "BERT hides selected tokens and learns to predict them from the surrounding context.",
+          "example": {
+            "sentence": "The customer paid using a [MASK] card.",
+            "prediction": "BERT might predict credit."
+          },
+          "accent": "text-cyan-400",
+          "badge": "Token Prediction",
+          "border": "border-cyan-800/50"
+        },
+        {
+          "letter": "B",
+          "name": "Next Sentence Prediction (NSP)",
+          "description": "The original BERT model was trained to predict whether one sentence follows another in the source text.",
+          "evolution": "NSP was part of the original BERT training objective, though later models use different pretraining strategies.",
+          "accent": "text-purple-400",
+          "badge": "Sentence Coherence",
+          "border": "border-purple-800/50"
+        }
+      ]
+    }
   },
   {
     "id": "stemming",
