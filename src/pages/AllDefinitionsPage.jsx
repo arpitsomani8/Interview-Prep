@@ -80,6 +80,7 @@ export default function AllDefinitionsPage() {
   const getEffectiveId = (id) => {
     if (id === 'tree-of-thought' || id === 'graph-of-thoughts') return 'cot-chain-of-thought';
     if (id === 'agentic-ai' || id === 'agentic-workflow') return 'agentic-ai-workflow';
+    if (id === 'bivariate') return 'univariate';
     return id;
   };
 
@@ -373,39 +374,199 @@ export default function AllDefinitionsPage() {
 
             {/* Item 2: Confidence Score */}
             {item.id === 'confidence-score' && (
-              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
-                <ul className="space-y-2">
-                  {item.details.map((d, dIdx) => (
-                    <li key={dIdx} className="flex items-start gap-2.5 leading-relaxed">
-                      <span className="text-cyan-400 font-bold mt-0.5">•</span>
-                      <span>{d}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Tradeoff Table */}
-                <div className="overflow-x-auto pt-2">
-                  <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
-                    <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
-                      <tr>
-                        <th className="p-3 border-b border-zinc-800">Threshold Setting</th>
-                        <th className="p-3 border-b border-zinc-800">Detections</th>
-                        <th className="p-3 border-b border-zinc-800">Recall Impact</th>
-                        <th className="p-3 border-b border-zinc-800">Precision Impact</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-800/80 bg-black/60">
-                      {item.tradeoffTable.map((row, rIdx) => (
-                        <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
-                          <td className="p-3 font-semibold text-white font-mono">{row.threshold}</td>
-                          <td className="p-3 text-zinc-300">{row.detections}</td>
-                          <td className="p-3 text-cyan-300 font-medium">{row.recall}</td>
-                          <td className="p-3 text-zinc-300">{row.precision}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl space-y-2.5">
+                  <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs uppercase">
+                    <Sparkles className="w-4 h-4 text-cyan-400" />
+                    <span>What is a Confidence Score?</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
+                    {item.coreDefinition}
+                  </p>
                 </div>
+
+                {/* Threshold Tuning Example Cards */}
+                {item.thresholdTuning && (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Confidence Threshold Tuning Dynamics</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Precision vs Recall Tradeoff
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.thresholdTuning.map((t, tIdx) => (
+                        <div
+                          key={tIdx}
+                          className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className={`text-xs font-bold font-mono ${t.accent}`}>
+                              {t.type}
+                            </span>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {t.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {t.effect}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Table: Confidence Score in Different AI Systems */}
+                {item.aiSystemsTable && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2.5">
+                      <Table className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                        Confidence Score in Different AI Systems
+                      </h4>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2 px-3 font-semibold text-cyan-400 w-1/3">System</th>
+                            <th className="py-2 px-3 font-semibold text-zinc-300">What a Score May Represent</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.aiSystemsTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-bold text-white text-xs">
+                                <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-cyan-300">
+                                  {row.system}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 leading-relaxed">
+                                {row.representation}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Python Implementation: Scikit-Learn Spam Classifier Probabilities */}
+                {item.code && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span className="font-bold text-white">Scikit-Learn Class Probability & Confidence</span>
+                        <code className="text-cyan-400 text-[11px]">predict_proba()</code>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(item.id, item.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === item.id ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-4">
+                      <CodeHighlight code={item.code} />
+                    </div>
+                  </div>
+                )}
+
+                {/* Model Calibration Section */}
+                {item.calibrationSection && (
+                  <div className="space-y-3.5 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-purple-900/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                      <div className="flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-purple-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          {item.calibrationSection.title}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-purple-300 uppercase bg-purple-950/40 px-2.5 py-0.5 rounded border border-purple-800/40 shrink-0 self-start sm:self-auto">
+                        Statistical Alignment
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-black/80 border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
+                      <strong className="text-purple-300 font-semibold font-mono">Core Principle: </strong>
+                      {item.calibrationSection.coreNote}
+                    </div>
+
+                    <div className="space-y-2 pt-1">
+                      <span className="text-[11px] font-mono uppercase text-zinc-400 font-bold block">
+                        Common Ways to Evaluate or Improve Calibration:
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {item.calibrationSection.methods.map((m, mIdx) => (
+                          <div
+                            key={mIdx}
+                            className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between"
+                          >
+                            <span className="text-xs font-bold font-mono text-purple-300">
+                              {m.method}
+                            </span>
+                            <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
+                              {m.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Confidence Score vs. Similarity Score */}
+                {item.confidenceVsSimilarity && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-amber-900/40 space-y-3 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle className="w-4 h-4 text-amber-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          {item.confidenceVsSimilarity.title}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-amber-300 bg-amber-950/40 px-2 py-0.5 rounded border border-amber-800/40">
+                        GenAI Interview Concept
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-amber-300/90 font-mono">
+                      {item.confidenceVsSimilarity.warning}
+                    </p>
+
+                    <div className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2">
+                      <div className="text-xs font-semibold text-white font-sans">
+                        {item.confidenceVsSimilarity.scenario}
+                      </div>
+                      <p className="text-xs text-zinc-300 leading-relaxed font-sans border-l-2 border-amber-500/40 pl-3">
+                        {item.confidenceVsSimilarity.explanation}
+                      </p>
+                    </div>
+
+                    <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                      <strong className="text-white font-semibold">Key Rule: </strong>
+                      {item.confidenceVsSimilarity.takeaway}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -893,30 +1054,364 @@ export default function AllDefinitionsPage() {
                       <div className="flex items-center gap-2">
                         <Sparkles className="w-4 h-4 text-cyan-400" />
                         <h3 className="text-sm sm:text-base font-bold text-white uppercase tracking-wider font-mono">
-                          Architecture Visual Blueprints
+                          Architecture Visual Blueprint & Flow Diagram
                         </h3>
                       </div>
                       {/* Diagram Selector Tabs */}
-                      <div className="flex items-center gap-1.5 p-1 bg-black/80 rounded-xl border border-zinc-800">
-                        {item.architectureDiagrams.map((diag, idx) => (
-                          <button
-                            key={diag.id}
-                            onClick={() => setSelectedChatbotDiagram(idx)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition cursor-pointer flex items-center gap-1.5 ${
-                              selectedChatbotDiagram === idx
-                                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-md'
-                                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
-                            }`}
-                          >
-                            <span>{diag.id === 'edge-security' ? 'Step 14: Edge Security' : 'Step 13: Cost & FinOps'}</span>
-                          </button>
-                        ))}
+                      <div className="flex items-center gap-1.5 p-1 bg-black/80 rounded-xl border border-zinc-800 flex-wrap">
+                        <button
+                          onClick={() => setSelectedChatbotDiagram(0)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                            selectedChatbotDiagram === 0
+                              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-md'
+                              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                          }`}
+                        >
+                          <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>✨ Crisp Vector Flow Diagram</span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedChatbotDiagram(1)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                            selectedChatbotDiagram === 1
+                              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-md'
+                              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                          }`}
+                        >
+                          <span>Step 14: Edge Security (Screenshot)</span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedChatbotDiagram(2)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                            selectedChatbotDiagram === 2
+                              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-md'
+                              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                          }`}
+                        >
+                          <span>Step 13: Cost & FinOps (Screenshot)</span>
+                        </button>
                       </div>
                     </div>
 
-                    {/* Active Diagram Display Card */}
-                    {(() => {
-                      const activeDiag = item.architectureDiagrams[selectedChatbotDiagram] || item.architectureDiagrams[0];
+                    {/* TAB 0: ULTRA-CRISP HIGH-RESOLUTION VECTOR FLOW DIAGRAM */}
+                    {selectedChatbotDiagram === 0 && (
+                      <div className="space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                          <div>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-bold uppercase">
+                              Razor-Sharp Vector Layout
+                            </span>
+                            <h4 className="text-sm font-bold text-white mt-1">
+                              Enterprise Multi-Agent Conversational AI Architecture (Full Flowchart)
+                            </h4>
+                          </div>
+                          <span className="text-[11px] font-mono text-zinc-400 italic">
+                            100% Crisp Vector • Zero Blur
+                          </span>
+                        </div>
+
+                        {/* Interactive Full-Width Vector Flow Diagram Canvas */}
+                        <div className="p-4 sm:p-6 rounded-2xl bg-[#07070a] border border-cyan-500/30 space-y-6 shadow-2xl overflow-x-auto">
+                          
+                          {/* TIER 1: Ingress & Edge Security */}
+                          <div className="space-y-2">
+                            <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-wider block">
+                              Tier 1: Client & Ingress Perimeter
+                            </span>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
+                              {/* Left: User Interface */}
+                              <div className="p-3.5 rounded-xl bg-cyan-950/30 border border-cyan-500/50 text-center space-y-1">
+                                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-900/60 text-cyan-300 font-semibold uppercase">
+                                  Frontend Client
+                                </span>
+                                <h5 className="text-xs font-bold text-white font-mono">User Interface (Chat)</h5>
+                                <p className="text-[10px] text-zinc-400">Web Portal • Mobile Banking • WebSocket / SSE</p>
+                              </div>
+
+                              {/* Center: Ingress API Gateway */}
+                              <div className="p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-700 text-center space-y-1 shadow-lg">
+                                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-semibold uppercase">
+                                  Edge Ingress & Gateway
+                                </span>
+                                <h5 className="text-xs font-bold text-cyan-300 font-mono">API Gateway</h5>
+                                <p className="text-[10px] text-zinc-400">WAF • DDoS Protection • Token-Bucket Rate Limits</p>
+                              </div>
+
+                              {/* Right: Authentication */}
+                              <div className="p-3.5 rounded-xl bg-blue-950/30 border border-blue-500/50 text-center space-y-1">
+                                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-900/60 text-blue-300 font-semibold uppercase">
+                                  Identity Ingress
+                                </span>
+                                <h5 className="text-xs font-bold text-white font-mono">Authentication</h5>
+                                <p className="text-[10px] text-zinc-400">Bank's Identity Provider (IdP) • OAuth2 / OIDC JWT</p>
+                              </div>
+                            </div>
+                            
+                            {/* Downward Connector Arrow */}
+                            <div className="flex justify-center py-0.5">
+                              <span className="text-xs font-mono text-cyan-400 font-bold">↓ Verified JWT Ingress Forwarding ↓</span>
+                            </div>
+                          </div>
+
+                          {/* TIER 2: Governance, Supervisor & Dual LLM Tier */}
+                          <div className="space-y-2">
+                            <span className="text-[10px] font-mono text-purple-400 font-bold uppercase tracking-wider block">
+                              Tier 2: Orchestration, Governance & LLM Routing
+                            </span>
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
+                              
+                              {/* Left Column: Authorisation (3 cols) */}
+                              <div className="lg:col-span-3 p-3.5 rounded-xl bg-rose-950/20 border border-rose-500/40 space-y-2 flex flex-col justify-between">
+                                <div className="space-y-1">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[10px] font-mono font-bold text-rose-300 uppercase">Security Gate</span>
+                                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-800">RBAC / ABAC</span>
+                                  </div>
+                                  <h5 className="text-xs font-bold text-white font-mono">Authorisation</h5>
+                                  <p className="text-[11px] text-zinc-300 leading-relaxed">
+                                    Verifies token scopes and enforces <strong>BOLA / IDOR defense</strong> so users can only access their own accounts.
+                                  </p>
+                                </div>
+                                <div className="p-2 rounded bg-black/60 border border-rose-900/40 text-[10px] text-rose-300/90 font-mono">
+                                  → Approves coordinator actions
+                                </div>
+                              </div>
+
+                              {/* Center Column: Coordinator Agent (Supervisor) (5 cols) */}
+                              <div className="lg:col-span-5 p-4 rounded-xl bg-purple-950/30 border-2 border-purple-500/60 text-center space-y-2.5 shadow-xl flex flex-col justify-between">
+                                <div className="space-y-1">
+                                  <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-purple-900/60 text-purple-200 border border-purple-700 font-bold uppercase">
+                                    Central Supervisor Core
+                                  </span>
+                                  <h5 className="text-sm font-bold text-white font-mono flex items-center justify-center gap-1.5 pt-1">
+                                    <Bot className="w-4 h-4 text-purple-400" />
+                                    <span>Coordinator Agent</span>
+                                  </h5>
+                                  <p className="text-[11px] text-purple-200/90 leading-relaxed">
+                                    Decomposes compound customer intents, coordinates multi-turn sub-tasks, and synthesizes final responses.
+                                  </p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-1.5 pt-1 text-[10px] font-mono">
+                                  <div className="p-1.5 rounded bg-black/70 border border-purple-900/50 text-purple-300">
+                                    ← Intent Classifier
+                                  </div>
+                                  <div className="p-1.5 rounded bg-black/70 border border-purple-900/50 text-purple-300">
+                                    Task Dispatcher →
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Right Column: PII Redaction, Eval Suite & LLMs (4 cols) */}
+                              <div className="lg:col-span-4 p-3.5 rounded-xl bg-indigo-950/20 border border-indigo-500/40 space-y-2 flex flex-col justify-between">
+                                <div className="space-y-2">
+                                  {/* PII Redaction */}
+                                  <div className="p-2 rounded-lg bg-black/70 border border-indigo-800/40 flex items-center justify-between">
+                                    <span className="text-[11px] font-mono font-bold text-indigo-300">PII Redaction</span>
+                                    <span className="text-[9px] font-mono text-zinc-400">Masks SSN/Cards</span>
+                                  </div>
+                                  {/* Agent Evaluation Suite */}
+                                  <div className="p-2 rounded-lg bg-black/70 border border-indigo-800/40 flex items-center justify-between">
+                                    <span className="text-[11px] font-mono font-bold text-indigo-300">Agent Evaluation Suite</span>
+                                    <span className="text-[9px] font-mono text-zinc-400">Guardrails & Safety</span>
+                                  </div>
+                                  {/* Hybrid LLMs */}
+                                  <div className="grid grid-cols-2 gap-1.5 pt-1">
+                                    <div className="p-2 rounded-lg bg-amber-950/30 border border-amber-600/50 text-center">
+                                      <span className="text-[10px] font-mono font-bold text-amber-300 block">Self-Hosted LLM</span>
+                                      <span className="text-[9px] text-zinc-400">Air-Gapped Private Data</span>
+                                    </div>
+                                    <div className="p-2 rounded-lg bg-yellow-950/30 border border-yellow-600/50 text-center">
+                                      <span className="text-[10px] font-mono font-bold text-yellow-300 block">Third-Party LLM</span>
+                                      <span className="text-[9px] text-zinc-400">Complex Reasoning</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Downward Connector to Sub-Agents */}
+                            <div className="flex justify-center py-0.5">
+                              <span className="text-xs font-mono text-purple-400 font-bold">↓ Delegates To Domain Sub-Agents (JSON-RPC / MCP) ↓</span>
+                            </div>
+                          </div>
+
+                          {/* TIER 3: Specialized Sub-Agents & Model Context Protocol (MCP) Servers */}
+                          <div className="space-y-2">
+                            <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider block">
+                              Tier 3: Specialized Sub-Agents, MCP Tool Servers & Core Actions
+                            </span>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              
+                              {/* Sub-Agent 1: Accounts */}
+                              <div className="p-4 rounded-xl bg-black border border-emerald-800/50 space-y-3 flex flex-col justify-between">
+                                <div className="space-y-2">
+                                  {/* Agent */}
+                                  <div className="p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-600/60 text-center">
+                                    <span className="text-[9px] font-mono text-emerald-400 font-bold uppercase block">Specialized Sub-Agent</span>
+                                    <h6 className="text-xs font-bold text-white font-mono">Accounts Agent</h6>
+                                  </div>
+                                  <div className="text-center text-xs font-mono text-emerald-400 font-bold">↓ MCP Protocol ↓</div>
+                                  {/* MCP Server */}
+                                  <div className="p-2 rounded-lg bg-zinc-950 border border-emerald-800 text-center">
+                                    <span className="text-[10px] font-mono font-bold text-emerald-300">Accounts MCP Server</span>
+                                  </div>
+                                </div>
+                                {/* Tool Actions */}
+                                <div className="space-y-1 pt-1 border-t border-zinc-800">
+                                  <span className="text-[9px] font-mono text-zinc-400 uppercase block font-semibold">Exposed Banking Tools:</span>
+                                  <div className="p-2 rounded bg-zinc-900 border border-zinc-700 text-center text-xs font-mono text-cyan-300 font-semibold">
+                                    • Balance Enquiry
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Sub-Agent 2: Transactions */}
+                              <div className="p-4 rounded-xl bg-black border border-emerald-800/50 space-y-3 flex flex-col justify-between">
+                                <div className="space-y-2">
+                                  {/* Agent */}
+                                  <div className="p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-600/60 text-center">
+                                    <span className="text-[9px] font-mono text-emerald-400 font-bold uppercase block">Specialized Sub-Agent</span>
+                                    <h6 className="text-xs font-bold text-white font-mono">Transaction Agent</h6>
+                                  </div>
+                                  <div className="text-center text-xs font-mono text-emerald-400 font-bold">↓ MCP Protocol ↓</div>
+                                  {/* MCP Server */}
+                                  <div className="p-2 rounded-lg bg-zinc-950 border border-emerald-800 text-center">
+                                    <span className="text-[10px] font-mono font-bold text-emerald-300">Transactions MCP Server</span>
+                                  </div>
+                                </div>
+                                {/* Tool Actions */}
+                                <div className="space-y-1 pt-1 border-t border-zinc-800">
+                                  <span className="text-[9px] font-mono text-zinc-400 uppercase block font-semibold">Exposed Banking Tools:</span>
+                                  <div className="grid grid-cols-2 gap-1.5 text-center text-[11px] font-mono">
+                                    <div className="p-2 rounded bg-zinc-900 border border-zinc-700 text-cyan-300 font-semibold">
+                                      • Transaction Details
+                                    </div>
+                                    <div className="p-2 rounded bg-zinc-900 border border-zinc-700 text-cyan-300 font-semibold">
+                                      • Statement Request
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Sub-Agent 3: Service */}
+                              <div className="p-4 rounded-xl bg-black border border-emerald-800/50 space-y-3 flex flex-col justify-between">
+                                <div className="space-y-2">
+                                  {/* Agent */}
+                                  <div className="p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-600/60 text-center">
+                                    <span className="text-[9px] font-mono text-emerald-400 font-bold uppercase block">Specialized Sub-Agent</span>
+                                    <h6 className="text-xs font-bold text-white font-mono">Service Agent</h6>
+                                  </div>
+                                  <div className="text-center text-xs font-mono text-emerald-400 font-bold">↓ MCP Protocol ↓</div>
+                                  {/* MCP Server */}
+                                  <div className="p-2 rounded-lg bg-zinc-950 border border-emerald-800 text-center">
+                                    <span className="text-[10px] font-mono font-bold text-emerald-300">Service MCP Server</span>
+                                  </div>
+                                </div>
+                                {/* Tool Actions */}
+                                <div className="space-y-1 pt-1 border-t border-zinc-800">
+                                  <span className="text-[9px] font-mono text-zinc-400 uppercase block font-semibold">Exposed Banking Tools:</span>
+                                  <div className="grid grid-cols-3 gap-1 text-center text-[10px] font-mono">
+                                    <div className="p-1.5 rounded bg-zinc-900 border border-zinc-700 text-cyan-300 font-semibold">
+                                      Change Address
+                                    </div>
+                                    <div className="p-1.5 rounded bg-zinc-900 border border-zinc-700 text-cyan-300 font-semibold">
+                                      Cheque Book
+                                    </div>
+                                    <div className="p-1.5 rounded bg-zinc-900 border border-zinc-700 text-cyan-300 font-semibold">
+                                      KYC Update
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+
+                          {/* TIER 4: Observability, FinOps Cost Tracker & Shared Session Store */}
+                          <div className="pt-2 border-t border-zinc-800/80">
+                            <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-wider block mb-2">
+                              Tier 4: State Management & Observability (FinOps Governance)
+                            </span>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              
+                              {/* Left: Observability & Cost Tracker (Step 13) */}
+                              <div className="p-3.5 rounded-xl bg-amber-950/20 border-2 border-amber-500/50 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs font-bold font-mono text-amber-400 uppercase flex items-center gap-1.5">
+                                    <Activity className="w-3.5 h-3.5 text-amber-400" />
+                                    <span>Observability Cluster</span>
+                                  </span>
+                                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-bold">
+                                    Step 13 Highlight
+                                  </span>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-zinc-300">
+                                  <div className="p-2 rounded bg-black/60 border border-zinc-800">
+                                    <strong>AI Telemetry:</strong> Prompts, Agent calls, Tool calls
+                                  </div>
+                                  <div className="p-2 rounded bg-black/60 border border-zinc-800">
+                                    <strong>Infra Telemetry:</strong> CPU, Memory, Disk utilisation
+                                  </div>
+                                </div>
+                                {/* Cost Tracker highlighted */}
+                                <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/60 flex items-center justify-between">
+                                  <div>
+                                    <span className="text-xs font-bold font-mono text-amber-300 block">💰 Cost Tracker</span>
+                                    <span className="text-[10px] text-zinc-400">Enforces budget caps & prevents recursive infinite billing loops</span>
+                                  </div>
+                                  <span className="text-[9px] font-mono font-bold px-2 py-1 rounded bg-amber-950 text-amber-300 border border-amber-700">
+                                    Budget Shield
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Right: Session Store */}
+                              <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
+                                <div className="space-y-1.5">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-1.5">
+                                      <Database className="w-3.5 h-3.5 text-cyan-400" />
+                                      <span>Session Store</span>
+                                    </span>
+                                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                      Redis / DynamoDB
+                                    </span>
+                                  </div>
+                                  <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
+                                    Stores active multi-turn context across two critical state layers:
+                                  </p>
+                                </div>
+                                <div className="space-y-1.5 text-[11px] font-mono">
+                                  <div className="p-2 rounded bg-black/70 border border-zinc-800 text-zinc-200">
+                                    • <strong>Conversation History:</strong> Sliding window of customer & agent turns
+                                  </div>
+                                  <div className="p-2 rounded bg-black/70 border border-zinc-800 text-zinc-200">
+                                    • <strong>Inter-Agent Shared State:</strong> Passing verified CIF, account IDs & form drafts
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+
+                        </div>
+
+                        {/* Diagram Focus Note */}
+                        <div className="p-3.5 rounded-xl bg-zinc-950 border border-cyan-900/50 flex items-start gap-2.5">
+                          <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                          <div>
+                            <strong className="text-cyan-300 font-mono text-xs uppercase block">Full Architecture Walkthrough:</strong>
+                            <p className="text-xs text-zinc-300 mt-1 leading-relaxed">
+                              User queries flow from the <strong>UI</strong> through the <strong>Edge Security API Gateway</strong> and <strong>Bank IdP</strong>. The <strong>Coordinator Agent</strong> checks <strong>Authorisation</strong> and <strong>Session History</strong>, routes prompts through <strong>PII Redaction</strong> & <strong>Guardrails</strong>, and delegates tasks to <strong>Accounts, Transaction, and Service Sub-Agents</strong> via <strong>MCP Servers</strong>. All activity is governed by the <strong>Observability & Cost Tracker</strong> to prevent runaway token billing.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* TABS 1 & 2: REFERENCE SCREENSHOTS WITH ENLARGE MODAL */}
+                    {selectedChatbotDiagram > 0 && (() => {
+                      const activeDiag = item.architectureDiagrams[selectedChatbotDiagram - 1] || item.architectureDiagrams[0];
                       const base = import.meta.env.BASE_URL || '/';
                       const imgSrc = base.endsWith('/') ? `${base}${activeDiag.image}` : `${base}/${activeDiag.image}`;
                       return (
@@ -935,7 +1430,7 @@ export default function AllDefinitionsPage() {
                               className="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1 px-2.5 py-1 rounded bg-zinc-900 border border-zinc-700 transition cursor-pointer self-start sm:self-auto"
                             >
                               <ZoomIn className="w-3.5 h-3.5" />
-                              <span>Enlarge Diagram</span>
+                              <span>Enlarge Screenshot</span>
                             </button>
                           </div>
 
@@ -2603,6 +3098,235 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
+            {/* Item: ChromaDB */}
+            {item.id === 'chroma-db' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Three Core Pillars */}
+                {item.corePillars && (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Sparkles className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                        3 Core Pillars of Vector Retrieval
+                      </h4>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.corePillars.map((pillar) => (
+                        <div
+                          key={pillar.step}
+                          className={`p-4 rounded-xl bg-zinc-950 border ${pillar.border} space-y-2 flex flex-col justify-between hover:border-zinc-700 transition`}
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono uppercase ${pillar.accent}`}>
+                                {pillar.step}. {pillar.name}
+                              </span>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {pillar.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans pt-1">
+                              {pillar.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. What is an embedding? + Important Callout */}
+                <div className="space-y-3">
+                  {item.embeddingDefinition && (
+                    <div className="p-4 rounded-xl bg-black border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-amber-400 shrink-0" />
+                        <span className="font-bold text-white font-mono text-xs sm:text-sm">
+                          {item.embeddingDefinition.question}
+                        </span>
+                      </div>
+                      <span className="text-xs text-amber-300 font-sans">
+                        {item.embeddingDefinition.answer}
+                      </span>
+                    </div>
+                  )}
+
+                  {item.importantNotice && (
+                    <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 flex items-start gap-2.5 text-xs text-amber-200/90 leading-relaxed">
+                      <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                      <span>{item.importantNotice}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. Core ChromaDB Concepts Table */}
+                {item.coreConceptsTable && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2.5">
+                      <Table className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                        Core ChromaDB Concepts
+                      </h4>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2 px-3 font-semibold text-cyan-400 w-1/4">Concept</th>
+                            <th className="py-2 px-3 font-semibold text-zinc-300">Meaning</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.coreConceptsTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-bold text-white text-xs">
+                                <span className="px-2 py-0.5 rounded bg-cyan-950/40 border border-cyan-800/40 text-cyan-300">
+                                  {row.concept}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 leading-relaxed">
+                                {row.meaning}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Python Implementation Box (In-Memory Search) */}
+                {item.code && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span className="font-bold text-white">ChromaDB In-Memory Text Search</span>
+                        <code className="text-cyan-400 text-[11px]">chromadb.Client()</code>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(item.id, item.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === item.id ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-4">
+                      <CodeHighlight code={item.code} />
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. PersistentClient Local Setup & Production Database Warning */}
+                {item.persistentSetup && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <div className="flex items-center gap-2 font-mono text-xs">
+                        <Database className="w-4 h-4 text-emerald-400" />
+                        <span className="font-bold text-white">{item.persistentSetup.title}</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(`${item.id}-persistent`, item.persistentSetup.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === `${item.id}-persistent` ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <CodeHighlight code={item.persistentSetup.code} />
+
+                    <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                      {item.persistentSetup.storageNote}
+                    </p>
+
+                    <div className="p-3.5 rounded-xl bg-rose-950/20 border border-rose-800/40 text-xs text-rose-200/90 leading-relaxed font-sans">
+                      <strong className="text-rose-400 uppercase font-mono block mb-1">Production Warning:</strong>
+                      {item.persistentSetup.productionWarning}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. ChromaDB vs. Other Vector Databases Table */}
+                {item.comparisonTable && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2.5">
+                      <Layers className="w-4 h-4 text-purple-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                        ChromaDB vs. Other Vector Databases
+                      </h4>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2 px-3 font-semibold text-purple-400 w-1/3">Database</th>
+                            <th className="py-2 px-3 font-semibold text-zinc-300">Typical Use Case</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.comparisonTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-bold text-white text-xs">
+                                <span className={`px-2 py-0.5 rounded border ${row.database === 'ChromaDB' ? 'bg-cyan-950/60 border-cyan-800 text-cyan-300' : 'bg-zinc-900 border-zinc-800 text-zinc-300'}`}>
+                                  {row.database}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 leading-relaxed">
+                                {row.useCase}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Common Mistakes in ChromaDB */}
+                {item.commonMistakes && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-rose-900/40 shadow-xl">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2.5">
+                      <AlertTriangle className="w-4 h-4 text-rose-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                        Common Mistakes in ChromaDB
+                      </h4>
+                    </div>
+                    <ul className="space-y-2.5">
+                      {item.commonMistakes.map((mistake, mIdx) => (
+                        <li key={mIdx} className="flex items-start gap-2.5 text-xs text-zinc-300 leading-relaxed">
+                          <span className="text-rose-400 font-bold mt-0.5 shrink-0">•</span>
+                          <span>
+                            <strong className="text-white font-semibold">{mistake.mistake}:</strong>{' '}
+                            {mistake.desc}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Item 15: Similarity / Semantic Search */}
             {item.id === 'similarity-semantic-search' && (
               <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
@@ -2736,45 +3460,203 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 18: Classical ML vs Deep Learning */}
+            {/* Item 18: Classical ML */}
             {item.id === 'classical-ml' && (
-              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
-                {/* Comparison Table */}
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
-                    <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
-                      <tr>
-                        <th className="p-3 border-b border-zinc-800">Dimension</th>
-                        <th className="p-3 border-b border-zinc-800 text-amber-400 font-bold">Classical ML</th>
-                        <th className="p-3 border-b border-zinc-800 text-cyan-400 font-bold">Deep Learning / Modern ML</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-800/80 bg-black/60">
-                      {item.comparisonTable.map((row, rIdx) => (
-                        <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
-                          <td className="p-3 font-semibold text-white font-mono">{row.dimension}</td>
-                          <td className="p-3 text-zinc-300">{row.classical}</td>
-                          <td className="p-3 text-cyan-200">{row.deepLearning}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl space-y-2.5">
+                  <div className="flex items-center gap-2 text-amber-400 font-mono font-bold text-xs uppercase">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>What is Classical Machine Learning?</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
+                    {item.coreDefinition}
+                  </p>
                 </div>
 
-                {/* Logistics Roles */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
-                    Four Paradigm Roles in Our Logistics Architecture
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {item.logisticsProjectRoles.map((role, rIdx) => (
-                      <div key={rIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
-                        <div className="text-xs font-bold text-white font-mono">{role.role}</div>
-                        <div className="text-[11px] text-zinc-400 leading-relaxed">{role.desc}</div>
-                      </div>
-                    ))}
+                {/* Main Types of Classical ML */}
+                {item.mainTypes && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Main Types of Classical ML</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        3 Learning Paradigms
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.mainTypes.map((t, tIdx) => (
+                        <div
+                          key={tIdx}
+                          className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3 hover:border-zinc-700 transition flex flex-col justify-between"
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${t.accent}`}>
+                                {tIdx + 1}. {t.type}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {t.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {t.desc}
+                            </p>
+                          </div>
+
+                          {t.subtypes && t.subtypes.length > 0 && (
+                            <div className="pt-2 border-t border-zinc-900 space-y-1.5">
+                              {t.subtypes.map((sub, sIdx) => (
+                                <div key={sIdx} className="text-[11px] leading-tight">
+                                  <strong className="text-white font-mono">{sub.name}: </strong>
+                                  <span className="text-zinc-400">{sub.examples}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {/* Classical ML Algorithms You Must Know Table */}
+                {item.algorithmsTable && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <Table className="w-4 h-4 text-amber-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          Classical ML Algorithms You Must Know
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-amber-300 bg-amber-950/40 px-2.5 py-0.5 rounded border border-amber-800/40">
+                        10 Key Algorithms
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2.5 px-3 font-semibold text-amber-400 w-1/4">Algorithm</th>
+                            <th className="py-2.5 px-3 font-semibold text-cyan-300 w-1/3">Typical Use</th>
+                            <th className="py-2.5 px-3 font-semibold text-zinc-300">Key Idea</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.algorithmsTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-bold text-white text-xs">
+                                <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-amber-300">
+                                  {row.algorithm}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-cyan-200/90 font-medium">
+                                {row.use}
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 leading-relaxed">
+                                {row.idea}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* How Do You Choose the Right Algorithm? */}
+                {item.selectionGuide && (
+                  <div className="space-y-3.5 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          How Do You Choose the Right Algorithm?
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800/40">
+                        Interview Selection Decision Matrix
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.selectionGuide.map((g, gIdx) => (
+                        <div
+                          key={gIdx}
+                          className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition"
+                        >
+                          <div className="flex items-center justify-between">
+                            <h5 className={`text-xs font-bold font-mono ${g.accent}`}>
+                              {g.question}
+                            </h5>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {g.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {g.recommendation}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Comparison Table: Classical ML vs Deep Learning */}
+                {item.comparisonTable && (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 font-mono">
+                        Classical ML vs Deep Learning Comparison
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        System Architecture
+                      </span>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                        <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                          <tr>
+                            <th className="p-3 border-b border-zinc-800">Dimension</th>
+                            <th className="p-3 border-b border-zinc-800 text-amber-400 font-bold">Classical ML</th>
+                            <th className="p-3 border-b border-zinc-800 text-cyan-400 font-bold">Deep Learning / Modern ML</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 bg-black/60">
+                          {item.comparisonTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-semibold text-white font-mono">{row.dimension}</td>
+                              <td className="p-3 text-zinc-300">{row.classical}</td>
+                              <td className="p-3 text-cyan-200">{row.deepLearning}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Logistics Roles */}
+                {item.logisticsProjectRoles && (
+                  <div className="space-y-2 pt-1">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                      Four Paradigm Roles in Our Logistics Architecture
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.logisticsProjectRoles.map((role, rIdx) => (
+                        <div key={rIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                          <div className="text-xs font-bold text-white font-mono">{role.role}</div>
+                          <div className="text-[11px] text-zinc-400 leading-relaxed">{role.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -6013,21 +6895,44 @@ export default function AllDefinitionsPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
                       <Database className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Enterprise Lakehouse & Modern Data Stack</span>
+                      <span>Big Data & Modern Data Lakehouse</span>
                     </span>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
                       Bronze • Silver • Gold
                     </span>
                   </div>
                   <h3 className="text-sm sm:text-base font-bold text-white font-mono">
-                    Big Data & The Medallion Architecture (Lakehouse Design Pattern)
+                    {item.title}
                   </h3>
                   <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
                     {item.coreDefinition}
                   </p>
-                  <div className="p-3 rounded-lg bg-zinc-950 border border-cyan-900/40 text-xs text-cyan-200/90 leading-relaxed font-sans">
-                    <strong className="text-cyan-400 font-mono uppercase block mb-0.5">Why The Medallion Architecture Matters:</strong>
-                    Raw data is chaotic, full of duplicates, schema mutations, and corrupt records. The Medallion pattern builds a structured quality progression: Bronze preserves raw immutable truth, Silver cleanses and normalizes into a trusted enterprise baseline, and Gold pre-aggregates high-value star schemas and ML feature tables for sub-second business decisions.
+                  
+                  {/* Water filtration analogy */}
+                  {item.simpleAnalogy && (
+                    <div className="p-3 rounded-lg bg-zinc-950 border border-cyan-900/40 text-xs text-cyan-200/90 leading-relaxed font-sans">
+                      <strong className="text-cyan-400 font-mono uppercase block mb-0.5">Simple Water Analogy:</strong>
+                      {item.simpleAnalogy}
+                    </div>
+                  )}
+
+                  {/* 3-layer summary */}
+                  <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 space-y-1.5 font-sans">
+                    <strong className="text-white font-mono uppercase block text-[11px]">Medallion Architecture 3-Step Flow:</strong>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                      <div className="p-2 rounded bg-black/60 border border-amber-900/50 text-amber-200">
+                        <span className="font-bold text-amber-400 block font-mono text-[11px]">1. Bronze</span>
+                        <span className="text-[11px] text-zinc-300">Raw ingested data as-is with timestamps.</span>
+                      </div>
+                      <div className="p-2 rounded bg-black/60 border border-zinc-700/50 text-zinc-200">
+                        <span className="font-bold text-zinc-300 block font-mono text-[11px]">2. Silver</span>
+                        <span className="text-[11px] text-zinc-300">Cleaned, validated, and standardized data.</span>
+                      </div>
+                      <div className="p-2 rounded bg-black/60 border border-yellow-800/50 text-yellow-200">
+                        <span className="font-bold text-yellow-400 block font-mono text-[11px]">3. Gold</span>
+                        <span className="text-[11px] text-zinc-300">Business-ready, aggregated data & metrics.</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -6037,7 +6942,7 @@ export default function AllDefinitionsPage() {
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
                         <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                        <span>The 5 V's of Big Data Engineering</span>
+                        <span>The 5 V's of Big Data (Easy to Speak in Interviews)</span>
                       </h4>
                       <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
                         Core Foundations
@@ -6046,7 +6951,7 @@ export default function AllDefinitionsPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                       {item.fiveVs.map((fv, fIdx) => (
-                        <div key={fIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div key={fIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between hover:border-amber-700/50 transition">
                           <div className="space-y-1.5">
                             <div className="flex items-center justify-between">
                               <span className="text-xs font-mono font-bold text-amber-400">{fv.v}</span>
@@ -6063,39 +6968,84 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 3. The 3 Medallion Stages: Bronze vs Silver vs Gold Cards */}
+                {/* 3. The 3 Medallion Stages: Bronze vs Silver vs Gold Cards with Live Examples */}
                 {item.medallionStages && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
                         <Layers className="w-3.5 h-3.5 text-purple-400" />
-                        <span>The 3 Medallion Data Stages: Bronze, Silver & Gold</span>
+                        <span>The 3 Medallion Layers (Purpose, Examples & Operations)</span>
                       </h4>
                       <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
-                        Lakehouse Quality Progression
+                        Step-by-Step Refinement
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                       {item.medallionStages.map((stage, stIdx) => (
-                        <div key={stIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3 flex flex-col justify-between">
-                          <div className="space-y-2.5">
+                        <div key={stIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3 flex flex-col justify-between hover:border-zinc-700 transition">
+                          <div className="space-y-3">
                             <div className="flex items-center justify-between">
                               <span className="text-xs font-bold font-mono text-white">{stage.title}</span>
                               <span className={`text-[9px] font-mono px-2 py-0.5 rounded border ${stage.accent}`}>
                                 {stage.badge}
                               </span>
                             </div>
+
+                            {/* Purpose */}
                             <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800/80 text-[11px] text-zinc-300 leading-relaxed font-sans">
-                              <strong className="text-cyan-400 block mb-0.5 font-mono text-[10px] uppercase">Purpose & Role:</strong>
+                              <strong className="text-cyan-400 block mb-0.5 font-mono text-[10px] uppercase">Purpose:</strong>
                               {stage.purpose}
                             </div>
-                            <div className="p-2 rounded-lg bg-zinc-950 border border-zinc-800 text-[10px] font-mono text-emerald-300">
-                              <strong className="text-zinc-400 block mb-0.5 uppercase">Storage Standard:</strong>
-                              {stage.format}
+
+                            {/* Live Example Box */}
+                            <div className="space-y-1">
+                              <strong className="text-zinc-400 block font-mono text-[10px] uppercase">Example:</strong>
+                              {stage.exampleType === 'json' ? (
+                                <pre className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-amber-300 overflow-x-auto">
+                                  {stage.example}
+                                </pre>
+                              ) : (
+                                <div className="overflow-x-auto rounded-lg border border-zinc-800 bg-zinc-950">
+                                  <table className="w-full text-left text-[11px] font-mono border-collapse">
+                                    <thead>
+                                      <tr className="border-b border-zinc-800 bg-zinc-900/80 text-zinc-400">
+                                        {stage.exampleHeaders.map((h, hIdx) => (
+                                          <th key={hIdx} className="p-1.5 font-semibold text-[10px]">{h}</th>
+                                        ))}
+                                      </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-zinc-800/50">
+                                      {stage.exampleRows.map((row, rIdx) => (
+                                        <tr key={rIdx} className="text-emerald-300">
+                                          {row.map((cell, cIdx) => (
+                                            <td key={cIdx} className="p-1.5">{cell}</td>
+                                          ))}
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              )}
                             </div>
+
+                            {/* Typical Operations */}
+                            {stage.operations && (
+                              <div className="space-y-1.5 pt-1">
+                                <strong className="text-zinc-300 block font-mono text-[10px] uppercase">Typical Operations:</strong>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {stage.operations.map((op, oIdx) => (
+                                    <span key={oIdx} className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-950 border border-zinc-800 text-zinc-300">
+                                      ✓ {op}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Format & Characteristics */}
                             <div className="space-y-1.5 pt-1">
-                              <strong className="text-zinc-200 block font-mono text-[10px] uppercase">Key Pipeline Characteristics:</strong>
+                              <strong className="text-zinc-400 block font-mono text-[10px] uppercase">Key Details:</strong>
                               <ul className="space-y-1 text-[11px] text-zinc-300 font-sans">
                                 {stage.characteristics.map((c, cIdx) => (
                                   <li key={cIdx} className="flex items-start gap-1.5">
@@ -6112,16 +7062,16 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 4. Architectural Comparison Table: Warehouse vs Lake vs Lakehouse */}
-                {item.architectureMatrix && (
+                {/* 4. Big Data Tools You Should Know Table */}
+                {item.bigDataTools && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                        <Table className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Data Warehouse vs. Data Lake vs. Modern Lakehouse</span>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Database className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Big Data Tools You Should Know</span>
                       </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                        Architectural Comparison
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Tool vs. Primary Use
                       </span>
                     </div>
 
@@ -6129,35 +7079,44 @@ export default function AllDefinitionsPage() {
                       <table className="w-full text-left text-xs font-sans border-collapse">
                         <thead>
                           <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-300">
-                            <th className="p-2.5 font-semibold text-cyan-300">Architectural Dimension</th>
-                            <th className="p-2.5 font-semibold text-zinc-300">Traditional Data Warehouse</th>
-                            <th className="p-2.5 font-semibold text-blue-300">Traditional Data Lake</th>
-                            <th className="p-2.5 font-semibold text-emerald-300">Modern Data Lakehouse (Delta/Iceberg)</th>
+                            <th className="p-2.5 font-semibold text-emerald-400 w-1/3">Tool</th>
+                            <th className="p-2.5 font-semibold text-zinc-300">Primary Use</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-zinc-800/60 bg-black">
-                          {item.architectureMatrix.map((row, rIdx) => (
-                            <tr key={rIdx} className="hover:bg-zinc-900/30 transition-colors">
-                              <td className="p-2.5 font-mono text-cyan-400 font-medium whitespace-nowrap">{row.dimension}</td>
-                              <td className="p-2.5 text-zinc-300">{row.warehouse}</td>
-                              <td className="p-2.5 text-blue-200/90">{row.lake}</td>
-                              <td className="p-2.5 text-emerald-200/90">{row.lakehouse}</td>
+                          {item.bigDataTools.map((t, tIdx) => (
+                            <tr key={tIdx} className="hover:bg-zinc-900/30 transition-colors">
+                              <td className="p-2.5 font-mono text-emerald-300 font-medium whitespace-nowrap flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                <span>{t.tool}</span>
+                              </td>
+                              <td className="p-2.5 text-zinc-300">{t.primaryUse}</td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                     </div>
+                    {item.bigDataToolsNote && (
+                      <p className="text-[11px] text-zinc-400 italic font-sans px-1">
+                        💡 {item.bigDataToolsNote}
+                      </p>
+                    )}
                   </div>
                 )}
 
-                {/* 5. Production Python/PySpark Medallion Pipeline */}
+                {/* 5. Simple Python / Pandas Medallion Pipeline */}
                 {item.pythonCode && (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <span className="text-xs font-mono font-bold text-emerald-400 flex items-center gap-2">
-                        <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Production PySpark: Bronze → Silver → Gold Pipeline</span>
-                      </span>
+                      <div className="space-y-0.5">
+                        <span className="text-xs font-mono font-bold text-emerald-400 flex items-center gap-2">
+                          <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Simple Python Pipeline: Bronze → Silver → Gold (Pandas)</span>
+                        </span>
+                        <p className="text-[10px] text-zinc-400 font-sans">
+                          Clean, interview-friendly code you can easily talk through line by line.
+                        </p>
+                      </div>
                       <button
                         onClick={() => handleCopyCode(item.pythonCode, item.id)}
                         className="px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] font-mono text-zinc-300 border border-zinc-700 flex items-center gap-1.5 transition cursor-pointer"
@@ -6176,10 +7135,64 @@ export default function AllDefinitionsPage() {
                       </button>
                     </div>
                     <CodeHighlight code={item.pythonCode} />
+                    
+                    {/* Step-by-step code explanation cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 font-sans text-xs">
+                      <div className="p-2.5 rounded-lg bg-black border border-amber-900/40 text-amber-200">
+                        <strong className="text-amber-400 block font-mono text-[11px] mb-0.5">Bronze Step:</strong>
+                        <span>Creates the raw DataFrame as-is, containing dirty data, duplicates, and string amounts.</span>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-black border border-zinc-700/40 text-zinc-200">
+                        <strong className="text-zinc-300 block font-mono text-[11px] mb-0.5">Silver Step:</strong>
+                        <span>Casts amount to float, standardizes status, drops nulls, and removes duplicate rows.</span>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-black border border-yellow-800/40 text-yellow-200">
+                        <strong className="text-yellow-400 block font-mono text-[11px] mb-0.5">Gold Step:</strong>
+                        <span>Filters successful orders and groups by customer to calculate total transactions and sum.</span>
+                      </div>
+                    </div>
                   </div>
                 )}
 
-                {/* 6. Architecture Takeaway Banner */}
+                {/* 6. Architectural Comparison Table: Warehouse vs Lake vs Lakehouse */}
+                {item.architectureMatrix && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Data Warehouse vs. Data Lake vs. Modern Lakehouse</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Simple Comparison
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                      <table className="w-full text-left text-xs font-sans border-collapse">
+                        <thead>
+                          <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-300">
+                            <th className="p-2.5 font-semibold text-cyan-300">Dimension</th>
+                            <th className="p-2.5 font-semibold text-zinc-300">Data Warehouse</th>
+                            <th className="p-2.5 font-semibold text-blue-300">Data Lake</th>
+                            <th className="p-2.5 font-semibold text-emerald-300">Modern Lakehouse (Delta/Iceberg)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 bg-black">
+                          {item.architectureMatrix.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/30 transition-colors">
+                              <td className="p-2.5 font-mono text-cyan-400 font-medium whitespace-nowrap">{row.dimension}</td>
+                              <td className="p-2.5 text-zinc-300">{row.warehouse}</td>
+                              <td className="p-2.5 text-blue-200/90">{row.lake}</td>
+                              <td className="p-2.5 text-emerald-200/90">{row.lakehouse}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Architecture Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}
@@ -9637,6 +10650,46 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
+                {/* Common Deployment Strategies */}
+                {item.deploymentStrategies && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-emerald-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-3 gap-2">
+                      <div className="flex items-center gap-2">
+                        <Workflow className="w-4 h-4 text-emerald-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          Common Deployment Strategies
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-emerald-300 uppercase bg-emerald-950/40 px-2.5 py-0.5 rounded border border-emerald-800/40 shrink-0 self-start sm:self-auto">
+                        Production Release Patterns
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.deploymentStrategies.map((strat, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className={`p-4 rounded-xl bg-black border space-y-2 flex flex-col justify-between ${strat.border}`}
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono uppercase ${strat.accent}`}>
+                                {strat.name}
+                              </h5>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {strat.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans pt-1">
+                              {strat.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Health Endpoint Card */}
                 {item.healthEndpoint && (
                   <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
@@ -10081,128 +11134,199 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 71: Caching - AI Systems & High-Throughput Inference */}
+            {/* Item 71: Caching - In-Memory, Distributed & Invalidation Strategies */}
             {item.id === 'caching' && (
-              <div className="space-y-6">
-                {/* Core Principle Callout */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                      <Zap className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Inference Acceleration & Cost Containment</span>
-                    </h4>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-800">
-                      Tiered AI Caching
-                    </span>
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl space-y-2.5">
+                  <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs uppercase">
+                    <Sparkles className="w-4 h-4 text-cyan-400" />
+                    <span>What is Caching?</span>
                   </div>
-
-                  <div className="p-4 rounded-xl bg-black border border-amber-900/50 space-y-2">
-                    <div className="flex items-start gap-3">
-                      <span className="text-amber-400 font-bold text-base leading-none mt-0.5">⚡</span>
-                      <div>
-                        <p className="text-xs sm:text-sm text-amber-200 font-sans font-semibold leading-relaxed">
-                          {item.corePrinciple}
-                        </p>
-                        <p className="text-xs text-zinc-400 font-mono mt-1">
-                          {item.verbatimIntroduction}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
+                    {item.corePrinciple}
+                  </p>
                 </div>
 
-                {/* Common AI Caches Breakdown */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                      <Layers className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>The 5 Core AI Cache Layers</span>
-                    </h4>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                      End-to-End System Caches
-                    </span>
-                  </div>
+                {/* Types of Caching */}
+                {item.cachingTypes && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Types of Caching</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Architectural Taxonomy
+                      </span>
+                    </div>
 
-                  {/* Desktop Table View */}
-                  <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
-                        <tr>
-                          <th className="py-3 px-4 font-semibold text-zinc-300">Cache Layer</th>
-                          <th className="py-3 px-4 font-semibold text-cyan-400">What It Stores (Function)</th>
-                          <th className="py-3 px-4 font-semibold text-zinc-300">Architecture Implementation</th>
-                          <th className="py-3 px-4 font-semibold text-emerald-400">Primary System Benefit</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-zinc-800/80 font-sans">
-                        {item.cacheTypes.map((c, cIdx) => (
-                          <tr key={cIdx} className="hover:bg-zinc-900/40 transition">
-                            <td className="py-3.5 px-4 font-mono font-bold text-white whitespace-nowrap">
-                              <span className={`inline-block ${c.accent}`}>{c.name}</span>
-                              <div className="text-[10px] font-normal text-zinc-500 font-mono mt-0.5">
-                                {c.badge}
-                              </div>
-                            </td>
-                            <td className="py-3.5 px-4 font-semibold text-zinc-100">
-                              {c.whatItStores}
-                            </td>
-                            <td className="py-3.5 px-4 text-zinc-400 text-xs">
-                              {c.example}
-                            </td>
-                            <td className="py-3.5 px-4 text-emerald-300 text-xs font-medium">
-                              {c.benefit}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Responsive Grid View for Mobile / Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-                    {item.cacheTypes.map((c, cIdx) => (
-                      <div
-                        key={cIdx}
-                        className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-3 flex flex-col justify-between"
-                      >
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between gap-1.5">
-                            <span className="text-[10px] font-mono font-bold text-zinc-500">
-                              0{cIdx + 1}
-                            </span>
-                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-amber-300 border border-zinc-800">
-                              {c.badge}
-                            </span>
-                          </div>
-                          <div>
-                            <h5 className={`text-sm font-bold font-mono ${c.accent}`}>
-                              {c.name}
-                            </h5>
-                            <div className="mt-1.5 p-2 rounded-lg bg-black border border-zinc-800 text-xs font-semibold text-zinc-200">
-                              {c.whatItStores}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                      {item.cachingTypes.map((cType, cIdx) => (
+                        <div
+                          key={cIdx}
+                          className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition flex flex-col justify-between"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${cType.accent}`}>
+                                {cIdx + 1}. {cType.type}
+                              </span>
                             </div>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 inline-block">
+                              {cType.badge}
+                            </span>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                              {cType.description}
+                            </p>
                           </div>
-                          <div className="space-y-1.5 pt-1 text-xs">
-                            <p className="text-zinc-400 leading-relaxed font-sans">
-                              <strong className="text-zinc-300 font-mono text-[11px]">System: </strong>
-                              {c.example}
-                            </p>
-                            <p className="text-emerald-400 leading-relaxed font-sans font-medium text-[11px]">
-                              <strong className="text-emerald-500 font-mono">Benefit: </strong>
-                              {c.benefit}
-                            </p>
+                          <div className="text-[11px] text-zinc-400 font-sans pt-2 border-t border-zinc-900 leading-snug">
+                            {cType.note}
                           </div>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* In-Memory Caching: @lru_cache */}
+                {item.lruCacheCode && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span className="font-bold text-white">In-Memory Function Caching (Python)</span>
+                        <code className="text-cyan-400 text-[11px]">@lru_cache(maxsize=128)</code>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(`${item.id}-lru`, item.lruCacheCode)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === `${item.id}-lru` ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-4">
+                      <CodeHighlight code={item.lruCacheCode} />
+                    </div>
+                  </div>
+                )}
+
+                {/* Distributed Redis Caching: FastAPI */}
+                {item.redisFastApiCode && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Database className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="font-bold text-white">Distributed Redis Async Cache (FastAPI)</span>
+                        <code className="text-emerald-400 text-[11px]">redis.asyncio + cache.set(ex=300)</code>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(`${item.id}-redis`, item.redisFastApiCode)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === `${item.id}-redis` ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-4">
+                      <CodeHighlight code={item.redisFastApiCode} />
+                    </div>
+                  </div>
+                )}
+
+                {/* Cache Invalidation Table */}
+                {item.cacheInvalidation && (
+                  <div className="space-y-3.5 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-amber-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div>
+                        <div className="flex items-center gap-2 text-amber-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                          <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                          <span>{item.cacheInvalidation.title}</span>
+                        </div>
+                        <p className="text-xs text-zinc-400 font-sans mt-0.5">
+                          {item.cacheInvalidation.subtitle}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono text-amber-300 bg-amber-950/50 px-2.5 py-0.5 rounded border border-amber-800/60 self-start sm:self-auto">
+                        6 Failure Modes & Mitigations
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2.5 px-3 font-semibold text-rose-400 w-1/3">Problem</th>
+                            <th className="py-2.5 px-3 font-semibold text-emerald-400">Common Mitigation</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.cacheInvalidation.mitigations.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-medium text-white text-xs">
+                                <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-rose-300 inline-block">
+                                  {row.problem}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 leading-relaxed font-sans">
+                                {row.mitigation}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Key Architectural Concepts (Cache-Aside & TTL) */}
+                {item.patterns && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    {item.patterns.map((pat, pIdx) => (
+                      <div
+                        key={pIdx}
+                        className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <h5 className="text-xs font-bold font-mono text-white">
+                            {pat.pattern}
+                          </h5>
+                        </div>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {pat.description}
+                        </p>
                       </div>
                     ))}
                   </div>
-                </div>
+                )}
 
-                {/* Takeaway Banner */}
-                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
-                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
-                  {item.takeaway}
-                </div>
+                {/* Bottom Takeaway */}
+                {item.takeaway && (
+                  <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                    <strong className="text-cyan-400 uppercase">Caching Strategy Takeaway: </strong>
+                    {item.takeaway}
+                  </div>
+                )}
               </div>
             )}
 
@@ -11583,12 +12707,59 @@ export default function AllDefinitionsPage() {
                     </span>
                   </div>
 
-                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-emerald-900/40 shadow-xl space-y-3">
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-emerald-900/40 shadow-xl space-y-2.5">
                     <p className="text-xs sm:text-sm text-emerald-200 font-sans leading-relaxed font-semibold">
                       {item.coreDefinition}
                     </p>
+                    {item.flowExplanation && (
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.flowExplanation}
+                      </p>
+                    )}
                   </div>
                 </div>
+
+                {/* High vs Low Coherence Examples */}
+                {item.examples && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Activity className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>High Coherence vs. Low Coherence (Real Examples)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Logical Flow Contrast
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.examples.map((ex, eIdx) => (
+                        <div
+                          key={eIdx}
+                          className={`p-4 rounded-xl bg-black border ${ex.border} ${ex.bg} space-y-3 flex flex-col justify-between`}
+                        >
+                          <div className="space-y-2.5">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${ex.accent}`}>
+                                {ex.level}
+                              </span>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {ex.badge}
+                              </span>
+                            </div>
+                            <blockquote className="p-3 rounded-lg bg-zinc-950/90 border border-zinc-800/80 text-xs text-zinc-200 font-sans italic leading-relaxed">
+                              "{ex.text}"
+                            </blockquote>
+                          </div>
+                          <div className="text-[11px] text-zinc-400 font-sans pt-2 border-t border-zinc-900 flex items-start gap-1.5">
+                            <span className="text-zinc-500 font-mono shrink-0">Insight:</span>
+                            <span className="leading-snug">{ex.explanation}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* 4 Types of Coherence */}
                 {item.typesOfCoherence && (
@@ -11683,6 +12854,38 @@ export default function AllDefinitionsPage() {
                           </p>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Python Coherence Evaluation via LLM-as-a-Judge */}
+                {item.code && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="font-bold text-white">LLM-as-a-Judge Coherence Evaluator (Python + OpenAI)</span>
+                        <code className="text-emerald-400 text-[11px]">gpt-4.1-mini + JSON Schema rubric</code>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(`${item.id}-code`, item.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === `${item.id}-code` ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-4">
+                      <CodeHighlight code={item.code} />
                     </div>
                   </div>
                 )}
@@ -11824,6 +13027,87 @@ export default function AllDefinitionsPage() {
                           </div>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Python Implementation: LangChain RecursiveCharacterTextSplitter */}
+                {item.code && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span className="font-bold text-white">LangChain RecursiveCharacterTextSplitter</span>
+                        <code className="text-cyan-400 text-[11px]">chunk_size=180, chunk_overlap=30</code>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(item.id, item.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === item.id ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-4">
+                      <CodeHighlight code={item.code} />
+                    </div>
+                  </div>
+                )}
+
+                {/* How do you evaluate chunking quality? */}
+                {item.chunkingEvaluation && (
+                  <div className="space-y-3.5 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-amber-900/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-2.5 gap-2">
+                      <div className="flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-amber-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          {item.chunkingEvaluation.title}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-amber-300 uppercase bg-amber-950/40 px-2.5 py-0.5 rounded border border-amber-800/40 shrink-0 self-start sm:self-auto">
+                        Quality Benchmarking
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                      {item.chunkingEvaluation.intro}
+                    </p>
+
+                    <div className="space-y-2 pt-1">
+                      <span className="text-[11px] font-mono uppercase text-zinc-400 font-bold block">
+                        Useful measurements include:
+                      </span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {item.chunkingEvaluation.measurements.map((m, mIdx) => (
+                          <div
+                            key={mIdx}
+                            className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between"
+                          >
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-between gap-1.5">
+                                <h5 className={`text-xs font-bold font-mono ${m.accent}`}>
+                                  {m.metric}
+                                </h5>
+                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                  {m.badge}
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-zinc-300 font-sans leading-relaxed pt-0.5">
+                                {m.desc}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -22450,6 +23734,175 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* 5. Centroid in K-Means Clustering Lifecycle */}
+                {item.kmeansLifecycle && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                          <Sliders className="w-4 h-4 text-cyan-400 shrink-0" />
+                          <span>{item.kmeansLifecycle.title}</span>
+                        </h4>
+                        <p className="text-xs text-zinc-300 font-sans mt-0.5">
+                          {item.kmeansLifecycle.intro}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 self-start sm:self-auto">
+                        4-Step Iterative Optimization
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.kmeansLifecycle.steps.map((st, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className="p-3.5 rounded-xl bg-black border border-zinc-800 hover:border-cyan-900/50 transition flex flex-col justify-between space-y-2"
+                        >
+                          <div className="space-y-1.5">
+                            <span className="text-xs font-bold font-mono text-cyan-300 block">
+                              {st.step}
+                            </span>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {st.desc}
+                            </p>
+                          </div>
+                          <span className="text-[9px] font-mono text-zinc-500 self-end">
+                            0{sIdx + 1}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-cyan-950/30 border border-cyan-800/50 text-xs text-cyan-200/90 font-sans flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                      <span>{item.kmeansLifecycle.objective}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Scikit-Learn KMeans Python Implementation */}
+                {item.sklearnCode && (
+                  <div className="space-y-3">
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <span className="font-bold text-white">Scikit-Learn: K-Means Centroid Fitting & Clustering</span>
+                          <code className="text-emerald-400 text-[11px]">KMeans(n_clusters=2)</code>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-centroid-sklearn', item.sklearnCode)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-centroid-sklearn' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <div className="p-4">
+                        <CodeHighlight code={item.sklearnCode} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Useful Attributes Table */}
+                {item.usefulAttributes && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Table className="w-4 h-4 text-amber-400" />
+                        <span>Useful Scikit-Learn KMeans Attributes</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Model Inspection
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2 px-3 text-amber-400 font-semibold w-1/3">Attribute</th>
+                            <th className="py-2 px-3 text-zinc-300 font-semibold">Purpose</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.usefulAttributes.table.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/30 transition">
+                              <td className="py-2.5 px-3 font-mono font-medium text-amber-300">
+                                <code className="px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800">
+                                  {row.attribute}
+                                </code>
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-200 font-sans">
+                                {row.purpose}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {item.usefulAttributes.note && (
+                      <div className="p-3 rounded-lg bg-zinc-900/80 border border-zinc-800 text-xs text-zinc-400 font-sans leading-relaxed">
+                        <strong className="text-zinc-200 font-mono">Note: </strong>
+                        {item.usefulAttributes.note}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 8. Centroid vs Medoid Comparison */}
+                {item.centroidVsMedoid && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-purple-900/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Activity className="w-4 h-4 text-purple-400" />
+                        <span>{item.centroidVsMedoid.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        K-Means vs. K-Medoids
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2.5 px-3 font-semibold text-zinc-400 w-1/4">Aspect</th>
+                            <th className="py-2.5 px-3 font-semibold text-cyan-400 w-3/8">Centroid (K-Means)</th>
+                            <th className="py-2.5 px-3 font-semibold text-purple-400 w-3/8">Medoid (K-Medoids / PAM)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.centroidVsMedoid.comparison.map((comp, cIdx) => (
+                            <tr key={cIdx} className="hover:bg-zinc-900/30 transition">
+                              <td className="py-2.5 px-3 font-mono text-zinc-300 font-semibold text-[11px]">
+                                {comp.dimension}
+                              </td>
+                              <td className="py-2.5 px-3 text-cyan-200/90 font-sans">
+                                {comp.centroid}
+                              </td>
+                              <td className="py-2.5 px-3 text-purple-200/90 font-sans">
+                                {comp.medoid}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
                 {/* 5. Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
@@ -25667,8 +27120,465 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
+            {/* Item: Class Imbalance */}
+            {item.id === 'class-imbalance' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl space-y-2.5">
+                  <div className="flex items-center gap-2 text-rose-400 font-mono font-bold text-xs uppercase">
+                    <Sparkles className="w-4 h-4 text-rose-400" />
+                    <span>What is Class Imbalance?</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* Five Ways to Handle Class Imbalance */}
+                {item.fiveWays && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Five Ways to Handle Class Imbalance</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Techniques & Tradeoffs
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                      {item.fiveWays.map((way, wIdx) => (
+                        <div
+                          key={wIdx}
+                          className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 hover:border-zinc-700 transition flex flex-col justify-between"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${way.accent}`}>
+                                {wIdx + 1}. {way.method}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {way.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {way.desc}
+                            </p>
+                          </div>
+
+                          <div className="pt-2 border-t border-zinc-900 space-y-1 text-[11px] font-sans">
+                            <div className="text-emerald-400/90 leading-tight">
+                              <strong className="font-mono text-emerald-400">Pros: </strong>
+                              {way.pros}
+                            </div>
+                            <div className="text-rose-400/90 leading-tight">
+                              <strong className="font-mono text-rose-400">Cons: </strong>
+                              {way.cons}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Key Questions / Concept Explanations */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  {/* Class Weight Explanation */}
+                  {item.classWeightExplanation && (
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-amber-900/40 space-y-1.5 shadow-lg">
+                      <div className="flex items-center gap-2 text-amber-400 font-mono font-bold text-xs">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.classWeightExplanation.question}</span>
+                      </div>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.classWeightExplanation.answer}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Stratify Explanation */}
+                  {item.stratifyExplanation && (
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-cyan-900/40 space-y-1.5 shadow-lg">
+                      <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.stratifyExplanation.question}</span>
+                      </div>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.stratifyExplanation.answer}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Python Implementation: Baseline vs Class-Weighted */}
+                {item.code && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span className="font-bold text-white">Scikit-Learn: Baseline vs. Class-Weighted Logistic Regression</span>
+                        <code className="text-cyan-400 text-[11px]">class_weight="balanced"</code>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(item.id, item.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === item.id ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-4">
+                      <CodeHighlight code={item.code} />
+                    </div>
+                  </div>
+                )}
+
+                {/* SMOTE Pipeline Code & Critical Rule */}
+                {item.smoteCode && (
+                  <div className="space-y-3">
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <span className="font-bold text-white">SMOTE Pipeline (imblearn)</span>
+                          <code className="text-emerald-400 text-[11px]">SMOTE(random_state=42)</code>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode(`${item.id}-smote`, item.smoteCode)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === `${item.id}-smote` ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <div className="p-4">
+                        <CodeHighlight code={item.smoteCode} />
+                      </div>
+                    </div>
+
+                    {/* Critical Interview Alert: SMOTE Leakage Rule */}
+                    {item.criticalSmoteRule && (
+                      <div className="p-4 rounded-xl bg-amber-950/30 border border-amber-800/60 flex items-start gap-3 text-xs leading-relaxed">
+                        <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                        <div>
+                          <strong className="text-amber-300 font-mono uppercase tracking-wide">
+                            Critical Interview Point:{" "}
+                          </strong>
+                          <span className="text-amber-200/90 font-sans">
+                            {item.criticalSmoteRule}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Metrics Table: Which Metrics Should You Choose? */}
+                {item.metricsTable && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <Table className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          Which Metrics Should You Choose?
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800/40">
+                        Diagnostic Evaluation
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2.5 px-3 font-semibold text-cyan-400 w-1/3">Metric</th>
+                            <th className="py-2.5 px-3 font-semibold text-zinc-300">When It Helps</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.metricsTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-bold text-white text-xs">
+                                <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-cyan-300">
+                                  {row.metric}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 leading-relaxed">
+                                {row.whenItHelps}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Interview Defend QA */}
+                {item.interviewAnswers && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 space-y-3 shadow-lg">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Terminal className="w-4 h-4 text-amber-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+                        Target Interview Questions (How to Defend)
+                      </h4>
+                    </div>
+
+                    <div className="space-y-3">
+                      {item.interviewAnswers.map((qa, qIdx) => (
+                        <div key={qIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                          <p className="text-xs font-bold text-white flex items-start gap-2">
+                            <span className="text-amber-400 font-mono">Q{qIdx + 1}:</span>
+                            <span>{qa.question}</span>
+                          </p>
+                          <p className="text-xs text-zinc-300 leading-relaxed pl-6 border-l-2 border-amber-500/30">
+                            <span className="text-amber-300 font-mono font-semibold">Answer: </span>
+                            {qa.answer}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Item: Cardinality */}
+            {item.id === 'cardinality' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* Core Definition Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl space-y-2.5">
+                  <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs uppercase">
+                    <Sparkles className="w-4 h-4 text-cyan-400" />
+                    <span>What is Cardinality?</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed font-semibold">
+                    {item.coreDefinition}
+                  </p>
+                  {item.coreExplanation && (
+                    <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                      {item.coreExplanation}
+                    </p>
+                  )}
+                </div>
+
+                {/* Pandas Cardinality Python Script Box */}
+                {item.code && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span className="font-bold text-white">Pandas Cardinality Operations Cheatsheet</span>
+                        <code className="text-cyan-400 text-[11px]">df.nunique() vs. unique() vs. value_counts()</code>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode(item.id, item.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === item.id ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-4">
+                      <CodeHighlight code={item.code} />
+                    </div>
+                  </div>
+                )}
+
+                {/* Understand the Difference Table */}
+                {item.functionDifferences && (
+                  <div className="space-y-3.5 p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div>
+                        <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                          <Table className="w-4 h-4 text-cyan-400 shrink-0" />
+                          <span>{item.functionDifferences.title}</span>
+                        </div>
+                        <p className="text-xs text-zinc-400 font-sans mt-0.5">
+                          {item.functionDifferences.subtitle}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-400 bg-zinc-900 px-2.5 py-0.5 rounded border border-zinc-800 self-start sm:self-auto">
+                        5 Key Pandas Functions
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2.5 px-3 font-semibold text-cyan-400 w-1/3">Function</th>
+                            <th className="py-2.5 px-3 font-semibold text-emerald-400">What It Returns</th>
+                            <th className="py-2.5 px-3 font-semibold text-zinc-400">Return Type</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.functionDifferences.table.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-medium text-white text-xs">
+                                <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-cyan-300 inline-block">
+                                  {row.function}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-200 font-sans font-medium">
+                                {row.returns}
+                              </td>
+                              <td className="py-2.5 px-3 font-mono text-zinc-400 text-[11px]">
+                                {row.outputType}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Interview Trap Alert Callout */}
+                    {item.functionDifferences.trap && (
+                      <div className="p-3.5 rounded-xl bg-amber-950/30 border border-amber-800/60 flex items-start gap-2.5 text-xs text-amber-200/90 leading-relaxed font-sans">
+                        <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                        <div>
+                          <strong className="font-mono text-amber-300 uppercase tracking-wide">
+                            Interview Trap:{" "}
+                          </strong>
+                          <span>
+                            {item.functionDifferences.trap.replace(/^Interview trap:\s*/i, '')}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 3 Cardinality Tiers (Low, Medium, High) */}
+                {item.cardinalityTiers && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Cardinality Tiers & Mitigation Strategies</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Tabular ML Encodings
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.cardinalityTiers.map((tier, tIdx) => (
+                        <div
+                          key={tIdx}
+                          className={`p-4 rounded-xl bg-black border ${tier.border} space-y-3 flex flex-col justify-between hover:border-zinc-700 transition`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${tier.accent}`}>
+                                {tier.tier}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {tier.badge}
+                              </span>
+                            </div>
+                            <div className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              <strong className="text-zinc-400 font-mono text-[11px] block mb-1">
+                                Examples:
+                              </strong>
+                              <span className="italic text-zinc-200">{tier.examples}</span>
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t border-zinc-900 text-xs text-zinc-300 font-sans leading-relaxed">
+                            <strong className="text-cyan-400 font-mono text-[11px] block mb-0.5">
+                              Common Approach:
+                            </strong>
+                            <span>{tier.commonApproach}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Cardinality in NLP & GenAI */}
+                {item.genAiSection && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-purple-900/40 shadow-xl space-y-3.5">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <div className="flex items-center gap-2 text-purple-400 font-mono font-bold text-xs uppercase tracking-wider">
+                        <Bot className="w-4 h-4 text-purple-400" />
+                        <span>{item.genAiSection.title}</span>
+                      </div>
+                      <span className="text-[10px] font-mono text-purple-300 bg-purple-950/50 px-2 py-0.5 rounded border border-purple-800/60">
+                        Beyond Tabular Data
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-400 font-sans">
+                      {item.genAiSection.subtitle}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {item.genAiSection.items.map((pt, pIdx) => (
+                        <div key={pIdx} className="p-3.5 rounded-xl bg-black border border-purple-900/30 space-y-1">
+                          <span className="text-xs font-bold font-mono text-purple-300 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                            {pt.concept}
+                          </span>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans pl-3">
+                            {pt.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {item.genAiSection.ragNote && (
+                      <div className="p-3 rounded-xl bg-purple-950/30 border border-purple-800/50 text-xs text-purple-200/90 leading-relaxed font-sans">
+                        <strong className="font-mono text-purple-300 uppercase">RAG Access Control Note: </strong>
+                        {item.genAiSection.ragNote}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Takeaway */}
+                {item.takeaway && (
+                  <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                    <strong className="text-cyan-400 uppercase">Cardinality Strategy Takeaway: </strong>
+                    {item.takeaway}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Universal EDA & Technical Definition Card Renderer for items with details/code */}
-            {item.details && !['confidence-score', 'vector-database', 'quantization'].includes(item.id) && (
+            {item.details && !['confidence-score', 'vector-database', 'quantization', 'chroma-db', 'class-imbalance', 'caching', 'cardinality'].includes(item.id) && (
               <div className="space-y-4 pt-1">
                 {/* 5-Stage Core Pipeline Overview (for EDA Master Blueprint) */}
                 {item.pipelineOverview && (

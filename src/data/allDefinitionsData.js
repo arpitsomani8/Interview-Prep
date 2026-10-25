@@ -88,10 +88,6 @@ export const definitionBookmarks = [
     "label": "Big Data (Bronze, Silver & Gold Medallion)"
   },
   {
-    "id": "bivariate",
-    "label": "Bivariate Analysis"
-  },
-  {
     "id": "chatbot-architecture",
     "label": "Chatbot Architecture (Enterprise Multi-Agent Banking System)"
   },
@@ -813,7 +809,7 @@ export const definitionBookmarks = [
   },
   {
     "id": "univariate",
-    "label": "Univariate Analysis"
+    "label": "Univariate/Bivariate Analysis"
   },
   {
     "id": "uvicorn",
@@ -926,27 +922,58 @@ export const definitionsData = [
   },
   {
     "id": "confidence-score",
-    "title": "Confidence Score & Threshold Tuning",
-    "badge": "Model Certainty & Decision Boundary",
-    "summary": "A confidence score tells us how strongly a YOLO model believes its prediction. Setting the threshold balances precision against recall.",
-    "details": [
-      "Definition: A scalar value between 0.0 and 1.0 indicating model certainty that a bounding box contains an object of a specific class.",
-      "Lower Confidence Threshold: Generates more detections, catches more edge cases (higher recall), but risks false alarms (lower precision).",
-      "Higher Confidence Threshold: Reduces false alarms by accepting only high-certainty predictions (higher precision), but risks missing subtler defects (lower recall)."
-    ],
-    "tradeoffTable": [
+    "title": "Confidence Score & Calibration",
+    "badge": "Model Certainty, Decision Boundary & Probability Calibration",
+    "summary": "A confidence score is a numerical measure associated with a prediction or decision. Its meaning depends on the model, scoring method, and task. It tells us how strongly a model believes its prediction.",
+    "coreDefinition": "A confidence score is a numerical measure associated with a prediction or decision. Its meaning depends on the model, scoring method, and task. It tells us how strongly a model believes its prediction.",
+    "thresholdTuning": [
       {
-        "threshold": "Lower Threshold (e.g. 0.25 - 0.40)",
-        "detections": "More detections",
-        "recall": "Higher Recall",
-        "precision": "Lower Precision (more false positives)"
+        "type": "Lower Confidence Threshold",
+        "effect": "Generates more detections, catches more edge cases (higher recall), but risks false alarms (lower precision).",
+        "badge": "Higher Recall",
+        "accent": "text-cyan-400"
       },
       {
-        "threshold": "Higher Threshold (e.g. 0.70 - 0.85)",
-        "detections": "Fewer detections",
-        "recall": "Lower Recall (misses subtle damage)",
-        "precision": "Higher Precision (fewer false alarms)"
+        "type": "Higher Confidence Threshold",
+        "effect": "Reduces false alarms by accepting only high-certainty predictions (higher precision), but risks missing subtler defects (lower recall).",
+        "badge": "Higher Precision",
+        "accent": "text-amber-400"
       }
+    ],
+    "aiSystemsTable": [
+      { "system": "Classification", "representation": "Predicted class probability" },
+      { "system": "Object detection", "representation": "Model score for a detected object and class" },
+      { "system": "Semantic search", "representation": "Similarity or relevance score for a retrieved item" },
+      { "system": "RAG", "representation": "Retrieval relevance, answer support, or a separate quality estimate" },
+      { "system": "LLM generation", "representation": "Token probabilities or scores derived from them" },
+      { "system": "Agentic workflow", "representation": "A task-specific estimate of whether an action or result meets defined criteria" }
+    ],
+    "code": "from sklearn.feature_extraction.text import TfidfVectorizer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.pipeline import make_pipeline\n\ntexts = [\n    \"Claim your prize now\",\n    \"Win cash immediately\",\n    \"Meeting scheduled for tomorrow\",\n    \"Please review the project report\",\n    \"You have won a free gift\",\n    \"The team meeting starts at nine\"\n]\n\nlabels = [1, 1, 0, 0, 1, 0]  # 1 = spam, 0 = not spam\n\nmodel = make_pipeline(\n    TfidfVectorizer(),\n    LogisticRegression()\n)\n\nmodel.fit(texts, labels)\n\nemail = [\"Congratulations, claim your free gift\"]\n\nprobabilities = model.predict_proba(email)[0]\nclasses = model.classes_\n\nfor class_label, probability in zip(classes, probabilities):\n    print(class_label, round(probability, 3))\n\npredicted_class = model.predict(email)[0]\nconfidence = probabilities.argmax()\n\nprint(\"Predicted class:\", predicted_class)\nprint(\"Maximum class probability:\", probabilities[confidence])",
+    "calibrationSection": {
+      "title": "Model Calibration",
+      "coreNote": "Calibration is one of the most important concepts associated with confidence scores.",
+      "methods": [
+        { "method": "Reliability diagram", "desc": "Plots predicted confidence against observed accuracy." },
+        { "method": "Brier score", "desc": "Measures the squared error between predicted probabilities and outcomes; lower is better for the same evaluation setup." },
+        { "method": "Log loss", "desc": "Penalizes incorrect predictions, particularly confident incorrect predictions." },
+        { "method": "Platt scaling", "desc": "Learns a calibration mapping, often using logistic regression." },
+        { "method": "Isotonic regression", "desc": "Learns a flexible, monotonic mapping from scores to probabilities." }
+      ]
+    },
+    "confidenceVsSimilarity": {
+      "title": "Confidence score vs. similarity score",
+      "warning": "These are commonly confused in GenAI interviews.",
+      "scenario": "Suppose a RAG retriever returns a cosine similarity of 0.87 for a document.",
+      "explanation": "That means the vectors have a cosine similarity of 0.87 under the relevant embedding and normalization setup. It does not mean there is an 87% probability that the document answers the question correctly.",
+      "takeaway": "The correct interpretation depends on the embedding model, score distribution, dataset and retrieval task."
+    },
+    "details": [
+      "A confidence score is a numerical measure associated with a prediction or decision. Its meaning depends on the model, scoring method, and task. It tells us how strongly a model believes its prediction.",
+      "Lower Confidence Threshold: Generates more detections, catches more edge cases (higher recall), but risks false alarms (lower precision).",
+      "Higher Confidence Threshold: Reduces false alarms by accepting only high-certainty predictions (higher precision), but risks missing subtler defects (lower recall).",
+      "Confidence score in different AI systems: Classification (class probability), Object detection (box/class score), Semantic search (relevance score), RAG (retrieval/answer quality), LLM generation (token probabilities), Agentic workflow (task criteria estimate).",
+      "Calibration: One of the most important concepts. Evaluated via reliability diagrams, Brier score, and Log loss; calibrated using Platt scaling or Isotonic regression.",
+      "Confidence Score vs. Similarity Score: Cosine similarity of 0.87 does NOT mean an 87% probability that the document is correct. Vector similarity measures angular distance, not calibrated statistical probability."
     ]
   },
   {
@@ -2350,9 +2377,93 @@ export const definitionsData = [
   },
   {
     "id": "classical-ml",
-    "title": "Classical ML vs Deep Learning",
-    "badge": "Algorithm Paradigms & Compute Profiles",
-    "summary": "Classical ML refers to traditional machine learning algorithms designed primarily for structured tabular data, contrasted with modern deep learning.",
+    "title": "Classical Machine Learning",
+    "badge": "Core ML Paradigms, Algorithms & Selection Guide",
+    "summary": "Classical Machine Learning is the set of traditional algorithms that learn patterns from structured or unstructured data to make predictions, classify examples, or discover groups.",
+    "coreDefinition": "Classical Machine Learning is the set of traditional algorithms that learn patterns from structured or unstructured data to make predictions, classify examples, or discover groups.",
+    "mainTypes": [
+      {
+        "type": "Supervised learning",
+        "badge": "Labeled Data (X → y)",
+        "accent": "text-cyan-400",
+        "desc": "Learns from examples containing both input features (X) and known target labels (y).",
+        "subtypes": [
+          {
+            "name": "Classification",
+            "examples": "spam vs. not spam, fraud vs. legitimate"
+          },
+          {
+            "name": "Regression",
+            "examples": "house prices, sales, delivery time"
+          }
+        ]
+      },
+      {
+        "type": "Unsupervised learning",
+        "badge": "Unlabeled Data (X)",
+        "accent": "text-emerald-400",
+        "desc": "Finds patterns in data without target labels.",
+        "subtypes": [
+          {
+            "name": "Clustering",
+            "examples": "group customers by behavior"
+          },
+          {
+            "name": "Dimensionality reduction",
+            "examples": "reduce features using PCA"
+          },
+          {
+            "name": "Anomaly detection",
+            "examples": "identify unusual observations"
+          }
+        ]
+      },
+      {
+        "type": "Reinforcement learning",
+        "badge": "Environment & Rewards",
+        "accent": "text-amber-400",
+        "desc": "An agent learns actions through rewards and penalties while interacting with an environment. It is often taught alongside classical ML, though modern RL can also use deep neural networks.",
+        "subtypes": []
+      }
+    ],
+    "algorithmsTable": [
+      { "algorithm": "Linear Regression", "use": "Predict a continuous value", "idea": "Fits a linear relationship" },
+      { "algorithm": "Logistic Regression", "use": "Classification", "idea": "Estimates class probabilities" },
+      { "algorithm": "Decision Tree", "use": "Classification and regression", "idea": "Splits data using feature rules" },
+      { "algorithm": "Random Forest", "use": "Classification and regression", "idea": "Combines many decision trees" },
+      { "algorithm": "Gradient Boosting / XGBoost", "use": "Classification and regression", "idea": "Builds models sequentially to correct errors" },
+      { "algorithm": "K-Nearest Neighbors (KNN)", "use": "Classification and regression", "idea": "Uses nearby examples" },
+      { "algorithm": "Naive Bayes", "use": "Text classification", "idea": "Applies Bayes' theorem with conditional-independence assumptions" },
+      { "algorithm": "Support Vector Machine (SVM)", "use": "Classification and regression", "idea": "Finds a margin-based boundary" },
+      { "algorithm": "K-Means", "use": "Clustering", "idea": "Groups points around cluster centers" },
+      { "algorithm": "PCA", "use": "Dimensionality reduction", "idea": "Projects data onto directions of high variance" }
+    ],
+    "selectionGuide": [
+      {
+        "question": "Need to predict a number?",
+        "recommendation": "Start with Linear Regression; consider Random Forest or Gradient Boosting if the relationship is nonlinear.",
+        "badge": "Regression",
+        "accent": "text-cyan-400"
+      },
+      {
+        "question": "Need to predict a category?",
+        "recommendation": "Try Logistic Regression as a baseline, then Decision Tree, Random Forest, SVM or boosting.",
+        "badge": "Classification",
+        "accent": "text-emerald-400"
+      },
+      {
+        "question": "Need to group unlabeled examples?",
+        "recommendation": "Try K-Means when cluster shapes and assumptions are reasonable; consider DBSCAN for density-based clusters.",
+        "badge": "Clustering",
+        "accent": "text-amber-400"
+      },
+      {
+        "question": "Need an interpretable baseline?",
+        "recommendation": "Linear or Logistic Regression can be easier to explain than a complex ensemble.",
+        "badge": "Interpretability",
+        "accent": "text-purple-400"
+      }
+    ],
     "comparisonTable": [
       {
         "dimension": "Core Algorithms",
@@ -4437,119 +4548,181 @@ export const definitionsData = [
   },
   {
     "id": "big-data",
-    "title": "Big Data & The Medallion Architecture (Bronze, Silver & Gold Lakehouse Design)",
-    "badge": "Distributed Lakehouse, Modern Data Stack & ACID Storage",
-    "summary": "Big Data refers to massive, high-velocity datasets that exceed the memory and processing limits of single-node computers. In modern data lakehouses (Databricks, Delta Lake, Apache Iceberg, Snowflake), the Medallion Architecture is the industry-standard design pattern: raw data lands append-only in the Bronze layer, gets validated, cleaned, and deduplicated in the Silver layer, and is aggregated into high-performance dimensional star schemas and ML feature stores in the Gold layer.",
-    "coreDefinition": "Big Data represents datasets characterized by the 5 V's: Volume (petabytes of logs), Velocity (real-time Kafka/IoT streams), Variety (structured, semi-structured JSON, unstructured media), Veracity (data quality and schema drift), and Value (actionable business intelligence and ML predictions). Modern big data architecture decouples compute from storage, storing columnar Parquet files on cloud object storage (S3/ADLS/GCS) with ACID transaction layers.",
+    "title": "Big Data & The Medallion Architecture (Bronze, Silver & Gold)",
+    "badge": "Data Lakehouse, 5 V's & Modern Data Stack",
+    "summary": "Big Data refers to massive datasets that cannot fit or run on a single computer. Medallion Architecture organizes this data into three simple layers: Bronze (raw data), Silver (cleaned data), and Gold (business-ready data).",
+    "coreDefinition": "Big Data is large amounts of data characterized by the 5 V's: Volume, Velocity, Variety, Veracity, and Value. Medallion Architecture organizes data into three progressively refined layers: Bronze (raw ingested data), Silver (cleaned and validated data), and Gold (business-ready aggregated data).",
+    "simpleAnalogy": "Think of Medallion Architecture like water filtration: Bronze is raw river water, Silver is filtered clean tap water, and Gold is packaged mineral water ready to drink.",
     "fiveVs": [
       {
         "v": "Volume",
-        "title": "Petabytes to Exabytes",
-        "desc": "Datasets so large that storing them on a single hard drive or database server is physically impossible; requires distributed storage across clusters.",
-        "badge": "Scale"
+        "title": "Amount of Data",
+        "desc": "The amount of data — gigabytes, terabytes, or petabytes.",
+        "badge": "Size"
       },
       {
         "v": "Velocity",
-        "title": "Real-Time Ingestion",
-        "desc": "Data generated continuously at millisecond intervals (clickstreams, credit card swipes, sensor telemetry) via Kafka and Spark Streaming.",
+        "title": "Speed of Data",
+        "desc": "How quickly data arrives and must be processed.",
         "badge": "Speed"
       },
       {
         "v": "Variety",
-        "title": "Multi-Format Ingestion",
-        "desc": "Handles structured tabular SQL, semi-structured JSON/Avro/Parquet, and unstructured media (images, audio, PDFs) in one unified lake.",
-        "badge": "Diversity"
+        "title": "Different Formats",
+        "desc": "Different formats: tables, JSON, text, images, audio, and logs.",
+        "badge": "Formats"
       },
       {
         "v": "Veracity",
-        "title": "Data Trust & Quality",
-        "desc": "Guarding against missing values, schema drift, out-of-order events, and corrupted payloads through automated testing and validation gates.",
-        "badge": "Integrity"
+        "title": "Data Quality",
+        "desc": "Data quality, reliability, and uncertainty.",
+        "badge": "Trust"
       },
       {
         "v": "Value",
-        "title": "Business ROI & ML",
-        "desc": "Transforming raw noise into high-value analytics, executive KPI dashboards, automated fraud detection, and predictive ML models.",
+        "title": "Business Value",
+        "desc": "The useful business outcomes extracted from data.",
         "badge": "Impact"
       }
     ],
     "medallionStages": [
       {
         "layer": "Bronze",
-        "title": "Raw Landed Data (Raw Ingestion Zone)",
-        "badge": "Append-Only / Raw Lake",
+        "title": "Bronze — Raw data",
+        "badge": "Layer 1: Raw",
         "accent": "border-amber-700/60 text-amber-400 bg-amber-950/30",
-        "purpose": "The raw, unadulterated landing zone for all incoming enterprise data. Preserves historical source fidelity without transformation.",
-        "format": "Delta Lake / Parquet / Raw JSON (Append-Only)",
+        "purpose": "Preserve ingested data with minimal transformation.",
+        "format": "Raw JSON / Parquet / Append-Only",
+        "exampleType": "json",
+        "example": "{\n  \"customer_id\": \"C101\",\n  \"amount\": \"2500\",\n  \"date\": \"25-10-2026\"\n}",
+        "operations": [
+          "Ingestion",
+          "Source metadata",
+          "Ingestion timestamps",
+          "Raw-file retention"
+        ],
         "characteristics": [
-          "Zero Transformations: Ingests raw events exactly as emitted by source APIs, CDC databases, and Kafka streams.",
-          "Technical Audit Columns: Automatically appends _ingested_at timestamp, _source_file_name, and _batch_id for complete audit traceability.",
-          "Immutable Replayability: If downstream transformations or business logic change, you can completely recompute Silver and Gold from Bronze."
+          "Saves raw data exactly as received from APIs or Kafka streams.",
+          "Keeps a full audit trail with timestamps and source filenames.",
+          "Never modifies raw files so you can always re-run the pipeline."
         ]
       },
       {
         "layer": "Silver",
-        "title": "Cleaned & Conformed (Enterprise Single Source of Truth)",
-        "badge": "Enterprise Bus Matrix / Filtered",
+        "title": "Silver — Clean data",
+        "badge": "Layer 2: Cleaned",
         "accent": "border-zinc-400/60 text-zinc-300 bg-zinc-900/40",
-        "purpose": "The cleansed, validated, schema-enforced single source of truth for the entire organization.",
-        "format": "Delta Lake / Apache Iceberg (ACID Merges & Upserts)",
+        "purpose": "Improve data quality and consistency.",
+        "format": "Delta Lake / Apache Iceberg / Clean Parquet",
+        "exampleType": "table",
+        "exampleHeaders": ["customer_id", "amount", "date"],
+        "exampleRows": [
+          ["C101", "2500.00", "2026-10-25"]
+        ],
+        "operations": [
+          "Type conversion",
+          "Deduplication",
+          "Missing-value handling",
+          "Schema validation",
+          "Record matching"
+        ],
         "characteristics": [
-          "Deduplication & Validation: Eliminates duplicate events (dropDuplicates on event_id) and drops corrupted or out-of-bound records.",
-          "Schema Enforcement & Type Casting: Strictly casts strings to INT, FLOAT, and ISO-8601 TIMESTAMPS with null handling rules.",
-          "PII Masking & Privacy: Masks, hashes, or encrypts sensitive customer data (SSN, credit cards, emails) to satisfy GDPR and HIPAA.",
-          "Enrichment & Joins: Joins reference dimension tables (e.g., matching user_id with account tier) to create rich enterprise feature tables."
+          "Removes duplicate rows and filters out corrupted or invalid records.",
+          "Converts string amounts to numbers and dates to standard format.",
+          "Acts as the single clean, trusted source of truth for everyone."
         ]
       },
       {
         "layer": "Gold",
-        "title": "Curated & Aggregated (Business Intelligence & ML Feature Store)",
-        "badge": "Business BI & Production ML",
+        "title": "Gold — Business-ready data",
+        "badge": "Layer 3: Curated",
         "accent": "border-yellow-500/60 text-yellow-400 bg-yellow-950/30",
-        "purpose": "Production-ready, highly aggregated, business-level tables optimized for lightning-fast queries and machine learning.",
-        "format": "Delta Lake / Star Schema / Partitioned Parquet",
+        "purpose": "Prepare curated datasets for reporting, analytics, and ML applications.",
+        "format": "Star Schema / Aggregated Parquet / Feature Store",
+        "exampleType": "table",
+        "exampleHeaders": ["date", "total_transactions", "total_amount"],
+        "exampleRows": [
+          ["2026-10-25", "1", "2500.00"]
+        ],
+        "operations": [
+          "Aggregations",
+          "Business metrics",
+          "Dimensional models",
+          "Feature tables",
+          "Analytics-ready views"
+        ],
         "characteristics": [
-          "Dimensional Modeling: Star schemas with conformed Fact tables (transactions) and Dimension tables (customers, products, dates).",
-          "Pre-computed Rollups: Daily, weekly, and monthly aggregate KPIs (e.g. daily active users, average order value, regional churn rate).",
-          "Sub-Second BI Queries: Partitioned and indexed so PowerBI, Tableau, and executive dashboards load in milliseconds.",
-          "Feature Store Ready: Curated feature vectors fed directly to real-time ML inference APIs and batch scoring pipelines."
+          "Groups and aggregates data into daily KPIs and totals.",
+          "Allows BI tools like Tableau and PowerBI to load dashboards instantly.",
+          "Stores feature tables ready for machine learning model training."
         ]
       }
     ],
+    "bigDataTools": [
+      {
+        "tool": "Apache Spark / PySpark",
+        "primaryUse": "Distributed data processing"
+      },
+      {
+        "tool": "Apache Kafka",
+        "primaryUse": "Event streaming and data pipelines"
+      },
+      {
+        "tool": "Delta Lake / Apache Iceberg",
+        "primaryUse": "Table formats and data-lake management"
+      },
+      {
+        "tool": "Amazon S3 / Azure Data Lake Storage",
+        "primaryUse": "Scalable object storage"
+      },
+      {
+        "tool": "Databricks",
+        "primaryUse": "Data engineering, analytics, and ML workflows"
+      },
+      {
+        "tool": "Apache Airflow",
+        "primaryUse": "Workflow orchestration and scheduling"
+      },
+      {
+        "tool": "Snowflake / BigQuery",
+        "primaryUse": "Cloud data warehousing and analytics"
+      }
+    ],
+    "bigDataToolsNote": "These tools serve different purposes; they are often combined in a single data platform.",
     "architectureMatrix": [
       {
         "dimension": "Core Concept",
-        "warehouse": "Monolithic relational DB for structured data (Snowflake, Redshift, BigQuery)",
-        "lake": "Cheap object storage dumping ground for files (S3, ADLS, HDFS with Parquet/ORC)",
-        "lakehouse": "Best of both: ACID transactions and BI performance directly on open object storage (Delta Lake, Iceberg)"
+        "warehouse": "Fast SQL database for structured tables (Snowflake, BigQuery)",
+        "lake": "Cheap storage bucket to store any files (S3, ADLS, HDFS)",
+        "lakehouse": "Best of both: cheap storage + fast SQL and ACID transactions (Delta Lake, Iceberg)"
       },
       {
         "dimension": "Data Types",
-        "warehouse": "Structured tabular SQL only (semi-structured JSON via VARIANT)",
-        "lake": "All data types (structured, JSON, images, audio, video)",
-        "lakehouse": "All data types with structured governance and schema enforcement"
+        "warehouse": "Structured SQL tables",
+        "lake": "All file types: tables, JSON, photos, audio, video",
+        "lakehouse": "All data types with clean table rules and schemas"
       },
       {
         "dimension": "Storage vs Compute",
-        "warehouse": "Traditionally coupled; modern clouds decouple but use proprietary formats",
-        "lake": "100% decoupled; store on S3/ADLS and spin up EMR/Databricks on demand",
-        "lakehouse": "100% decoupled with open Parquet/Delta standards preventing vendor lock-in"
+        "warehouse": "Storage and compute are tied closely together",
+        "lake": "100% separated: pay for cheap storage, run compute only when needed",
+        "lakehouse": "100% separated: open file standards prevent vendor lock-in"
       },
       {
-        "dimension": "Transaction Support (ACID)",
-        "warehouse": "Full ACID transactions native to database engine",
-        "lake": "No native ACID (risk of partial writes, corrupted concurrent reads)",
-        "lakehouse": "Full ACID via transaction log (_delta_log) with time-travel and rollback"
+        "dimension": "ACID Transactions",
+        "warehouse": "Full ACID transaction support",
+        "lake": "No native ACID (risk of partial or corrupted writes)",
+        "lakehouse": "Full ACID support with transaction log, rollback, and time travel"
       },
       {
-        "dimension": "Cost Efficiency",
-        "warehouse": "$$ High compute and storage pricing",
-        "lake": "$ Low raw storage cost, but high maintenance overhead",
-        "lakehouse": "$ Optimal: Cheap commodity cloud storage + auto-scaling distributed compute"
+        "dimension": "Cost",
+        "warehouse": "Higher cost for compute and storage",
+        "lake": "Low storage cost, but hard to keep clean (can become a data swamp)",
+        "lakehouse": "Optimal: cheap cloud storage + auto-scaling compute"
       }
     ],
-    "pythonCode": "# ==============================================================================\n# PYSPARK MEDALLION ARCHITECTURE PIPELINE (BRONZE -> SILVER -> GOLD)\n# ==============================================================================\nfrom pyspark.sql import SparkSession\nfrom pyspark.sql.functions import (\n    col, current_timestamp, to_date, count, sum as _sum, \n    avg, sha2, when, input_file_name\n)\nfrom pyspark.sql.types import StructType, StructField, StringType, DoubleType, LongType\n\n# 1. Initialize Distributed SparkSession with Delta Lake support\nspark = SparkSession.builder     .appName(\"MedallionArchitecturePipeline\")     .master(\"local[*]\")     .config(\"spark.sql.extensions\", \"io.delta.sql.DeltaSparkSessionExtension\")     .config(\"spark.sql.catalog.spark_catalog\", \"org.apache.spark.sql.delta.catalog.DeltaCatalog\")     .getOrCreate()\n\n# ------------------------------------------------------------------------------\n# STAGE 1: BRONZE LAYER (Raw Ingestion with Metadata Tracking)\n# ------------------------------------------------------------------------------\n# In production, this ingests streaming Kafka events or S3 landing files\nraw_data = [\n    ('tx_101', 'usr_88', '2026-10-19 14:00:00', '150.50', 'COMPLETED', 'alice@email.com'),\n    ('tx_102', 'usr_92', '2026-10-19 14:05:00', '-50.00', 'FAILED', 'bob@email.com'),    # Invalid negative amount\n    ('tx_101', 'usr_88', '2026-10-19 14:00:00', '150.50', 'COMPLETED', 'alice@email.com'), # Duplicate record\n    ('tx_103', 'usr_88', '2026-10-19 15:30:00', '420.00', 'COMPLETED', 'alice@email.com')\n]\n\nbronze_schema = StructType([\n    StructField(\"raw_tx_id\", StringType(), True),\n    StructField(\"raw_user_id\", StringType(), True),\n    StructField(\"raw_timestamp\", StringType(), True),\n    StructField(\"raw_amount\", StringType(), True),\n    StructField(\"raw_status\", StringType(), True),\n    StructField(\"raw_email\", StringType(), True)\n])\n\n# Write to Bronze with technical audit tracking columns\nbronze_df = spark.createDataFrame(raw_data, schema=bronze_schema)     .withColumn(\"_ingested_at\", current_timestamp())     .withColumn(\"_source_file\", input_file_name())\n\nprint(\"--- [BRONZE LAYER] Raw Landed Data (Immutable Audit Log) ---\")\nbronze_df.show(truncate=False)\n\n# ------------------------------------------------------------------------------\n# STAGE 2: SILVER LAYER (Cleaned, Deduplicated, Schema-Enforced, PII Masked)\n# ------------------------------------------------------------------------------\nsilver_df = bronze_df     .dropDuplicates([\"raw_tx_id\"])     .filter(col(\"raw_amount\").cast(DoubleType()) > 0)     .filter(col(\"raw_status\") == \"COMPLETED\")     .select(\n        col(\"raw_tx_id\").alias(\"transaction_id\"),\n        col(\"raw_user_id\").alias(\"user_id\"),\n        col(\"raw_timestamp\").cast(\"timestamp\").alias(\"transaction_time\"),\n        to_date(col(\"raw_timestamp\")).alias(\"transaction_date\"),\n        col(\"raw_amount\").cast(DoubleType()).alias(\"amount\"),\n        sha2(col(\"raw_email\"), 256).alias(\"user_email_hash\"), # Masked PII\n        col(\"_ingested_at\")\n    )\n\nprint(\"--- [SILVER LAYER] Cleaned, Deduplicated & Conformed Single Source of Truth ---\")\nsilver_df.show(truncate=False)\n\n# ------------------------------------------------------------------------------\n# STAGE 3: GOLD LAYER (Aggregated Business KPIs & ML Customer Feature Store)\n# ------------------------------------------------------------------------------\ngold_customer_kpis = silver_df     .groupBy(\"user_id\", \"transaction_date\")     .agg(\n        count(\"transaction_id\").alias(\"daily_tx_count\"),\n        _sum(\"amount\").alias(\"daily_total_spend\"),\n        avg(\"amount\").alias(\"daily_avg_spend\")\n    )     .withColumn(\"high_roller_flag\", when(col(\"daily_total_spend\") >= 500.0, 1).otherwise(0))\n\nprint(\"--- [GOLD LAYER] Business-Ready Analytics & ML Feature Store ---\")\ngold_customer_kpis.show(truncate=False)\n\n# In production: write partitioned Delta tables:\n# gold_customer_kpis.write.format(\"delta\").mode(\"overwrite\").partitionBy(\"transaction_date\").save(\"/lakehouse/gold/customer_kpis\")",
-    "takeaway": "The Medallion Architecture transforms unstructured big data lakes from unmanageable data swamps into clean, performant enterprise data lakehouses. Bronze preserves immutable historical truth, Silver provides the trusted enterprise foundation with ACID consistency and PII security, and Gold powers high-performance BI reporting and production machine learning feature tables."
+    "pythonCode": "import pandas as pd\n\n# Bronze: raw ingested data\nbronze = pd.DataFrame({\n    \"customer_id\": [\"C101\", \"C102\", \"C101\"],\n    \"amount\": [\"2500.00\", \"1200.50\", \"2500.00\"],\n    \"status\": [\"SUCCESS\", \"FAILED\", \"SUCCESS\"]\n})\n\n# Silver: clean and validate\nsilver = bronze.copy()\n\nsilver[\"amount\"] = pd.to_numeric(\n    silver[\"amount\"], errors=\"coerce\"\n)\n\nsilver[\"status\"] = silver[\"status\"].str.lower().str.strip()\n\nsilver = silver.dropna(\n    subset=[\"customer_id\", \"amount\", \"status\"]\n)\n\n# Remove exact duplicate records for this simple example\nsilver = silver.drop_duplicates()\n\n# Gold: aggregate successful transactions\ngold = (\n    silver[silver[\"status\"] == \"success\"]\n    .groupby(\"customer_id\", as_index=False)\n    .agg(\n        successful_transactions=(\"amount\", \"count\"),\n        successful_amount=(\"amount\", \"sum\")\n    )\n)\n\nprint(\"SILVER\")\nprint(silver)\n\nprint(\"\\nGOLD\")\nprint(gold)",
+    "takeaway": "Medallion Architecture makes data pipelines clean and organized: Bronze stores raw history, Silver cleans and standardizes data, and Gold creates fast business metrics and ML features."
   },
   {
     "id": "blockchain",
@@ -6594,6 +6767,29 @@ export const definitionsData = [
         "definition": "Continuous Deployment automatically deploys changes that pass the required checks."
       }
     ],
+    "deploymentStrategies": [
+      {
+        "name": "Rolling deployment",
+        "desc": "gradually replace old instances with new ones.",
+        "badge": "Gradual Rollout",
+        "accent": "text-cyan-400",
+        "border": "border-cyan-800/40"
+      },
+      {
+        "name": "Blue-green deployment",
+        "desc": "maintain two environments and switch traffic between them.",
+        "badge": "Instant Switch",
+        "accent": "text-emerald-400",
+        "border": "border-emerald-800/40"
+      },
+      {
+        "name": "Canary deployment",
+        "desc": "expose a small portion of traffic to the new version first.",
+        "badge": "Traffic Percentage",
+        "accent": "text-amber-400",
+        "border": "border-amber-800/40"
+      }
+    ],
     "healthEndpoint": {
       "title": "Health Endpoint",
       "endpoint": "GET /healthz",
@@ -6848,54 +7044,83 @@ export const definitionsData = [
   },
   {
     "id": "caching",
-    "title": "Caching — AI Systems & High-Throughput Inference",
-    "badge": "Latency Optimization & Cost Reduction",
+    "title": "Caching — In-Memory, Distributed & Invalidation Strategies",
+    "badge": "Latency Optimization & System Design",
     "summary": "Caching stores reusable results so the system can avoid repeating expensive work.",
     "corePrinciple": "Caching stores reusable results so the system can avoid repeating expensive work.",
-    "verbatimIntroduction": "Common AI caches include:",
-    "cacheTypes": [
+    "cachingTypes": [
       {
-        "name": "Response cache",
-        "whatItStores": "Stores answers to safely reusable requests.",
-        "accent": "text-emerald-400",
-        "badge": "LLM & API Output",
-        "example": "Exact matching or semantic caching (e.g. GPTCache / Redis) for identical queries such as FAQ lookups or product policy inquiries.",
-        "benefit": "0ms LLM inference time and 100% token cost savings on repeated user prompts."
+        "type": "In-memory cache",
+        "description": "Stores data in application memory, often using Python dictionaries or an LRU cache.",
+        "note": "Fast, but typically limited to one process and its available memory.",
+        "badge": "Single Process",
+        "accent": "text-cyan-400"
       },
       {
-        "name": "Embedding cache",
-        "whatItStores": "Stores embeddings for repeated text or images.",
-        "accent": "text-cyan-400",
-        "badge": "Vector Representations",
-        "example": "Key-value cache mapping hash(text_chunk) or image_checksum -> 1536-dim vector float32 array in Redis/Memcached.",
-        "benefit": "Eliminates repetitive calls to expensive embedding APIs (e.g. OpenAI text-embedding-3 or local CLIP inference)."
+        "type": "Distributed cache",
+        "description": "Uses systems such as Redis to share cached values across application instances.",
+        "note": "Useful for horizontally scaled FastAPI services.",
+        "badge": "Shared Cluster",
+        "accent": "text-emerald-400"
       },
       {
-        "name": "Retrieval cache",
-        "whatItStores": "Stores results of repeated searches.",
-        "accent": "text-blue-400",
-        "badge": "RAG & Vector Search",
-        "example": "Caches top-k nearest neighbor document IDs and scores returned from vector databases (Milvus, Pinecone, pgvector).",
-        "benefit": "Bypasses heavy vector similarity computations and disk reads for popular search queries."
+        "type": "HTTP/CDN cache",
+        "description": "Reuses eligible HTTP responses or static assets close to the user.",
+        "note": "Useful for static files and public, cacheable API responses.",
+        "badge": "Edge Tier",
+        "accent": "text-amber-400"
       },
       {
-        "name": "Feature cache",
-        "whatItStores": "Stores reusable computed model inputs.",
-        "accent": "text-amber-400",
-        "badge": "Feature Store & ML Pipelines",
-        "example": "Online feature store (Feast, Hopsworks) holding real-time aggregates like 30-day click count, user purchase history, or customer category preferences.",
-        "benefit": "Eliminates redundant SQL JOINs, heavy transformations, and feature engineering at inference time."
-      },
-      {
-        "name": "Model cache",
-        "whatItStores": "Keeps model weights loaded instead of loading them for every request.",
-        "accent": "text-purple-400",
-        "badge": "GPU VRAM & Process Memory",
-        "example": "Loading neural network weights (e.g. PyTorch, Hugging Face, ONNX) once into GPU VRAM or application process memory at worker startup (lifespan event).",
-        "benefit": "Prevents multi-second cold start overhead from disk-to-RAM-to-VRAM model weight reloading on every HTTP request."
+        "type": "AI/LLM cache",
+        "description": "Stores LLM outputs, embeddings, retrieval results, or model-computation state, depending on the cache design.",
+        "note": "Can save inference time and API costs when reuse is safe.",
+        "badge": "Inference Acceleration",
+        "accent": "text-purple-400"
       }
     ],
-    "takeaway": "Layered caching across responses, embeddings, retrievals, features, and model weights transforms an AI application from a slow, token-burning prototype into a scalable, sub-second production system."
+    "lruCacheCode": "from functools import lru_cache\nimport time\n\n@lru_cache(maxsize=128)\ndef get_policy(policy_id: int) -> str:\n    # Simulate an expensive database lookup\n    time.sleep(2)\n    return f\"Policy details for {policy_id}\"\n\nprint(get_policy(101))  # Takes about 2 seconds\nprint(get_policy(101))  # Reuses the cached result\nprint(get_policy(102))  # New cache entry\n\nprint(get_policy.cache_info())",
+    "redisFastApiCode": "import json\nimport os\n\nimport redis.asyncio as redis\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\ncache = redis.from_url(\n    os.getenv(\"REDIS_URL\", \"redis://localhost:6379/0\"),\n    decode_responses=True\n)\n\n@app.get(\"/policy/{policy_id}\")\nasync def get_policy(policy_id: int):\n    key = f\"policy:{policy_id}\"\n\n    # 1. Try the cache\n    cached = await cache.get(key)\n    if cached is not None:\n        return {\n            \"source\": \"cache\",\n            \"data\": json.loads(cached)\n        }\n\n    # 2. Simulate fetching data from a database\n    data = {\n        \"policy_id\": policy_id,\n        \"name\": \"Annual Leave Policy\"\n    }\n\n    # 3. Store for 5 minutes\n    await cache.set(\n        key,\n        json.dumps(data),\n        ex=300\n    )\n\n    return {\n        \"source\": \"database\",\n        \"data\": data\n    }\n\n@app.on_event(\"shutdown\")\nasync def shutdown():\n    await cache.aclose()",
+    "cacheInvalidation": {
+      "title": "Cache Invalidation: The Hard Part",
+      "subtitle": "A cache can be fast and still be wrong.",
+      "mitigations": [
+        {
+          "problem": "Stale values",
+          "mitigation": "TTL, versioned keys, or explicit invalidation"
+        },
+        {
+          "problem": "Different users see the same private result",
+          "mitigation": "Include authorization scope in keys; recheck permissions"
+        },
+        {
+          "problem": "Too many cache entries",
+          "mitigation": "TTL, bounded size, eviction policies"
+        },
+        {
+          "problem": "Many requests trigger the same expensive miss",
+          "mitigation": "Request coalescing or single-flight logic"
+        },
+        {
+          "problem": "Cache service goes down",
+          "mitigation": "Graceful fallback, timeouts, and circuit breakers"
+        },
+        {
+          "problem": "Old documents remain in RAG results",
+          "mitigation": "Invalidate or version keys when source documents change"
+        }
+      ]
+    },
+    "patterns": [
+      {
+        "pattern": "Cache-Aside Pattern",
+        "description": "Read the cache first; on a miss, read the source of truth, then populate the cache."
+      },
+      {
+        "pattern": "TTL (Time To Live)",
+        "description": "A TTL (time to live) limits how long an entry remains valid, but TTL alone doesn't guarantee immediate consistency after an update."
+      }
+    ],
+    "takeaway": "Cache-aside pattern with bounded TTL, versioned keys, and circuit breakers guarantees low latency while safeguarding against stale data and cascading failures."
   },
   {
     "id": "backend-architecture",
@@ -7673,8 +7898,29 @@ export const definitionsData = [
     "id": "coherence",
     "title": "LLM Coherence — Reasoning, Consistency & Structured Generation",
     "badge": "LLM Quality & Evaluation",
-    "summary": "Coherence means how logically connected, consistent, and understandable an LLM's response is. Master the 4 core dimensions of coherence and the 5 proven techniques to ensure consistent, grounded outputs.",
-    "coreDefinition": "Coherence means how logically connected, consistent, and understandable an LLM's response is.",
+    "summary": "Coherence is how logically connected and consistent the ideas in a piece of text are. A coherent response has a sensible flow: each sentence connects to the previous ideas, and the overall answer is understandable.",
+    "coreDefinition": "Coherence is how logically connected and consistent the ideas in a piece of text are.",
+    "flowExplanation": "A coherent response has a sensible flow: each sentence connects to the previous ideas, and the overall answer is understandable.",
+    "examples": [
+      {
+        "level": "High Coherence",
+        "badge": "Logical Sequence",
+        "accent": "text-emerald-400",
+        "border": "border-emerald-800/60",
+        "bg": "bg-emerald-950/20",
+        "text": "The customer reported a failed payment. The transaction was debited, but the merchant did not receive the funds. The support team initiated a refund investigation.",
+        "explanation": "The statements follow a logical sequence."
+      },
+      {
+        "level": "Low Coherence",
+        "badge": "Unrelated Jump",
+        "accent": "text-rose-400",
+        "border": "border-rose-800/60",
+        "bg": "bg-rose-950/20",
+        "text": "The customer reported a payment issue. Bananas grow in tropical climates. Therefore, the bank should update the refund status.",
+        "explanation": "The middle sentence is unrelated to the surrounding discussion."
+      }
+    ],
     "typesOfCoherenceIntro": "Types of coherence",
     "typesOfCoherence": [
       {
@@ -7728,6 +7974,7 @@ export const definitionsData = [
         "desc": "Use cross-encoder entailment models to automatically detect premise-conclusion contradictions within the generated text."
       }
     ],
+    "code": "import json\nfrom openai import OpenAI\n\nclient = OpenAI()\n\ndef evaluate_coherence(question: str, answer: str) -> dict:\n    prompt = f\"\"\"\nEvaluate the coherence of the answer on a scale from 1 to 5.\n\nCriteria:\n1 = Ideas are mostly disconnected or contradictory.\n2 = Weak logical flow with major gaps.\n3 = Understandable but with some jumps or unclear connections.\n4 = Clear and logically connected.\n5 = Very clear, consistent, and well organized.\n\nJudge coherence only. Do not reward an answer merely for being\nfactually correct, and do not assume that fluent text is coherent.\n\nQuestion: {question}\nAnswer: {answer}\n\nReturn only valid JSON with:\n- score: integer from 1 to 5\n- explanation: brief explanation\n\"\"\"\n\n    response = client.chat.completions.create(\n        model=\"gpt-4.1-mini\",\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are a careful text evaluation assistant.\"\n            },\n            {\"role\": \"user\", \"content\": prompt}\n        ],\n        temperature=0\n    )\n\n    result = json.loads(response.choices[0].message.content)\n    return result\n\n\nanswer = (\n    \"The payment failed after the bank debited the customer. \"\n    \"The support team checked the transaction and initiated an investigation.\"\n)\n\nprint(evaluate_coherence(\n    \"What happened to the payment?\",\n    answer\n))",
     "takeaway": "Coherence transforms raw token probabilities into dependable intelligence. By grounding generations with RAG, enforcing structured schemas, breaking workflows into intermediate reasoning steps, and evaluating for contradictions, AI systems produce robust, trustworthy responses."
   },
   {
@@ -7788,6 +8035,43 @@ export const definitionsData = [
         "bestFor": "Transcripts, uninterrupted narrative streams, and conversational logs without clear formatting."
       }
     ],
+    "code": "from langchain_text_splitters import RecursiveCharacterTextSplitter\n\ntext = \"\"\"\nFailed bank transfers may remain pending for some time.\n\nCustomers should check their transaction status before\nsubmitting a complaint.\n\nIf a transfer fails, the bank may reverse the debit\naccording to its applicable payment policy.\n\nCustomers should contact support if the issue remains\nunresolved.\n\"\"\"\n\nsplitter = RecursiveCharacterTextSplitter(\n    chunk_size=180,\n    chunk_overlap=30,\n    separators=[\"\\n\\n\", \"\\n\", \". \", \" \", \"\"]\n)\n\nchunks = splitter.split_text(text)\n\nfor i, chunk in enumerate(chunks, start=1):\n    print(f\"\\n--- Chunk {i} ---\")\n    print(chunk)",
+    "chunkingEvaluation": {
+      "title": "How do you evaluate chunking quality?",
+      "intro": "Don't choose chunk sizes based only on intuition. Test them against representative questions and expected source passages.",
+      "measurements": [
+        {
+          "metric": "Recall@K",
+          "desc": "Does the correct passage appear in the top K retrieved results?",
+          "badge": "Coverage",
+          "accent": "text-cyan-400"
+        },
+        {
+          "metric": "Precision@K",
+          "desc": "How many of the top K results are relevant?",
+          "badge": "Relevance",
+          "accent": "text-emerald-400"
+        },
+        {
+          "metric": "MRR (Mean Reciprocal Rank)",
+          "desc": "How high does the first relevant result rank?",
+          "badge": "Ranking Quality",
+          "accent": "text-amber-400"
+        },
+        {
+          "metric": "Groundedness",
+          "desc": "Does the generated answer follow the retrieved evidence?",
+          "badge": "Faithfulness",
+          "accent": "text-purple-400"
+        },
+        {
+          "metric": "Latency and cost",
+          "desc": "How much time and storage does the strategy require?",
+          "badge": "Efficiency",
+          "accent": "text-rose-400"
+        }
+      ]
+    },
     "takeaway": "Chunking directly determines the quality ceiling of any RAG pipeline: chunks that are too large dilute vector embedding precision, while chunks that are too small amputate critical context. Optimal systems tune chunk size and overlap to match the document layout and query specificity.",
     "interviewAnswers": [
       {
@@ -12073,8 +12357,8 @@ export const definitionsData = [
     "id": "central-limit-theorem",
     "title": "Central Limit Theorem (CLT & Sampling Distributions)",
     "badge": "Statistical Foundations, Sampling Theory & Hypothesis Testing",
-    "summary": "The Central Limit Theorem says that, under suitable conditions, the distribution of a properly standardized sample mean approaches a normal distribution as the sample size grows—even when the underlying population isn't normally distributed. Crucially, CLT concerns the distribution of sample means, not a claim that the original data itself becomes normally distributed.",
-    "coreDefinition": "The Central Limit Theorem says that, under suitable conditions, the distribution of a properly standardized sample mean approaches a normal distribution as the sample size grows—even when the underlying population isn't normally distributed.",
+    "summary": "The Central Limit Theorem (CLT) says that, under suitable conditions, the distribution of sample means approaches a normal distribution as the sample size increases—even when the original population is not normally distributed.",
+    "coreDefinition": "The Central Limit Theorem (CLT) says that, under suitable conditions, the distribution of sample means approaches a normal distribution as the sample size increases—even when the original population is not normally distributed.",
     "criticalDistinction": "CLT concerns the distribution of sample means, not a claim that the original data itself becomes normally distributed.",
     "mathematicalFormulation": {
       "standardizedMean": "Z = (X̄ - μ) / (σ / √n)  ~  N(0, 1)  as  n → ∞",
@@ -12361,6 +12645,76 @@ export const definitionsData = [
       "title": "Centroid Calculation & Distance-Based Vector Assignment (NumPy)",
       "language": "python",
       "code": "import numpy as np\n\n# 1. Cluster of 2D data points (e.g. parcel dimensions or embeddings)\n# Points: (x, y) coordinates\npoints = np.array([\n    [2.0, 3.0],\n    [3.0, 4.0],\n    [2.5, 3.5],\n    [4.0, 5.0],\n    [3.5, 4.5]\n])\n\n# 2. Centroid calculation: arithmetic mean across coordinates (axis=0)\ncentroid = np.mean(points, axis=0)\nprint(f\"Points shape: {points.shape}\")\nprint(f\"Calculated Centroid (mean of coordinates): {centroid}\")\n# Output: [3.0, 4.0]\n\n# 3. Minimizing Inertia (Within-Cluster Sum of Squares - WCSS)\neuclidean_distances = np.linalg.norm(points - centroid, axis=1)\nwcss = np.sum(euclidean_distances ** 2)\nprint(f\"Distances to centroid: {np.round(euclidean_distances, 3)}\")\nprint(f\"Within-Cluster Sum of Squares (Inertia): {wcss:.4f}\")"
+    },
+    "kmeansLifecycle": {
+      "title": "Centroid in K-Means clustering",
+      "intro": "K-Means is an unsupervised machine learning algorithm that groups similar data points into K clusters.",
+      "objective": "The main objective is to minimize the within-cluster sum of squared distances (inertia).",
+      "steps": [
+        {
+          "step": "Step 1: Initialize centroids",
+          "desc": "Select K initial centroid positions, often randomly or using K-Means++."
+        },
+        {
+          "step": "Step 2: Assign points",
+          "desc": "Assign every data point to its nearest centroid, usually using Euclidean distance."
+        },
+        {
+          "step": "Step 3: Update centroids",
+          "desc": "Calculate the mean of the points assigned to each cluster."
+        },
+        {
+          "step": "Step 4: Repeat until convergence",
+          "desc": "Repeat assignment and updating until the centroids or cluster assignments stop changing significantly."
+        }
+      ]
+    },
+    "sklearnCode": "import numpy as np\nfrom sklearn.cluster import KMeans\n\nX = np.array([\n    [1, 2],\n    [2, 3],\n    [3, 2],\n    [8, 8],\n    [9, 8],\n    [8, 9]\n])\n\nmodel = KMeans(\n    n_clusters=2,\n    random_state=42,\n    n_init=10\n)\n\nmodel.fit(X)\n\nprint(\"Cluster labels:\", model.labels_)\nprint(\"Centroids:\\n\", model.cluster_centers_)",
+    "usefulAttributes": {
+      "note": "The numeric cluster labels, such as 0 and 1, are arbitrary identifiers; they do not imply ranking.",
+      "table": [
+        {
+          "attribute": "model.cluster_centers_",
+          "purpose": "Coordinates of the final centroids"
+        },
+        {
+          "attribute": "model.labels_",
+          "purpose": "Cluster assigned to each training point"
+        },
+        {
+          "attribute": "model.inertia_",
+          "purpose": "Sum of squared distances to assigned centroids"
+        },
+        {
+          "attribute": "model.n_iter_",
+          "purpose": "Number of iterations performed"
+        }
+      ]
+    },
+    "centroidVsMedoid": {
+      "title": "Centroid vs. Medoid",
+      "comparison": [
+        {
+          "dimension": "Representation",
+          "centroid": "Mean position of points",
+          "medoid": "Actual data point representing the cluster"
+        },
+        {
+          "dimension": "Dataset Sample",
+          "centroid": "May not correspond to a real observation",
+          "medoid": "Always one of the observations"
+        },
+        {
+          "dimension": "Sensitivity to Outliers",
+          "centroid": "Sensitive to outliers",
+          "medoid": "Generally more robust to outliers"
+        },
+        {
+          "dimension": "Common Algorithms",
+          "centroid": "Common in K-Means",
+          "medoid": "Used in K-Medoids (PAM)"
+        }
+      ]
     },
     "takeaway": "The centroid serves as the geometric anchor of a cluster. In modern AI pipelines, centroids power K-means clustering, vector quantization (IVF indexing in FAISS/Milvus), and semantic theme summarization by condensing thousands of high-dimensional embedding vectors into representative prototypes."
   },
@@ -14372,18 +14726,6 @@ export const definitionsData = [
     "takeaway": "Binning converts continuous variables into discrete buckets to simplify non-linear relationships or suppress outliers. Use pd.cut() for fixed/domain boundaries and pd.qcut() for equal-frequency quantiles. Beware of irreversible information loss, and always compute supervised bin thresholds strictly on the training set to prevent data leakage."
   },
   {
-    "id": "bivariate",
-    "title": "Bivariate Analysis",
-    "badge": "Relationship Discovery",
-    "summary": "Analyzing the empirical relationship, association, or correlation between two features.",
-    "details": [
-      "Numerical vs Numerical: Analyzed via Scatter plots and Line plots. Quantified using Pearson correlation (r) for linear relations and Spearman rank correlation (rho) for monotonic non-linear relations.",
-      "Categorical vs Numerical: Analyzed using Grouped Boxplots and Violin plots. Statistically tested using Two-Sample t-test (for 2 categories) or One-Way ANOVA / Kruskal-Wallis (for > 2 categories).",
-      "Categorical vs Categorical: Analyzed via Cross-tabulation (contingency tables) and Stacked Bar charts. Statistically tested using Chi-Square test (chi^2) and Cramer's V for association strength."
-    ],
-    "code": "# Numerical vs Numerical correlation\ndf[['income', 'credit_score']].corr(method='spearman')\n# Categorical vs Numerical groupby\ndf.groupby('department')['salary'].agg(['mean', 'median', 'std'])\n# Categorical vs Categorical cross-tab\npd.crosstab(df['gender'], df['churn'], normalize='index')"
-  },
-  {
     "id": "box-cox",
     "title": "Box-Cox Transformation",
     "badge": "Power Transformation",
@@ -14473,31 +14815,182 @@ export const definitionsData = [
   {
     "id": "cardinality",
     "title": "Cardinality (df.nunique())",
-    "badge": "Feature Diagnostics",
-    "summary": "Measuring the count of unique values in each column to detect uninformative or problematic features.",
-    "details": [
-      "Zero Variance (nunique == 1): Columns where every row has the identical constant value (e.g. country = 'India' in domestic dataset). These carry zero predictive signal and should be dropped immediately.",
-      "High Cardinality Identifiers (nunique == len(df)): Primary keys, user IDs, or transaction UUIDs. These cause catastrophic overfitting in tree models and must be removed from modeling.",
-      "Categorical Downcasting: Features with low cardinality (nunique < 20) should be converted from string object to pandas 'category' dtype to reduce memory usage by 70–80%."
+    "badge": "Feature Diagnostics & High Cardinality Encodings",
+    "summary": "Cardinality is the number of distinct (unique) values in a feature or column. Master the key Pandas functions (nunique, unique, value_counts), low/medium/high cardinality mitigation, and its critical role in NLP and GenAI systems.",
+    "coreDefinition": "Cardinality is the number of distinct (unique) values in a feature or column.",
+    "coreExplanation": "It directly determines whether a categorical feature should be one-hot encoded, target-encoded, or dropped. In decision trees, high cardinality causes severe overfitting. In GenAI and RAG, high-cardinality metadata (tenants, access tags) requires dedicated payload indexing for fast vector filtering.",
+    "functionDifferences": {
+      "title": "Understand the Difference",
+      "subtitle": "Pandas distinct counting & inspection functions:",
+      "trap": "Interview trap: nunique() excludes missing values by default. Use dropna=False to include a missing-value category in the count.",
+      "table": [
+        {
+          "function": "df.nunique()",
+          "returns": "Number of distinct values in each column",
+          "outputType": "pandas.Series (column -> distinct count)"
+        },
+        {
+          "function": "df[\"city\"].nunique()",
+          "returns": "Number of distinct city values",
+          "outputType": "int (scalar distinct count)"
+        },
+        {
+          "function": "df[\"city\"].unique()",
+          "returns": "The distinct city values themselves",
+          "outputType": "numpy.ndarray (unique array)"
+        },
+        {
+          "function": "df[\"city\"].value_counts()",
+          "returns": "Frequency of each value",
+          "outputType": "pandas.Series (value -> frequency, sorted)"
+        },
+        {
+          "function": "df[\"city\"].count()",
+          "returns": "Number of non-null entries",
+          "outputType": "int (total valid entries, excludes NaN)"
+        }
+      ]
+    },
+    "cardinalityTiers": [
+      {
+        "tier": "Low cardinality",
+        "badge": "2 – 10 Values",
+        "accent": "text-emerald-400",
+        "border": "border-emerald-800/50",
+        "examples": "is_active, gender where applicable, payment_status, plan_type.",
+        "commonApproach": "One-hot encoding or binary encoding, depending on the feature."
+      },
+      {
+        "tier": "Medium cardinality",
+        "badge": "10 – 100 Values",
+        "accent": "text-amber-400",
+        "border": "border-amber-800/50",
+        "examples": "product categories, regions, department names.",
+        "commonApproach": "One-hot encoding, frequency encoding, or carefully designed domain groupings."
+      },
+      {
+        "tier": "High cardinality",
+        "badge": "> 100 Values / Identifiers",
+        "accent": "text-rose-400",
+        "border": "border-rose-800/50",
+        "examples": "user IDs, product IDs, email addresses, URLs.",
+        "commonApproach": "Remove identifier-only features when they have no predictive value, use feature hashing, or apply carefully validated encoding methods."
+      }
     ],
-    "code": "# Check unique values across all columns\nunique_counts = df.nunique()\n# Drop constant columns with zero variance\nconstant_cols = [c for c in df.columns if df[c].nunique() <= 1]\ndf.drop(columns=constant_cols, inplace=True)"
+    "genAiSection": {
+      "title": "Cardinality in NLP and GenAI",
+      "subtitle": "Cardinality also matters outside traditional tabular ML:",
+      "items": [
+        {
+          "concept": "Text vocabulary",
+          "desc": "The number of distinct tokens or vocabulary entries in a corpus."
+        },
+        {
+          "concept": "Categorical metadata in RAG",
+          "desc": "Document types, departments, tenants, or access groups assigned to chunks."
+        },
+        {
+          "concept": "Vector databases",
+          "desc": "A high-cardinality metadata field can affect filtering and indexing behavior."
+        },
+        {
+          "concept": "LLM tokenization",
+          "desc": "Vocabulary size determines how many token IDs a tokenizer can represent."
+        }
+      ],
+      "ragNote": "For permission-aware RAG, metadata such as tenant ID or access group may have high cardinality. That isn't necessarily bad; the important part is correct filtering, indexing, and access-control enforcement."
+    },
+    "details": [
+      "Cardinality is the number of distinct (unique) values in a feature or column.",
+      "Understand the difference: df.nunique() counts distinct values per column; df['col'].unique() returns the distinct array; df['col'].value_counts() gives frequency distribution.",
+      "Interview Trap: nunique() drops NaN by default; pass dropna=False to count missing values as a distinct category.",
+      "Low Cardinality (e.g. plan_type, status): Handle via one-hot or binary encoding.",
+      "Medium Cardinality (e.g. regions, departments): Handle via frequency encoding or domain grouping.",
+      "High Cardinality (e.g. user IDs, URLs): Drop uninformative IDs, or apply feature hashing / regularized target encoding to prevent decision tree overfitting.",
+      "GenAI & RAG: Vocabulary size dictates tokenization expressiveness; high-cardinality metadata (tenant ID, department) requires payload index optimization in vector stores."
+    ],
+    "code": "import pandas as pd\n\ndf = pd.DataFrame({\n    \"city\": [\"Jaipur\", \"Delhi\", \"Jaipur\", \"Mumbai\", \"Delhi\"],\n    \"plan\": [\"Basic\", \"Premium\", \"Basic\", \"Premium\", \"Basic\"],\n    \"age\": [25, 30, 25, 40, 30]\n})\n\n# Count unique values per column\nprint(df.nunique())\n\n# Count unique values in one column\nprint(df[\"city\"].nunique())\n\n# Include missing values in the unique count\nprint(df[\"city\"].nunique(dropna=False))\n\n# Display the actual unique values\nprint(df[\"city\"].unique())\n\n# Count the frequency of each value\nprint(df[\"city\"].value_counts())",
+    "takeaway": "Cardinality measures distinct values: low cardinality fits one-hot encoding; medium cardinality uses frequency or group encoding; high cardinality IDs must be dropped or hashed. In GenAI & RAG, high-cardinality metadata demands dedicated vector database indexes for secure, low-latency tenant filtering."
   },
   {
     "id": "class-imbalance",
-    "title": "Class Imbalance",
-    "badge": "Target Distribution",
-    "summary": "When target classes in a classification problem are heavily unequal (e.g. 99% legitimate transactions vs 1% fraud).",
-    "details": [
-      "The Accuracy Trap: Plain accuracy is dangerously misleading. A dummy model predicting 'legit' 100% of the time achieves 99% accuracy but catches zero fraud.",
-      "Imbalance Ratio (IR): Ratio of majority to minority count. Mild (1:1 to 3:1), Moderate (4:1 to 10:1), Extreme (10:1 to 1000:1).",
-      "Evaluation Metrics: Must switch to Precision, Recall, F1-Score, and PR-AUC (Precision-Recall Curve). PR-AUC is far superior to ROC-AUC on imbalanced targets.",
-      "Stratified Splitting: Always use StratifiedKFold to guarantee that training and testing splits maintain identical minority class proportions."
+    "title": "Class Imbalance — Remediation, Techniques & Evaluation",
+    "badge": "Target Distribution & Imbalanced Learning",
+    "summary": "Class imbalance occurs when one class has significantly more examples than another in a classification dataset.",
+    "coreDefinition": "Class imbalance occurs when one class has significantly more examples than another in a classification dataset.",
+    "fiveWays": [
+      {
+        "method": "Random oversampling",
+        "desc": "Duplicates examples from the minority class so the model sees them more frequently.",
+        "pros": "Simple and preserves original observations.",
+        "cons": "Can overfit because minority examples are repeated.",
+        "badge": "Oversampling",
+        "accent": "text-cyan-400"
+      },
+      {
+        "method": "Random undersampling",
+        "desc": "Removes some examples from the majority class.",
+        "pros": "Faster training and a more balanced dataset.",
+        "cons": "May discard useful information.",
+        "badge": "Undersampling",
+        "accent": "text-rose-400"
+      },
+      {
+        "method": "SMOTE",
+        "desc": "Generates synthetic minority-class samples by interpolating between nearby minority examples.",
+        "pros": "Adds variation instead of merely duplicating observations.",
+        "cons": "Synthetic examples may be unrealistic, especially with noisy or overlapping classes.",
+        "badge": "Synthetic Interpolation",
+        "accent": "text-emerald-400"
+      },
+      {
+        "method": "Class weights",
+        "desc": "Penalizes errors on the minority class more heavily during training.",
+        "pros": "Often a strong first approach; doesn't require creating synthetic samples.",
+        "cons": "May increase false positives.",
+        "badge": "Cost-Sensitive",
+        "accent": "text-amber-400"
+      },
+      {
+        "method": "Threshold tuning",
+        "desc": "Changes the probability cutoff used to classify a sample as positive.",
+        "pros": "Lets you trade precision against recall.",
+        "cons": "Does not improve the underlying model automatically; the threshold must be selected using validation data.",
+        "badge": "Decision Boundary",
+        "accent": "text-purple-400"
+      }
     ],
-    "code": "# Check class distribution and ratio\ncounts = df['target'].value_counts()\nprops = df['target'].value_counts(normalize=True) * 100\nimbalance_ratio = counts.iloc[0] / counts.iloc[1]\nprint(f'Imbalance Ratio: {imbalance_ratio:.2f} : 1')",
+    "classWeightExplanation": {
+      "question": "What does class_weight=\"balanced\" do?",
+      "answer": "In scikit-learn, class weights are automatically calculated inversely proportional to each class's frequency."
+    },
+    "stratifyExplanation": {
+      "question": "Why use stratify=y in train_test_split?",
+      "answer": "It helps preserve the class proportions in both the training and test sets."
+    },
+    "criticalSmoteRule": "Apply SMOTE only to training data, not the test set. Using it before splitting can leak information across the split and create an unrealistically optimistic evaluation.",
+    "code": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import (\n    classification_report,\n    confusion_matrix,\n    average_precision_score\n)\n\n# Generate an imbalanced binary classification dataset\nX, y = make_classification(\n    n_samples=10000,\n    n_features=15,\n    n_informative=6,\n    n_redundant=3,\n    weights=[0.99, 0.01],\n    random_state=42\n)\n\n# Split before any resampling\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y,\n    test_size=0.2,\n    stratify=y,\n    random_state=42\n)\n\n# Model 1: Standard logistic regression\nbaseline = make_pipeline(\n    StandardScaler(),\n    LogisticRegression(max_iter=1000)\n)\n\n# Model 2: Give minority-class errors greater weight\nweighted = make_pipeline(\n    StandardScaler(),\n    LogisticRegression(\n        class_weight=\"balanced\",\n        max_iter=1000\n    )\n)\n\nfor name, model in [\n    (\"Baseline\", baseline),\n    (\"Class-weighted\", weighted)\n]:\n    model.fit(X_train, y_train)\n\n    predictions = model.predict(X_test)\n    probabilities = model.predict_proba(X_test)[:, 1]\n\n    print(f\"\\n{name}\")\n    print(confusion_matrix(y_test, predictions))\n    print(classification_report(\n        y_test, predictions, zero_division=0\n    ))\n    print(\n        \"Average precision:\",\n        average_precision_score(y_test, probabilities)\n    )",
+    "smoteCode": "from imblearn.pipeline import Pipeline\nfrom imblearn.over_sampling import SMOTE\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\n\nmodel = Pipeline([\n    (\"scaler\", StandardScaler()),\n    (\"smote\", SMOTE(random_state=42)),\n    (\"classifier\", LogisticRegression(max_iter=1000))\n])\n\nmodel.fit(X_train, y_train)\npredictions = model.predict(X_test)",
+    "metricsTable": [
+      { "metric": "Precision", "whenItHelps": "False positives are costly" },
+      { "metric": "Recall", "whenItHelps": "Missing positives is costly" },
+      { "metric": "F1-score", "whenItHelps": "You need a balance of precision and recall" },
+      { "metric": "PR-AUC / Average Precision", "whenItHelps": "Often informative when the positive class is rare" },
+      { "metric": "ROC-AUC", "whenItHelps": "Measures ranking ability across thresholds; can look strong under severe imbalance" },
+      { "metric": "Balanced accuracy", "whenItHelps": "Averages recall across classes" }
+    ],
+    "details": [
+      "Class imbalance occurs when one class has significantly more examples than another in a classification dataset.",
+      "The Accuracy Trap: Plain accuracy is dangerously misleading. A model predicting majority class 100% of the time achieves 99% accuracy but catches zero minority cases.",
+      "Five Solutions: Random oversampling, Random undersampling, SMOTE (synthetic interpolation), Class weights (class_weight='balanced'), and Threshold tuning.",
+      "Critical Interview Rule: Apply SMOTE only to training data, never the test set, to avoid data leakage.",
+      "Evaluation: Prioritize Precision, Recall, F1-Score, and PR-AUC over ROC-AUC when the minority class is rare.",
+      "Stratified Splitting: Always use stratify=y in train_test_split to preserve class ratios across training and evaluation splits."
+    ],
     "interviewAnswers": [
       {
         "question": "How would you handle missing values, outliers, and class imbalance in an ML project?",
-        "answer": "1) Missing Values: Impute with median/mode for baselines, KNN/MICE for correlated features, add an is_missing indicator flag, or let LightGBM/XGBoost handle them natively during tree splitting. 2) Outliers: Detect with Z-score (|Z|>3) or IQR (1.5x); treat with RobustScaler, Winsorization capping at 1st/99th percentiles, or PowerTransform (never drop valid rare fraud transactions!). 3) Class Imbalance: Never use accuracy; evaluate with Macro F1 and PR-AUC. Apply class_weight='balanced', SMOTE oversampling on training splits, and calibrate decision thresholds (e.g. lowering probability cutoff to 0.15 for fraud detection)."
+        "answer": "1) Missing Values: Impute with median/mode for baselines, KNN/MICE for correlated features, add an is_missing indicator flag, or let LightGBM/XGBoost handle them natively during tree splitting. 2) Outliers: Detect with Z-score (|Z|>3) or IQR (1.5x); treat with RobustScaler, Winsorization capping at 1st/99th percentiles, or PowerTransform (never drop valid rare fraud transactions!). 3) Class Imbalance: Never use accuracy; evaluate with Macro F1 and PR-AUC. Apply class_weight='balanced', SMOTE oversampling on training splits (never on test splits to avoid leakage), and calibrate decision thresholds."
       }
     ]
   },
@@ -14694,15 +15187,20 @@ export const definitionsData = [
   },
   {
     "id": "univariate",
-    "title": "Univariate Analysis",
-    "badge": "Single-Feature Inspection",
-    "summary": "Analyzing one single variable at a time to examine its central tendency, dispersion, and distribution anomalies.",
+    "title": "Univariate/Bivariate Analysis",
+    "badge": "EDA: Single & Pairwise Feature Analysis",
+    "summary": "Comprehensive Exploratory Data Analysis (EDA) evaluating individual feature distributions (Univariate) and relationships between pairs of features (Bivariate).",
     "details": [
-      "Continuous Numerical Features: Measures of central tendency (Mean, Median, Mode), measures of dispersion (Variance, Standard Deviation, IQR, Range), shape (Skewness, Kurtosis), visualized via Histograms, KDE, and Boxplots.",
-      "Categorical Features: Frequency and relative proportions (df.value_counts(normalize=True)), mode (most frequent class), visualized via Countplots and Bar charts.",
-      "Objective: Establishes a clean baseline profile for every individual column before exploring inter-feature interactions."
+      "1. UNIVARIATE ANALYSIS (Single Variable at a Time): Examines central tendency, dispersion, distribution shape, and anomalies to build a clean baseline profile for every column.",
+      "• Numerical Features (Univariate): Measures of central tendency (Mean, Median, Mode), dispersion (Variance, Standard Deviation, IQR, Range), and distribution shape (Skewness, Kurtosis). Visualized with Histograms, KDE plots, and Boxplots.",
+      "• Categorical Features (Univariate): Frequency counts, relative proportions (df.value_counts(normalize=True)), and mode (most frequent class). Visualized with Countplots and Bar charts.",
+      "2. BIVARIATE ANALYSIS (Two Variables at a Time): Examines the empirical relationship, correlation, or dependency between two features (or a feature vs. target).",
+      "• Numerical vs Numerical (Bivariate): Examined via Scatter plots and Line plots. Quantified using Pearson correlation (r) for linear relations and Spearman rank correlation (rho) for monotonic non-linear relations.",
+      "• Categorical vs Numerical (Bivariate): Examined using Grouped Boxplots and Violin plots. Statistically tested using Two-Sample t-test (for 2 categories) or One-Way ANOVA / Kruskal-Wallis (for > 2 categories).",
+      "• Categorical vs Categorical (Bivariate): Examined via Cross-tabulation (contingency tables) and Stacked Bar charts. Statistically tested using Chi-Square test (chi^2) and Cramer's V for association strength."
     ],
-    "code": "# Summary for numerical column\nprint('Mean:', df['age'].mean(), '| Median:', df['age'].median())\nprint('IQR:', df['age'].quantile(0.75) - df['age'].quantile(0.25))\n# Frequency for categorical column\nprint(df['department'].value_counts())"
+    "code": "import pandas as pd\nimport numpy as np\n\n# ==========================================================\n# 1. UNIVARIATE ANALYSIS (Single Feature Baseline)\n# ==========================================================\n# Numerical summary: central tendency & spread\nprint('Mean Age:', df['age'].mean(), '| Median Age:', df['age'].median())\nprint('IQR Age:', df['age'].quantile(0.75) - df['age'].quantile(0.25))\nprint('Age Skewness:', df['age'].skew())\n\n# Categorical summary: frequency & proportions\nprint('\\nDepartment Value Counts (Normalized):')\nprint(df['department'].value_counts(normalize=True))\n\n# ==========================================================\n# 2. BIVARIATE ANALYSIS (Two Feature Relationships)\n# ==========================================================\n# Numerical vs Numerical: Spearman rank correlation\ncorr_matrix = df[['income', 'credit_score']].corr(method='spearman')\nprint('\\nNumerical vs Numerical Correlation:\\n', corr_matrix)\n\n# Categorical vs Numerical: Groupby aggregations\ncat_num_summary = df.groupby('department')['salary'].agg(['mean', 'median', 'std'])\nprint('\\nCategorical vs Numerical Summary:\\n', cat_num_summary)\n\n# Categorical vs Categorical: Normalized cross-tabulation\ncat_cat_crosstab = pd.crosstab(df['gender'], df['churn'], normalize='index')\nprint('\\nCategorical vs Categorical Cross-tab:\\n', cat_cat_crosstab)",
+    "takeaway": "Univariate analysis establishes an individual column baseline (spread, skewness, outliers, and class balance). Bivariate analysis uncovers relationships and signals between feature pairs and targets using correlation metrics, ANOVA/t-tests, and Chi-Square tests."
   },
   {
     "id": "yeo-johnson",
@@ -14973,19 +15471,84 @@ export const definitionsData = [
   },
   {
     "id": "chroma-db",
-    "title": "ChromaDB (Open-Source Embedded Vector Database & Self-Hosted AI)",
-    "badge": "Vector Database, Local Embeddings & In-Memory HNSW Retrieval",
-    "summary": "ChromaDB is an open-source, developer-friendly embedding database designed for AI-native applications. It can run fully embedded directly inside your Python or FastAPI process (using SQLite + HNSWlib) with zero external server infrastructure, or as a standalone Dockerized microservice. It provides native metadata filtering, custom distance metrics (cosine, L2, inner product), and automatic embedding integrations.",
-    "details": [
-      "In Simple Terms: ChromaDB is like SQLite for vector embeddings. Instead of provisioning complex distributed cloud clusters with API keys and recurring bills, you can run ChromaDB directly inside your Python process with a single command: 'chromadb.PersistentClient(path=\"./chroma_data\")'. It stores vector embeddings, documents, and JSON metadata directly to your local disk.",
-      "Architectural Operating Modes: 1. Embedded In-Memory Mode: Runs directly inside the host application's memory space. Query retrieval occurs in <2ms with zero network serialization overhead. Ideal for local agents, developer prototypes, and CLI tools. 2. Persistent Local Mode: Uses a local SQLite database for document metadata and Write-Ahead Logging (WAL), paired with on-disk HNSW index files that survive process restarts. 3. Client-Server Mode: Deployed as a dedicated containerized service via Docker or Kubernetes ('chroma run --path /data'), enabling concurrent read/write connections from multiple backend API workers.",
-      "Internal Storage & Indexing Engine: ChromaDB pairs HNSWlib (Hierarchical Navigable Small World graphs) for high-dimensional Approximate Nearest Neighbor (ANN) search with SQLite for scalar metadata indexing. When querying with metadata filters (e.g. {'category': 'jacket', 'price': {'$lt': 100}}), ChromaDB performs filtered graph traversal so invalid vectors are excluded during exploration, preventing empty recall results.",
-      "Supported Distance Metrics: ChromaDB collections can be configured with: 1. Cosine Similarity ('hnsw:space': 'cosine') — best for normalized text and multimodal embeddings where angular direction matters rather than magnitude. 2. L2 Euclidean Distance ('hnsw:space': 'l2') — measuring geometric distance between unnormalized vectors. 3. Inner Product ('hnsw:space': 'ip') — raw dot product for pre-normalized vectors.",
-      "Production Pros & Constraints: Pros: 100% free and open-source, complete data privacy (HIPAA / GDPR compliant because vector data never leaves on-premise hardware), sub-millisecond retrieval in embedded mode, zero cloud vendor lock-in. Constraints: Not architected out-of-the-box for distributed multi-node sharding across 100M+ vectors; for massive multi-billion vector scale, teams transition to distributed vector engines like Milvus or Pinecone.",
-      "ChromaDB vs. Pinecone Side-by-Side: ChromaDB is self-hosted, embedded, open-source, and runs on your local machine with zero recurring cloud cost (ideal for <1M vectors or air-gapped environments). Pinecone is a fully managed cloud SaaS with automated multi-node sharding, 99.99% uptime SLA, and native enterprise multi-tenant namespaces (ideal for global multi-tenant enterprise applications with zero DevOps overhead).",
-      "Interview Answer (How to Defend): 'In Project 1 (Fashion AI Copilot), we chose ChromaDB because our catalog was 10,000 garment styles. Embedding ChromaDB directly into our FastAPI container eliminated cloud API network latency—bringing retrieval down from 35ms to 4ms—incurred $0 in vector database cloud costs, and ensured complete local data privacy without external dependencies.'"
+    "title": "ChromaDB (Open-Source Vector Database)",
+    "badge": "Vector Database, Embeddings & Similarity Search",
+    "summary": "ChromaDB is an open-source database designed for storing and searching embeddings along with associated text and metadata.",
+    "corePillars": [
+      {
+        "step": 1,
+        "name": "Documents",
+        "desc": "PDFs, policies, FAQs, web pages, support tickets.",
+        "badge": "Raw Content",
+        "accent": "text-cyan-400",
+        "border": "border-cyan-800/40"
+      },
+      {
+        "step": 2,
+        "name": "Embeddings",
+        "desc": "Numerical vectors representing semantic information in text.",
+        "badge": "Vector Space",
+        "accent": "text-emerald-400",
+        "border": "border-emerald-800/40"
+      },
+      {
+        "step": 3,
+        "name": "Similarity search",
+        "desc": "Find stored vectors close to the query vector and return their associated text and metadata.",
+        "badge": "Nearest Neighbor",
+        "accent": "text-amber-400",
+        "border": "border-amber-800/40"
+      }
     ],
-    "code": "# ==============================================================================\n# PRODUCTION CHROMADB PIPELINE: EMBEDDED PERSISTENCE, HNSW & METADATA FILTERING\n# ==============================================================================\nimport chromadb\nfrom chromadb.config import Settings\nfrom typing import List, Dict, Any\n\n# 1. Initialize Persistent Embedded Client (Zero External Infrastructure)\nclient = chromadb.PersistentClient(\n    path=\"./production_chroma_db\",\n    settings=Settings(anonymized_telemetry=False, allow_reset=True)\n)\n\n# 2. Create or Get Collection with Cosine Space & HNSW Tuning\ncollection = client.get_or_create_collection(\n    name=\"fashion_catalog_vectors\",\n    metadata={\n        \"hnsw:space\": \"cosine\",               # Angular cosine distance\n        \"hnsw:construction_ef\": 128,          # Higher build quality\n        \"hnsw:M\": 16                          # Max bi-directional links per node\n    }\n)\n\n# 3. Batch Upsert Multimodal Vectors with Rich Metadata\nsample_garments = [\n    {\n        \"id\": \"PROD_0014\",\n        \"vector\": [0.032, -0.015, 0.089, 0.045] + [0.0] * 1020,  # 1024-dim embedding\n        \"document\": \"Blush Pink Crewneck T-Shirt, 220gsm Combed Organic Cotton, casual wear.\",\n        \"metadata\": {\"category\": \"t-shirt\", \"color\": \"pink\", \"price\": 12.50, \"in_stock\": True}\n    },\n    {\n        \"id\": \"PROD_0088\",\n        \"vector\": [-0.012, 0.078, -0.043, 0.091] + [0.0] * 1020,\n        \"document\": \"Navy Blue Linen Summer Button-Down Shirt, lightweight breathable fit.\",\n        \"metadata\": {\"category\": \"shirt\", \"color\": \"blue\", \"price\": 24.00, \"in_stock\": True}\n    }\n]\n\ncollection.upsert(\n    ids=[item[\"id\"] for item in sample_garments],\n    embeddings=[item[\"vector\"] for item in sample_garments],\n    documents=[item[\"document\"] for item in sample_garments],\n    metadatas=[item[\"metadata\"] for item in sample_garments]\n)\nprint(f\"Ingested {collection.count()} vectors into ChromaDB collection.\")\n\n# 4. Filtered Similarity Query with Boolean Metadata Operators\nquery_vector = [0.030, -0.010, 0.085, 0.040] + [0.0] * 1020  # \"pink casual tee\" vector\nresults = collection.query(\n    query_embeddings=[query_vector],\n    n_results=5,\n    where={\n        \"$and\": [\n            {\"category\": {\"$eq\": \"t-shirt\"}},\n            {\"in_stock\": {\"$eq\": True}}\n        ]\n    },\n    include=[\"documents\", \"metadatas\", \"distances\"]\n)\n\nfor doc_id, doc, meta, dist in zip(results[\"ids\"][0], results[\"documents\"][0], results[\"metadatas\"][0], results[\"distances\"][0]):\n    print(f\"Match: {doc_id} | Distance: {dist:.4f} | Color: {meta['color']} | Text: {doc}\")"
+    "embeddingDefinition": {
+      "question": "What is an embedding?",
+      "answer": "An embedding is a list of numbers produced by an embedding model."
+    },
+    "importantNotice": "Important: ChromaDB stores and searches vectors, but it does not inherently understand the meaning of text. The embedding model supplies that representation.",
+    "coreConceptsTable": [
+      { "concept": "Client", "meaning": "Entry point for interacting with ChromaDB" },
+      { "concept": "Collection", "meaning": "A group of related records, similar to a table" },
+      { "concept": "Document", "meaning": "Text associated with a record" },
+      { "concept": "Embedding", "meaning": "Vector representation of content" },
+      { "concept": "ID", "meaning": "Unique identifier for a record" },
+      { "concept": "Metadata", "meaning": "Filterable information, such as category or document version" },
+      { "concept": "Query", "meaning": "Search using a query embedding or query text, depending on the API" }
+    ],
+    "code": "import chromadb\n\nclient = chromadb.Client()\n\ncollection = client.create_collection(\n    name=\"real_text_search\"\n)\n\ncollection.add(\n    ids=[\"doc1\", \"doc2\", \"doc3\"],\n    documents=[\n        \"How to reset a forgotten password\",\n        \"Bank transfers may be delayed on holidays\",\n        \"How to report a suspicious card payment\"\n    ]\n)\n\nresults = collection.query(\n    query_texts=[\"My money transfer is taking too long\"],\n    n_results=2\n)\n\nfor document in results[\"documents\"][0]:\n    print(document)",
+    "persistentSetup": {
+      "title": "Use PersistentClient for a simple local persistent setup:",
+      "code": "import chromadb\n\nclient = chromadb.PersistentClient(\n    path=\"./chroma_data\"\n)\ncollection = client.get_or_create_collection(\n    name=\"banking_policies\"\n)",
+      "storageNote": "ChromaDB stores its local data under the specified directory.",
+      "productionWarning": "For a real deployment, decide how storage, backups, access controls, concurrent access, scaling and recovery will work. Local persistence is not automatically equivalent to a managed, highly available production database."
+    },
+    "comparisonTable": [
+      { "database": "ChromaDB", "useCase": "Local development, prototypes and open-source vector search" },
+      { "database": "FAISS", "useCase": "Efficient similarity-search library, often embedded in an application" },
+      { "database": "Pinecone", "useCase": "Managed cloud vector database with production-oriented features" },
+      { "database": "PostgreSQL with pgvector", "useCase": "Vector search alongside relational data" },
+      { "database": "Milvus", "useCase": "Vector database for larger-scale retrieval deployments" }
+    ],
+    "commonMistakes": [
+      { "mistake": "Using random vectors in production", "desc": "Search quality depends on meaningful, compatible embeddings." },
+      { "mistake": "Mixing embedding models", "desc": "Query and document vectors must share a compatible embedding space." },
+      { "mistake": "Ignoring chunking", "desc": "Oversized or poorly split documents can reduce retrieval quality." },
+      { "mistake": "Duplicate ingestion", "desc": "Rerunning ingestion with new IDs can create duplicate content." },
+      { "mistake": "Ignoring metadata", "desc": "Document source, version and category are often essential for filtering and citations." },
+      { "mistake": "Treating retrieval as authorization", "desc": "Only retrieve content the authenticated user is permitted to access." },
+      { "mistake": "Never evaluating retrieval", "desc": "Measure whether relevant documents are actually found, not just whether a query returns results." }
+    ],
+    "details": [
+      "ChromaDB is an open-source database designed for storing and searching embeddings along with associated text and metadata.",
+      "1. Documents: PDFs, policies, FAQs, web pages, support tickets.",
+      "2. Embeddings: Numerical vectors representing semantic information in text.",
+      "3. Similarity search: Find stored vectors close to the query vector and return their associated text and metadata.",
+      "What is an embedding? An embedding is a list of numbers produced by an embedding model.",
+      "Important: ChromaDB stores and searches vectors, but it does not inherently understand the meaning of text. The embedding model supplies that representation.",
+      "Core Concepts: Client (entry point), Collection (record group/table), Document (associated text), Embedding (vector representation), ID (unique identifier), Metadata (filterable info), Query (search using query embedding or text).",
+      "Persistent Storage: client = chromadb.PersistentClient(path='./chroma_data'). Local persistence stores files under the specified directory. In production, decide how storage, backups, access controls, concurrency, scaling and recovery will work.",
+      "ChromaDB vs Other Vector DBs: ChromaDB (local/prototyping), FAISS (similarity search library), Pinecone (managed cloud), PostgreSQL pgvector (relational + vector), Milvus (larger-scale retrieval).",
+      "Common Mistakes: Using random vectors in production, mixing embedding models, ignoring chunking, duplicate ingestion, ignoring metadata, treating retrieval as authorization, and never evaluating retrieval quality."
+    ]
   },
   {
     "id": "pinecone",
@@ -15007,7 +15570,7 @@ export const definitionsData = [
     "id": "chatbot-architecture",
     "title": "Enterprise Multi-Agent Chatbot Architecture (Edge Security, MCP & FinOps)",
     "badge": "Production Multi-Agent Architecture, Model Context Protocol & Edge Defense",
-    "summary": "A production-grade, multi-agent conversational AI blueprint for high-security enterprise banking. Features Edge Layer security (WAF, DDoS, rate limiting), Bank IdP OAuth2 authentication, a central Coordinator Agent orchestrating specialized sub-agents (Accounts, Transactions, Service) over Model Context Protocol (MCP) servers, PII redaction, hybrid LLM routing (Self-Hosted vs. Third-Party), and comprehensive observability with real-time FinOps cost tracking.",
+    "summary": "A production banking chatbot built with multiple specialized AI agents. It protects customer data with an Edge Security shield (firewall and rate limits) and verifies logins through the bank's official identity system. A central Coordinator Agent masks private numbers (credit cards, SSNs) and assigns tasks to specialist agents (Accounts, Transactions, Customer Service) using Model Context Protocol (MCP) servers. Sensitive bank data stays on secure internal servers, and a Cost Tracker prevents runaway cloud bills.",
     "architectureDiagrams": [
       {
         "id": "edge-security",
@@ -15015,7 +15578,7 @@ export const definitionsData = [
         "image": "images/chatbot_architecture_edge_security.jpg",
         "highlight": "Edge Layer (WAF, DDoS, Rate Limits, API Gateway) & Bank Identity Provider",
         "badge": "Edge Security Perimeter",
-        "description": "Illustrates the perimeter security defenses protecting the conversational platform from internet threats before requests ever touch internal microservices or LLMs."
+        "description": "Shows the outer security shield that blocks internet attacks and checks user logins before questions ever touch internal AI models."
       },
       {
         "id": "cost-observability",
@@ -15023,7 +15586,7 @@ export const definitionsData = [
         "image": "images/chatbot_architecture_cost_observability.jpg",
         "highlight": "Cost Tracker & Real-Time Token Telemetry",
         "badge": "FinOps & Cost Governance",
-        "description": "Highlights the FinOps observability layer needed to prevent the common multi-agent pitfall where recursive loops, uncompressed prompts, and unmanaged tool calls cause monthly cloud LLM bills to triple."
+        "description": "Shows how tracking tokens, setting limits, and caching prevent runaway cloud bills from agent loops and bloated prompts."
       }
     ],
     "architectureLayers": [
@@ -15035,22 +15598,22 @@ export const definitionsData = [
           {
             "name": "User Interface (Chat)",
             "role": "Frontend Client Layer",
-            "details": "The web portal, mobile banking app, or embedded conversational widget where customers type queries or issue voice commands. Connects via secure WebSockets or Server-Sent Events (SSE) for low-latency streaming responses with typing indicators, markdown rendering, and local session resumption."
+            "details": "Where customers chat with the bank. This can be the bank website, mobile app, or a chat widget. It streams text word-by-word so customers see answers immediately without waiting."
           },
           {
             "name": "Edge Layer (WAF, DDoS, Rate Limits, API Gateway)",
             "role": "Step 14 Core Highlight",
-            "details": "The first line of defense at the network boundary. Web Application Firewall (WAF) inspects incoming payloads for OWASP Top 10 exploits (SQLi, XSS, SSRF). DDoS mitigation absorbs volumetric layer 3/4/7 floods. Rate limiting uses token-bucket algorithms (e.g. max 20 prompts/min per IP/token) to prevent denial-of-wallet attacks. The API Gateway terminates SSL/TLS (TLS 1.3 only) and acts as an authenticated reverse proxy."
+            "details": "The outer security shield. A Web Application Firewall (WAF) blocks malicious attacks like SQL injections and viruses. DDoS protection stops traffic floods. Rate limiting allows only 20 questions per minute so hackers cannot spam the system and drain the bank's budget. It also handles HTTPS encryption."
           },
           {
             "name": "Authentication (Bank's Identity Provider / IdP)",
             "role": "Identity & Token Minting",
-            "details": "Integrates with enterprise IAM systems (Microsoft Entra ID, PingFederate, Okta, or internal Core Banking IAM) using OAuth2 / OpenID Connect (OIDC). Authenticates users via biometric or Multi-Factor Authentication (MFA) and issues short-lived, cryptographically signed JSON Web Tokens (JWT) containing user ID, customer information file ID (CIF_ID), and assigned scopes."
+            "details": "The customer login system. It checks the user's password, fingerprint, or SMS code. Once verified, it gives the user a secure digital badge (a signed JWT token) that proves who they are and what accounts they own."
           },
           {
             "name": "Internal API Ingress",
             "role": "Backend Routing & Decoupling",
-            "details": "The internal microservice entry point behind the private network boundary. Validates incoming JWT signatures against the IdP public keys, strips client-side transport headers, and forwards sanitized requests into the agentic runtime via high-performance internal gRPC / REST endpoints."
+            "details": "The internal front door. It checks the user's digital badge to make sure it is real, cleans up the message, and forwards it safely to the internal AI agents."
           }
         ]
       },
@@ -15062,32 +15625,32 @@ export const definitionsData = [
           {
             "name": "Coordinator Agent (Supervisor)",
             "role": "Central Orchestrator & Router",
-            "details": "The central intelligence of the multi-agent system. Instead of giving a single giant prompt all banking tools, the Coordinator classifies customer intent (e.g. 'inquiry', 'transaction', 'complaint'), breaks compound multi-part requests into discrete sub-tasks, delegates to specialized domain sub-agents, and synthesizes individual sub-agent responses into a unified, polite customer answer."
+            "details": "The main brain and manager. Instead of one confused AI trying to do everything, the Coordinator reads the customer's question, figures out what they want (like checking balance or ordering a chequebook), gives the task to the right specialist agent, and joins the answers into one friendly reply."
           },
           {
             "name": "Authorisation Layer",
             "role": "Least Privilege & BOLA Defense",
-            "details": "Even when authenticated, an agent must never execute an action without explicit authorization. This layer verifies that the authenticated user actually owns the target account number (Broken Object Level Authorization / IDOR prevention) and possesses requisite entitlements (e.g. viewing balance vs. transferring funds)."
+            "details": "Account ownership checker. Even if a user is logged in, this layer double-checks that the customer actually owns the account they are asking about. It stops users from secretly viewing someone else's balance or transferring someone else's money (IDOR protection)."
           },
           {
             "name": "PII Redaction & Data Anonymization",
             "role": "Privacy & Compliance Filter",
-            "details": "Scans raw customer messages using named entity recognition (NER / Presidio) and regex patterns to mask sensitive Personally Identifiable Information (16-digit credit card numbers, CVVs, SSNs, Aadhaar, phone numbers) before sending prompts to LLMs. Tokenized placeholders (e.g. [MASKED_ACCOUNT_1]) are held in a secure ephemeral vault and re-hydrated only in the final client response."
+            "details": "Hides private information. It scans every message and masks sensitive details like credit card numbers, SSNs, and phone numbers with placeholders like [MASKED_CARD]. This ensures private customer data is never exposed to public AI models."
           },
           {
             "name": "Agent Evaluation Suite",
             "role": "Real-Time Safety & Hallucination Guardrail",
-            "details": "A dual-stage evaluation engine (e.g. NeMo Guardrails, Azure AI Content Safety, Llama Guard). Inspects incoming prompts for adversarial jailbreaks and prompt injections. Simultaneously validates agent outputs before tool execution to verify factual grounding, ensure tone compliance, and block hallucinated promises or financial advice."
+            "details": "Safety guardrails. It checks questions coming in to block jailbreak tricks and prompt injections. It also inspects AI answers before they are sent, making sure the AI does not hallucinate false information, make fake promises, or give unapproved financial advice."
           },
           {
             "name": "Hybrid LLM Tier (Self-Hosted vs. Third-Party)",
             "role": "Smart Model Routing",
-            "details": "Employs dynamic model routing: Highly sensitive customer banking data (transactions, KYC, account balances) routes exclusively to Self-Hosted LLMs (e.g. LLaMA 3 70B, Mistral Large on vLLM/TensorRT-LLM) running inside the bank's air-gapped private cloud for 100% data residency compliance. Non-sensitive general reasoning or stylistic chit-chat can be routed to Third-Party Frontier LLMs (e.g. GPT-4o, Claude 3.5) for superior linguistic fluency."
+            "details": "Smart model routing. Sensitive questions with customer money or account details are sent to private self-hosted AI models inside the bank's own data center so data never leaves. Simple chit-chat or general help can use fast commercial models like GPT-4o."
           },
           {
             "name": "Session Store",
             "role": "Stateful Multi-Turn Memory",
-            "details": "A low-latency in-memory data store (Redis / DynamoDB) storing two critical state layers: 1. Conversation History (sliding window of multi-turn user/assistant exchanges with semantic summarization). 2. Inter-Agent Shared State (passing validated context like customer_cif, authenticated_tier, active_flow, and collected form fields between the Coordinator and sub-agents)."
+            "details": "Fast conversation memory (using Redis). It remembers what the user said earlier in the chat and shares important details (like customer ID and current request) between the specialist agents."
           }
         ]
       },
@@ -15099,22 +15662,22 @@ export const definitionsData = [
           {
             "name": "Accounts Agent & Accounts MCP Server",
             "role": "Account Ledger Operations",
-            "details": "The Accounts Agent has specialized system instructions and few-shot examples for financial ledger queries. It communicates with the Accounts MCP Server over the open Model Context Protocol (JSON-RPC), invoking strictly typed tools like 'get_account_balance' and 'fetch_interest_accruals' mapped to downstream Core Banking APIs."
+            "details": "The account specialist. It focuses only on account balance and interest questions. It connects to the bank's database through an MCP server to safely fetch balance numbers."
           },
           {
             "name": "Transaction Agent & Transactions MCP Server",
             "role": "Financial Audit & History",
-            "details": "Hardened agent specialized in monetary audit trails. Connects to the Transactions MCP Server to query 'get_recent_transactions', 'filter_by_date_range', and 'generate_statement_pdf'. Enforces idempotency keys on every transaction request to eliminate duplicate processing."
+            "details": "The transaction specialist. It fetches past payments, filters transactions by date, and generates PDF account statements. It also makes sure payments are never charged twice."
           },
           {
             "name": "Service Agent & Service MCP Server",
             "role": "Customer Operations & Requests",
-            "details": "Manages banking service requests through the Service MCP Server: 1. Change of Address (requires multi-step address verification). 2. Cheque book request (validates eligible account types and postage logistics). 3. KYC update (initiates secure document upload sessions and video KYC appointments)."
+            "details": "The service desk specialist. It helps customers with everyday service tasks: changing home addresses, ordering new cheque books, and updating KYC documents."
           },
           {
             "name": "Core Banking Systems (CBS)",
             "role": "System of Record",
-            "details": "The bank's foundational transactional backends (e.g. Finacle, Temenos, SAP Banking). MCP servers act as standardized adapters, translating high-level agent tool calls into secure, audited mainframe and REST API transactions."
+            "details": "The bank's main central database (like Finacle or Temenos). It keeps the official record of all customer money, accounts, and transactions. MCP servers act as safe translators between the AI agents and this database."
           }
         ]
       },
@@ -15126,12 +15689,12 @@ export const definitionsData = [
           {
             "name": "Observability Engine",
             "role": "End-to-End Distributed Tracing",
-            "details": "Collects full telemetry across two distinct planes: 1. AI Telemetry: Logs prompt tokens, completion tokens, agent-to-agent delegation latency, tool execution payloads, and guardrail verdicts via OpenTelemetry and Langfuse. 2. Infrastructure Telemetry: Real-time Prometheus/Grafana tracking of CPU, RAM, GPU VRAM cache usage, and container health."
+            "details": "Live system dashboard. It tracks how many tokens each question uses, how long agents take to reply, and checks server health (CPU and memory) in real time using tools like OpenTelemetry and Grafana."
           },
           {
             "name": "Cost Tracker ('Step 13: A Bill That Tripled')",
             "role": "FinOps & Token Budget Guardrails",
-            "details": "Why do multi-agent bills triple? 1. Recursive loops: An agent repeatedly calls tools in an endless retry loop. 2. Context bloat: Passing massive conversation histories and dozens of tool definitions on every single LLM call. 3. Over-provisioned models: Using $15/M token frontier models for simple classification tasks. The Cost Tracker enforces: semantic caching (saving 25-30% of calls), token budget caps per user session ($0.05 max), hard recursion limits (max 5 iterations), and routing to lightweight 8B models for basic intent routing."
+            "details": "Stops cloud bills from exploding. Why do bills triple in multi-agent systems? Agents get stuck in endless retry loops, re-send long chat histories on every turn, and use huge expensive models for simple tasks. The Cost Tracker fixes this by: 1) Caching common questions in Redis to answer for $0; 2) Capping sessions at $0.05 max; 3) Stopping agent loops at 5 tries max; 4) Using small, cheap 8B models for simple tasks."
           }
         ]
       }
@@ -15139,54 +15702,54 @@ export const definitionsData = [
     "interviewAnswers": [
       {
         "question": "What happens to a user query from the moment it’s submitted until the final response is returned? Walk through every layer of the flow.",
-        "answer": "The query travels through 8 distinct layers: 1) UI Client: User submits query over WebSocket/SSE with JWT auth token. 2) Edge Security (Step 14): WAF inspects for SQLi/prompt injection, DDoS engine checks rate limits, and TLS 1.3 terminates at API Gateway. 3) Identity Ingress: Gateway verifies JWT against Bank's IdP, extracting user identity, CIF_ID, and role scopes. 4) Coordinator Agent: PII Redaction masks credit cards/SSNs; session store pulls conversation history; intent classification decomposes compound tasks. 5) Authorisation Layer: Confirms user owns target accounts before tool dispatch (BOLA/IDOR check). 6) Specialized Sub-Agents & MCP: Dispatches sub-tasks to Accounts/Service Agents over Model Context Protocol (MCP) servers calling Core Banking APIs. 7) LLM Serving Tier: Context assembled and routed to Self-Hosted (for private banking data) or frontier LLM; KV cache allocated via PagedAttention. 8) Egress Guardrails & Stream: Agent Evaluation Suite validates groundedness; PII is de-anonymized and tokens stream to client with <400ms TTFT."
+        "answer": "The query passes through 8 simple steps: 1) UI: The customer types a message in the mobile app or web chat with their login token. 2) Edge Security: The firewall (WAF) blocks malicious scripts, checks rate limits (e.g. 20 prompts/min), and decrypts HTTPS. 3) Identity Check: The gateway verifies the user's digital login token with the bank's identity server. 4) Coordinator Agent: Sensitive data (credit cards, SSNs) is masked, past chat memory is loaded, and the user's intent is identified. 5) Authorisation: The system checks that the customer really owns the requested account. 6) Specialist Agent & MCP: The Coordinator sends the task to the right specialist (Accounts, Transactions, or Service) who fetches data from Core Banking via MCP tools. 7) LLM Processing: Private financial details stay on private self-hosted models; general chat uses frontier models. 8) Guardrails & Streaming: The safety suite verifies the answer has no hallucinations, un-masks private placeholders, and streams the answer word-by-word to the user."
       },
       {
         "question": "Why divide the system into a Coordinator Agent and specialized sub-agents with MCP servers instead of a single large LLM agent?",
-        "answer": "A single monolithic agent with 30+ tools suffers from severe 'tool selection confusion', high hallucination rates, and massive context bloat (consuming thousands of tokens on every call just declaring schemas). The Coordinator pattern delegates to role-specialized sub-agents that only possess 2-3 relevant tools. Model Context Protocol (MCP) standardizes tool interfaces, isolates backend banking APIs from prompt changes, and enforces schema validation before any API is called."
+        "answer": "If you give one single AI 30 different banking tools, it gets confused about which tool to pick, hallucinates more often, and wastes money because you must send 30 tool descriptions on every single question. By using a Coordinator and specialist agents, each sub-agent only has 2 or 3 relevant tools. Model Context Protocol (MCP) provides a clean, secure standard to connect agents to banking databases without breaking when prompts change."
       },
       {
         "question": "In the diagram, what is the role of Step 14: Edge Layer Security?",
-        "answer": "The Edge Layer sits outside the application boundary, combining WAF, DDoS mitigation, rate-limiting, and API Gateway. It absorbs volumetric attacks at edge points of presence, enforces token-bucket rate limits to prevent denial-of-wallet cost attacks, validates Bank IdP OAuth2 tokens, and terminates TLS. This ensures that unauthorized or malicious requests are rejected before incurring any internal compute or LLM token costs."
+        "answer": "The Edge Layer sits outside the application as the front gate. It combines a Web Application Firewall (WAF), DDoS defense, rate limiter, and API Gateway. It blocks attacks, prevents bots from spamming the system, and checks login tokens. This ensures malicious or invalid requests are stopped at the door before wasting expensive AI compute and cloud money."
       },
       {
         "question": "Explain Step 13: 'A bill that tripled'. How does this happen in production and how does the Cost Tracker fix it?",
-        "answer": "Bills triple in multi-agent architectures due to: 1) Agent deadlocks and cyclic tool-calling loops; 2) Naive context expansion where every sub-agent inherits the entire multi-turn chat history; 3) Unnecessary use of expensive frontier models for basic routing. We mitigate this using our Cost Tracker: enforcing a hard loop budget (max 5 tool calls), semantic caching in Redis for common FAQs (0 token cost), context pruning (passing only relevant extracted entities to sub-agents), and routing intent triage to fast self-hosted 8B models."
+        "answer": "AI bills triple in production for three reasons: 1) Agents get stuck in endless retry loops; 2) The system re-sends the whole long chat history on every turn; 3) Using expensive $15-per-million-token models for simple routing. Our Cost Tracker fixes this with 4 guardrails: 1) Semantic Caching: Common FAQ answers are saved in Redis and returned with zero token cost; 2) Hard Loop Cap: An agent can make at most 5 tool calls per question; 3) Session Budget: Hard spending limit of $0.05 per conversation; 4) Smart Routing: We use fast, cheap 8B models for basic intent routing instead of expensive giant models."
       },
       {
         "question": "Knowing RAG is easy. Debugging RAG is different: Your chatbot is giving irrelevant answers. What do you check first?",
-        "answer": "You diagnose the failure systematically rather than guessing: 1) Irrelevant documents: Pull the top 10 results for the failing query. Is the answer actually in the corpus? If BM25 finds it but vector search doesn't, investigate embedding representations. If neither finds it, stop tuning retrieval—the problem is in ingestion or chunking boundaries! 2) Right documents, wrong answer: The information exists in retrieved context. If it's buried in the middle, the LLM is suffering from Lost-in-the-Middle attention decay; apply cross-encoder reranking to place top chunks at prompt boundaries. 3) Right sometimes, wrong sometimes: If small wording variations cause different retrieval results, investigate query formulation; implement multi-query expansion or HyDE. 4) Everything is too slow: Dissect P95 latency by stage (Query Processing -> Embedding -> Retrieval -> Reranking -> Generation) and optimize only the slowest bottleneck."
+        "answer": "I debug it step-by-step instead of guessing: 1) Check if the answer exists in your documents: Pull the top 10 search chunks. If the answer is not in the database at all, fix your document ingestion and chunking—not the retrieval! 2) Keyword vs. Vector check: Test with simple keyword search (BM25). If keyword search finds it but vector search fails, your embedding model has a vocabulary gap. Use hybrid search. 3) Lost in the middle: If the document is retrieved but the LLM ignores it, the answer is buried. Use a reranker to put the best paragraphs right at the top. 4) Query wording: If small changes in phrasing change results, use multi-query expansion to generate multiple search versions."
       },
       {
         "question": "Round 4 Practical Scenario A: Your RAG application retrieves irrelevant documents. How would you debug it?",
-        "answer": "First, inspect raw retrieved chunks for the failing query. Check if the true answer is present in your database: run exact keyword / BM25 search. If BM25 finds it but vector search fails, your embedding model has a semantic gap or out-of-vocabulary jargon—implement hybrid search (BM25 + Dense) via Reciprocal Rank Fusion. If the text isn't in either, inspect your chunking pipeline: did a fixed 500-token chunk cut a critical sentence in half? If so, switch to semantic or parent-document chunking."
+        "answer": "First, look at the actual chunks retrieved for that question. Run a keyword search (BM25) for the exact words. If keyword search finds the right page but vector search misses it, the embedding model struggles with company jargon—combine both with Hybrid Search (BM25 + Dense Vectors). If neither finds it, check your chunk size: a rigid 500-token cut probably sliced an important sentence in half. Switch to semantic chunking or paragraph chunking with light overlap."
       },
       {
         "question": "Round 4 Practical Scenario B: Your API works locally but fails after deployment. How would you investigate?",
-        "answer": "Follow a 5-step checklist: 1) Host Binding: Ensure the server listens on 0.0.0.0 (all interfaces) rather than 127.0.0.1 (which rejects container traffic). 2) Environment Variables & Secrets: Verify production environment variables and Azure Key Vault connection strings exist. 3) CORS & Ingress Policies: Check if the frontend origin is blocked by API Gateway CORS middleware. 4) Container Resources & OOM: Check Docker/Kubernetes container exit codes (Exit Code 137 = Out of Memory kill). 5) Network Security Groups (NSGs): Verify database and model endpoints allow traffic from the container's subnet via Private Endpoints."
+        "answer": "I follow a quick 5-step checklist: 1) Host Binding: Make sure the app listens on 0.0.0.0 (all network cards), not 127.0.0.1 (localhost only). 2) Environment Secrets: Check that production API keys and database connection strings are actually set. 3) CORS Policy: Ensure the API Gateway allows requests from the frontend domain. 4) Memory Crashes (OOM): Check Docker or Kubernetes logs for Exit Code 137, which means the container ran out of memory. 5) Firewall & Subnets: Verify that private endpoints and security groups allow traffic to reach the database."
       },
       {
         "question": "Round 4 Practical Scenario C: Your LLM generates unsupported answers. How would you improve reliability?",
-        "answer": "Implement a 4-part reliability shield: 1) Strict Negative Grounding: Add system instruction: 'Answer ONLY using the provided retrieved context. If the context does not explicitly state the answer, reply: I do not have sufficient information.' 2) Mandatory Citation Tagging: Force the LLM to tag every factual statement with bracketed chunk IDs (e.g. [Doc-3, Page 2]). 3) Sampling Determinism: Lower temperature to 0.0 or 0.1 to minimize creative drift. 4) Real-Time Hallucination Guardrail: Run an automated post-generation check (e.g. TruLens / Azure AI Content Safety) that measures Groundedness before returning text to the user."
+        "answer": "I use a 4-step reliability shield: 1) Strict Context Rule: Add a clear system prompt: 'Answer ONLY using the provided documents. If the text does not say it, reply: I do not have enough information.' 2) Mandatory Citations: Require the AI to cite sources (e.g. [Doc-2, Page 3]) for every fact. 3) Temperature 0.0: Set temperature to 0.0 to stop creative guessing and make answers consistent. 4) Automated Fact Checker: Run a fast guardrail model that checks if the generated answer is directly supported by the context before showing it to the user."
       },
       {
         "question": "Your chatbot takes 10 seconds to respond because you send the entire 50-page manual with every prompt. It's too slow and expensive. How would you fix it?",
-        "answer": "Re-sending a 50-page manual with every prompt is paying to re-read the same book for every question. I fix this with a 6-step architectural pipeline: 1) Retrieve instead of resending: Chunk and embed the manual once, retrieving only the top 3-5 relevant chunks (~600 tokens vs 30,000 tokens). 2) Chunk with structure: Split on headings, keep titles/page numbers as metadata, and overlap lightly so steps aren't cut in half. 3) Rerank, then trim: Use a cross-encoder to reorder candidates and keep only what clears a threshold. 4) Cache what repeats: Use prompt caching for static instructions and semantic Redis caching for frequent questions. 5) Control output: Stream the response and cap max_tokens. 6) Measure: Track tokens per request, TTFT, and answer accuracy. The principle: send the model the few paragraphs that answer the question, not the whole document."
+        "answer": "Sending a 50-page PDF with every question is like paying someone to re-read an entire book every time you ask what time it is. I fix it in 5 simple steps: 1) Chunk & Retrieve: Chop the manual into sections once. Retrieve only the top 3-5 relevant paragraphs (~500 tokens instead of 30,000 tokens). 2) Clean Chunking: Split by chapter and headings, keeping titles attached so context is never lost. 3) Rerank: Re-order retrieved paragraphs to keep only the highest scoring ones. 4) Cache Static Prompts: Cache repeated instructions in Redis so you don't pay tokens for them repeatedly. 5) Stream Output: Stream the response word-by-word so the customer sees the first word in under 1 second instead of waiting 10 seconds."
       },
       {
         "question": "What was the biggest technical challenge in your project, and how did you solve it?",
-        "answer": "In Project 1 (Fashion AI Copilot), our biggest challenge was multi-modal late vector fusion latency. Retailers uploaded a garment image and typed modifications (e.g. 'in green linen'), but running cross-attention took 800ms+. We solved it by generating 1024-dim text and image embeddings in a shared coordinate space via Azure AI Vision, L2-normalizing vectors, and applying a weighted fusion formula (65% text, 35% image). Because normalized vectors simplify cosine similarity to a fast dot product, in-memory ChromaDB HNSW retrieval dropped from 800ms to under 5ms (a 99% speedup). In Project 2, our biggest challenge was cold-start multi-tenant onboarding, which we solved using our RAG fallback when rows < 100."
+        "answer": "In Project 1 (Fashion AI Copilot), our biggest challenge was search delay when combining garment images with text descriptions (like 'green linen shirt'). Running cross-attention took over 800ms. We solved it by creating normalized embeddings for both text and image in a shared space, combining them with a weighted formula (65% text, 35% image). Because normalized vectors turn cosine similarity into a fast dot product, retrieval speed dropped from 800ms to under 5ms (a 99% speedup!)."
       }
     ],
     "details": [
-      "In Simple Terms: This is an enterprise-grade banking chatbot architecture. A customer's message enters through an Edge Security shield (WAF + Rate Limiter), logs in via the bank's official identity provider, and reaches a Coordinator Agent. The Coordinator acts like a smart bank manager: it redacts private information (like credit card numbers), checks customer permissions, and assigns the task to a specialized sub-agent (Accounts, Transactions, or Customer Service) using Model Context Protocol (MCP) servers.",
-      "Perimeter Security (Step 14: Edge Layer Security): Before a user's prompt ever reaches an LLM, the Edge Layer inspects it with a Web Application Firewall (WAF) to block SQL injections and malicious code. It enforces token-bucket rate limiting (e.g. 20 prompts/minute) to stop hackers from draining the bank's API budget. It terminates TLS 1.3 encryption and validates the customer's bank identity token (OAuth2/JWT).",
-      "Supervisor & Sub-Agent Pattern: Instead of having one giant, confused AI trying to do everything, the Coordinator Agent analyzes the request and routes it to the right specialist: the Accounts Agent (for balances), Transaction Agent (for account statements), or Service Agent (for chequebooks and address changes). Each sub-agent communicates through an MCP (Model Context Protocol) Server, which acts as a secure translator between the AI and the bank's internal core banking databases.",
-      "Data Privacy & PII Redaction: Customer bank records are strictly protected. The PII Redaction engine automatically masks sensitive details (account numbers, credit cards, SSNs) before sending text to the LLM. Furthermore, high-sensitivity banking tasks route to a Self-Hosted LLM (like LLaMA on private on-prem GPUs) so confidential financial records never leave the bank's network.",
-      "Authorisation & IDOR Defense: Even after the user logs in, the Authorisation layer checks every single sub-agent tool call to verify that the customer actually owns the requested account ID, completely blocking Insecure Direct Object Reference (IDOR / BOLA) vulnerabilities.",
-      "Why Did the Bill Triple? (Step 13: Cost Tracker & FinOps): In poorly designed multi-agent systems, agents can get stuck in infinite loops, re-send the entire chat history on every turn, and call expensive $15/M token models for simple tasks—causing monthly cloud bills to triple! The Cost Tracker solves this with 4 hard guardrails: 1) Semantic caching in Redis (saves 25-30% of queries with zero token spend); 2) Hard iteration limits (max 5 turns per request); 3) Context compression (sliding memory); 4) Dynamic model routing (simple balance checks use cheap 8B models).",
-      "Observability & Tracing: The system tracks every prompt, token count, tool call, latency, and guardrail check using OpenTelemetry and Langfuse, while Prometheus monitors CPU, memory, and GPU utilization in real time.",
-      "Interview Answer: 'Our banking chatbot utilizes a multi-agent Coordinator-Worker pattern protected by an Edge Security Layer (WAF, rate limits, OAuth2 IdP). The Coordinator sanitizes PII, validates permissions, and delegates to domain-specialized Accounts, Transaction, and Service agents via Model Context Protocol (MCP) servers. To prevent spiraling API bills (Step 13), our Cost Tracker enforces semantic caching, strict recursion limits, and smart model routing between self-hosted and frontier LLMs.'"
+      "In Simple Terms: This is an enterprise banking chatbot built with multiple smart AI agents. A customer's question passes through an Edge Security shield (firewall + rate limiter), logs in with their bank account, and arrives at the Coordinator Agent. The Coordinator acts like a smart bank manager: it masks private data (like credit card numbers), checks customer permissions, and assigns the task to a specialist sub-agent (Accounts, Transactions, or Customer Service) using Model Context Protocol (MCP) servers.",
+      "Perimeter Security (Step 14: Edge Layer Security): Before a user's question ever reaches an AI model, the Edge Layer checks it with a Web Application Firewall (WAF) to block hackers and SQL injection attacks. It limits traffic to 20 questions per minute so nobody can spam the system. It also decrypts HTTPS and checks the customer's login token.",
+      "Supervisor & Sub-Agent Pattern: Instead of having one giant, confused AI trying to do everything, the Coordinator Agent analyzes the request and routes it to the right specialist: Accounts Agent (for balances), Transaction Agent (for statements), or Service Agent (for cheque books and address updates). Sub-agents communicate through MCP servers, which act as secure translators to the bank's core databases.",
+      "Data Privacy & PII Redaction: Customer privacy is strictly protected. The PII Redaction engine automatically masks private details (account numbers, credit cards, phone numbers) before sending text to any AI model. In addition, sensitive financial questions only run on private, self-hosted models inside the bank's data center so private records never leave.",
+      "Authorisation & IDOR Defense: Even after a user logs in, the Authorisation layer checks every single tool request to verify that the customer actually owns the requested account ID. This completely stops users from snooping on other people's balances (preventing IDOR vulnerabilities).",
+      "Why Did the Bill Triple? (Step 13: Cost Tracker & FinOps): In poorly designed multi-agent systems, agents get stuck in endless retry loops, re-send the whole chat history on every turn, and call expensive $15/M token models for basic questions. The Cost Tracker stops this with 4 guardrails: 1) Caching common FAQs in Redis for $0; 2) Limiting retries to 5 turns max; 3) Summarizing past chat history; 4) Using cheap 8B models for simple intent sorting.",
+      "Observability & Tracing: The system tracks every prompt, token count, tool call, delay, and safety check using OpenTelemetry and Langfuse, while Prometheus monitors CPU, RAM, and GPU health in real time.",
+      "Interview Answer: 'Our banking chatbot uses a multi-agent Coordinator-Worker design protected by an Edge Security Layer (WAF, rate limits, and bank login tokens). The Coordinator masks private data, checks user permissions, and delegates tasks to specialized Accounts, Transaction, and Service agents over Model Context Protocol (MCP) servers. To prevent high cloud bills (Step 13), our Cost Tracker enforces FAQ caching, a 5-step loop limit, and uses fast, affordable models for basic routing.'"
     ],
     "code": "# ==============================================================================\n# ENTERPRISE MULTI-AGENT BANKING CHATBOT: COORDINATOR, MCP & COST TRACKER\n# ==============================================================================\nimport re\nimport time\nfrom typing import Dict, Any, List, Optional\nfrom dataclasses import dataclass, field\n\n# 1. FinOps Cost Tracker (Preventing \"A Bill That Tripled\")\n@dataclass\nclass CostTracker:\n    budget_per_session_usd: float = 0.05\n    current_session_cost_usd: float = 0.0\n    total_tokens_used: int = 0\n    max_agent_iterations: int = 5\n    \n    # Pricing per 1K tokens\n    PRICING = {\n        \"self_hosted_8b\": {\"prompt\": 0.0001, \"completion\": 0.0002},\n        \"frontier_gpt4o\": {\"prompt\": 0.0025, \"completion\": 0.0100}\n    }\n\n    def record_usage(self, model: str, prompt_tokens: int, completion_tokens: int):\n        rates = self.PRICING.get(model, self.PRICING[\"self_hosted_8b\"])\n        cost = (prompt_tokens / 1000 * rates[\"prompt\"]) + (completion_tokens / 1000 * rates[\"completion\"])\n        self.current_session_cost_usd += cost\n        self.total_tokens_used += (prompt_tokens + completion_tokens)\n        \n        if self.current_session_cost_usd > self.budget_per_session_usd:\n            raise RuntimeError(f\"FinOps Alert: Session budget ${self.budget_per_session_usd} exceeded!\")\n\n# 2. PII Redaction Engine (Sanitizing Customer Secrets before LLM)\nclass PIIRedactionEngine:\n    CARD_REGEX = re.compile(r'\\b(?:\\d{4}[ -]?){3}\\d{4}\\b')\n    SSN_REGEX = re.compile(r'\\b\\d{3}-\\d{2}-\\d{4}\\b')\n\n    @classmethod\n    def redact(cls, text: str) -> str:\n        text = cls.CARD_REGEX.sub(\"[MASKED_CARD_NUMBER]\", text)\n        text = cls.SSN_REGEX.sub(\"[MASKED_SSN]\", text)\n        return text\n\n# 3. Model Context Protocol (MCP) Mock Tools for Banking Services\nclass BankingMCPServers:\n    @staticmethod\n    def accounts_mcp_balance_enquiry(cif_id: str, account_id: str) -> Dict[str, Any]:\n        \"\"\"Tool: balance_enquiry via Accounts MCP Server\"\"\"\n        return {\"account_id\": account_id, \"available_balance\": 4820.50, \"currency\": \"USD\", \"status\": \"ACTIVE\"}\n\n    @staticmethod\n    def transactions_mcp_statement(cif_id: str, account_id: str, days: int = 30) -> Dict[str, Any]:\n        \"\"\"Tool: statement_request via Transactions MCP Server\"\"\"\n        return {\"account_id\": account_id, \"period_days\": days, \"download_url\": \"https://secure.bank.com/stmt/9421.pdf\"}\n\n    @staticmethod\n    def service_mcp_cheque_book(cif_id: str, account_id: str, leaves: int = 50) -> Dict[str, Any]:\n        \"\"\"Tool: cheque_book_request via Service MCP Server\"\"\"\n        return {\"status\": \"DISPATCHED\", \"request_id\": \"CHK_8820\", \"leaves\": leaves, \"est_delivery_days\": 3}\n\n# 4. Coordinator Agent (Supervisor Orchestration with Authorisation & Routing)\nclass BankingCoordinatorAgent:\n    def __init__(self, cost_tracker: CostTracker):\n        self.cost_tracker = cost_tracker\n        self.mcp = BankingMCPServers()\n        self.session_store = {}\n\n    def authorize_request(self, user_jwt_cif: str, target_account_id: str) -> bool:\n        \"\"\"Authorisation check: Verifies authenticated user owns the target account.\"\"\"\n        authorized_accounts = {\"CIF_4589\": [\"ACC_9921\", \"ACC_1145\"]}\n        return target_account_id in authorized_accounts.get(user_jwt_cif, [])\n\n    def handle_user_query(self, user_cif: str, raw_message: str) -> Dict[str, Any]:\n        # Step A: PII Redaction\n        clean_prompt = PIIRedactionEngine.redact(raw_message)\n        print(f\"[PII Guard] Sanitized Prompt: {clean_prompt}\")\n\n        # Step B: Record FinOps cost for intent classification (Using cheap fast model)\n        self.cost_tracker.record_usage(\"self_hosted_8b\", prompt_tokens=180, completion_tokens=30)\n\n        # Step C: Intent Classification & Delegation\n        target_account = \"ACC_9921\"\n        if not self.authorize_request(user_cif, target_account):\n            return {\"error\": \"Authorisation Failed: Account does not belong to authenticated user.\"}\n\n        # Step D: Route to specialized Sub-Agent & execute MCP Tool\n        if \"balance\" in clean_prompt.lower():\n            result = self.mcp.accounts_mcp_balance_enquiry(cif_id=user_cif, account_id=target_account)\n            response_text = f\"Your available balance for account {target_account} is ${result['available_balance']:,.2f} {result['currency']}.\"\n        elif \"cheque\" in clean_prompt.lower():\n            result = self.mcp.service_mcp_cheque_book(cif_id=user_cif, account_id=target_account, leaves=25)\n            response_text = f\"Your cheque book request (ID: {result['request_id']}) has been processed and will arrive in {result['est_delivery_days']} business days.\"\n        else:\n            response_text = \"I can assist you with Balance Enquiries, Recent Transactions, and Cheque Book requests.\"\n\n        # Step E: Update Session Store & FinOps tracking\n        self.session_store[\"last_interaction\"] = time.time()\n        print(f\"[FinOps] Session Spend: ${self.cost_tracker.current_session_cost_usd:.5f} | Tokens: {self.cost_tracker.total_tokens_used}\")\n\n        return {\"answer\": response_text, \"session_cost_usd\": self.cost_tracker.current_session_cost_usd}\n\n# Execution Demonstration\ntracker = CostTracker(budget_per_session_usd=0.05)\nagent = BankingCoordinatorAgent(cost_tracker=tracker)\n\nres1 = agent.handle_user_query(\"CIF_4589\", \"Check balance on ACC_9921, my card is 4532-1122-3344-5566\")\nprint(\"Response 1:\", res1[\"answer\"])\n\nres2 = agent.handle_user_query(\"CIF_4589\", \"Please send a new cheque book for ACC_9921\")\nprint(\"Response 2:\", res2[\"answer\"])",
     "designChatGptArchitecture": {
@@ -15194,107 +15757,107 @@ export const definitionsData = [
       "badge": "5-Tier High-Concurrency Architecture",
       "requirements": {
         "functional": [
-          "Handle open-ended multi-turn conversations with persona consistency and factual grounding.",
-          "Maintain conversation context across long sessions within finite token limits.",
-          "Be helpful, harmless, and honest (enforced via RLHF/DPO alignment and guardrails).",
-          "Support tool use (web search, python code interpreter, DALL-E image generation)."
+          "Handle open-ended conversations while staying factual and keeping a friendly persona.",
+          "Remember earlier messages across long chats without running out of memory.",
+          "Be helpful, honest, and harmless using safety filters and human feedback alignment.",
+          "Support external tools like live web search, Python code execution, and image creation."
         ],
         "nonFunctional": [
-          "Scale to millions of concurrent active users (100k+ generated tokens/sec).",
-          "Ultra-low perceived latency: Time to First Token (TTFT) < 300ms via token-by-token streaming.",
-          "Zero toxic/harmful outputs or prompt injection breaches (dual moderation layers).",
-          "High availability (99.99%) with graceful queue degradation during traffic surges."
+          "Handle millions of active users generating over 100,000 words per second.",
+          "Ultra-fast response: Display the very first word in under 300ms using live streaming.",
+          "Zero toxic answers and strong protection against jailbreak and prompt injection attacks.",
+          "High reliability (99.99% uptime) that handles traffic spikes gracefully without crashing."
         ]
       },
       "coreComponents": [
         {
           "step": 1,
           "name": "Core Foundation Model & RLHF Alignment",
-          "badge": "Decoder-Only Transformer + PPO/DPO",
+          "badge": "Base Model Training + Human Feedback",
           "border": "border-cyan-500/40",
           "accent": "text-cyan-400",
           "bgBadge": "bg-cyan-950/80 text-cyan-300 border-cyan-800",
-          "mechanism": "Massive pretraining followed by Supervised Fine-Tuning (SFT) and Reinforcement Learning from Human Feedback (RLHF).",
+          "mechanism": "Pretraining on massive text, followed by expert conversation examples and human feedback tuning.",
           "details": [
-            "Pretraining: Autoregressive next-token prediction across multi-trillion tokens of web text, books, code, and math.",
-            "Supervised Fine-Tuning (SFT): High-quality prompt/response dialog pairs written by human experts to teach conversational turn-taking and instruction-following.",
-            "RLHF / DPO: A Reward Model trained on human preferences (thumbs up/down) trains the policy model via PPO or Direct Preference Optimization (DPO) to maximize helpfulness and eliminate hallucinations and toxicity."
+            "Pretraining: Learning grammar and knowledge by predicting the next word across trillions of sentences from books, websites, and code.",
+            "Supervised Fine-Tuning (SFT): High-quality conversation examples written by human experts to teach the AI how to follow instructions politely.",
+            "RLHF / DPO: Using human ratings (thumbs up / down) so the model learns what answers people prefer and stops making up false facts."
           ]
         },
         {
           "step": 2,
           "name": "Conversation State & Context Window Handling",
-          "badge": "Session Memory & Window Management",
+          "badge": "Chat Memory & Token Pruning",
           "border": "border-amber-500/40",
           "accent": "text-amber-400",
           "bgBadge": "bg-amber-950/80 text-amber-300 border-amber-800",
-          "mechanism": "Low-latency state persistence in Redis combined with dynamic context pruning when dialogue exceeds the token window.",
+          "mechanism": "Fast Redis database to remember the chat, combined with smart trimming when conversations get too long.",
           "details": [
-            "Session Store: Client submits session_id with each message; Redis/DynamoDB caches recent turn history.",
-            "Truncation Strategy: Keep only the latest N messages (simplest, but drops foundational early instructions).",
-            "Rolling Summarization: A lightweight background model summarizes older turns (1 to k-4) into an executive 100-token context block prepended to recent raw turns.",
-            "Retrieval-Augmented Memory (Semantic History RAG): Embed all past turns into a vector database; query past conversation history to retrieve only the turns semantically relevant to the current question."
+            "Session Store: Saves the recent conversation history in fast Redis memory using a session ID.",
+            "Sliding Window: Automatically drops the oldest messages when total words exceed the model limit.",
+            "Rolling Summary: A fast background model shrinks older messages into a short 100-word summary.",
+            "Memory RAG: Stores all past turns in a vector database so the AI can recall topics discussed hours earlier."
           ]
         },
         {
           "step": 3,
           "name": "Dual Safety & Moderation Layer",
-          "badge": "Input/Output Guardrails",
+          "badge": "Input & Output Guardrails",
           "border": "border-rose-500/40",
           "accent": "text-rose-400",
           "bgBadge": "bg-rose-950/80 text-rose-300 border-rose-800",
-          "mechanism": "Ultra-fast (<15ms) specialized classifiers guarding both ingress user queries and egress generated tokens.",
+          "mechanism": "Super-fast (<15ms) safety filters checking questions on the way in and answers on the way out.",
           "details": [
-            "Pre-Inference Input Filter: Small, fast classifier (DeBERTa / Azure Content Safety) screens prompt for prompt injection, jailbreaks (DAN attacks), self-harm, hate speech, and cyber threats before hitting the expensive LLM.",
-            "Post-Inference Output Filter: Streaming token inspector checks generated tokens for PII leaks (credit cards, SSNs), copyright violations, and toxic language.",
-            "Why System Prompts Aren't Enough: System prompts ('You are a helpful assistant, do not do X') can easily be bypassed via adversarial jailbreaks. Dedicated external classification guardrails are mandatory."
+            "Input Filter: Fast model scans incoming questions for hacking attempts, jailbreak tricks, hate speech, and security risks.",
+            "Output Filter: Live word-by-word inspector blocks private data leaks (credit cards, SSNs) and toxic output.",
+            "Why System Prompts Aren't Enough: Simple instructions like 'be safe' can be easily tricked by clever hackers. External guardrail models are mandatory."
           ]
         },
         {
           "step": 4,
           "name": "High-Throughput Serving & Inference Engine",
-          "badge": "vLLM, Continuous Batching & Streaming",
+          "badge": "vLLM, Batching & Streaming",
           "border": "border-emerald-500/40",
           "accent": "text-emerald-400",
           "bgBadge": "bg-emerald-950/80 text-emerald-300 border-emerald-800",
-          "mechanism": "Distributed tensor-parallel serving cluster optimized for maximum GPU memory bandwidth utilization.",
+          "mechanism": "High-speed GPU serving cluster using vLLM to answer many users simultaneously without slowdowns.",
           "details": [
-            "PagedAttention & KV Cache (vLLM / TensorRT-LLM): Eliminates VRAM memory fragmentation, enabling 2-4x larger concurrent batch sizes.",
-            "Continuous / Iterative Batching: Inserts incoming requests into active decoding steps dynamically rather than waiting for an entire batch to finish generating.",
-            "Model Quantization (FP8 / AWQ INT4): Halves VRAM memory bandwidth requirements, doubling token generation speed without loss of reasoning capability.",
-            "Server-Sent Events (SSE) Streaming: Streams tokens back to the frontend immediately as they are decoded (30-50 tokens/sec), keeping perceived TTFT under 300ms."
+            "PagedAttention (vLLM): Manages GPU video memory like virtual computer RAM, allowing 2-4x more concurrent users.",
+            "Continuous Batching: Slips new questions immediately into active generation batches without waiting for other users to finish.",
+            "Model Quantization (FP8 / INT4): Compresses model weights in GPU memory to double speed with zero loss in answer quality.",
+            "Live Streaming (SSE): Streams words to the screen as soon as they are generated, keeping wait time under 300ms."
           ]
         },
         {
           "step": 5,
           "name": "Continuous RLHF Feedback Loop & Data Flywheel",
-          "badge": "Telemetry & Model Iteration",
+          "badge": "User Feedback & Model Improvement",
           "border": "border-purple-500/40",
           "accent": "text-purple-400",
           "bgBadge": "bg-purple-950/80 text-purple-300 border-purple-800",
-          "mechanism": "Real-time logging of user signals (thumbs up/down, copy, regenerations) to drive iterative alignment.",
+          "mechanism": "Learning from real user reactions to make future AI versions smarter and more helpful.",
           "details": [
-            "Explicit Signals: Thumbs up / thumbs down with optional user critique.",
-            "Implicit Signals: Message regenerations (signal of dissatisfaction), user prompt edits, copy-to-clipboard (signal of success).",
-            "Data Flywheel: High-impact negative and positive pairs are anonymized and queued for human reviewer grading to fine-tune the next generation Reward Model."
+            "Direct Signals: Thumbs up or thumbs down clicks, along with optional customer suggestions.",
+            "Indirect Signals: When a user clicks 'Regenerate' (they were unhappy) or 'Copy' (the answer was perfect).",
+            "Data Flywheel: The best and worst prompt examples are reviewed to train and improve the next model release."
           ]
         }
       ],
       "contextExhaustionStrategies": [
         {
           "strategy": "1. Sliding Window Truncation",
-          "howItWorks": "Drop the oldest user/assistant turns once total tokens exceed context window - margin. Keep system prompt and latest k turns.",
-          "tradeoff": "Zero compute overhead; however, causes total amnesia of initial instructions, user preferences, or file uploads discussed early in the chat."
+          "howItWorks": "Drops the oldest messages once the chat gets too long. Keeps the core instructions and the latest few messages.",
+          "tradeoff": "Zero extra cost, but the AI forgets instructions or files shared at the very beginning of the chat."
         },
         {
           "strategy": "2. Rolling Hierarchical Summarization",
-          "howItWorks": "When token threshold is reached, trigger an asynchronous background LLM call to condense turns 1 through N into an executive summary block. Inject [Summary of previous chat] + [Recent 3-5 raw turns].",
-          "tradeoff": "Preserves the essential gist of the conversation while consuming <150 tokens. Adds minor background token compute cost."
+          "howItWorks": "When the chat gets too long, a background AI model condenses past messages into a brief summary block prepended to recent messages.",
+          "tradeoff": "Keeps the main story of the conversation in under 150 tokens. Costs a tiny amount of background compute."
         },
         {
           "strategy": "3. Semantic History Retrieval (Memory RAG)",
-          "howItWorks": "Every conversation turn is embedded and indexed in an episodic vector database (e.g. Chroma/Pinecone keyed by user_id). When user asks a question, retrieve top-3 most relevant historical turns from 20 turns ago.",
-          "tradeoff": "Maximum recall for long, multi-topic sessions. Allows user to say 'Remember the budget we talked about an hour ago?' and retrieve the exact numbers."
+          "howItWorks": "Saves every past turn into a searchable vector database. When the user asks about an earlier topic, it pulls the exact matching paragraphs.",
+          "tradeoff": "Great for long, multi-topic sessions. Allows the user to say 'Remember that budget we talked about an hour ago?' and fetches the exact numbers."
         }
       ]
     }
