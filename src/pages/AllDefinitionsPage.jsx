@@ -23289,7 +23289,7 @@ export default function AllDefinitionsPage() {
                       <div className="flex items-center gap-2">
                         <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
                         <h4 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider font-mono">
-                          How to Answer in an Interview (60-Second Verbal Script)
+                          How to Answer in an Interview (60-Second Plain-English Script)
                         </h4>
                       </div>
                       <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
@@ -23298,7 +23298,7 @@ export default function AllDefinitionsPage() {
                     </div>
 
                     <p className="text-xs text-zinc-300 leading-relaxed italic">
-                      "If asked: <strong className="text-white font-sans not-italic">'{item.interviewScript.question}'</strong> — deliver this crisp answer:"
+                      "If an interviewer asks: <strong className="text-white font-sans not-italic">'{item.interviewScript.question}'</strong> — deliver this simple answer:"
                     </p>
 
                     <div className="p-3.5 rounded-xl bg-black/70 border border-zinc-800 text-xs text-zinc-200 leading-relaxed">
@@ -23308,7 +23308,29 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 2. Standalone Definitions FIRST: ANN vs CNN */}
+                {/* 2. Quick Intuition (The Plain-English Analogy) */}
+                {item.quickIntuition && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    {item.quickIntuition.map((card, cIdx) => (
+                      <div
+                        key={cIdx}
+                        className={`p-4 rounded-xl border space-y-1.5 ${card.accent}`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-current"></span>
+                          <h5 className="text-xs font-bold font-mono uppercase tracking-wider">
+                            {card.title}
+                          </h5>
+                        </div>
+                        <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                          {card.analogy}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 3. Standalone Definitions FIRST: ANN vs CNN */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* ANN Standalone Definition Card */}
                   {item.annDefinition && (
@@ -23327,21 +23349,21 @@ export default function AllDefinitionsPage() {
                             </span>
                           </div>
                           <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
-                            1D Tabular / Dense
+                            Spreadsheets & Tables
                           </span>
                         </div>
 
-                        {/* What is it */}
+                        {/* What is it in plain English */}
                         <div className="space-y-1">
                           <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
-                            Definition:
+                            Simple Definition:
                           </span>
                           <p className="text-xs text-zinc-300 leading-relaxed font-sans">
                             {item.annDefinition.whatIsIt}
                           </p>
                         </div>
 
-                        {/* Math Formula */}
+                        {/* Math Formula in Plain English */}
                         <div className="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1 font-mono">
                           <div className="text-[11px] text-cyan-300 font-bold">
                             Formula: {item.annDefinition.mathFormula}
@@ -23351,10 +23373,10 @@ export default function AllDefinitionsPage() {
                           </p>
                         </div>
 
-                        {/* Pipeline */}
+                        {/* 4-Stage Execution Flow */}
                         <div className="space-y-1.5 pt-1">
                           <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
-                            4-Stage Execution Flow:
+                            How an ANN Works:
                           </span>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {item.annDefinition.pipeline.map((p, pIdx) => (
@@ -23373,7 +23395,7 @@ export default function AllDefinitionsPage() {
                         {/* Strengths */}
                         <div className="space-y-1">
                           <span className="text-[11px] font-mono uppercase text-emerald-400 font-semibold block">
-                            Best Suited For:
+                            When to Use ANN:
                           </span>
                           <ul className="space-y-1">
                             {item.annDefinition.strengths.map((str, sIdx) => (
@@ -23386,11 +23408,11 @@ export default function AllDefinitionsPage() {
                         </div>
                       </div>
 
-                      {/* Limitations for Spatial Data */}
+                      {/* Limitations for Photos */}
                       <div className="p-3 rounded-xl bg-rose-950/20 border border-rose-800/40 space-y-1.5 mt-2">
                         <span className="text-[11px] font-mono uppercase text-rose-300 font-bold flex items-center gap-1.5">
                           <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
-                          Fatal Limitations for Images & Spatial Data:
+                          Why ANN Fails on Photos:
                         </span>
                         <ul className="space-y-1">
                           {item.annDefinition.limitations.map((lim, lIdx) => (
@@ -23421,21 +23443,21 @@ export default function AllDefinitionsPage() {
                             </span>
                           </div>
                           <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-purple-950/70 text-purple-400 border border-purple-800/60">
-                            2D/3D Spatial / Convolutions
+                            Images & Video
                           </span>
                         </div>
 
-                        {/* What is it */}
+                        {/* What is it in plain English */}
                         <div className="space-y-1">
                           <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
-                            Definition:
+                            Simple Definition:
                           </span>
                           <p className="text-xs text-zinc-300 leading-relaxed font-sans">
                             {item.cnnDefinition.whatIsIt}
                           </p>
                         </div>
 
-                        {/* Math Formula */}
+                        {/* Math Formula in Plain English */}
                         <div className="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1 font-mono">
                           <div className="text-[11px] text-purple-300 font-bold">
                             Formula: {item.cnnDefinition.mathFormula}
@@ -23445,10 +23467,10 @@ export default function AllDefinitionsPage() {
                           </p>
                         </div>
 
-                        {/* Pipeline */}
+                        {/* 4-Stage Visual Pipeline */}
                         <div className="space-y-1.5 pt-1">
                           <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
-                            4-Stage Visual Pipeline:
+                            How a CNN Works:
                           </span>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {item.cnnDefinition.pipeline.map((p, pIdx) => (
@@ -23467,7 +23489,7 @@ export default function AllDefinitionsPage() {
                         {/* 3 Core Breakthroughs */}
                         <div className="space-y-1">
                           <span className="text-[11px] font-mono uppercase text-purple-400 font-semibold block">
-                            3 Core Architectural Breakthroughs:
+                            Why CNNs Excel at Vision:
                           </span>
                           <ul className="space-y-1.5">
                             {item.cnnDefinition.coreBreakthroughs.map((brk, bIdx) => (
@@ -23483,13 +23505,13 @@ export default function AllDefinitionsPage() {
                       {/* Best Suited For */}
                       <div className="p-3 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs text-purple-200/90 leading-relaxed font-mono mt-2">
                         <strong className="text-purple-400 uppercase font-sans font-bold">Best Suited For: </strong>
-                        Computer Vision (YOLO, Object Detection, Segmentation, Face Recognition, Medical Scans) and any multi-dimensional tensor data.
+                        Images, Video, Medical MRI/CT Scans, Object Detection (YOLO), and Face Recognition.
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* 3. The 1000x1000 Image Math Comparison Proof */}
+                {/* 4. The 1000x1000 Photo Test (Simple Math Proof) */}
                 {item.imageMathComparison && (
                   <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl space-y-3">
                     <div className="flex items-center justify-between flex-wrap gap-2">
@@ -23498,7 +23520,7 @@ export default function AllDefinitionsPage() {
                         <span>{item.imageMathComparison.title}</span>
                       </h4>
                       <span className="text-[10px] font-mono text-amber-400 bg-amber-950/40 px-2 py-0.5 rounded border border-amber-800/40">
-                        Interview Benchmark
+                        Interview Math Test
                       </span>
                     </div>
 
@@ -23514,7 +23536,7 @@ export default function AllDefinitionsPage() {
                             {item.imageMathComparison.ann.label}
                           </span>
                           <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800/50">
-                            Failure Mode
+                            Fails on Images
                           </span>
                         </div>
                         <div className="text-[11px] font-mono text-zinc-300 bg-zinc-900/80 p-2.5 rounded-lg border border-zinc-800 whitespace-pre-line leading-relaxed">
@@ -23532,7 +23554,7 @@ export default function AllDefinitionsPage() {
                             {item.imageMathComparison.cnn.label}
                           </span>
                           <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/50">
-                            Optimal Solution
+                            Wins on Images
                           </span>
                         </div>
                         <div className="text-[11px] font-mono text-zinc-300 bg-zinc-900/80 p-2.5 rounded-lg border border-zinc-800 whitespace-pre-line leading-relaxed">
@@ -23546,12 +23568,12 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 4. Side-by-Side Comparison Matrix */}
+                {/* 5. Side-by-Side Comparison Matrix */}
                 {item.comparisonTable && (
                   <div className="space-y-2">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
                       <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                      <span>ANN (Fully Connected Dense) vs. CNN (Convolutional Spatial)</span>
+                      <span>Plain-English Comparison: ANN vs. CNN</span>
                     </h4>
                     <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                       <div className="overflow-x-auto">
@@ -23559,8 +23581,8 @@ export default function AllDefinitionsPage() {
                           <thead>
                             <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
                               <th className="p-3 w-1/4">Aspect</th>
-                              <th className="p-3 w-3/8 text-cyan-400">ANN (Dense MLP)</th>
-                              <th className="p-3 w-3/8 text-purple-400">CNN (Convolutional)</th>
+                              <th className="p-3 w-3/8 text-cyan-400 font-semibold">ANN (Standard / Spreadsheet)</th>
+                              <th className="p-3 w-3/8 text-purple-400 font-semibold">CNN (Image / Scanner)</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-zinc-800/80 font-sans">
@@ -23584,20 +23606,20 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 5. Core CNN Building Blocks */}
+                {/* 6. Core CNN Building Blocks (Simplified) */}
                 {item.cnnBuildingBlocks && (
                   <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
                       <Terminal className="w-4 h-4 text-purple-400" />
-                      <span>Core CNN Building Blocks</span>
+                      <span>The 4 CNN Building Blocks (In Plain English)</span>
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {item.cnnBuildingBlocks.map((blk, bIdx) => (
                         <div key={bIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
-                          <span className="text-xs font-bold font-mono text-white block">
+                          <span className="text-xs font-bold font-mono text-purple-300 block">
                             {blk.layer}
                           </span>
-                          <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
                             {blk.purpose}
                           </p>
                         </div>
@@ -23606,9 +23628,9 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 6. Vision Deep Learning Takeaway */}
+                {/* 7. Bottom Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-purple-800/40 text-xs text-purple-200/90 leading-relaxed font-mono">
-                  <strong className="text-purple-400 uppercase">Vision Deep Learning Takeaway: </strong>
+                  <strong className="text-purple-400 uppercase">Key Interview Takeaway: </strong>
                   {item.takeaway}
                 </div>
               </div>

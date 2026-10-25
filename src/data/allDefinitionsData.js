@@ -5,148 +5,160 @@ export const definitionBookmarks = [
   },
   {
     "id": "ann-cnn",
-    "title": "ANN/CNN (Artificial Neural Networks vs. Convolutional Neural Networks)",
-    "badge": "Deep Learning Architectures, Dense vs Spatial Convolutions",
-    "summary": "A fundamental comparison between standard Feedforward Artificial Neural Networks (MLPs with fully connected dense layers) and Convolutional Neural Networks (CNNs using parameter-shared filters, receptive fields, and pooling layers for spatial data).",
+    "title": "ANN vs. CNN (Artificial Neural Networks vs. Convolutional Neural Networks)",
+    "badge": "Deep Learning • Dense vs. Spatial Convolutions",
+    "summary": "A simple guide comparing standard Feedforward Neural Networks (ANNs for tabular data) with Convolutional Neural Networks (CNNs for images and spatial data).",
     "interviewScript": {
-      "question": "What is the difference between an ANN and a CNN, and why can't we use an ANN for image processing?",
-      "verbalAnswer": "An ANN is a fully connected feedforward network designed for 1D tabular data where every neuron connects to every input, which destroys spatial adjacency and causes parameter explosion on images. A CNN solves this by using local receptive fields, parameter sharing, and pooling layers—sliding tiny 3×3 filter kernels across the image to extract hierarchical visual features (edges → shapes → objects) translation-invariantly with over 3,000,000× fewer parameters."
+      "question": "What is the difference between an ANN and a CNN, and why can't we use an ANN for images?",
+      "verbalAnswer": "An ANN connects every neuron to every input in a flat line, which ruins pixel relationships and creates billions of weights on images. A CNN solves this by scanning images with tiny 3×3 sliding filters. This keeps neighboring pixels together, reuses weights across the whole image, and recognizes objects anywhere they move—using over 3,000,000× fewer parameters."
     },
+    "quickIntuition": [
+      {
+        "title": "ANN: The Spreadsheet Reader",
+        "analogy": "Like reading an Excel row one cell at a time. Every number connects to everything else. Great for numbers (salary, age, churn), but terrible for photos because turning a photo into a flat line breaks apart neighboring pixels.",
+        "accent": "border-cyan-500/40 bg-cyan-950/20 text-cyan-300"
+      },
+      {
+        "title": "CNN: The Flashlight Scanner",
+        "analogy": "Like shining a small flashlight across a photo (a 3×3 window). It scans small patches to spot edges, curves, and shapes, keeping nearby pixels together regardless of where the object is located in the frame.",
+        "accent": "border-purple-500/40 bg-purple-950/20 text-purple-300"
+      }
+    ],
     "annDefinition": {
       "name": "Artificial Neural Network (ANN / Dense MLP)",
-      "subtitle": "Fully Connected Feedforward Architecture",
-      "whatIsIt": "An Artificial Neural Network (ANN) is the foundational deep learning architecture composed of sequential layers of interconnected artificial neurons: an Input Layer, one or more Hidden Layers, and an Output Layer. In a traditional ANN (often called a Multi-Layer Perceptron or MLP), every single neuron in layer L connects to every single neuron in layer L+1 (fully connected / dense).",
-      "mathFormula": "z = W · x + b, \\quad a = \\sigma(z)",
-      "mathExplanation": "Each neuron computes the dot product of input vector x with weight matrix W, adds a scalar bias b, and passes the sum through a non-linear activation function σ (e.g. ReLU, Sigmoid, Tanh).",
+      "subtitle": "Full Connection for Tabular & Structured Numbers",
+      "whatIsIt": "An ANN is a classic neural network where every neuron in one layer connects to every neuron in the next layer. It takes flat 1D lists of numbers and learns patterns through weighted connections.",
+      "mathFormula": "z = W · x + b,   output = ReLU(z)",
+      "mathExplanation": "Multiplies inputs by learned weights, adds a bias, and passes the result through an activation function.",
       "pipeline": [
         {
           "step": "1. Input Layer",
-          "desc": "Receives raw 1D numerical feature vectors (tabular attributes, flattened arrays)."
+          "desc": "Takes a flat list of numbers (e.g., age, salary, credit score)."
         },
         {
-          "step": "2. Hidden Dense Layers",
-          "desc": "Computes weighted sums and non-linear transformations across fully connected matrix multiplications."
+          "step": "2. Hidden Layers",
+          "desc": "Every node combines all inputs to find non-linear patterns."
         },
         {
           "step": "3. Output Layer",
-          "desc": "Outputs continuous scalar predictions (Regression) or Softmax class probabilities (Classification)."
+          "desc": "Gives a final prediction (e.g., house price or Yes/No classification)."
         },
         {
           "step": "4. Backpropagation",
-          "desc": "Calculates error loss gradients via the chain rule and updates weights using optimizers (Adam, SGD)."
+          "desc": "Adjusts weights using gradient descent to reduce prediction error."
         }
       ],
       "strengths": [
-        "Excels at tabular, numerical, and structured business data (customer churn, credit risk, pricing).",
-        "Mathematically universal function approximators for fixed-dimensional tabular relations.",
-        "Straightforward architecture with low implementation complexity for non-spatial datasets."
+        "Perfect for Excel / CSV spreadsheets and business data.",
+        "Fast and lightweight for numerical features.",
+        "Easy to build and train when inputs don't have visual geometry."
       ],
       "limitations": [
-        "Spatial Blindness: Requires flattening 2D/3D images into 1D vectors, destroying spatial adjacency and pixel neighborhood geometry.",
-        "Catastrophic Parameter Explosion: Every input connects to every hidden neuron. An image with 1000×1000×3 pixels fed into 1,000 neurons creates 3 Billion weights in layer 1 alone.",
-        "Zero Translation Invariance: If an object shifts by a few pixels, an ANN activates entirely different weights and fails to recognize it."
+        "Flattens 2D images into 1D lines, destroying all spatial relationships (e.g. eyes next to nose).",
+        "Memory explosion: A 1,000×1,000 color photo creates 3 BILLION weights in step 1, crashing the system.",
+        "Position blind: If an object shifts by just 5 pixels, an ANN thinks it's a completely different object."
       ]
     },
     "cnnDefinition": {
       "name": "Convolutional Neural Network (CNN)",
-      "subtitle": "Spatial Deep Learning Architecture with Parameter Sharing",
-      "whatIsIt": "A Convolutional Neural Network (CNN) is a specialized deep learning architecture engineered specifically for grid-structured spatial data (images, video streams, audio spectrograms). Instead of connecting every pixel to every neuron, CNNs use small learnable filter kernels (e.g., 3×3 or 5×5) that slide across the input grid to perform 2D convolutions, detecting visual patterns while maintaining spatial coordinates.",
-      "mathFormula": "S(i, j) = (I * K)(i, j) = \\sum_m \\sum_n I(i - m, j - n) · K(m, n)",
-      "mathExplanation": "A 2D kernel K convolves across input image I by computing element-wise multiplications and summing them to produce a 2D activation map (Feature Map).",
+      "subtitle": "Sliding Filters for Images & Spatial Data",
+      "whatIsIt": "A CNN is a deep learning network built specifically for grid data (photos, video, medical scans). Instead of connecting everything, it slides small filter windows (like 3×3 pixels) across the image to detect visual features.",
+      "mathFormula": "Feature Map = Image * Filter Kernel (2D Convolution)",
+      "mathExplanation": "Slides a 3×3 grid over pixels, multiplying and adding them up to create an edge/shape map.",
       "pipeline": [
         {
-          "step": "1. Convolution (Conv2D)",
-          "desc": "Slides learnable 3×3 filter kernels across the image to extract localized visual feature maps."
+          "step": "1. Conv2D Layer",
+          "desc": "Slides 3×3 filters over the picture to detect lines, edges, and textures."
         },
         {
-          "step": "2. Non-Linearity (ReLU)",
-          "desc": "Replaces negative values with zero, enabling the network to learn complex non-linear visual relationships."
+          "step": "2. ReLU Activation",
+          "desc": "Turns negative values to zero so the network can learn curved shapes."
         },
         {
           "step": "3. Pooling (MaxPool)",
-          "desc": "Downsamples feature maps (e.g. 2×2 window) to reduce dimensionality and provide spatial invariance."
+          "desc": "Shrinks image size by keeping only the strongest highlights to speed up training."
         },
         {
           "step": "4. Dense Head",
-          "desc": "Flattens final compressed high-level feature maps into a dense layer with Softmax for classification."
+          "desc": "Takes the high-level detected features and outputs the final class (e.g. 95% Cat)."
         }
       ],
       "coreBreakthroughs": [
-        "Local Receptive Fields: Neurons connect only to a localized spatial patch (e.g., 3×3 pixels), mimicking biological visual cortices.",
-        "Parameter Sharing: The same 3×3 filter weights are reused across the entire image grid, keeping parameter counts tiny regardless of image size.",
-        "Hierarchical Feature Learning: Early layers detect edges and gradients; middle layers detect textures and contours; deep layers detect complex parts and full objects."
+        "Local Focus: Neurons only look at small 3×3 patches at a time, just like human eyes scan an image.",
+        "Weight Sharing: Reuses the exact same 3×3 filter over the entire photo, keeping weights tiny.",
+        "Step-by-Step Learning: First layers find edges → middle layers find textures → deep layers find full objects."
       ]
     },
     "imageMathComparison": {
-      "title": "Why ANNs Fail on Images: The 1,000 × 1,000 Image Math Proof",
-      "context": "Suppose you feed a standard 1,000 × 1,000 pixel RGB color image into a neural network with 1,000 hidden neurons in the first layer:",
+      "title": "The 1,000 × 1,000 Photo Test (Why ANNs Fail on Images)",
+      "context": "Imagine feeding a single 1,000 × 1,000 pixel color photo into both networks:",
       "ann": {
-        "label": "ANN (Dense MLP)",
-        "calc": "1,000 × 1,000 × 3 = 3,000,000 input nodes.\n3,000,000 inputs × 1,000 hidden neurons = 3,000,000,000 (3 BILLION) weights in Layer 1!",
-        "result": "Instant GPU CUDA Out-Of-Memory (OOM), extreme training latency, and severe overfitting."
+        "label": "ANN (Standard Network)",
+        "calc": "1,000 × 1,000 × 3 colors = 3,000,000 input pixels.\n3,000,000 pixels × 1,000 neurons = 3,000,000,000 (3 BILLION) weights in Layer 1!",
+        "result": "Crashes GPU memory instantly, trains too slowly, and memorizes noise (overfitting)."
       },
       "cnn": {
-        "label": "CNN (Convolutional Network)",
-        "calc": "Conv2D layer with 32 filters of size 3×3 across 3 channels:\n32 filters × (3 × 3 × 3 + 1 bias) = 896 total parameters!",
-        "result": "Over 3,348,000× parameter reduction, fits easily in GPU VRAM, and preserves spatial locality."
+        "label": "CNN (Image Network)",
+        "calc": "A Conv2D layer with 32 filters of 3×3 size:\n32 filters × (3 × 3 × 3 colors + 1 bias) = 896 total weights!",
+        "result": "Over 3,348,000× lighter, runs super fast, and keeps pixels in their true positions."
       }
     },
     "comparisonTable": [
       {
-        "aspect": "Primary Data Domain",
-        "ann": "Tabular structured data, flattened vectors, and 1D numerical embeddings",
-        "cnn": "Grid-structured spatial data: Images (2D), Video (3D), Audio spectrograms"
+        "aspect": "Best Used For",
+        "ann": "Spreadsheets & tabular data (CSV rows, customer stats, pricing)",
+        "cnn": "Visual & spatial data (Photos, video clips, medical scans)"
       },
       {
-        "aspect": "Input Representation",
-        "ann": "1D flattened vector: requires destroying 2D grid shape (e.g., [1, 784])",
-        "cnn": "Preserves native 2D/3D tensor shape: [Batch, Channels, Height, Width]"
+        "aspect": "Input Format",
+        "ann": "Flat 1D line of numbers (destroys 2D image layout)",
+        "cnn": "Native 2D/3D grid shape (Height × Width × Color Channels)"
       },
       {
-        "aspect": "Neuron Connectivity",
-        "ann": "Fully connected (Dense): every input neuron connects to every neuron in next layer",
-        "cnn": "Locally connected: neurons connect only to a local spatial receptive field (e.g. 3×3 kernel)"
+        "aspect": "How Neurons Connect",
+        "ann": "All-to-all: Every neuron connects to all inputs (Dense)",
+        "cnn": "Local patches: Each neuron only looks at a small 3×3 window"
       },
       {
-        "aspect": "Parameter Efficiency",
-        "ann": "Parameters scale as O(Inputs × Outputs), exploding with high-resolution inputs",
-        "cnn": "Parameter sharing: identical 3×3 kernel weights are reused across the entire image grid"
+        "aspect": "Weight Sharing",
+        "ann": "No — every single connection needs its own separate weight",
+        "cnn": "Yes — reuses the same 3×3 filter across the entire picture"
       },
       {
-        "aspect": "Spatial Invariance",
-        "ann": "Not translation invariant (a cat in the corner looks completely different to dense weights)",
-        "cnn": "Translation invariant: learned feature detectors recognize edges/textures anywhere in frame"
+        "aspect": "If Object Moves",
+        "ann": "Fails — thinks a shifted cat is a brand new object",
+        "cnn": "Succeeds — recognizes the object wherever it appears in the frame"
       },
       {
-        "aspect": "Hierarchical Features",
-        "ann": "Treats all features independently with no inherent concept of neighboring relationships",
-        "cnn": "Hierarchical: Layer 1 (edges) → Layer 2 (textures) → Layer 3 (shapes) → Layer 4 (objects)"
+        "aspect": "Memory & Weight Count",
+        "ann": "Explodes rapidly with image size (Billions of weights)",
+        "cnn": "Super compact and lightweight (reusable filters)"
       },
       {
-        "aspect": "Core Layer Types",
-        "ann": "Linear / Dense layers + Activation (ReLU, Sigmoid)",
-        "cnn": "Conv2D, BatchNorm, Pooling (MaxPool, AvgPool), followed by Dense classification head"
+        "aspect": "How It Learns Features",
+        "ann": "Treats inputs independently with no sense of neighbors",
+        "cnn": "Hierarchical steps: Edges → Textures → Shapes → Full Objects"
       }
     ],
     "cnnBuildingBlocks": [
       {
-        "layer": "Convolution Layer (Conv2D)",
-        "purpose": "Slides learnable filter kernels across the input image to extract feature maps (edges, contours, textures)."
+        "layer": "1. Conv2D (The Feature Scanner)",
+        "purpose": "Slides a small 3×3 filter over the image to detect edges, lines, curves, and textures."
       },
       {
-        "layer": "Activation Layer (ReLU / GELU)",
-        "purpose": "Introduces non-linearity, allowing the network to approximate complex non-linear visual relationships."
+        "layer": "2. ReLU Activation (The Filter)",
+        "purpose": "Replaces negative numbers with zero, allowing the network to learn complex real-world shapes."
       },
       {
-        "layer": "Pooling Layer (MaxPool / AvgPool)",
-        "purpose": "Downsamples feature maps to reduce spatial dimensions, lower compute load, and provide translation invariance."
+        "layer": "3. MaxPool (The Shrinker)",
+        "purpose": "Shrinks the image size while keeping the most important highlights, making training faster."
       },
       {
-        "layer": "Fully Connected Head (Dense)",
-        "purpose": "Flattens high-level spatial feature representations into class probabilities via Softmax."
+        "layer": "4. Dense Output Head (The Final Judge)",
+        "purpose": "Takes all detected features and gives the final prediction score (e.g. 96% Dog, 4% Cat)."
       }
     ],
-    "takeaway": "In production machine learning, use ANNs (MLPs) for 1D tabular and structured business records. Never use standard ANNs for visual data: processing high-resolution images in an ANN destroys spatial geometry and creates billions of redundant weights. CNNs solve this via local receptive fields, parameter sharing, and pooling hierarchies."
+    "takeaway": "Use ANNs for tabular spreadsheets. Use CNNs for images and videos because CNNs scan with small sliding filters, keep nearby pixels together, and reuse weights instead of connecting everything to everything."
   },
   {
     "id": "gaussian-distribution",
