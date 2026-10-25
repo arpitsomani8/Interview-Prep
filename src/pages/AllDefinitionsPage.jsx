@@ -17898,6 +17898,231 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
+            {/* Item: BM25 (Best Matching 25) */}
+            {item.id === 'bm25' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-5 rounded-2xl bg-gradient-to-r from-amber-950/30 via-zinc-900 to-black border border-amber-500/40 space-y-3 shadow-2xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+                    <span className="text-xs font-bold font-mono text-amber-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span>Lexical Search-Ranking Algorithm (Best Matching 25)</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800/60 font-semibold self-start sm:self-auto">
+                      Probabilistic Inverted Index
+                    </span>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
+                    {item.coreDefinition}
+                  </p>
+
+                  <div className="p-3 rounded-xl bg-black/80 border border-amber-500/30 text-amber-200/90 text-xs font-mono flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span><strong>Important Note:</strong> {item.importantNote}</span>
+                  </div>
+                </div>
+
+                {/* 2. How BM25 Works: 3 Main Factors */}
+                {item.howItWorks && (
+                  <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-cyan-500/30 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Database className="w-4 h-4 text-cyan-400" />
+                        <span>{item.howItWorks.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        3 Core Pillars
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+                      {item.howItWorks.factors.map((f) => (
+                        <div
+                          key={f.step}
+                          className={`p-4 rounded-xl bg-zinc-950/90 border ${f.border} space-y-2.5 flex flex-col justify-between hover:border-cyan-500/40 transition`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                                FACTOR {f.step}
+                              </span>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                                {f.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs sm:text-sm font-bold font-mono ${f.accent}`}>{f.name}</h5>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                              {f.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Core Tuning Parameters: k1 and b */}
+                {item.parametersK1andB && (
+                  <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-amber-500/30 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-4 h-4 text-amber-400" />
+                        <span>{item.parametersK1andB.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Hyperparameter Tuning
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                      {item.parametersK1andB.params.map((p, pIdx) => (
+                        <div
+                          key={pIdx}
+                          className={`p-4 rounded-xl bg-zinc-950/90 border ${p.border} space-y-3 flex flex-col justify-between`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <h5 className={`text-xs sm:text-sm font-bold font-mono ${p.accent}`}>{p.param}</h5>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-zinc-400 border border-zinc-800">
+                                {p.range}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {p.whatItDoes}
+                            </p>
+                          </div>
+
+                          <div className="p-3 rounded-lg bg-black/80 border border-zinc-800/80 text-[11px] font-sans text-emerald-300/90 space-y-1">
+                            <span className="text-[10px] font-mono font-bold uppercase text-emerald-400 block">
+                              Production Tuning Rule:
+                            </span>
+                            <span>{p.tuning}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Comparison Table: BM25 vs TF-IDF vs Vector Search */}
+                {item.comparisonTable && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-4 h-4 text-cyan-400" />
+                        <span>{item.comparisonTable.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Retrieval Paradigms
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead className="bg-zinc-900/90 border-b border-zinc-800 font-mono text-[11px]">
+                          <tr>
+                            <th className="py-2.5 px-3.5 text-zinc-400 w-1/4">Feature</th>
+                            <th className="py-2.5 px-3.5 text-amber-300 w-1/4">BM25</th>
+                            <th className="py-2.5 px-3.5 text-purple-300 w-1/4">TF-IDF</th>
+                            <th className="py-2.5 px-3.5 text-cyan-300 w-1/4">Dense Vector Search</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+                          {item.comparisonTable.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3.5 font-mono font-semibold text-zinc-200">
+                                {row.feature}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-[11px] text-amber-200/90 font-mono leading-relaxed">
+                                {row.bm25}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-[11px] text-purple-200/90 font-mono leading-relaxed">
+                                {row.tfidf}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-[11px] text-cyan-200/90 font-mono leading-relaxed">
+                                {row.vector}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Python Implementation Box with Copy Button */}
+                {item.code && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <div className="flex items-center gap-2">
+                        <Code2 className="w-4 h-4 text-cyan-400" />
+                        <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                          Python Implementation: Lexical Search with rank_bm25
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-bm25', item.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-bm25' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800">
+                      <CodeHighlight code={item.code} />
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Target Interview Questions & Answers */}
+                {item.faqs && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" />
+                        <span>Target Interview Questions (How to Defend)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Interview Prep
+                      </span>
+                    </div>
+
+                    <div className="space-y-3.5">
+                      {item.faqs.map((faq, fIdx) => (
+                        <div key={fIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
+                          <h5 className="text-xs sm:text-sm font-bold font-mono text-purple-300 flex items-start gap-2">
+                            <span className="text-purple-400 font-mono">Q{fIdx + 1}.</span>
+                            <span>{faq.q}</span>
+                          </h5>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed whitespace-pre-line pl-5 border-l-2 border-purple-900/60">
+                            <span className="text-purple-300 font-mono font-semibold">Answer: </span>
+                            {faq.a}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
             {/* Item 115: Regularization */}
             {item.id === 'regularization' && (
               <div className="space-y-6">
@@ -24344,7 +24569,7 @@ export default function AllDefinitionsPage() {
                   {item.coreDefinition}
                 </div>
 
-                {item.formulaBreakdown && (
+                {item.id !== 'bm25' && item.formulaBreakdown && (
                   <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-xl space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
                       <Terminal className="w-4 h-4 text-cyan-400" />
