@@ -8718,6 +8718,39 @@ export const definitionsData = [
           "border": "border-purple-800/50"
         }
       ]
+    },
+    "howBertWorks": {
+      "title": "How BERT works",
+      "steps": [
+        {
+          "step": 1,
+          "name": "Tokenization",
+          "desc": "Text is broken into tokens using WordPiece tokenization. Special tokens such as [CLS] and [SEP] may be added.",
+          "badge": "WordPiece & Special Tokens",
+          "accent": "text-cyan-400"
+        },
+        {
+          "step": 2,
+          "name": "Self-attention",
+          "desc": "BERT examines relationships between tokens across the input sequence, allowing each token to use information from both directions.",
+          "badge": "Bidirectional Attention",
+          "accent": "text-purple-400"
+        },
+        {
+          "step": 3,
+          "name": "Encoder layers",
+          "desc": "The Transformer encoder layers build increasingly contextual representations of the text.",
+          "badge": "Contextual Hierarchy",
+          "accent": "text-emerald-400"
+        },
+        {
+          "step": 4,
+          "name": "Task-specific output",
+          "desc": "A classification head, token-prediction head, or another suitable head uses the learned representations for the task.",
+          "badge": "Downstream Task Heads",
+          "accent": "text-amber-400"
+        }
+      ]
     }
   },
   {

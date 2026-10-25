@@ -13589,6 +13589,44 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* 1.1 How BERT works (Step-by-Step Architecture Pipeline) */}
+                {item.howBertWorks && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.howBertWorks.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
+                        4-Step Architecture
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1">
+                      {item.howBertWorks.steps.map((st) => (
+                        <div key={st.step} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 hover:border-zinc-700 transition flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="w-6 h-6 rounded-full bg-cyan-950 border border-cyan-700/60 text-cyan-400 text-xs font-mono font-bold flex items-center justify-center">
+                                {st.step}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {st.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${st.accent}`}>
+                              Step {st.step}: {st.name}
+                            </h5>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {st.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* 2. The Two Original BERT Pretraining Tasks */}
                 {item.twoOriginalPretrainingTasks && (
                   <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-xl">
