@@ -9160,8 +9160,8 @@ export const definitionsData = [
     "id": "bagging",
     "title": "Bagging (Bootstrap Aggregating) & Variance Reduction",
     "badge": "Ensemble Learning, Parallel Sampling & Random Forests",
-    "summary": "Bagging stands for Bootstrap Aggregating. It trains multiple models on different bootstrap samples of the training data and combines their predictions. Its primary goal is to reduce variance and eliminate overfitting in high-variance base estimators.",
-    "coreDefinition": "Bagging stands for Bootstrap Aggregating. It trains multiple models on different bootstrap samples of the training data and combines their predictions.",
+    "summary": "Bagging stands for Bootstrap Aggregating. It is an ensemble learning technique that trains multiple models on different bootstrap samples of the training data and combines their predictions. Its primary goal is to reduce variance and eliminate overfitting in high-variance base estimators.",
+    "coreDefinition": "Bagging stands for Bootstrap Aggregating. It is an ensemble learning technique that trains multiple models on different bootstrap samples of the training data and combines their predictions.",
     "twoPhases": [
       {
         "phase": "1. Bootstrap Sampling",
