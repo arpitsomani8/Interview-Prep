@@ -560,13 +560,21 @@ export default function AllDefinitionsPage() {
             {/* Item: Agentic AI / Workflow */}
             {item.id === 'agentic-ai-workflow' && (
               <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
-                {/* Concept Box */}
+                {/* 1. Core Concept */}
                 <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-200/90 leading-relaxed font-sans">
                   <strong className="text-cyan-400 font-mono font-bold uppercase">Core Concept: </strong>
                   {item.concept || "A traditional LLM typically answers a question. An AI agent can use an LLM as its reasoning engine and interact with external systems to accomplish a task."}
                 </div>
 
-                {/* How does an AI agent work? */}
+                {/* 2. Important Note */}
+                {item.importantNote && (
+                  <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed flex items-start gap-2.5">
+                    <span className="text-amber-400 font-bold font-mono uppercase shrink-0">Important:</span>
+                    <span>{item.importantNote}</span>
+                  </div>
+                )}
+
+                {/* 3. How does an AI agent work? */}
                 <div className="p-4 sm:p-5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
                   <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
                     <Workflow className="w-4 h-4 text-cyan-400" />
@@ -589,6 +597,72 @@ export default function AllDefinitionsPage() {
                     ))}
                   </div>
                 </div>
+
+                {/* 4. What is an AI workflow? */}
+                {item.aiWorkflow && (
+                  <div className="p-4 sm:p-5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3.5">
+                    <div>
+                      <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
+                        <GitBranch className="w-4 h-4 text-indigo-400" />
+                        What is an AI workflow?
+                      </h4>
+                      <p className="text-xs text-zinc-300 mt-1">
+                        {item.aiWorkflow.definition}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
+                        {item.aiWorkflow.exampleTitle}
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5">
+                        {item.aiWorkflow.steps.map((st, stIdx) => (
+                          <div
+                            key={stIdx}
+                            className="p-3 rounded-lg bg-black/60 border border-zinc-800/80 space-y-1"
+                          >
+                            <span className="text-xs font-bold text-indigo-300 font-mono block">
+                              {st.step}
+                            </span>
+                            <p className="text-[11px] text-zinc-400 leading-snug">
+                              {st.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-black/40 border border-zinc-800/70 text-xs text-zinc-400 leading-relaxed">
+                      {item.aiWorkflow.note}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Core components of Agentic AI */}
+                {item.coreComponents && (
+                  <div className="p-4 sm:p-5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
+                    <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
+                      <Cpu className="w-4 h-4 text-emerald-400" />
+                      Core components of Agentic AI
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                      {item.coreComponents.map((comp, cIdx) => (
+                        <div
+                          key={cIdx}
+                          className="p-3 rounded-lg bg-black/60 border border-zinc-800 space-y-1"
+                        >
+                          <span className="text-xs font-bold text-emerald-300 font-mono block">
+                            • {comp.name}
+                          </span>
+                          <p className="text-[11px] text-zinc-400 leading-snug">
+                            {comp.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

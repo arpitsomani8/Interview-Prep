@@ -1097,12 +1097,13 @@ export const definitionsData = [
     "runtimeContrast": "In the GPT example, the model runs on the provider's infrastructure, not inside FastAPI. In the scikit-learn example, the model is loaded into the Python application itself.",
     "ragClarification": "GPT and LLaMA are model families (the generative reasoning brains), whereas RAG (Retrieval-Augmented Generation) is a technique for supplying a model with relevant external information from your knowledge base. They are complementary and frequently used together."
   },
-    {
+      {
     "id": "agentic-ai-workflow",
     "title": "Agentic AI / Workflow",
     "badge": "Autonomous Execution & Goal Pursuit",
     "summary": "Agentic AI is AI that can work toward a goal by deciding what actions to take, using tools, observing results, and adapting its next steps.",
     "concept": "A traditional LLM typically answers a question. An AI agent can use an LLM as its reasoning engine and interact with external systems to accomplish a task.",
+    "importantNote": "Agentic AI does not mean the system is fully autonomous. It may operate within a fixed workflow, and not every agent needs to make every decision independently.",
     "howItWorks": [
       {
         "step": "1. User Goal",
@@ -1123,6 +1124,63 @@ export const definitionsData = [
       {
         "step": "5. Complete or Continue",
         "desc": "Return the result or take another action"
+      }
+    ],
+    "aiWorkflow": {
+      "definition": "A workflow defines how a task progresses from one step to another.",
+      "exampleTitle": "Consider a customer-support workflow:",
+      "steps": [
+        {
+          "step": "Step 1: Receive message",
+          "desc": "Customer reports a failed payment."
+        },
+        {
+          "step": "Step 2: Classify the issue",
+          "desc": "Identify whether the issue concerns a payment, refund, or account."
+        },
+        {
+          "step": "Step 3: Retrieve information",
+          "desc": "Look up transaction status and relevant policies."
+        },
+        {
+          "step": "Step 4: Apply authorization and business rules",
+          "desc": "Check identity, permissions, and refund eligibility."
+        },
+        {
+          "step": "Step 5: Respond or escalate",
+          "desc": "Explain the result or send the case to a human agent."
+        }
+      ],
+      "note": "The workflow controls the process. An agent may decide which permitted action to take at certain steps. In a banking system, sensitive operations such as issuing refunds or transferring money should have strong authorization and approval controls."
+    },
+    "coreComponents": [
+      {
+        "name": "LLM",
+        "desc": "Understands instructions and helps choose actions."
+      },
+      {
+        "name": "Tools",
+        "desc": "APIs, databases, search engines, and other callable functions."
+      },
+      {
+        "name": "State and memory",
+        "desc": "Keep track of the current task and relevant information."
+      },
+      {
+        "name": "Planning",
+        "desc": "Breaks a goal into manageable steps."
+      },
+      {
+        "name": "Orchestration",
+        "desc": "Coordinates execution, branching, retries, and multiple agents."
+      },
+      {
+        "name": "Guardrails",
+        "desc": "Enforce permissions, safety rules, budgets, and limits."
+      },
+      {
+        "name": "Observability",
+        "desc": "Records tool calls, errors, latency, and token usage."
       }
     ]
   },
