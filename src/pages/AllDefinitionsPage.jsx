@@ -16997,48 +16997,89 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 4. PyTorch Implementation Code Box */}
-                {item.pytorchInfo && (
-                  <div className="space-y-3">
-                    <div className="space-y-1">
+                {/* 4. Code Implementation Boxes (Both Mathematical & PyTorch) */}
+                <div className="space-y-4">
+                  {/* Mathematical / NumPy Implementation */}
+                  {item.codeExample && (
+                    <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Code2 className="w-4 h-4 text-cyan-400" />
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
-                          {item.pytorchInfo.title}
+                        <Code2 className="w-4 h-4 text-amber-400" />
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">
+                          {item.codeExample.title || "Mathematical Implementations (NumPy & Stable Softmax)"}
                         </h4>
                       </div>
-                      <p className="text-xs text-zinc-400 font-sans">
-                        {item.pytorchInfo.description}
-                      </p>
-                    </div>
 
-                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
-                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>pytorch_activation_demo.py</span>
+                      <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                        <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                          <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                            <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                            <span>math_activations.py</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopyCode('code-math-activations', item.codeExample.code)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                          >
+                            {copiedId === 'code-math-activations' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-400" />
+                                <span>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                <span>Copy Code</span>
+                              </>
+                            )}
+                          </button>
                         </div>
-                        <button
-                          onClick={() => handleCopyCode('code-activation-functions', item.pytorchInfo.code)}
-                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                        >
-                          {copiedId === 'code-activation-functions' ? (
-                            <>
-                              <Check className="w-3 h-3 text-emerald-400" />
-                              <span>Copied!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3 h-3" />
-                              <span>Copy Code</span>
-                            </>
-                          )}
-                        </button>
+                        <CodeHighlight code={item.codeExample.code} />
                       </div>
-                      <CodeHighlight code={item.pytorchInfo.code} />
                     </div>
-                  </div>
-                )}
+                  )}
+
+                  {/* PyTorch torch.nn and torch.nn.functional Demo */}
+                  {item.pytorchInfo && (
+                    <div className="space-y-2">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <Code2 className="w-4 h-4 text-cyan-400" />
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                            {item.pytorchInfo.title}
+                          </h4>
+                        </div>
+                        <p className="text-xs text-zinc-400 font-sans">
+                          {item.pytorchInfo.description}
+                        </p>
+                      </div>
+
+                      <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                        <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                          <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                            <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>pytorch_activation_demo.py</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopyCode('code-pytorch-activations', item.pytorchInfo.code)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                          >
+                            {copiedId === 'code-pytorch-activations' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-400" />
+                                <span>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                <span>Copy Code</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <CodeHighlight code={item.pytorchInfo.code} />
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* 5. Final Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
