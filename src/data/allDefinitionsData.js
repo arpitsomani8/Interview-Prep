@@ -5808,7 +5808,7 @@ export const definitionsData = [
     },
     "takeaway": "In the modern Python API stack: Uvicorn powers the asynchronous ASGI server runtime, [standard] equips C-speed event loops (uvloop) and HTTP parsing (httptools), FastAPI defines routes and handlers, and Pydantic guarantees strict runtime type validation."
   },
-      {
+        {
     "id": "async-sync",
     "title": "Async vs. Sync (Synchronous vs. Asynchronous Concurrency)",
     "badge": "Concurrency & Python AsyncIO",
@@ -5878,7 +5878,13 @@ export const definitionsData = [
         "bestSuitedFor": "Coordinating multiple operations"
       }
     ],
-    "rememberNote": "Remember: Concurrency does not necessarily mean parallel execution. Async code can handle many concurrent I/O operations on one thread without running CPU calculations simultaneously."
+    "rememberNote": "Remember: Concurrency does not necessarily mean parallel execution. Async code can handle many concurrent I/O operations on one thread without running CPU calculations simultaneously.",
+    "codeExample": {
+      "title": "FastAPI Asynchronous Endpoint Example",
+      "language": "python",
+      "code": "from fastapi import FastAPI\nimport asyncio\n\napp = FastAPI()\n\n@app.get(\"/status\")\nasync def status():\n    await asyncio.sleep(1)\n    return {\"status\": \"ready\"}",
+      "explanation": "When a client hits /status, await asyncio.sleep(1) suspends execution non-blockingly, allowing FastAPI's event loop to process other concurrent requests while waiting."
+    }
   },
   {
     "id": "load-balancing",
