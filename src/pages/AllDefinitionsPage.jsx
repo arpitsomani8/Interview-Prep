@@ -63,6 +63,7 @@ export default function AllDefinitionsPage() {
 
   const getEffectiveId = (id) => {
     if (id === 'tree-of-thought' || id === 'graph-of-thoughts') return 'cot-chain-of-thought';
+    if (id === 'agentic-ai' || id === 'agentic-workflow') return 'agentic-ai-workflow';
     return id;
   };
 
@@ -556,21 +557,85 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 5: Agentic Workflow */}
-            {item.id === 'agentic-workflow' && (
-              <div className="space-y-3 text-xs sm:text-sm text-zinc-300">
-                <ul className="space-y-2">
-                  {item.characteristics.map((char, cIdx) => (
-                    <li key={cIdx} className="flex items-start gap-2.5 leading-relaxed">
-                      <span className="text-cyan-400 font-bold mt-0.5">•</span>
-                      <span>{char}</span>
-                    </li>
-                  ))}
-                </ul>
+            {/* Item: Agentic AI / Workflow */}
+            {item.id === 'agentic-ai-workflow' && (
+              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Architecture Paradigm Contrast (Chatbot vs Agentic AI) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                      <h4 className="text-xs sm:text-sm font-bold text-amber-300 uppercase tracking-wider font-mono">
+                        Standard Reactive LLM
+                      </h4>
+                    </div>
+                    <p className="text-xs text-zinc-400 leading-relaxed">
+                      Purely prompt-in, completion-out. Generates a single turn response based strictly on static training weights or immediate prompt context, with no environmental feedback loop.
+                    </p>
+                    <div className="text-[11px] font-mono text-zinc-500 pt-1 border-t border-zinc-800/80">
+                      User Prompt → LLM Completion → End
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                      <h4 className="text-xs sm:text-sm font-bold text-cyan-300 uppercase tracking-wider font-mono">
+                        Agentic AI & Workflow
+                      </h4>
+                    </div>
+                    <p className="text-xs text-zinc-300 leading-relaxed">
+                      Proactive goal pursuit. Uses the LLM as a cognitive reasoning engine to plan sub-tasks, execute external tools, inspect environmental observations, and iterate until the target goal is verified.
+                    </p>
+                    <div className="text-[11px] font-mono text-cyan-400/90 pt-1 border-t border-cyan-800/40">
+                      Plan → Tool Call → Observe → Reflect → Iterate
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Core Differences & Paradigm Shift */}
+                <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2.5">
+                  <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
+                    <Bot className="w-4 h-4 text-cyan-400" />
+                    Core Conceptual Differences
+                  </h4>
+                  <ul className="space-y-2">
+                    {item.coreDifferences.map((diff, dIdx) => (
+                      <li key={dIdx} className="flex items-start gap-2.5 leading-relaxed text-xs sm:text-sm">
+                        <span className="text-cyan-400 font-bold mt-0.5">•</span>
+                        <span>{diff}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* 3. The 4 Pillars of an Agentic Workflow */}
+                <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2.5">
+                  <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
+                    <Workflow className="w-4 h-4 text-indigo-400" />
+                    4 Key Pillars of an Agentic Workflow
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {item.characteristics.map((char, cIdx) => {
+                      const [title, ...descParts] = char.split(':');
+                      const desc = descParts.join(':');
+                      return (
+                        <div key={cIdx} className="p-3 rounded-lg bg-zinc-900/70 border border-zinc-800/80 space-y-1">
+                          <span className="text-xs font-bold text-cyan-300 font-mono block">
+                            {title.trim()}
+                          </span>
+                          <span className="text-xs text-zinc-400 leading-relaxed block">
+                            {desc ? desc.trim() : ''}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             )}
 
-            {/* Item 6: GenAI vs Traditional AI */}
+            {/* Item: GenAI vs Traditional AI */}
             {item.id === 'genai-vs-traditional-ai' && (
               <div className="overflow-x-auto pt-1">
                 <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
@@ -591,20 +656,6 @@ export default function AllDefinitionsPage() {
                     ))}
                   </tbody>
                 </table>
-              </div>
-            )}
-
-            {/* Item 7: Agentic AI */}
-            {item.id === 'agentic-ai' && (
-              <div className="space-y-3 text-xs sm:text-sm text-zinc-300">
-                <ul className="space-y-2">
-                  {item.coreDifferences.map((diff, dIdx) => (
-                    <li key={dIdx} className="flex items-start gap-2.5 leading-relaxed">
-                      <span className="text-cyan-400 font-bold mt-0.5">•</span>
-                      <span>{diff}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
             )}
 

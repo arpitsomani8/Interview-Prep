@@ -1,11 +1,7 @@
 export const definitionBookmarks = [
   {
-    "id": "agentic-ai",
-    "label": "Agentic AI"
-  },
-  {
-    "id": "agentic-workflow",
-    "label": "Agentic Workflow"
+    "id": "agentic-ai-workflow",
+    "label": "Agentic AI/Workflow"
   },
   {
     "id": "ann-cnn",
@@ -1102,14 +1098,20 @@ export const definitionsData = [
     "ragClarification": "GPT and LLaMA are model families (the generative reasoning brains), whereas RAG (Retrieval-Augmented Generation) is a technique for supplying a model with relevant external information from your knowledge base. They are complementary and frequently used together."
   },
   {
-    "id": "agentic-workflow",
-    "title": "Agentic Workflow",
-    "badge": "Autonomous Execution Architecture",
-    "summary": "A software architecture in which the AI model can iteratively choose actions, call external tools, verify outputs, and take multi-step decisions to accomplish a goal.",
+    "id": "agentic-ai-workflow",
+    "title": "Agentic AI / Workflow",
+    "badge": "Autonomous Execution & Multi-Step Reasoning Architecture",
+    "summary": "An autonomous software architecture where foundation models act as proactive reasoning engines—iteratively decomposing goals, deciding action sequences, invoking external tools, observing outcomes, and self-correcting until an objective is accomplished.",
+    "coreDifferences": [
+      "Standard Chatbot vs. AI Agent: A standard chatbot is purely reactive (waits for a prompt, generates a single one-shot completion, and halts). An AI Agent is proactive and goal-driven: it formulates execution plans, calls databases/APIs/code interpreters, parses intermediate results, and loops until the task is verified.",
+      "Agentic Workflow: The iterative control loop (Reasoning → Tool Call → Observation → Reflection → Re-planning) governing how single or multi-agent systems interact with state, tools, and human-in-the-loop approvals.",
+      "Relationship to GenAI: LLMs serve as the cognitive reasoning engine of Agentic AI, but an agent includes external tool bindings, stateful memory, structured planning, and evaluation guardrails."
+    ],
     "characteristics": [
-      "Autonomous Tool Invocation: Model selects which tool to execute (database query, calculator, web search, API call).",
-      "Dynamic Reflection & Error Correction: Inspects tool responses; if a query fails or returns partial data, formulates alternative execution paths.",
-      "Multi-Step Planning: Breaks high-level business objectives down into structured sub-tasks without requiring rigid hardcoded scripts."
+      "Autonomous Tool Invocation: Model autonomously selects, formats arguments for, and executes tools (SQL queries, vector search, calculators, external REST APIs, terminal commands).",
+      "Dynamic Reflection & Error Correction: Inspects tool responses; if a query fails or returns partial data, formulates alternative execution paths without crashing.",
+      "Multi-Step Planning & Sub-Goal Decomposition: Breaks high-level business objectives down into structured sub-tasks without requiring rigid hardcoded scripts.",
+      "State Memory & Feedback Loops: Maintains scratchpad memory across execution steps and persists context across multi-turn interactions."
     ]
   },
   {
@@ -1133,17 +1135,6 @@ export const definitionsData = [
         "traditional": "Logistic Regression, XGBoost, Random Forest, SVM, ResNet, YOLO.",
         "generative": "Transformer LLMs (GPT-4o, LLaMA-3), Diffusion models (Stable Diffusion), multimodal generative transformers."
       }
-    ]
-  },
-  {
-    "id": "agentic-ai",
-    "title": "Agentic AI",
-    "badge": "Autonomous Systems",
-    "summary": "An autonomous system that leverages an AI model to decide and execute steps toward a goal by calling external tools and evaluating intermediate results.",
-    "coreDifferences": [
-      "Standard Chatbot: Purely reactive. Waits for a prompt, generates a single completion response, and stops immediately.",
-      "AI Agent: Proactive and goal-driven. Can select actions, run database queries, execute Python code, verify output correctness, and iterate until the objective is reached within its permissions.",
-      "Relationship to GenAI: Agentic AI typically utilizes GenAI models as its reasoning engine, but not every GenAI application is an agent."
     ]
   },
   {
