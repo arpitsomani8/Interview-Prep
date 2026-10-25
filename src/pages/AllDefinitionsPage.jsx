@@ -10475,6 +10475,41 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* 2.5 What can AutoML automate? Table */}
+                {item.whatCanAutoMLAutomate && (
+                  <div className="space-y-3 p-4.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Table className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                        {item.whatCanAutoMLAutomate.title}
+                      </h4>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase">
+                            <th className="py-2.5 px-3.5 font-semibold text-cyan-400 w-1/3">Task</th>
+                            <th className="py-2.5 px-3.5 font-semibold text-zinc-300 w-2/3">What it does</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 font-sans">
+                          {item.whatCanAutoMLAutomate.tasks.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className={`py-2.5 px-3.5 font-mono font-bold text-xs ${row.accent}`}>
+                                {row.task}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-zinc-200 text-xs">
+                                {row.whatItDoes}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
                 {/* 3. What AutoML Does NOT Guarantee */}
                 {item.whatItDoesNotGuarantee && (
                   <div className="space-y-2.5">

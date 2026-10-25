@@ -6968,6 +6968,46 @@ export const definitionsData = [
         "Select the best model based on validation performance."
       ],
       "conclusion": "AutoML can automate many of these steps."
+    },
+    "whatCanAutoMLAutomate": {
+      "title": "What can AutoML automate?",
+      "tasks": [
+        {
+          "task": "Data preprocessing",
+          "whatItDoes": "Handles missing values, encoding, and other transformations",
+          "accent": "text-cyan-400"
+        },
+        {
+          "task": "Feature engineering",
+          "whatItDoes": "Creates or transforms input features",
+          "accent": "text-blue-400"
+        },
+        {
+          "task": "Feature selection",
+          "whatItDoes": "Selects useful predictors",
+          "accent": "text-indigo-400"
+        },
+        {
+          "task": "Model selection",
+          "whatItDoes": "Tries algorithms and compares performance",
+          "accent": "text-purple-400"
+        },
+        {
+          "task": "Hyperparameter tuning",
+          "whatItDoes": "Searches for better model configurations",
+          "accent": "text-pink-400"
+        },
+        {
+          "task": "Model evaluation",
+          "whatItDoes": "Measures performance on validation data",
+          "accent": "text-amber-400"
+        },
+        {
+          "task": "Deployment support",
+          "whatItDoes": "Some platforms package or deploy trained models",
+          "accent": "text-emerald-400"
+        }
+      ]
     }
   },
   {
