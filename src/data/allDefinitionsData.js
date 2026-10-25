@@ -5,7 +5,7 @@ export const definitionBookmarks = [
   },
   {
     "id": "ann-cnn",
-    "label": "ANN vs. CNN"
+    "label": "ANN/CNN"
   },
   {
     "id": "async-sync",
@@ -12736,7 +12736,7 @@ export const definitionsData = [
   },
   {
     "id": "ann-cnn",
-    "title": "ANN vs. CNN (Artificial Neural Networks vs. Convolutional Neural Networks)",
+    "title": "ANN/CNN (Artificial Neural Networks vs. Convolutional Neural Networks)",
     "badge": "Deep Learning Architectures, Dense vs Spatial Convolutions",
     "summary": "A fundamental comparison between standard Feedforward Artificial Neural Networks (MLPs with fully connected dense layers) and Convolutional Neural Networks (CNNs using parameter-shared filters, receptive fields, and pooling layers for spatial data).",
     "coreDefinition": "ANNs process 1D flattened inputs through fully connected matrix multiplications where every neuron connects to every input, whereas CNNs leverage parameter sharing and spatial local receptive fields through 2D convolutions to preserve 2D/3D spatial hierarchies without exploding parameter counts.",
