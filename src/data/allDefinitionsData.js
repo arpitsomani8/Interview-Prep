@@ -5,355 +5,148 @@ export const definitionBookmarks = [
   },
   {
     "id": "ann-cnn",
-    "label": "ANN/CNN"
-  },
-  {
-    "id": "async-sync",
-    "label": "Async/Sync"
-  },
-  {
-    "id": "auth-authorization",
-    "label": "Authentication & Authorization"
-  },
-  {
-    "id": "ai-assisted-coding-tools",
-    "label": "AI-Assisted Coding Tools"
-  },
-  {
-    "id": "ai-model",
-    "label": "AI Model"
-  },
-  {
-    "id": "ai-evaluation",
-    "label": "AI Evaluation"
-  },
-  {
-    "id": "ai-fairness-auditing",
-    "label": "AI Fairness / Auditing"
-  },
-  {
-    "id": "ai-gateway",
-    "label": "AI Gateway (Routing, Caching & Cost Control)"
-  },
-  {
-    "id": "ai-monitoring-observability",
-    "label": "AI Observability (Tracing, Metrics & RAG Debugging)"
-  },
-  {
-    "id": "acceptance-criteria",
-    "label": "Acceptance Criteria"
-  },
-  {
-    "id": "activation-functions",
-    "label": "Activation Functions"
-  },
-  {
-    "id": "adapters",
-    "label": "Adapters"
-  },
-  {
-    "id": "anova",
-    "label": "ANOVA & Kruskal-Wallis"
-  },
-  {
-    "id": "automl",
-    "label": "AutoML"
-  },
-  {
-    "id": "aws-azure",
-    "label": "AWS / Azure in AI/ML"
-  },
-  {
-    "id": "azure-ai-vision",
-    "label": "Azure AI Vision"
-  },
-  {
-    "id": "azure-openai",
-    "label": "Azure OpenAI"
-  },
-  {
-    "id": "azure-security",
-    "label": "Azure Security & Production AI Deployment"
-  },
-  {
-    "id": "bias-weight",
-    "label": "Bias & Weights"
-  },
-  {
-    "id": "bagging",
-    "label": "Bagging"
-  },
-  {
-    "id": "boosting",
-    "label": "Boosting"
-  },
-  {
-    "id": "bert",
-    "label": "BERT"
-  },
-  {
-    "id": "binning",
-    "label": "Binning (Discretization)"
-  },
-  {
-    "id": "bm25",
-    "label": "BM25 (Best Matching 25 / Lexical Search Algorithm)"
-  },
-  {
-    "id": "box-cox",
-    "label": "Box-Cox Transformation"
-  },
-  {
-    "id": "blockchain",
-    "label": "Blockchain"
-  },
-  {
-    "id": "backend-architecture",
-    "label": "Backend Architecture"
-  },
-  {
-    "id": "big-data",
-    "label": "Big Data (Bronze, Silver & Gold Medallion)"
-  },
-  {
-    "id": "bivariate",
-    "label": "Bivariate Analysis"
-  },
-  {
-    "id": "chatbot-architecture",
-    "label": "Chatbot Architecture (Enterprise Multi-Agent Banking System)"
-  },
-  {
-    "id": "cicd",
-    "label": "CI/CD"
-  },
-  {
-    "id": "chroma-db",
-    "label": "ChromaDB (Embedded & Open-Source Vector DB)"
-  },
-  {
-    "id": "chunking",
-    "label": "Chunking"
-  },
-  {
-    "id": "confidence-score",
-    "label": "Confidence Score"
-  },
-  {
-    "id": "classical-ml",
-    "label": "Classical ML"
-  },
-  {
-    "id": "class-imbalance",
-    "label": "Class Imbalance"
-  },
-  {
-    "id": "caching",
-    "label": "Caching"
-  },
-  {
-    "id": "coherence",
-    "label": "Coherence"
-  },
-  {
-    "id": "cardinality",
-    "label": "Cardinality (df.nunique())"
-  },
-  {
-    "id": "central-limit-theorem",
-    "label": "Central Limit Theorem"
-  },
-  {
-    "id": "centroid",
-    "label": "Centroid"
-  },
-  {
-    "id": "clip",
-    "label": "CLIP"
-  },
-  {
-    "id": "coco-dataset",
-    "label": "COCO Dataset"
-  },
-  {
-    "id": "context-stuffing-vs-rag",
-    "label": "Context Stuffing vs. RAG (Fixing 10s Latency & Runaway Costs)"
-  },
-  {
-    "id": "cot-chain-of-thought",
-    "label": "COT / Chain of Thought"
-  },
-  {
-    "id": "cross-encoder",
-    "label": "Cross-Encoder"
-  },
-  {
-    "id": "custom-model-fastapi",
-    "label": "Custom Model with FastAPI"
-  },
-  {
-    "id": "connect-gpt-fastapi",
-    "label": "Connect GPT to FastAPI"
-  },
-  {
-    "id": "connect-gpt-flask",
-    "label": "Connect GPT to Flask"
-  },
-  {
-    "id": "crud-api",
-    "label": "CRUD API"
-  },
-  {
-    "id": "coding-best-practices",
-    "label": "Coding Best Practices"
-  },
-  {
-    "id": "docker",
-    "label": "Docker"
-  },
-  {
-    "id": "deepsparse",
-    "label": "DeepSparse"
-  },
-  {
-    "id": "dense-sparse",
-    "label": "Dense vs. Sparse"
-  },
-  {
-    "id": "denoising",
-    "label": "Denoising"
-  },
-  {
-    "id": "data-cleaning",
-    "label": "Data Cleaning & Preprocessing"
-  },
-  {
-    "id": "debugging",
-    "label": "Debugging"
-  },
-  {
-    "id": "diffusion-model",
-    "label": "Diffusion Model"
-  },
-  {
-    "id": "distillation-quantization",
-    "label": "Distillation & Quantization (Model Compression)"
-  },
-  {
-    "id": "document-versioning-rag",
-    "label": "Document Versioning & Freshness in RAG"
-  },
-  {
-    "id": "data-model-drift",
-    "label": "Data / Model Drift"
-  },
-  {
-    "id": "design-chatgpt",
-    "label": "Design ChatGPT (Conversational AI System Design)"
-  },
-  {
-    "id": "design-patterns",
-    "label": "Design Patterns"
-  },
-  {
-    "id": "embedding",
-    "label": "Embedding"
-  },
-  {
-    "id": "early-stopping",
-    "label": "Early Stopping"
-  },
-  {
-    "id": "elastic-net",
-    "label": "Elastic Net"
-  },
-  {
-    "id": "eda",
-    "label": "EDA (13-Step Core Pipeline)"
-  },
-  {
-    "id": "eigenvector-pca",
-    "label": "Eigenvectors & PCA"
-  },
-  {
-    "id": "entropy",
-    "label": "Entropy"
-  },
-  {
-    "id": "etl",
-    "label": "ETL (Extract, Transform, Load)"
-  },
-  {
-    "id": "expectation",
-    "label": "Expectation"
-  },
-  {
-    "id": "edge-cases",
-    "label": "Edge Cases"
-  },
-  {
-    "id": "fine-tuning",
-    "label": "Fine-Tuning"
-  },
-  {
-    "id": "f1-score",
-    "label": "F1-Score (Precision & Recall)"
-  },
-  {
-    "id": "faiss",
-    "label": "FAISS"
-  },
-  {
-    "id": "feature-cross",
-    "label": "Feature Cross"
-  },
-  {
-    "id": "feature-engineering",
-    "label": "Feature Engineering (6 Pillars)"
-  },
-  {
-    "id": "flagging",
-    "label": "Flagging (Indicator Features)"
-  },
-  {
-    "id": "first-non-repeating-char",
-    "label": "First Non-Repeating Character (Python Algorithmic Problem)"
-  },
-  {
-    "id": "flip-flop-latch",
-    "label": "Flip-Flop vs. Latch"
-  },
-  {
-    "id": "frontier-llms",
-    "label": "Frontier LLMs (OpenAI, Claude, Gemini)"
-  },
-  {
-    "id": "gradient-descent",
-    "label": "Gradient Descent"
-  },
-  {
-    "id": "genai-vs-traditional-ai",
-    "label": "GenAI vs Traditional AI"
-  },
-  {
-    "id": "gini-impurity",
-    "label": "Gini Impurity"
-  },
-  {
-    "id": "git-github",
-    "label": "Git / GitHub"
-  },
-  {
-    "id": "gpt-llama",
-    "label": "GPT / LLaMA"
-  },
-  {
-    "id": "gpu-cuda",
-    "label": "GPU / CUDA"
-  },
-  {
-    "id": "graph-of-thoughts",
-    "label": "Graph-of-Thoughts (GoT)"
+    "title": "ANN/CNN (Artificial Neural Networks vs. Convolutional Neural Networks)",
+    "badge": "Deep Learning Architectures, Dense vs Spatial Convolutions",
+    "summary": "A fundamental comparison between standard Feedforward Artificial Neural Networks (MLPs with fully connected dense layers) and Convolutional Neural Networks (CNNs using parameter-shared filters, receptive fields, and pooling layers for spatial data).",
+    "interviewScript": {
+      "question": "What is the difference between an ANN and a CNN, and why can't we use an ANN for image processing?",
+      "verbalAnswer": "An ANN is a fully connected feedforward network designed for 1D tabular data where every neuron connects to every input, which destroys spatial adjacency and causes parameter explosion on images. A CNN solves this by using local receptive fields, parameter sharing, and pooling layers—sliding tiny 3×3 filter kernels across the image to extract hierarchical visual features (edges → shapes → objects) translation-invariantly with over 3,000,000× fewer parameters."
+    },
+    "annDefinition": {
+      "name": "Artificial Neural Network (ANN / Dense MLP)",
+      "subtitle": "Fully Connected Feedforward Architecture",
+      "whatIsIt": "An Artificial Neural Network (ANN) is the foundational deep learning architecture composed of sequential layers of interconnected artificial neurons: an Input Layer, one or more Hidden Layers, and an Output Layer. In a traditional ANN (often called a Multi-Layer Perceptron or MLP), every single neuron in layer L connects to every single neuron in layer L+1 (fully connected / dense).",
+      "mathFormula": "z = W · x + b, \\quad a = \\sigma(z)",
+      "mathExplanation": "Each neuron computes the dot product of input vector x with weight matrix W, adds a scalar bias b, and passes the sum through a non-linear activation function σ (e.g. ReLU, Sigmoid, Tanh).",
+      "pipeline": [
+        {
+          "step": "1. Input Layer",
+          "desc": "Receives raw 1D numerical feature vectors (tabular attributes, flattened arrays)."
+        },
+        {
+          "step": "2. Hidden Dense Layers",
+          "desc": "Computes weighted sums and non-linear transformations across fully connected matrix multiplications."
+        },
+        {
+          "step": "3. Output Layer",
+          "desc": "Outputs continuous scalar predictions (Regression) or Softmax class probabilities (Classification)."
+        },
+        {
+          "step": "4. Backpropagation",
+          "desc": "Calculates error loss gradients via the chain rule and updates weights using optimizers (Adam, SGD)."
+        }
+      ],
+      "strengths": [
+        "Excels at tabular, numerical, and structured business data (customer churn, credit risk, pricing).",
+        "Mathematically universal function approximators for fixed-dimensional tabular relations.",
+        "Straightforward architecture with low implementation complexity for non-spatial datasets."
+      ],
+      "limitations": [
+        "Spatial Blindness: Requires flattening 2D/3D images into 1D vectors, destroying spatial adjacency and pixel neighborhood geometry.",
+        "Catastrophic Parameter Explosion: Every input connects to every hidden neuron. An image with 1000×1000×3 pixels fed into 1,000 neurons creates 3 Billion weights in layer 1 alone.",
+        "Zero Translation Invariance: If an object shifts by a few pixels, an ANN activates entirely different weights and fails to recognize it."
+      ]
+    },
+    "cnnDefinition": {
+      "name": "Convolutional Neural Network (CNN)",
+      "subtitle": "Spatial Deep Learning Architecture with Parameter Sharing",
+      "whatIsIt": "A Convolutional Neural Network (CNN) is a specialized deep learning architecture engineered specifically for grid-structured spatial data (images, video streams, audio spectrograms). Instead of connecting every pixel to every neuron, CNNs use small learnable filter kernels (e.g., 3×3 or 5×5) that slide across the input grid to perform 2D convolutions, detecting visual patterns while maintaining spatial coordinates.",
+      "mathFormula": "S(i, j) = (I * K)(i, j) = \\sum_m \\sum_n I(i - m, j - n) · K(m, n)",
+      "mathExplanation": "A 2D kernel K convolves across input image I by computing element-wise multiplications and summing them to produce a 2D activation map (Feature Map).",
+      "pipeline": [
+        {
+          "step": "1. Convolution (Conv2D)",
+          "desc": "Slides learnable 3×3 filter kernels across the image to extract localized visual feature maps."
+        },
+        {
+          "step": "2. Non-Linearity (ReLU)",
+          "desc": "Replaces negative values with zero, enabling the network to learn complex non-linear visual relationships."
+        },
+        {
+          "step": "3. Pooling (MaxPool)",
+          "desc": "Downsamples feature maps (e.g. 2×2 window) to reduce dimensionality and provide spatial invariance."
+        },
+        {
+          "step": "4. Dense Head",
+          "desc": "Flattens final compressed high-level feature maps into a dense layer with Softmax for classification."
+        }
+      ],
+      "coreBreakthroughs": [
+        "Local Receptive Fields: Neurons connect only to a localized spatial patch (e.g., 3×3 pixels), mimicking biological visual cortices.",
+        "Parameter Sharing: The same 3×3 filter weights are reused across the entire image grid, keeping parameter counts tiny regardless of image size.",
+        "Hierarchical Feature Learning: Early layers detect edges and gradients; middle layers detect textures and contours; deep layers detect complex parts and full objects."
+      ]
+    },
+    "imageMathComparison": {
+      "title": "Why ANNs Fail on Images: The 1,000 × 1,000 Image Math Proof",
+      "context": "Suppose you feed a standard 1,000 × 1,000 pixel RGB color image into a neural network with 1,000 hidden neurons in the first layer:",
+      "ann": {
+        "label": "ANN (Dense MLP)",
+        "calc": "1,000 × 1,000 × 3 = 3,000,000 input nodes.\n3,000,000 inputs × 1,000 hidden neurons = 3,000,000,000 (3 BILLION) weights in Layer 1!",
+        "result": "Instant GPU CUDA Out-Of-Memory (OOM), extreme training latency, and severe overfitting."
+      },
+      "cnn": {
+        "label": "CNN (Convolutional Network)",
+        "calc": "Conv2D layer with 32 filters of size 3×3 across 3 channels:\n32 filters × (3 × 3 × 3 + 1 bias) = 896 total parameters!",
+        "result": "Over 3,348,000× parameter reduction, fits easily in GPU VRAM, and preserves spatial locality."
+      }
+    },
+    "comparisonTable": [
+      {
+        "aspect": "Primary Data Domain",
+        "ann": "Tabular structured data, flattened vectors, and 1D numerical embeddings",
+        "cnn": "Grid-structured spatial data: Images (2D), Video (3D), Audio spectrograms"
+      },
+      {
+        "aspect": "Input Representation",
+        "ann": "1D flattened vector: requires destroying 2D grid shape (e.g., [1, 784])",
+        "cnn": "Preserves native 2D/3D tensor shape: [Batch, Channels, Height, Width]"
+      },
+      {
+        "aspect": "Neuron Connectivity",
+        "ann": "Fully connected (Dense): every input neuron connects to every neuron in next layer",
+        "cnn": "Locally connected: neurons connect only to a local spatial receptive field (e.g. 3×3 kernel)"
+      },
+      {
+        "aspect": "Parameter Efficiency",
+        "ann": "Parameters scale as O(Inputs × Outputs), exploding with high-resolution inputs",
+        "cnn": "Parameter sharing: identical 3×3 kernel weights are reused across the entire image grid"
+      },
+      {
+        "aspect": "Spatial Invariance",
+        "ann": "Not translation invariant (a cat in the corner looks completely different to dense weights)",
+        "cnn": "Translation invariant: learned feature detectors recognize edges/textures anywhere in frame"
+      },
+      {
+        "aspect": "Hierarchical Features",
+        "ann": "Treats all features independently with no inherent concept of neighboring relationships",
+        "cnn": "Hierarchical: Layer 1 (edges) → Layer 2 (textures) → Layer 3 (shapes) → Layer 4 (objects)"
+      },
+      {
+        "aspect": "Core Layer Types",
+        "ann": "Linear / Dense layers + Activation (ReLU, Sigmoid)",
+        "cnn": "Conv2D, BatchNorm, Pooling (MaxPool, AvgPool), followed by Dense classification head"
+      }
+    ],
+    "cnnBuildingBlocks": [
+      {
+        "layer": "Convolution Layer (Conv2D)",
+        "purpose": "Slides learnable filter kernels across the input image to extract feature maps (edges, contours, textures)."
+      },
+      {
+        "layer": "Activation Layer (ReLU / GELU)",
+        "purpose": "Introduces non-linearity, allowing the network to approximate complex non-linear visual relationships."
+      },
+      {
+        "layer": "Pooling Layer (MaxPool / AvgPool)",
+        "purpose": "Downsamples feature maps to reduce spatial dimensions, lower compute load, and provide translation invariance."
+      },
+      {
+        "layer": "Fully Connected Head (Dense)",
+        "purpose": "Flattens high-level spatial feature representations into class probabilities via Softmax."
+      }
+    ],
+    "takeaway": "In production machine learning, use ANNs (MLPs) for 1D tabular and structured business records. Never use standard ANNs for visual data: processing high-resolution images in an ANN destroys spatial geometry and creates billions of redundant weights. CNNs solve this via local receptive fields, parameter sharing, and pooling hierarchies."
   },
   {
     "id": "gaussian-distribution",

@@ -23282,16 +23282,276 @@ export default function AllDefinitionsPage() {
             {/* Item 157: ANN vs. CNN */}
             {item.id === 'ann-cnn' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs sm:text-sm text-purple-200/90 leading-relaxed font-mono">
-                  <strong className="text-purple-400 uppercase font-sans font-bold">ANN vs. CNN Architecture: </strong>
-                  {item.coreDefinition}
+                {/* 1. 60-Second Interview Script */}
+                {item.interviewScript && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-cyan-950/40 via-zinc-950/90 to-purple-950/30 border border-cyan-500/40 shadow-lg space-y-3">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <h4 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider font-mono">
+                          How to Answer in an Interview (60-Second Verbal Script)
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                        Say This Aloud
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 leading-relaxed italic">
+                      "If asked: <strong className="text-white font-sans not-italic">'{item.interviewScript.question}'</strong> — deliver this crisp answer:"
+                    </p>
+
+                    <div className="p-3.5 rounded-xl bg-black/70 border border-zinc-800 text-xs text-zinc-200 leading-relaxed">
+                      <span className="text-cyan-400 font-mono font-bold mr-1.5">Verbal Delivery:</span>
+                      "{item.interviewScript.verbalAnswer}"
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. Standalone Definitions FIRST: ANN vs CNN */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* ANN Standalone Definition Card */}
+                  {item.annDefinition && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-3.5 shadow-xl flex flex-col justify-between">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-cyan-900/40 pb-2.5">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                              <h4 className="text-xs sm:text-sm font-bold text-cyan-300 font-mono">
+                                {item.annDefinition.name}
+                              </h4>
+                            </div>
+                            <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
+                              {item.annDefinition.subtitle}
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                            1D Tabular / Dense
+                          </span>
+                        </div>
+
+                        {/* What is it */}
+                        <div className="space-y-1">
+                          <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
+                            Definition:
+                          </span>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {item.annDefinition.whatIsIt}
+                          </p>
+                        </div>
+
+                        {/* Math Formula */}
+                        <div className="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1 font-mono">
+                          <div className="text-[11px] text-cyan-300 font-bold">
+                            Formula: {item.annDefinition.mathFormula}
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {item.annDefinition.mathExplanation}
+                          </p>
+                        </div>
+
+                        {/* Pipeline */}
+                        <div className="space-y-1.5 pt-1">
+                          <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
+                            4-Stage Execution Flow:
+                          </span>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {item.annDefinition.pipeline.map((p, pIdx) => (
+                              <div key={pIdx} className="p-2 rounded-lg bg-black/40 border border-zinc-800/80 space-y-0.5">
+                                <span className="text-[11px] font-mono font-bold text-cyan-300 block">
+                                  {p.step}
+                                </span>
+                                <span className="text-[10px] text-zinc-400 leading-snug block">
+                                  {p.desc}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Strengths */}
+                        <div className="space-y-1">
+                          <span className="text-[11px] font-mono uppercase text-emerald-400 font-semibold block">
+                            Best Suited For:
+                          </span>
+                          <ul className="space-y-1">
+                            {item.annDefinition.strengths.map((str, sIdx) => (
+                              <li key={sIdx} className="text-xs text-zinc-300 flex items-start gap-1.5 leading-relaxed">
+                                <span className="text-emerald-400 font-bold shrink-0">•</span>
+                                <span>{str}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+
+                      {/* Limitations for Spatial Data */}
+                      <div className="p-3 rounded-xl bg-rose-950/20 border border-rose-800/40 space-y-1.5 mt-2">
+                        <span className="text-[11px] font-mono uppercase text-rose-300 font-bold flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                          Fatal Limitations for Images & Spatial Data:
+                        </span>
+                        <ul className="space-y-1">
+                          {item.annDefinition.limitations.map((lim, lIdx) => (
+                            <li key={lIdx} className="text-[11px] text-zinc-300 flex items-start gap-1.5 leading-relaxed">
+                              <span className="text-rose-400 font-bold shrink-0">✕</span>
+                              <span>{lim}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* CNN Standalone Definition Card */}
+                  {item.cnnDefinition && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 space-y-3.5 shadow-xl flex flex-col justify-between">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-purple-900/40 pb-2.5">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+                              <h4 className="text-xs sm:text-sm font-bold text-purple-300 font-mono">
+                                {item.cnnDefinition.name}
+                              </h4>
+                            </div>
+                            <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
+                              {item.cnnDefinition.subtitle}
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-purple-950/70 text-purple-400 border border-purple-800/60">
+                            2D/3D Spatial / Convolutions
+                          </span>
+                        </div>
+
+                        {/* What is it */}
+                        <div className="space-y-1">
+                          <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
+                            Definition:
+                          </span>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {item.cnnDefinition.whatIsIt}
+                          </p>
+                        </div>
+
+                        {/* Math Formula */}
+                        <div className="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1 font-mono">
+                          <div className="text-[11px] text-purple-300 font-bold">
+                            Formula: {item.cnnDefinition.mathFormula}
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {item.cnnDefinition.mathExplanation}
+                          </p>
+                        </div>
+
+                        {/* Pipeline */}
+                        <div className="space-y-1.5 pt-1">
+                          <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
+                            4-Stage Visual Pipeline:
+                          </span>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {item.cnnDefinition.pipeline.map((p, pIdx) => (
+                              <div key={pIdx} className="p-2 rounded-lg bg-black/40 border border-zinc-800/80 space-y-0.5">
+                                <span className="text-[11px] font-mono font-bold text-purple-300 block">
+                                  {p.step}
+                                </span>
+                                <span className="text-[10px] text-zinc-400 leading-snug block">
+                                  {p.desc}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* 3 Core Breakthroughs */}
+                        <div className="space-y-1">
+                          <span className="text-[11px] font-mono uppercase text-purple-400 font-semibold block">
+                            3 Core Architectural Breakthroughs:
+                          </span>
+                          <ul className="space-y-1.5">
+                            {item.cnnDefinition.coreBreakthroughs.map((brk, bIdx) => (
+                              <li key={bIdx} className="text-xs text-zinc-300 flex items-start gap-1.5 leading-relaxed">
+                                <span className="text-purple-400 font-bold shrink-0">✓</span>
+                                <span>{brk}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+
+                      {/* Best Suited For */}
+                      <div className="p-3 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs text-purple-200/90 leading-relaxed font-mono mt-2">
+                        <strong className="text-purple-400 uppercase font-sans font-bold">Best Suited For: </strong>
+                        Computer Vision (YOLO, Object Detection, Segmentation, Face Recognition, Medical Scans) and any multi-dimensional tensor data.
+                      </div>
+                    </div>
+                  )}
                 </div>
 
+                {/* 3. The 1000x1000 Image Math Comparison Proof */}
+                {item.imageMathComparison && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl space-y-3">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <h4 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+                        <Cpu className="w-4 h-4 text-amber-400" />
+                        <span>{item.imageMathComparison.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono text-amber-400 bg-amber-950/40 px-2 py-0.5 rounded border border-amber-800/40">
+                        Interview Benchmark
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                      {item.imageMathComparison.context}
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                      {/* ANN Math Card */}
+                      <div className="p-3.5 rounded-xl bg-black border border-rose-900/50 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-rose-400 font-mono">
+                            {item.imageMathComparison.ann.label}
+                          </span>
+                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800/50">
+                            Failure Mode
+                          </span>
+                        </div>
+                        <div className="text-[11px] font-mono text-zinc-300 bg-zinc-900/80 p-2.5 rounded-lg border border-zinc-800 whitespace-pre-line leading-relaxed">
+                          {item.imageMathComparison.ann.calc}
+                        </div>
+                        <p className="text-[11px] text-rose-300/90 leading-relaxed font-sans">
+                          <strong>Consequence: </strong>{item.imageMathComparison.ann.result}
+                        </p>
+                      </div>
+
+                      {/* CNN Math Card */}
+                      <div className="p-3.5 rounded-xl bg-black border border-emerald-900/50 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-emerald-400 font-mono">
+                            {item.imageMathComparison.cnn.label}
+                          </span>
+                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/50">
+                            Optimal Solution
+                          </span>
+                        </div>
+                        <div className="text-[11px] font-mono text-zinc-300 bg-zinc-900/80 p-2.5 rounded-lg border border-zinc-800 whitespace-pre-line leading-relaxed">
+                          {item.imageMathComparison.cnn.calc}
+                        </div>
+                        <p className="text-[11px] text-emerald-300/90 leading-relaxed font-sans">
+                          <strong>Advantage: </strong>{item.imageMathComparison.cnn.result}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Side-by-Side Comparison Matrix */}
                 {item.comparisonTable && (
                   <div className="space-y-2">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
                       <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                      <span>ANN (Fully Connected) vs. CNN (Convolutional)</span>
+                      <span>ANN (Fully Connected Dense) vs. CNN (Convolutional Spatial)</span>
                     </h4>
                     <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                       <div className="overflow-x-auto">
@@ -23324,6 +23584,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* 5. Core CNN Building Blocks */}
                 {item.cnnBuildingBlocks && (
                   <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
@@ -23345,6 +23606,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* 6. Vision Deep Learning Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-purple-800/40 text-xs text-purple-200/90 leading-relaxed font-mono">
                   <strong className="text-purple-400 uppercase">Vision Deep Learning Takeaway: </strong>
                   {item.takeaway}
