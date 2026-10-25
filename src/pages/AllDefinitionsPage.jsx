@@ -10318,6 +10318,57 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
+                                {/* Main Backend Components */}
+                {item.mainBackendComponents && (
+                  <div className="space-y-3 pt-1">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Server className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Main Backend Components</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800">
+                        5 Essential Tiers
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                      {item.mainBackendComponents.map((comp) => {
+                        const IconComp = comp.icon === 'Globe' ? Globe :
+                                         comp.icon === 'Network' ? Network :
+                                         comp.icon === 'Cpu' ? Cpu :
+                                         comp.icon === 'Database' ? Database :
+                                         comp.icon === 'Bot' ? Bot : Server;
+                        return (
+                          <div
+                            key={comp.step}
+                            className="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 hover:border-zinc-700 transition flex flex-col justify-between space-y-3"
+                          >
+                            <div className="space-y-2.5">
+                              <div className="flex items-center justify-between">
+                                <span className="w-6 h-6 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-[11px] font-mono font-bold text-zinc-300">
+                                  {comp.step}
+                                </span>
+                                <span className={`text-[9px] font-mono px-2 py-0.5 rounded border ${comp.badgeBg}`}>
+                                  {comp.badge}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <IconComp className={`w-4 h-4 ${comp.color}`} />
+                                <h5 className="text-xs font-bold text-zinc-100 font-sans">
+                                  {comp.name}
+                                </h5>
+                              </div>
+                              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                                {comp.role}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {/* Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>

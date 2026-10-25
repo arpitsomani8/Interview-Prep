@@ -6938,7 +6938,54 @@ export const definitionsData = [
         "whenToUse": "High-value in read-heavy domains (e.g. e-commerce product catalogs, search engines, vector retrieval) where complex queries require different indexing than transactional writes."
       }
     ],
-    "takeaway": "No single backend architecture fits every system. Choose Modular Monolith for simplicity, Microservices for organizational scale, Event-driven for decoupled async throughput, and CQRS when read and write workloads diverge."
+        "mainBackendComponents": [
+      {
+        "step": "1",
+        "name": "Frontend / Client",
+        "role": "The website, mobile app, or another application that sends requests to the backend.",
+        "icon": "Globe",
+        "color": "text-sky-400",
+        "badge": "Client Tier",
+        "badgeBg": "bg-sky-950/70 text-sky-300 border-sky-800"
+      },
+      {
+        "step": "2",
+        "name": "API layer",
+        "role": "Exposes endpoints, validates inputs, handles HTTP requests, and routes requests to the appropriate service.",
+        "icon": "Network",
+        "color": "text-emerald-400",
+        "badge": "Gatekeeper & Routing",
+        "badgeBg": "bg-emerald-950/70 text-emerald-300 border-emerald-800"
+      },
+      {
+        "step": "3",
+        "name": "Business logic / Service layer",
+        "role": "Implements application rules, such as checking payment status or deciding which AI model to call.",
+        "icon": "Cpu",
+        "color": "text-amber-400",
+        "badge": "Core Domain Rules",
+        "badgeBg": "bg-amber-950/70 text-amber-300 border-amber-800"
+      },
+      {
+        "step": "4",
+        "name": "Data layer",
+        "role": "Stores and retrieves information using databases, caches, file storage, and vector databases.",
+        "icon": "Database",
+        "color": "text-purple-400",
+        "badge": "State & Persistence",
+        "badgeBg": "bg-purple-950/70 text-purple-300 border-purple-800"
+      },
+      {
+        "step": "5",
+        "name": "AI / Model layer",
+        "role": "Handles model inference, embeddings, retrieval, prompt construction, and response generation.",
+        "icon": "Bot",
+        "color": "text-rose-400",
+        "badge": "GenAI & Inference",
+        "badgeBg": "bg-rose-950/70 text-rose-300 border-rose-800"
+      }
+    ],
+"takeaway": "No single backend architecture fits every system. Choose Modular Monolith for simplicity, Microservices for organizational scale, Event-driven for decoupled async throughput, and CQRS when read and write workloads diverge."
   },
   {
     "id": "onnx",
