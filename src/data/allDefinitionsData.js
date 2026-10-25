@@ -45,19 +45,7 @@ export const definitionBookmarks = [
   },
   {
     "id": "aws-azure",
-    "label": "AWS / Azure in AI/ML"
-  },
-  {
-    "id": "azure-ai-vision",
-    "label": "Azure AI Vision"
-  },
-  {
-    "id": "azure-openai",
-    "label": "Azure OpenAI"
-  },
-  {
-    "id": "azure-security",
-    "label": "Azure Security & Production AI Deployment"
+    "label": "AWS & Azure in AI/ML (Vision, OpenAI & Security)"
   },
   {
     "id": "bias-weight",
@@ -3207,35 +3195,6 @@ export const definitionsData = [
     }
   },
   {
-    "id": "azure-ai-vision",
-    "title": "Azure AI Vision (Multimodal Embeddings, Private Link & OCR)",
-    "badge": "Multimodal Embeddings, Image Analysis & Enterprise Security",
-    "summary": "A suite of managed computer vision APIs that transforms clothing photos and textual descriptions into dense 1024-dimensional multimodal vectors residing in a unified coordinate space. In production, Azure AI Vision connects via Private Endpoints within an Azure VNet, authenticates via Managed Identity, and adheres to strict enterprise encryption standards.",
-    "role": "Image Understanding: Processes images using supported vision capabilities, such as image analysis, OCR, or object detection depending on the service and model. It helps extract visual information from a parcel image.",
-    "takeaway": "Azure AI Vision analyzes the image.",
-    "details": [
-      "In Simple Terms: Azure AI Vision acts as a visual feature extractor. It inspects garment photos and text descriptions, producing matching 1024-number vectors that allow instant semantic search across colors, fabrics, and silhouettes.",
-      "Enterprise Security & Private Endpoints: Deployed with public internet access disabled, Azure AI Vision accepts requests strictly from within our application's private VNet via Azure Private Link. This prevents third-party eavesdropping on proprietary catalog images.",
-      "Managed Identity Authorization: Our backend FastAPI containers call Azure AI Vision using System-Assigned Managed Identity tokens, eliminating static Cognitive Services subscription keys from application configuration.",
-      "Interview Answer: 'We used Azure AI Vision because it provided out-of-the-box multimodal embeddings with zero GPU maintenance, integrated seamlessly with Azure Managed Identity for keyless security, and communicated securely over Private Endpoints within our VNet.'"
-    ]
-  },
-  {
-    "id": "azure-openai",
-    "title": "Azure OpenAI (Enterprise LLM Hosting, Security & Content Safety)",
-    "badge": "Enterprise LLM Hosting, Managed Identity & Zero Data Retention",
-    "summary": "Enterprise-grade hosting of OpenAI foundation models (GPT-4o, GPT-4 Turbo, text-embedding-3) within Microsoft's cloud infrastructure. Unlike public consumer endpoints, Azure OpenAI provides enterprise SLAs, Private Link network isolation, Managed Identity authentication, built-in Content Safety filters against prompt injection, and contractual guarantees that customer prompts and embeddings are never used to train foundation models.",
-    "role": "Language Understanding & Reasoning: Hosts supported OpenAI models that can interpret inspection results, combine them with policies or business context, and produce a structured explanation or recommendation.",
-    "takeaway": "Azure OpenAI helps interpret the results and generate a useful business response.",
-    "details": [
-      "In Simple Terms: It is the enterprise version of ChatGPT and OpenAI embedding models running entirely inside your company's private Azure cloud environment, with enterprise legal guarantees and banking-grade security.",
-      "Enterprise Data Privacy Guarantee: Microsoft contractually guarantees that customer data (prompts, completions, vector embeddings) is NEVER shared with OpenAI to train or fine-tune public foundation models. Customer data is encrypted with 256-bit AES at rest and remains strictly isolated within the chosen Azure region.",
-      "Network & Identity Hardening: Public internet endpoints can be completely disabled in favor of Azure Private Endpoints inside your private Virtual Network (VNet). Authentication is performed using Microsoft Entra ID (Azure AD) Managed Identities with role-based access control ('Cognitive Services OpenAI User'), eliminating API keys from production code.",
-      "Real-Time Azure AI Content Safety Guardrails: Every incoming prompt and outgoing completion passes through built-in neural content moderation models that detect prompt injection, jailbreak attempts, PII leakage, and toxic content in real time before reaching the application.",
-      "Interview Answer: 'We chose Azure OpenAI over public OpenAI because enterprise clients require strict SOC2 and HIPAA compliance. Azure OpenAI guarantees customer data is never used to train models, supports Azure Managed Identities to eliminate API keys, and routes traffic over Private Endpoints within our private VNet.'"
-    ]
-  },
-  {
     "id": "transformer",
     "title": "Transformer Architecture",
     "badge": "Neural Network Architecture & Attention",
@@ -3821,10 +3780,10 @@ export const definitionsData = [
   },
   {
     "id": "aws-azure",
-    "title": "AWS & Azure in AI/ML Applications",
-    "badge": "Cloud Architecture & ML Infrastructure",
-    "summary": "Where exactly do we use AWS or Azure in an AI/ML application? The cloud is not the AI model itself. It provides infrastructure to store data, run models, expose APIs, control access, monitor performance, and scale the application.",
-    "corePrinciple": "The cloud is not the AI model itself. It provides infrastructure to store data, run models, expose APIs, control access, monitor performance, and scale the application.",
+    "title": "AWS & Azure in AI/ML (Vision, OpenAI & Security Architecture)",
+    "badge": "Cloud Infrastructure, Multimodal AI & Production Security",
+    "summary": "Cloud platforms provide scalable infrastructure to store data, run models, expose APIs, control access, monitor performance, and deploy multimodal AI applications with enterprise security.",
+    "corePrinciple": "The cloud is not the AI model itself—it provides the hardened infrastructure to store customer data, extract visual text, run LLMs, enforce identity access, and scale reliably in production.",
     "architectureLifecycle": [
       {
         "step": "1. Warehouse camera / application",
@@ -3995,7 +3954,119 @@ export const definitionsData = [
           "tag": "CloudWatch & Auto Scaling"
         }
       ]
-    }
+    },
+    "multiServiceWorkflow": {
+      "title": "End-to-End Multimodal AI Pipeline",
+      "stages": [
+        {
+          "step": "01",
+          "name": "AWS / Azure Cloud Foundation",
+          "desc": "Store customer data and host your application backend (Amazon S3 / Azure Blob Storage, EC2 / Azure VMs).",
+          "badge": "Storage & Compute",
+          "accent": "text-amber-400",
+          "border": "border-amber-800/50"
+        },
+        {
+          "step": "02",
+          "name": "Azure AI Vision",
+          "desc": "Extract text from screenshots or scanned receipts using enterprise OCR and multimodal visual embeddings.",
+          "badge": "Multimodal Perception & OCR",
+          "accent": "text-cyan-400",
+          "border": "border-cyan-800/50"
+        },
+        {
+          "step": "03",
+          "name": "Azure OpenAI",
+          "desc": "Understand the extracted text, answer user questions, or summarize customer complaints via private GPT-4o deployments.",
+          "badge": "Reasoning & LLM Ingestion",
+          "accent": "text-purple-400",
+          "border": "border-purple-800/50"
+        },
+        {
+          "step": "04",
+          "name": "Security & Production Deployment",
+          "desc": "Protect customer information (VNet Private Endpoints, Entra ID RBAC), authenticate requests, monitor failures (CloudWatch / Azure Monitor), and scale the service.",
+          "badge": "Enterprise Security & SRE",
+          "accent": "text-emerald-400",
+          "border": "border-emerald-800/50"
+        }
+      ]
+    },
+    "importantServicesTable": {
+      "title": "Important services to remember",
+      "headers": [
+        "Purpose",
+        "AWS",
+        "Azure"
+      ],
+      "rows": [
+        {
+          "purpose": "ML development and deployment",
+          "aws": "SageMaker",
+          "azure": "Azure Machine Learning"
+        },
+        {
+          "purpose": "Object/file storage",
+          "aws": "Amazon S3",
+          "azure": "Azure Blob Storage"
+        },
+        {
+          "purpose": "Virtual machines",
+          "aws": "Amazon EC2",
+          "azure": "Azure Virtual Machines"
+        },
+        {
+          "purpose": "Identity and access",
+          "aws": "AWS IAM",
+          "azure": "Microsoft Entra ID and Azure RBAC"
+        },
+        {
+          "purpose": "Logs and monitoring",
+          "aws": "Amazon CloudWatch",
+          "azure": "Azure Monitor"
+        },
+        {
+          "purpose": "Managed generative AI models",
+          "aws": "Amazon Bedrock",
+          "azure": "Azure OpenAI Service"
+        }
+      ]
+    },
+    "sdkExamples": {
+      "title": "Python Libraries and Cloud SDKs",
+      "definition": "An SDK is a software development kit: a collection of tools that lets your Python code interact with a cloud service.",
+      "awsSdk": {
+        "name": "AWS: boto3",
+        "desc": "Python SDK for interacting with AWS services such as S3.",
+        "code": "import boto3\n\ns3 = boto3.client(\"s3\")\nresponse = s3.list_buckets()\nprint(response[\"Buckets\"])",
+        "note": "This lists accessible S3 buckets, assuming AWS credentials and permissions are configured."
+      },
+      "azureSdk": {
+        "name": "Azure: azure-storage-blob",
+        "desc": "Python SDK for working with Azure Blob Storage.",
+        "code": "from azure.storage.blob import BlobServiceClient\n\nclient = BlobServiceClient.from_connection_string(\"YOUR_CONNECTION_STRING\")\nfor container in client.list_containers():\n    print(container[\"name\"])",
+        "note": "Use a secure configuration or environment variable for credentials in real projects; don't hard-code secrets."
+      },
+      "otherTools": [
+        {
+          "name": "sagemaker",
+          "desc": "AWS SageMaker Python SDK for training, tuning, and deploying models."
+        },
+        {
+          "name": "azure-ai-ml",
+          "desc": "Azure Machine Learning SDK v2 for assets, pipelines, and endpoints."
+        },
+        {
+          "name": "scikit-learn, PyTorch, TensorFlow",
+          "desc": "Core ML/DL frameworks to build, fine-tune, and train models."
+        },
+        {
+          "name": "mlflow",
+          "desc": "Track experiments, log metrics, and manage model registries and versioning."
+        }
+      ]
+    },
+    "takeaway": "In enterprise AI architectures, AWS and Azure provide the underlying backbone: S3/Blob Storage securely archives raw inputs, AI Vision extracts structured OCR tokens, Azure OpenAI performs contextual reasoning, and IAM/Entra ID with Private Endpoints ensures zero-trust isolation from inception to production deployment."
   },
   {
     "id": "testing",
@@ -14477,34 +14548,6 @@ export const definitionsData = [
       "Interview Answer (How to Defend): 'In Project 2 (Hybrid AI Engine), we selected Pinecone Serverless because we needed strict multi-tenant isolation for corporate clients via namespaces with zero operational DevOps burden. Pinecone's serverless tier slashed our idle infrastructure costs to near zero while delivering p95 retrieval latency under 15ms across millions of enterprise policy chunks.'"
     ],
     "code": "# ==============================================================================\n# PRODUCTION PINECONE SERVERLESS PIPELINE: MULTI-TENANCY & FILTERED RETRIEVAL\n# ==============================================================================\nimport os\nfrom pinecone import Pinecone, ServerlessSpec\nfrom typing import List, Dict, Any\n\n# 1. Initialize Pinecone Client via API Key\npc = Pinecone(api_key=os.environ.get(\"PINECONE_API_KEY\", \"your-api-key\"))\n\nindex_name = \"enterprise-hybrid-rag\"\n\n# 2. Create Serverless Index (AWS us-east-1) with Cosine Metric if not exists\nif index_name not in pc.list_indexes().names():\n    pc.create_index(\n        name=index_name,\n        dimension=1536,                       # Dimensions for text-embedding-3-small\n        metric=\"cosine\",                      # Cosine similarity metric\n        spec=ServerlessSpec(\n            cloud=\"aws\",\n            region=\"us-east-1\"\n        )\n    )\n    print(f\"Created Serverless index: {index_name}\")\n\nindex = pc.Index(index_name)\n\n# 3. Upsert Vectors with Strict Enterprise Multi-Tenant Namespace Isolation\ntenant_id = \"tenant_nordic_apparel\"\npolicy_vectors = [\n    {\n        \"id\": \"doc_policy_sec_01\",\n        \"values\": [0.042, -0.019, 0.081] + [0.0] * 1533,  # 1536-dim vector\n        \"metadata\": {\n            \"department\": \"compliance\",\n            \"document_type\": \"security_policy\",\n            \"version\": \"2024.2\",\n            \"access_tier\": 2,\n            \"text\": \"All employee access credentials must rotate every 90 days with MFA enforced.\"\n        }\n    },\n    {\n        \"id\": \"doc_policy_fin_05\",\n        \"values\": [-0.015, 0.063, 0.027] + [0.0] * 1533,\n        \"metadata\": {\n            \"department\": \"finance\",\n            \"document_type\": \"expense_guidelines\",\n            \"version\": \"2024.1\",\n            \"access_tier\": 1,\n            \"text\": \"Travel expense reimbursement requests require pre-approval for sums exceeding $1,000.\"\n        }\n    }\n]\n\n# Upsert directly into the tenant's isolated namespace\nindex.upsert(\n    vectors=policy_vectors,\n    namespace=tenant_id\n)\nprint(f\"Upserted vectors to namespace: {tenant_id}\")\n\n# 4. Query with Single-Stage Metadata Filter in the Tenant Namespace\nquery_embedding = [0.040, -0.015, 0.079] + [0.0] * 1533  # \"credential rotation MFA\"\nquery_response = index.query(\n    namespace=tenant_id,                      # Strict namespace barrier: cannot leak across tenants\n    vector=query_embedding,\n    top_k=3,\n    include_metadata=True,\n    filter={\n        \"department\": {\"$eq\": \"compliance\"},\n        \"access_tier\": {\"$lte\": 2}\n    }\n)\n\nfor match in query_response.get(\"matches\", []):\n    print(f\"ID: {match['id']} | Score: {match['score']:.4f}\")\n    print(f\"  Excerpt: {match['metadata']['text']}\")"
-  },
-  {
-    "id": "azure-security",
-    "title": "Azure Security Architecture for Production AI & Enterprise Deployments",
-    "badge": "Zero-Trust IAM, Private Endpoints, Key Vault & Azure OpenAI Content Safety",
-    "summary": "A production-grade defense-in-depth security framework for deploying enterprise AI/ML solutions (FastAPI microservices, Azure OpenAI, Azure AI Vision, PostgreSQL, Vector Databases, and Blob Storage) on Microsoft Azure. Covers Zero-Trust Managed Identities (eliminating hardcoded API keys), Private Link network isolation (disabling public internet access), Azure Key Vault HSM secrets management, WAF / API Management ingress filtering, Azure AI Content Safety guardrails against prompt injection, TLS 1.3/AES-256 encryption, and vulnerability scanning via Azure Container Registry.",
-    "details": [
-      "In Simple Terms: Why Cloud Security is Critical: Moving an AI system from localhost to production means defending against data leaks, stolen API keys, unauthorized access, and prompt injection attacks. Azure security provides a layered fortress: identity controls who enters, private networks prevent anyone on the public internet from reaching your databases, Key Vault protects cryptographic keys, and AI Content Safety stops malicious user inputs.",
-      "1. Zero-Trust Identity & Managed Identities (Eliminating API Keys): The #1 security risk in production is leaking API keys or database passwords in code, environment variables, or Docker images. In Azure, compute services (Azure Container Apps, App Service, or AKS) use System-Assigned Managed Identities. The container authenticates directly with Azure OpenAI, Blob Storage, Key Vault, and PostgreSQL using Microsoft Entra ID (Azure AD) OAuth tokens that rotate automatically every 24 hours. No static API keys or passwords ever exist in the codebase.",
-      "2. Role-Based Access Control (Azure RBAC Least Privilege): Permissions are strictly scoped using fine-grained RBAC roles: our FastAPI container is assigned 'Cognitive Services OpenAI User' (allowing it to generate embeddings and chat completions, but blocking it from creating or deleting models), 'Storage Blob Data Reader' (read-only access to catalog images), and 'Key Vault Secrets User' (retrieving specific connection strings without administrative rights).",
-      "3. Network Isolation & Private Endpoints (Zero Public Exposure): In production, public internet access is completely disabled on Azure OpenAI, Azure Database for PostgreSQL, Azure Key Vault, and Azure Blob Storage ('publicNetworkAccess = Disabled'). Instead, all backend communication travels over Azure Private Endpoints (Azure Private Link) inside a dedicated Azure Virtual Network (VNet). Traffic never leaves Microsoft's private optical fiber backbone, rendering the databases invisible to outside internet port scans.",
-      "4. Ingress Protection: Azure Application Gateway WAF & API Management (APIM): Public user traffic enters exclusively through an Azure Application Gateway equipped with a Web Application Firewall (WAF) running OWASP Core Rule Sets (CRS 3.2). The WAF blocks SQL injection, cross-site scripting (XSS), and volumetric DDoS attacks. Behind it, Azure API Management (APIM) enforces JWT bearer token validation, OAuth2 client credentials, and token-bucket rate limiting (e.g., 60 requests/min per IP) to prevent denial-of-wallet attacks.",
-      "5. Azure OpenAI Content Safety & Enterprise Data Privacy: Consumer AI services often retain user queries to train future models. In contrast, Microsoft Azure OpenAI provides contractual enterprise guarantees: customer data (prompts, completions, embeddings) is NEVER used to train foundation models, and data is retained strictly within the customer's specified Azure region. Furthermore, Azure AI Content Safety intercepts incoming prompts and outgoing generations in real time to detect and block prompt injection, jailbreaking, PII leakage, hate speech, and toxicity.",
-      "6. Data Encryption: At-Rest (CMK) & In-Transit (TLS 1.3): In-transit traffic enforces TLS 1.3 with HTTP strictly disabled. Data at rest is encrypted using 256-bit AES encryption across Azure Blob Storage, PostgreSQL storage disks, and vector volumes. For regulated banking or healthcare clients, Customer-Managed Keys (CMK) stored in Azure Key Vault backed by FIPS 140-2 Level 3 Hardware Security Modules (HSMs) ensure that even cloud administrators cannot decrypt sensitive records without tenant authorization.",
-      "7. Container Hardening & CI/CD Security (ACR + OIDC): In automated CI/CD pipelines (GitHub Actions / Azure DevOps), deployments authenticate to Azure using OpenID Connect (OIDC) federated credentials, eliminating permanent service principal secrets. Container images are stored in Azure Container Registry (ACR), where Microsoft Defender for Containers automatically performs vulnerability scanning (CVE checks) on base OS layers and Python wheels before authorizing deployment.",
-      "Interview Answer (How to Defend): 'When deploying our AI application to Azure production, we implemented an airtight defense-in-depth architecture: First, we eliminated all hardcoded API keys by binding our FastAPI container to an Azure Managed Identity with least-privilege RBAC. Second, we placed Azure OpenAI, PostgreSQL, and Blob Storage behind Azure Private Endpoints inside our private VNet with public internet access disabled. Third, all public traffic was routed through Azure API Management and WAF for OWASP filtering and rate-limiting. Finally, we enabled Azure AI Content Safety to intercept prompt injection attempts and guaranteed enterprise compliance with zero model training on customer data.'"
-    ],
-    "code": "# ==============================================================================\n# SECURE PRODUCTION AZURE DEPLOYMENT: MANAGED IDENTITY, KEY VAULT & CONTENT SAFETY\n# ==============================================================================\nimport os\nfrom azure.identity import DefaultAzureCredential\nfrom azure.keyvault.secrets import SecretClient\nfrom azure.storage.blob import BlobServiceClient\nfrom azure.ai.contentsafety import ContentSafetyClient\nfrom azure.ai.contentsafety.models import AnalyzeTextOptions\nfrom openai import AzureOpenAI\n\n# 1. Zero-Trust Authentication: Managed Identity (NO HARDCODED API KEYS)\n# In production on Azure Container Apps / AKS, DefaultAzureCredential automatically\n# discovers the container's System-Assigned Managed Identity via Entra ID (Azure AD).\ncredential = DefaultAzureCredential()\n\n# 2. Retrieve Database Connection Strings from Azure Key Vault over Private Link\nKEY_VAULT_URL = os.environ.get(\"KEY_VAULT_URL\", \"https://kv-production-ai-vault.vault.azure.net/\")\nsecret_client = SecretClient(vault_url=KEY_VAULT_URL, credential=credential)\ndb_connection_string = secret_client.get_secret(\"Postgres-ConnectionString\").value\n\n# 3. Secure Azure OpenAI Client via Token-Based Managed Identity\n# Connects to a Private Endpoint (e.g. https://openai-corp-ai.privatelink.openai.azure.com/)\nopenai_client = AzureOpenAI(\n    azure_endpoint=os.environ.get(\"AZURE_OPENAI_ENDPOINT\", \"https://openai-corp-ai.openai.azure.com/\"),\n    azure_ad_token_provider=credential.get_token(\"https://cognitiveservices.azure.com/.default\"),\n    api_version=\"2024-02-15-preview\"\n)\n\n# 4. Azure AI Content Safety: Prompt Injection & Jailbreak Defense\ncontent_safety_client = ContentSafetyClient(\n    endpoint=os.environ.get(\"AZURE_CONTENT_SAFETY_ENDPOINT\", \"https://safety-production-ai.cognitiveservices.azure.com/\"),\n    credential=credential\n)\n\ndef inspect_user_prompt_security(user_text: str) -> bool:\n    \"\"\"Blocks prompt injection, jailbreaks, and harmful inputs before calling LLM.\"\"\"\n    request = AnalyzeTextOptions(text=user_text)\n    analysis = content_safety_client.analyze_text(request)\n    \n    # Block if any category exceeds enterprise risk threshold (Severity >= 2)\n    for category in [analysis.hate_result, analysis.self_harm_result, analysis.sexual_result, analysis.violence_result]:\n        if category and category.severity >= 2:\n            return False  # Input rejected\n    return True\n\n# 5. Execute Enterprise LLM Completion with Clean Inputs\nsample_prompt = \"Find matching summer floral blouses in catalog.\"\nif inspect_user_prompt_security(sample_prompt):\n    response = openai_client.chat.completions.create(\n        model=\"gpt-4o\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"You are a professional fashion assistant. Rely only on retrieved context.\"},\n            {\"role\": \"user\", \"content\": sample_prompt}\n        ],\n        temperature=0.2\n    )\n    print(\"Secured Generation:\", response.choices[0].message.content)\nelse:\n    print(\"Security Alert: Prompt violated Azure Content Safety guardrails.\")",
-    "interviewAnswers": [
-      {
-        "question": "How would you implement rate limiting for an LLM app on Azure? Cover per-user limits, abuse prevention, and traffic spikes.",
-        "answer": "We deploy a multi-layered rate-limiting architecture on Azure: 1) Per-User & Per-Tenant Limits via Azure API Management (APIM): We apply the <rate-limit-by-key> policy using the user's JWT subject or tenant ID. We enforce both RPM (Requests Per Minute) and TPM (Tokens Per Minute) quotas by decrementing user token balances based on response usage headers. 2) Distributed Token Bucket via Azure Cache for Redis: Multi-instance FastAPI containers use Redis Lua scripts for sub-millisecond atomic sliding-window rate limiting. 3) Abuse & DDoS Prevention: Azure Application Gateway WAF and Azure Front Door rate-limit unauthenticated public IPs (max 5 req/min) and block botnets. 4) Handling Traffic Spikes: Non-real-time requests (document analysis, batch runs) are buffered into Azure Service Bus queues, allowing backend workers to process them at a steady rate within Azure OpenAI capacity limits without dropping requests."
-      },
-      {
-        "question": "How would you handle authentication, authorization, and access control in an AI application?",
-        "answer": "1) Authentication (AuthN): Validate OAuth2 / OIDC JWT tokens minted by identity providers (Entra ID/Okta) at the API Gateway. 2) Authorization (AuthZ): Enforce least-privilege RBAC and object-level authorization (verifying the authenticated user owns the target record before executing any tool to prevent BOLA/IDOR). 3) Permission-Aware RAG: Apply single-stage metadata filtering inside the vector database traversal (allowed_groups contains user_group). 4) Tenant Isolation: Enforce dedicated namespaces in Pinecone and per-tenant databases in PostgreSQL so enterprise data never mixes."
-      }
-    ]
   },
   {
     "id": "chatbot-architecture",
