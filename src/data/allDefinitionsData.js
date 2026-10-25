@@ -6905,15 +6905,6 @@ export const definitionsData = [
     "badge": "Hyperparameter Tuning, Pipeline Automation & Model Search",
     "summary": "AutoML stands for Automated Machine Learning. It automates repetitive steps in ML development: preparing datasets, feature encoding, selecting algorithms, tuning hyperparameters, and comparing evaluation metrics.",
     "coreDefinition": "AutoML stands for Automated Machine Learning. It automates some of the repetitive steps involved in developing a machine-learning model.",
-    "manualStepsIntro": "Normally, a developer or data scientist may need to:",
-    "manualSteps": [
-      "1. Prepare the dataset.",
-      "2. Select candidate algorithms.",
-      "3. Choose hyperparameters.",
-      "4. Train models.",
-      "5. Compare evaluation metrics.",
-      "6. Select a suitable model."
-    ],
     "automlCapability": "AutoML can automate many of these steps. An AutoML system might try Logistic Regression, Random Forest, and gradient-boosting models, tune their hyperparameters, and compare their validation results.",
     "whatItDoesNotGuaranteeIntro": "What AutoML does not guarantee",
     "whatItDoesNotGuarantee": [
