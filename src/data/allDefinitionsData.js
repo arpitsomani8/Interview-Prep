@@ -28,14 +28,6 @@ export const definitionBookmarks = [
     "label": "AI Evaluation, Fairness & Acceptance Criteria"
   },
   {
-    "id": "ai-gateway",
-    "label": "AI Gateway (Routing, Caching & Cost Control)"
-  },
-  {
-    "id": "ai-monitoring-observability",
-    "label": "AI Observability (Tracing, Metrics & RAG Debugging)"
-  },
-  {
     "id": "activation-functions",
     "label": "Activation Functions"
   },
@@ -1089,7 +1081,7 @@ export const definitionsData = [
     "runtimeContrast": "In the GPT example, the model runs on the provider's infrastructure, not inside FastAPI. In the scikit-learn example, the model is loaded into the Python application itself.",
     "ragClarification": "GPT and LLaMA are model families (the generative reasoning brains), whereas RAG (Retrieval-Augmented Generation) is a technique for supplying a model with relevant external information from your knowledge base. They are complementary and frequently used together."
   },
-      {
+  {
     "id": "agentic-ai-workflow",
     "title": "Agentic AI / Workflow",
     "badge": "Autonomous Execution & Goal Pursuit",
@@ -1889,6 +1881,22 @@ export const definitionsData = [
     ],
     "interviewAnswers": [
       {
+        "question": "How would you evaluate a RAG application before production? Which metrics, eval datasets, and techniques would you use to measure accuracy, relevance, hallucination, and latency?",
+        "answer": "We evaluate RAG across 4 core dimensions: 1) Metrics: The RAG Triad (Context Relevance to verify retrieval, Groundedness/Faithfulness to measure hallucination, and Answer Relevance to measure query alignment), alongside IR metrics (MRR, Recall@5, NDCG@10). 2) Eval Datasets: We generate 500+ synthetic QA pairs across factoid, multi-hop, and negative (abstention) queries, validated by human subject-matter experts. 3) Techniques: Automated LLM-as-a-Judge with position-swapped pairwise scoring to remove order bias, plus semantic BERTScore. 4) Latency: Benchmarking P50, P95, and P99 latency across query embedding (<25ms), hybrid search (<35ms), reranking (<50ms), and TTFT (<400ms) under simulated user loads."
+      },
+      {
+        "question": "Response quality drops suddenly after deployment, and no code has changed. How do you find the root cause and fix it?",
+        "answer": "We conduct a systematic 6-point diagnosis: 1) Ingestion/Data Drift: Check if newly ingested documents have formatting bugs, broken OCR, duplicate chunks, or encoding corruptions. 2) Third-Party Model Drift: Verify if the cloud model provider silently updated model weights or changed default parameters (pin exact checkpoint dates like gpt-4o-2024-08-06). 3) Query Distribution Shift: Inspect live query logs in Langfuse/Arize to see if users are phrasing questions differently than our evaluation sets. 4) Vector Index Fragmentation or Embedding Mismatch: Confirm the embedding model version was not mismatched and rebuild fragmented HNSW graph indexes. 5) Semantic Cache Poisoning: Check if an early hallucinated answer was cached in Redis and served to subsequent users. 6) Context Window Bloat: Check if multi-turn chat history exceeded prompt boundaries, truncating top context chunks."
+      },
+      {
+        "question": "What would end-to-end observability look like for a production GenAI app? What would you track across the LLM, retrieval pipeline, infrastructure, latency, cost, and failures?",
+        "answer": "End-to-end GenAI observability spans 6 distinct telemetry planes: 1) LLM Telemetry: Prompt and completion token counts, model versions, prompt template commit hashes. 2) Retrieval Telemetry: Top-K chunk IDs, similarity score distributions, reranker score deltas, context compression ratios. 3) Infrastructure Telemetry: CPU, memory, GPU VRAM, KV cache block usage factor (in vLLM), and Redis cache hit rates. 4) Latency Metrics: Time To First Token (TTFT), Time Per Output Token (TPOT), and P95 end-to-end response time. 5) FinOps & Cost: Real-time spend per tenant, cost per 1K tokens, and savings from semantic caching. 6) Safety & Failures: HTTP 429 rate-limiting triggers, guardrail intervention rates (prompt injections), and asynchronous hallucination alerts."
+      },
+      {
+        "question": "How would you monitor and log an AI application in production?",
+        "answer": "Monitor across 3 core telemetry planes: 1) Distributed AI Tracing: Use OpenTelemetry/Langfuse to log complete prompt-to-response spans (chunk IDs, rerank scores, LLM parameters, tool inputs). 2) Infrastructure Telemetry: Prometheus/Grafana tracking TTFT, TPOT, requests/sec, GPU VRAM, and KV-cache block allocation. 3) Quality & Safety: Background asynchronous evaluation of the RAG Triad (Context Relevance, Groundedness, Answer Relevance), guardrail trigger rates, and user thumbs-up/down telemetry."
+      },
+      {
         "question": "RAG vs fine-tuning: when would you pick each, and when would you combine both?",
         "answer": "Pick RAG when your data changes frequently (inventory, company rulebooks, news), when you need verifiable document citations, when users have different permission levels, or when zero-hallucination factual precision is mandatory. Pick Fine-Tuning when you need to teach a model a specialized tone, domain taxonomy, or strict structured output schemas (JSON/YAML), or when you want to reduce prompt latency by baking knowledge into weights. Combine both in production: Fine-tune a lightweight model (e.g. LLaMA 3 8B) on your domain syntax, output structure, and citation extraction format, and use RAG at runtime to feed it fresh, verifiable enterprise documents."
       },
@@ -2178,7 +2186,7 @@ export const definitionsData = [
       ]
     }
   },
-    {
+  {
     "id": "vector-database",
     "title": "Vector Database",
     "badge": "Vector Indexing & Similarity Search",
@@ -5423,7 +5431,7 @@ export const definitionsData = [
     ],
     "takeaway": "A production search system splits the workload: fast vector search (FAISS) fetches high-recall candidates, deterministic metadata filters eliminate violations, and multi-signal reranking ensures the most relevant, profitable items appear at the very top."
   },
-    {
+  {
     "id": "auth-authorization",
     "title": "Authentication & Authorization in AI & Web Systems",
     "badge": "AuthN vs AuthZ, JWT, OAuth 2.0/OIDC & RAG Security",
@@ -6058,7 +6066,7 @@ export const definitionsData = [
     },
     "takeaway": "In the modern Python API stack: Uvicorn powers the asynchronous ASGI server runtime, [standard] equips C-speed event loops (uvloop) and HTTP parsing (httptools), FastAPI defines routes and handlers, and Pydantic guarantees strict runtime type validation."
   },
-        {
+  {
     "id": "async-sync",
     "title": "Async vs. Sync (Synchronous vs. Asynchronous Concurrency)",
     "badge": "Concurrency & Python AsyncIO",
@@ -13256,7 +13264,7 @@ export const definitionsData = [
     ],
     "takeaway": "In object detection engineering, never evaluate models using classification accuracy alone. Always inspect mAP@50 for general object recognition capacity and mAP@[0.5:0.95] to measure tight bounding box localization precision."
   },
-        {
+  {
     "id": "ann-cnn",
     "title": "ANN/CNN (Artificial Neural Networks vs. Convolutional Neural Networks)",
     "badge": "Deep Learning • Dense vs. Spatial Convolutions",
@@ -14040,19 +14048,6 @@ export const definitionsData = [
     "code": "-- 1. Create table with constraints and JSONB support\nCREATE TABLE parcels (\n    id SERIAL PRIMARY KEY,\n    tracking_id VARCHAR(50) UNIQUE NOT NULL,\n    conveyor_lane INT NOT NULL,\n    damage_detected BOOLEAN DEFAULT FALSE,\n    inspection_metadata JSONB,\n    scanned_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP\n);\n\n-- 2. Fast B-Tree index on high-cardinality search column\nCREATE INDEX idx_parcels_lane_time ON parcels(conveyor_lane, scanned_at DESC);\n\n-- 3. GIN Index for lightning-fast JSONB key/value querying\nCREATE INDEX idx_parcels_metadata_gin ON parcels USING GIN (inspection_metadata);\n\n-- 4. Advanced Window Function query: Rank top 3 latest parcels per lane\nWITH RankedParcels AS (\n    SELECT \n        tracking_id,\n        conveyor_lane,\n        damage_detected,\n        scanned_at,\n        ROW_NUMBER() OVER(\n            PARTITION BY conveyor_lane \n            ORDER BY scanned_at DESC\n        ) as lane_rank\n    FROM parcels\n)\nSELECT * FROM RankedParcels WHERE lane_rank <= 3;"
   },
   {
-    "id": "ai-gateway",
-    "title": "AI Gateway — Centralized Routing, Semantic Caching, Rate Limiting & Governance",
-    "badge": "Production Architecture & Governance",
-    "summary": "A centralized reverse proxy and governance layer sitting between enterprise applications and LLM providers to handle authentication, token-bucket rate limits, semantic caching, fallback routing, and cost control across millions of daily queries.",
-    "details": [
-      "In Simple Terms: Think of an AI Gateway like an intelligent air traffic control tower for all LLM calls. Instead of every microservice directly calling OpenAI or self-hosted models with raw API keys, all requests pass through the gateway. It checks permissions, serves cached answers instantly, routes queries to the cheapest competent model, and protects against rate limits.",
-      "Why We Need It for Millions of Queries: Directly calling frontier LLMs at scale causes runaway costs, frequent 429 rate limit outages, and zero visibility into token spend. An AI Gateway implements semantic caching (saving 20–40% on identical or semantically identical queries), automatic fallback routing (falling back to Claude or local LLaMA if OpenAI is degraded), and per-tenant budget quotas.",
-      "Core Architectural Capabilities: 1. Authentication & Key Vault (centralized credential rotation without redeploying microservices), 2. Token-Bucket Rate Limiting (preventing noisy tenants from starving others), 3. Semantic Caching via Redis (vector lookup of past questions to return instant answers in <15ms with zero token cost), 4. Smart Model Routing (triaging simple questions to lightweight 8B models and reserving 70B/GPT-4o for complex reasoning), 5. Streaming & Cost Analytics (tracking cost-per-user and token usage in real time).",
-      "Interview Answer: 'To serve millions of queries reliably, I placed an AI Gateway (using LiteLLM / Cloudflare Gateway architecture) in front of our models. It handles semantic caching, tenant rate limits, and fallback routing. If OpenAI encounters 503 errors or latency spikes past 2 seconds, the gateway dynamically reroutes to our self-hosted LLaMA cluster with zero user-visible errors.'"
-    ],
-    "code": "from fastapi import FastAPI, HTTPException, Request, Header\nimport redis\nimport hashlib\nimport time\n\napp = FastAPI(title=\"Production AI Gateway\")\nredis_client = redis.Redis(host=\"localhost\", port=6379, db=0, decode_responses=True)\n\n# 1. Token Bucket Rate Limiting per Tenant\ndef check_tenant_rate_limit(tenant_id: str, max_tokens_per_min: int = 50000):\n    current_min = int(time.time() // 60)\n    key = f\"rate_limit:{tenant_id}:{current_min}\"\n    used = redis_client.incrby(key, 100) # Increment estimated tokens\n    if used == 100:\n        redis_client.expire(key, 65) # Auto expire\n    if used > max_tokens_per_min:\n        raise HTTPException(status_code=429, detail=\"Tenant token rate limit exceeded. Please throttle.\")\n\n# 2. Semantic / Exact Cache Check\ndef get_cached_response(prompt: str):\n    prompt_hash = hashlib.sha256(prompt.strip().lower().encode()).hexdigest()\n    cached = redis_client.get(f\"cache:{prompt_hash}\")\n    return cached, prompt_hash\n\n# 3. Gateway Router with Fallback & Cost Control\n@app.post(\"/v1/chat/completions\")\nasync def ai_gateway_route(request: Request, x_tenant_id: str = Header(...)):\n    body = await request.json()\n    prompt = body.get(\"messages\", [{}])[-1].get(\"content\", \"\")\n    \n    # Check rate limits\n    check_tenant_rate_limit(x_tenant_id)\n    \n    # Check cache (< 10ms response)\n    cached_answer, prompt_hash = get_cached_response(prompt)\n    if cached_answer:\n        return {\"source\": \"semantic_cache\", \"response\": cached_answer, \"latency_ms\": 8}\n        \n    # Model routing: Use fast 8B for short queries, 70B for deep queries\n    target_model = \"llama-3-8b-instruct\" if len(prompt.split()) < 150 else \"gpt-4o\"\n    \n    try:\n        # Primary call via provider\n        response = f\"Answer to '{prompt}' processed via {target_model}\"\n        redis_client.setex(f\"cache:{prompt_hash}\", 3600, response) # Cache 1hr\n        return {\"source\": \"primary_model\", \"model\": target_model, \"response\": response}\n    except Exception as e:\n        # Fallback to secondary self-hosted model\n        fallback_response = f\"Fallback answer via self-hosted LLaMA-70B\"\n        return {\"source\": \"fallback_route\", \"model\": \"llama-70b-local\", \"response\": fallback_response}"
-  },
-  {
     "id": "kv-cache",
     "title": "KV Cache & PagedAttention — Memory Mechanics & LLM Inference Acceleration",
     "badge": "LLM Inference & GPU Memory Optimization",
@@ -14247,37 +14242,6 @@ export const definitionsData = [
       "Interview Answer: 'Internally, generation starts with BPE tokenization and RoPE positional embedding. The token vector passes through 32+ transformer decoder layers with causal self-attention and SwiGLU FFNs. The final hidden state is projected via the LM Head into vocabulary logits, scaled by temperature, filtered by Top-P, and sampled. The new token is appended to the KV cache, repeating until an <|end_of_text|> token is emitted.'"
     ],
     "code": "import torch\nimport torch.nn.functional as F\n\ndef sample_next_token(logits: torch.Tensor, temperature: float = 0.7, top_p: float = 0.9):\n    \"\"\"\n    Simulates the internal decoding step from raw vocabulary logits to next token ID.\n    logits: [1, vocab_size] (e.g., [1, 128000])\n    \"\"\"\n    # 1. Temperature Scaling\n    scaled_logits = logits / max(temperature, 1e-5)\n    \n    # 2. Softmax to Probabilities\n    probs = F.softmax(scaled_logits, dim=-1)\n    \n    # 3. Top-P (Nucleus) Filtering\n    sorted_probs, sorted_indices = torch.sort(probs, descending=True, dim=-1)\n    cumulative_probs = torch.cumsum(sorted_probs, dim=-1)\n    \n    # Remove tokens with cumulative probability above top_p threshold\n    sorted_indices_to_remove = cumulative_probs > top_p\n    # Shift right to keep at least the very top token\n    sorted_indices_to_remove[..., 1:] = sorted_indices_to_remove[..., :-1].clone()\n    sorted_indices_to_remove[..., 0] = 0\n    \n    # Zero out removed probabilities and renormalize\n    sorted_probs[sorted_indices_to_remove] = 0.0\n    sorted_probs = sorted_probs / sorted_probs.sum(dim=-1, keepdim=True)\n    \n    # 4. Multinomial Sample from candidate distribution\n    next_token_index = torch.multinomial(sorted_probs, num_samples=1)\n    sampled_token_id = sorted_indices.gather(dim=-1, index=next_token_index)\n    \n    return sampled_token_id.item()\n\n# Test simulation with 5000 vocab size\nmock_logits = torch.randn(1, 5000)\ntoken_id = sample_next_token(mock_logits, temperature=0.7, top_p=0.9)\nprint(\"Sampled Next Token ID from Transformer Logits:\", token_id)"
-  },
-  {
-    "id": "ai-monitoring-observability",
-    "title": "AI Observability — Distributed Tracing, RAG Triad & Root Cause Debugging",
-    "badge": "Production Reliability & GenAI Telemetry",
-    "summary": "Comprehensive production AI observability framework incorporating distributed tracing (OpenTelemetry, Langfuse), metric dashboards (TTFT, token cost, cache hit rate), the RAG Triad evaluation framework, and systematic retrieval debugging.",
-    "details": [
-      "The 3 Pillars of GenAI Observability: 1. 'Metrics' (quantitative time-series: TTFT, TPOT, requests per second, token usage by model/tenant, GPU cache usage, semantic cache hit rate, cost-per-user), 2. 'Logs' (structured JSON event logs capturing prompt hashes, tool call arguments, error traces, and rate-limit headers with PII redaction), 3. 'Distributed Traces' (OpenTelemetry spans tracking an end-to-end user query through API Gateway -> Embedding model -> Vector search -> Reranker -> LLM stream).",
-      "The RAG Triad Quality Framework (TruLens / Ragas): 1. 'Context Relevance' (are retrieved chunks actually relevant to the question? low score = bad vector search or poor chunking), 2. 'Groundedness / Faithfulness' (is the LLM's answer strictly supported by the retrieved context? low score = hallucination), 3. 'Answer Relevance' (does the final answer address the user's prompt directly?).",
-      "How to Systematically Debug an Irrelevant RAG Retrieval: 1. Step 1: Isolate Retrieval vs Generation (check if the gold answer was present in Top-K chunks; if chunks are bad, it's a retrieval failure; if chunks are good, it's a generation prompt failure), 2. Step 2: Query-Document Vocabulary Gap (if keywords don't match, add Query Expansion / HyDE or switch to Hybrid Search), 3. Step 3: Chunk Size Mismatch (chunks too small lack context; chunks too large dilute embeddings), 4. Step 4: Missing Reranker (top 50 vector search contains noise; add a Cross-Encoder reranker).",
-      "Interview Answer: 'We monitor production AI using OpenTelemetry and Langfuse. We track TTFT, TPOT, and cost-per-tenant on Grafana dashboards. For quality, our background workers continuously sample queries and evaluate the RAG Triad: Context Relevance, Groundedness, and Answer Relevance. When users report poor answers, distributed traces immediately pinpoint whether the failure occurred during vector retrieval, reranking, or LLM synthesis.'"
-    ],
-    "code": "import time\nimport uuid\n\n# Production OpenTelemetry / RAG Tracing Context\nclass RAGTracer:\n    def __init__(self, trace_id=None):\n        self.trace_id = trace_id or str(uuid.uuid4())\n        self.spans = []\n\n    def log_span(self, name: str, start_time: float, metadata: dict):\n        duration_ms = (time.perf_counter() - start_time) * 1000\n        span = {\n            \"trace_id\": self.trace_id,\n            \"span_name\": name,\n            \"duration_ms\": round(duration_ms, 2),\n            **metadata\n        }\n        self.spans.append(span)\n        return span\n\n# Simulated Production RAG Pipeline with End-to-End Tracing\ntracer = RAGTracer()\n\n# 1. Trace Vector Search\nt0 = time.perf_counter()\n# ... vector search executes ...\ntime.sleep(0.015) # 15ms vector search\ntracer.log_span(\"vector_search\", t0, {\"top_k\": 25, \"db\": \"chromadb\", \"cache_hit\": False})\n\n# 2. Trace Reranker\nt1 = time.perf_counter()\n# ... cross-encoder rerank executes ...\ntime.sleep(0.035) # 35ms reranker\ntracer.log_span(\"cohere_rerank\", t1, {\"input_chunks\": 25, \"output_chunks\": 5})\n\n# 3. Trace LLM Generation & Evaluate RAG Triad\nt2 = time.perf_counter()\ntime.sleep(0.200) # 200ms LLM generation\ntracer.log_span(\"llm_generation\", t2, {\n    \"model\": \"gpt-4o\",\n    \"prompt_tokens\": 1240,\n    \"completion_tokens\": 180,\n    \"context_relevance\": 0.94, # RAG Triad Metric 1\n    \"groundedness\": 0.98,       # RAG Triad Metric 2\n    \"answer_relevance\": 0.96    # RAG Triad Metric 3\n})\n\nprint(\"Production Trace Recorded:\")\nfor s in tracer.spans:\n    print(f\"[{s['span_name']}] Latency: {s['duration_ms']}ms | Metadata: {s}\")",
-    "interviewAnswers": [
-      {
-        "question": "How would you evaluate a RAG application before production? Which metrics, eval datasets, and techniques would you use to measure accuracy, relevance, hallucination, and latency?",
-        "answer": "We evaluate RAG across 4 core dimensions: 1) Metrics: The RAG Triad (Context Relevance to verify retrieval, Groundedness/Faithfulness to measure hallucination, and Answer Relevance to measure query alignment), alongside IR metrics (MRR, Recall@5, NDCG@10). 2) Eval Datasets: We generate 500+ synthetic QA pairs across factoid, multi-hop, and negative (abstention) queries, validated by human subject-matter experts. 3) Techniques: Automated LLM-as-a-Judge with position-swapped pairwise scoring to remove order bias, plus semantic BERTScore. 4) Latency: Benchmarking P50, P95, and P99 latency across query embedding (<25ms), hybrid search (<35ms), reranking (<50ms), and TTFT (<400ms) under simulated user loads."
-      },
-      {
-        "question": "Response quality drops suddenly after deployment, and no code has changed. How do you find the root cause and fix it?",
-        "answer": "We conduct a systematic 6-point diagnosis: 1) Ingestion/Data Drift: Check if newly ingested documents have formatting bugs, broken OCR, duplicate chunks, or encoding corruptions. 2) Third-Party Model Drift: Verify if the cloud model provider silently updated model weights or changed default parameters (pin exact checkpoint dates like gpt-4o-2024-08-06). 3) Query Distribution Shift: Inspect live query logs in Langfuse/Arize to see if users are phrasing questions differently than our evaluation sets. 4) Vector Index Fragmentation or Embedding Mismatch: Confirm the embedding model version was not mismatched and rebuild fragmented HNSW graph indexes. 5) Semantic Cache Poisoning: Check if an early hallucinated answer was cached in Redis and served to subsequent users. 6) Context Window Bloat: Check if multi-turn chat history exceeded prompt boundaries, truncating top context chunks."
-      },
-      {
-        "question": "What would end-to-end observability look like for a production GenAI app? What would you track across the LLM, retrieval pipeline, infrastructure, latency, cost, and failures?",
-        "answer": "End-to-end GenAI observability spans 6 distinct telemetry planes: 1) LLM Telemetry: Prompt and completion token counts, model versions, prompt template commit hashes. 2) Retrieval Telemetry: Top-K chunk IDs, similarity score distributions, reranker score deltas, context compression ratios. 3) Infrastructure Telemetry: CPU, memory, GPU VRAM, KV cache block usage factor (in vLLM), and Redis cache hit rates. 4) Latency Metrics: Time To First Token (TTFT), Time Per Output Token (TPOT), and P95 end-to-end response time. 5) FinOps & Cost: Real-time spend per tenant, cost per 1K tokens, and savings from semantic caching. 6) Safety & Failures: HTTP 429 rate-limiting triggers, guardrail intervention rates (prompt injections), and asynchronous hallucination alerts."
-      },
-      {
-        "question": "How would you monitor and log an AI application in production?",
-        "answer": "Monitor across 3 core telemetry planes: 1) Distributed AI Tracing: Use OpenTelemetry/Langfuse to log complete prompt-to-response spans (chunk IDs, rerank scores, LLM parameters, tool inputs). 2) Infrastructure Telemetry: Prometheus/Grafana tracking TTFT, TPOT, requests/sec, GPU VRAM, and KV-cache block allocation. 3) Quality & Safety: Background asynchronous evaluation of the RAG Triad (Context Relevance, Groundedness, Answer Relevance), guardrail trigger rates, and user thumbs-up/down telemetry."
-      }
-    ]
   },
   {
     "id": "chroma-db",
