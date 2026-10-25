@@ -1102,16 +1102,102 @@ export const definitionsData = [
     "title": "Agentic AI / Workflow",
     "badge": "Autonomous Execution & Multi-Step Reasoning Architecture",
     "summary": "An autonomous software architecture where foundation models act as proactive reasoning engines—iteratively decomposing goals, deciding action sequences, invoking external tools, observing outcomes, and self-correcting until an objective is accomplished.",
-    "coreDifferences": [
-      "Standard Chatbot vs. AI Agent: A standard chatbot is purely reactive (waits for a prompt, generates a single one-shot completion, and halts). An AI Agent is proactive and goal-driven: it formulates execution plans, calls databases/APIs/code interpreters, parses intermediate results, and loops until the task is verified.",
-      "Agentic Workflow: The iterative control loop (Reasoning → Tool Call → Observation → Reflection → Re-planning) governing how single or multi-agent systems interact with state, tools, and human-in-the-loop approvals.",
-      "Relationship to GenAI: LLMs serve as the cognitive reasoning engine of Agentic AI, but an agent includes external tool bindings, stateful memory, structured planning, and evaluation guardrails."
+    "interviewScript": {
+      "coreShift": "A standard LLM is purely reactive text generation (prompt in → completion out). Agentic AI wraps the model inside an autonomous execution loop where it acts as the decision-making brain.",
+      "theLoop": "Instead of answering in one shot, it follows a 4-step cycle: Plan → Act (Call Tools/APIs) → Observe (Parse Outputs/Errors) → Reflect & Self-Correct until the target goal is verified.",
+      "whyItMatters": "Moves AI from passive conversational advice to active execution—it can query databases, run code, browse the web, heal from runtime errors, and maintain persistent state."
+    },
+    "evolution": [
+      {
+        "level": "Level 1: Standard Chatbot",
+        "tag": "Reactive",
+        "trigger": "User prompt",
+        "execution": "One-shot text completion from static model weights",
+        "loop": "No tools, no environmental feedback; halts immediately after completion",
+        "takeaway": "Conversationalist without hands"
+      },
+      {
+        "level": "Level 2: Tool-Augmented / RAG",
+        "tag": "Assisted",
+        "trigger": "Retrieval or single function trigger",
+        "execution": "Deterministic 1-step tool execution (e.g. fetch vector chunks and feed to prompt)",
+        "loop": "Fixed linear DAG; halts or throws uncaught error if tool returns failure",
+        "takeaway": "Linear script with an LLM step"
+      },
+      {
+        "level": "Level 3: Agentic AI & Workflow",
+        "tag": "Autonomous",
+        "trigger": "High-level goal (e.g. 'Audit Q3 churn & update CRM')",
+        "execution": "Multi-step autonomous ReAct loop with dynamic tool selection & re-planning",
+        "loop": "Inspects observations, diagnoses errors, modifies arguments, and iterates until goal is verified",
+        "takeaway": "Self-correcting digital worker"
+      }
     ],
-    "characteristics": [
-      "Autonomous Tool Invocation: Model autonomously selects, formats arguments for, and executes tools (SQL queries, vector search, calculators, external REST APIs, terminal commands).",
-      "Dynamic Reflection & Error Correction: Inspects tool responses; if a query fails or returns partial data, formulates alternative execution paths without crashing.",
-      "Multi-Step Planning & Sub-Goal Decomposition: Breaks high-level business objectives down into structured sub-tasks without requiring rigid hardcoded scripts.",
-      "State Memory & Feedback Loops: Maintains scratchpad memory across execution steps and persists context across multi-turn interactions."
+    "executionLoop": [
+      {
+        "step": "1. Plan & Decompose",
+        "desc": "Breaks high-level business objectives down into structured sub-tasks without requiring rigid hardcoded scripts (e.g. Plan-and-Solve / ReAct reasoning)."
+      },
+      {
+        "step": "2. Act (Tool Call)",
+        "desc": "Model autonomously selects, formats schema arguments for, and executes external tools (SQL, REST APIs, code interpreter, vector search)."
+      },
+      {
+        "step": "3. Observe",
+        "desc": "Captures and parses runtime feedback, environmental responses, API status codes, or execution tracebacks."
+      },
+      {
+        "step": "4. Reflect & Self-Correct",
+        "desc": "Inspects observations: if a query fails or returns partial data, formulates alternative paths and re-tries without crashing."
+      }
+    ],
+    "pillars": [
+      {
+        "title": "1. Brain (Planning & Reasoning)",
+        "subtitle": "Cognitive Core",
+        "desc": "Decomposes goals, manages step-by-step Chain-of-Thought, and decides next actions based on intermediate observations."
+      },
+      {
+        "title": "2. Hands (Tool Execution)",
+        "subtitle": "Action Space",
+        "desc": "Invokes external APIs, databases, browsers, and code interpreters via structured JSON function calling schemas."
+      },
+      {
+        "title": "3. Memory (Dual-Layer State)",
+        "subtitle": "Context & Recall",
+        "desc": "Short-term scratchpad (in-context working memory of past steps) + Long-term persistence (Vector DB / Redis session state)."
+      },
+      {
+        "title": "4. Guardrails (Safety & Limits)",
+        "subtitle": "Control & Stopping",
+        "desc": "Hard iteration ceilings (prevents infinite loops), token budgets, schema validators, and Human-in-the-Loop (HITL) approval gates."
+      }
+    ],
+    "tradeoffs": {
+      "whenToUse": [
+        "Unpredictable, multi-step tasks requiring dynamic tool selection based on intermediate findings.",
+        "Workflows requiring autonomous error recovery and self-debugging (e.g., automated coding, data science triage).",
+        "Complex research and multi-source synthesis where the exact search queries cannot be known ahead of time."
+      ],
+      "whenToAvoid": [
+        "Deterministic, linear business pipelines where a standard Python script/DAG is 100% reliable, $0 cost, and faster.",
+        "Strict sub-second latency SLA requirements (agents require multiple sequential LLM round-trips: 5s–30s+).",
+        "Zero-tolerance regulatory paths with no human validation or where non-deterministic tool calls pose security risks."
+      ]
+    },
+    "frameworks": [
+      {
+        "name": "LangGraph",
+        "desc": "Cyclical graph architecture with state machines, checkpointing, and first-class Human-in-the-Loop approval nodes."
+      },
+      {
+        "name": "CrewAI / AutoGen",
+        "desc": "Multi-agent role-playing orchestration (e.g., Planner + Researcher + Coder + Reviewer agents collaborating)."
+      },
+      {
+        "name": "LlamaIndex Workflows",
+        "desc": "Event-driven agentic pipelines tailored for retrieval-intensive and document intelligence tasks."
+      }
     ]
   },
   {

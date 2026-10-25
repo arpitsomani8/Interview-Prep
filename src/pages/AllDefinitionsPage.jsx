@@ -559,77 +559,260 @@ export default function AllDefinitionsPage() {
 
             {/* Item: Agentic AI / Workflow */}
             {item.id === 'agentic-ai-workflow' && (
-              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
-                {/* 1. Architecture Paradigm Contrast (Chatbot vs Agentic AI) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                  <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-2">
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. 60-Second Interview Delivery Script (Top Callout) */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-cyan-950/40 via-zinc-950/90 to-indigo-950/30 border border-cyan-500/40 shadow-lg space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                      <h4 className="text-xs sm:text-sm font-bold text-amber-300 uppercase tracking-wider font-mono">
-                        Standard Reactive LLM
+                      <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+                      <h4 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider font-mono">
+                        How to Answer in an Interview (60-Second Verbal Script)
                       </h4>
                     </div>
-                    <p className="text-xs text-zinc-400 leading-relaxed">
-                      Purely prompt-in, completion-out. Generates a single turn response based strictly on static training weights or immediate prompt context, with no environmental feedback loop.
-                    </p>
-                    <div className="text-[11px] font-mono text-zinc-500 pt-1 border-t border-zinc-800/80">
-                      User Prompt → LLM Completion → End
-                    </div>
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                      Say This Aloud
+                    </span>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-                      <h4 className="text-xs sm:text-sm font-bold text-cyan-300 uppercase tracking-wider font-mono">
-                        Agentic AI & Workflow
-                      </h4>
+                  <p className="text-xs text-zinc-300 leading-relaxed italic">
+                    "If an interviewer asks: <strong className="text-white font-sans not-italic">'What is Agentic AI and how does an Agentic Workflow actually work?'</strong> — deliver this structured 3-part answer:"
+                  </p>
+
+                  <div className="space-y-2.5 pt-1">
+                    <div className="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                        <strong className="text-xs font-mono text-cyan-300 uppercase">1. The Paradigm Shift:</strong>
+                      </div>
+                      <p className="text-xs text-zinc-300 pl-3.5 leading-relaxed">
+                        {item.interviewScript?.coreShift || "A standard LLM is purely reactive text generation (prompt in → completion out). Agentic AI wraps the model inside an autonomous execution loop where it acts as the decision-making brain."}
+                      </p>
                     </div>
-                    <p className="text-xs text-zinc-300 leading-relaxed">
-                      Proactive goal pursuit. Uses the LLM as a cognitive reasoning engine to plan sub-tasks, execute external tools, inspect environmental observations, and iterate until the target goal is verified.
-                    </p>
-                    <div className="text-[11px] font-mono text-cyan-400/90 pt-1 border-t border-cyan-800/40">
-                      Plan → Tool Call → Observe → Reflect → Iterate
+
+                    <div className="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                        <strong className="text-xs font-mono text-indigo-300 uppercase">2. The ReAct Loop:</strong>
+                      </div>
+                      <p className="text-xs text-zinc-300 pl-3.5 leading-relaxed">
+                        {item.interviewScript?.theLoop || "Instead of answering in one shot, it follows a 4-step cycle: Plan → Act (Call Tools/APIs) → Observe (Parse Outputs/Errors) → Reflect & Self-Correct until the target goal is verified."}
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-black/60 border border-zinc-800 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <strong className="text-xs font-mono text-emerald-300 uppercase">3. Why It Matters:</strong>
+                      </div>
+                      <p className="text-xs text-zinc-300 pl-3.5 leading-relaxed">
+                        {item.interviewScript?.whyItMatters || "Moves AI from passive conversational advice to active execution—it can query databases, run code, browse the web, heal from runtime errors, and maintain persistent state."}
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                {/* 2. Core Differences & Paradigm Shift */}
-                <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2.5">
-                  <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
-                    <Bot className="w-4 h-4 text-cyan-400" />
-                    Core Conceptual Differences
-                  </h4>
-                  <ul className="space-y-2">
-                    {item.coreDifferences.map((diff, dIdx) => (
-                      <li key={dIdx} className="flex items-start gap-2.5 leading-relaxed text-xs sm:text-sm">
-                        <span className="text-cyan-400 font-bold mt-0.5">•</span>
-                        <span>{diff}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {/* 2. Evolution Matrix (Chatbot vs Tool-Augmented vs Agentic) */}
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
+                      <Layers className="w-4 h-4 text-cyan-400" />
+                      Evolution: Chatbot vs. Tool-Augmented vs. Agentic Workflow
+                    </h4>
+                    <span className="text-[10px] font-mono text-zinc-500">Autonomous vs Reactive</span>
+                  </div>
 
-                {/* 3. The 4 Pillars of an Agentic Workflow */}
-                <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2.5">
-                  <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
-                    <Workflow className="w-4 h-4 text-indigo-400" />
-                    4 Key Pillars of an Agentic Workflow
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {item.characteristics.map((char, cIdx) => {
-                      const [title, ...descParts] = char.split(':');
-                      const desc = descParts.join(':');
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {item.evolution?.map((tier, tIdx) => {
+                      const isLevel3 = tIdx === 2;
+                      const isLevel2 = tIdx === 1;
                       return (
-                        <div key={cIdx} className="p-3 rounded-lg bg-zinc-900/70 border border-zinc-800/80 space-y-1">
-                          <span className="text-xs font-bold text-cyan-300 font-mono block">
-                            {title.trim()}
-                          </span>
-                          <span className="text-xs text-zinc-400 leading-relaxed block">
-                            {desc ? desc.trim() : ''}
-                          </span>
+                        <div
+                          key={tIdx}
+                          className={`p-4 rounded-xl border flex flex-col justify-between space-y-3 transition ${
+                            isLevel3
+                              ? 'bg-cyan-950/20 border-cyan-500/50 shadow-md shadow-cyan-950/30'
+                              : isLevel2
+                              ? 'bg-zinc-950/80 border-indigo-900/40'
+                              : 'bg-zinc-950/80 border-zinc-800'
+                          }`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-white font-mono">
+                                {tier.level}
+                              </span>
+                              <span
+                                className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded font-semibold ${
+                                  isLevel3
+                                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                                    : isLevel2
+                                    ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                                    : 'bg-zinc-800 text-zinc-400'
+                                }`}
+                              >
+                                {tier.tag}
+                              </span>
+                            </div>
+
+                            <div className="space-y-1.5 text-xs text-zinc-400 pt-1">
+                              <div>
+                                <span className="text-zinc-500 font-mono text-[11px] block">Trigger:</span>
+                                <span className="text-zinc-300 font-medium">{tier.trigger}</span>
+                              </div>
+                              <div>
+                                <span className="text-zinc-500 font-mono text-[11px] block">Execution:</span>
+                                <span className="text-zinc-300 leading-snug">{tier.execution}</span>
+                              </div>
+                              <div>
+                                <span className="text-zinc-500 font-mono text-[11px] block">Loop & Error Recovery:</span>
+                                <span className="text-zinc-300 leading-snug">{tier.loop}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div
+                            className={`p-2 rounded-lg text-[11px] font-mono border ${
+                              isLevel3
+                                ? 'bg-cyan-950/40 border-cyan-800/40 text-cyan-300'
+                                : 'bg-zinc-900 border-zinc-800/80 text-zinc-400'
+                            }`}
+                          >
+                            <span className="text-zinc-500 mr-1.5">Mental Model:</span>
+                            <span className="font-semibold">"{tier.takeaway}"</span>
+                          </div>
                         </div>
                       );
                     })}
+                  </div>
+                </div>
+
+                {/* 3. The 4-Step ReAct Execution Cycle */}
+                <div className="p-4 sm:p-5 rounded-xl bg-zinc-950/70 border border-zinc-800 space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
+                      <Workflow className="w-4 h-4 text-cyan-400" />
+                      The 4-Step ReAct Execution Loop (How it Operates)
+                    </h4>
+                    <span className="text-[11px] font-mono text-cyan-400 bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-800/40">
+                      Plan → Act → Observe → Reflect
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {item.executionLoop?.map((stepItem, sIdx) => (
+                      <div
+                        key={sIdx}
+                        className="p-3.5 rounded-xl bg-black/60 border border-zinc-800 flex flex-col justify-between space-y-2 hover:border-zinc-700 transition"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-400 font-mono text-xs flex items-center justify-center font-bold border border-cyan-500/30">
+                            {sIdx + 1}
+                          </span>
+                          <span className="text-xs font-bold text-white font-mono">
+                            {stepItem.step.replace(/^\d+\.\s*/, '')}
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                          {stepItem.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 4. The 4 Structural Pillars of an Agent System */}
+                <div className="p-4 sm:p-5 rounded-xl bg-zinc-950/70 border border-zinc-800 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
+                      <Cpu className="w-4 h-4 text-indigo-400" />
+                      The 4 Core Architectural Pillars
+                    </h4>
+                    <span className="text-[10px] font-mono text-zinc-500">System Anatomy</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {item.pillars?.map((pillar, pIdx) => (
+                      <div
+                        key={pIdx}
+                        className="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800/80 space-y-1.5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-cyan-300 font-mono">
+                            {pillar.title}
+                          </span>
+                          <span className="text-[10px] font-mono text-zinc-500 px-2 py-0.5 rounded bg-black/50 border border-zinc-800">
+                            {pillar.subtitle}
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                          {pillar.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 5. Tradeoffs: When to Use vs When to Avoid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div className="p-4 rounded-xl bg-emerald-950/15 border border-emerald-800/40 space-y-2.5">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <h4 className="text-xs font-bold text-emerald-300 uppercase tracking-wider font-mono">
+                        When to Choose Agentic AI
+                      </h4>
+                    </div>
+                    <ul className="space-y-1.5">
+                      {item.tradeoffs?.whenToUse.map((pt, ptIdx) => (
+                        <li key={ptIdx} className="text-xs text-zinc-300 flex items-start gap-2 leading-relaxed">
+                          <span className="text-emerald-400 font-bold shrink-0 mt-0.5">✓</span>
+                          <span>{pt}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-rose-950/15 border border-rose-800/40 space-y-2.5">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                      <h4 className="text-xs font-bold text-rose-300 uppercase tracking-wider font-mono">
+                        When to Avoid (Use Scripts / RAG)
+                      </h4>
+                    </div>
+                    <ul className="space-y-1.5">
+                      {item.tradeoffs?.whenToAvoid.map((pt, ptIdx) => (
+                        <li key={ptIdx} className="text-xs text-zinc-300 flex items-start gap-2 leading-relaxed">
+                          <span className="text-rose-400 font-bold shrink-0 mt-0.5">✕</span>
+                          <span>{pt}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* 6. Production Orchestration Frameworks */}
+                <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
+                      <GitBranch className="w-4 h-4 text-cyan-400" />
+                      Production Frameworks to Name-Drop in Interviews
+                    </h4>
+                    <span className="text-[10px] font-mono text-cyan-400">Ecosystem Stacks</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {item.frameworks?.map((fw, fIdx) => (
+                      <div
+                        key={fIdx}
+                        className="p-3 rounded-lg bg-black/60 border border-zinc-800/90 space-y-1"
+                      >
+                        <span className="text-xs font-bold text-cyan-300 font-mono block">
+                          {fw.name}
+                        </span>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                          {fw.desc}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
