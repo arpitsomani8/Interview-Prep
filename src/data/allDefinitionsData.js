@@ -5340,42 +5340,6 @@ export const definitionsData = [
       "Apply tenant-level data isolation in a multi-tenant application.",
       "Avoid relying on frontend checks alone—client-side validation is purely for UX, never security."
     ],
-    "securityRisks": [
-      {
-        "id": 1,
-        "risk": "Prompt Injection",
-        "threat": "Malicious user input attempts to override system instructions, bypass safety guardrails, or exfiltrate private internal logic.",
-        "mitigation": "Strict separation of system prompts and user inputs (delimited XML tags), defensive guardrail models (Llama Guard), and input sanitization."
-      },
-      {
-        "id": 2,
-        "risk": "Sensitive Data Leakage",
-        "threat": "PII, proprietary system data, or other users' confidential catalog records leaked in model completions or RAG vector embeddings.",
-        "mitigation": "Strict PII redaction (Presidio), role-scoped metadata filtering at vector retrieval time, and egress output scanning."
-      },
-      {
-        "id": 3,
-        "risk": "Unauthorized Tool Calls",
-        "threat": "An autonomous agent invokes sensitive backend APIs or executes database changes without proper permissions.",
-        "mitigation": "Least-privilege tool scopes, server-side parameter validation, signed user JWT propagation, and human-in-the-loop approvals for destructive operations."
-      },
-      {
-        "id": 4,
-        "risk": "Model or API Abuse",
-        "threat": "DDoS, scraping, denial-of-wallet attacks, or unbounded token consumption exhausting GPU resources.",
-        "mitigation": "API keys, OAuth2 token validation, tiered rate limiting (e.g. 60 req/min), max token limits, and anomaly detection."
-      },
-      {
-        "id": 5,
-        "risk": "Malicious Model Files or Dependencies",
-        "threat": "Arbitrary code execution via weaponized pickle checkpoints (.pt/.pkl) or compromised supply chain packages.",
-        "mitigation": "Use safe serialization formats like Hugging Face safetensors, verify cryptographic hashes (SHA-256), and run CI/CD container/dependency vulnerability scanning."
-      }
-    ],
-    "dataPoisoningAndWeights": {
-      "dataPoisoning": "Validate data sources during ingestion and continuously monitor for malicious or abnormal examples that could corrupt training or retrieval quality.",
-      "inferenceWeightIsolation": "Inference does not normally update the model's learned weights. A user's prompt is not automatically added to training data simply because the model processed it. Whether a provider retains API inputs or uses them for training depends on the service, configuration, and applicable policy."
-    },
     "cloudSecurityLayers": [
       {
         "layer": "Identity",
@@ -7579,6 +7543,42 @@ export const definitionsData = [
         "desc": "A fallback model also needs testing. A smaller or cheaper model may have different capabilities, output formats, and safety behavior."
       }
     ],
+    "securityRisks": [
+      {
+        "id": 1,
+        "risk": "Prompt Injection",
+        "threat": "Malicious user input attempts to override system instructions, bypass safety guardrails, or exfiltrate private internal logic.",
+        "mitigation": "Strict separation of system prompts and user inputs (delimited XML tags), defensive guardrail models (Llama Guard), and input sanitization."
+      },
+      {
+        "id": 2,
+        "risk": "Sensitive Data Leakage",
+        "threat": "PII, proprietary system data, or other users' confidential catalog records leaked in model completions or RAG vector embeddings.",
+        "mitigation": "Strict PII redaction (Presidio), role-scoped metadata filtering at vector retrieval time, and egress output scanning."
+      },
+      {
+        "id": 3,
+        "risk": "Unauthorized Tool Calls",
+        "threat": "An autonomous agent invokes sensitive backend APIs or executes database changes without proper permissions.",
+        "mitigation": "Least-privilege tool scopes, server-side parameter validation, signed user JWT propagation, and human-in-the-loop approvals for destructive operations."
+      },
+      {
+        "id": 4,
+        "risk": "Model or API Abuse",
+        "threat": "DDoS, scraping, denial-of-wallet attacks, or unbounded token consumption exhausting GPU resources.",
+        "mitigation": "API keys, OAuth2 token validation, tiered rate limiting (e.g. 60 req/min), max token limits, and anomaly detection."
+      },
+      {
+        "id": 5,
+        "risk": "Malicious Model Files or Dependencies",
+        "threat": "Arbitrary code execution via weaponized pickle checkpoints (.pt/.pkl) or compromised supply chain packages.",
+        "mitigation": "Use safe serialization formats like Hugging Face safetensors, verify cryptographic hashes (SHA-256), and run CI/CD container/dependency vulnerability scanning."
+      }
+    ],
+    "dataPoisoningAndWeights": {
+      "dataPoisoning": "Validate data sources during ingestion and continuously monitor for malicious or abnormal examples that could corrupt training or retrieval quality.",
+      "inferenceWeightIsolation": "Inference does not normally update the model's learned weights. A user's prompt is not automatically added to training data simply because the model processed it. Whether a provider retains API inputs or uses them for training depends on the service, configuration, and applicable policy."
+    },
     "takeaway": "Production AI systems require defensive engineering. Transient network glitches warrant bounded jittered retries; capacity limits and outages demand circuit breakers and tested multi-provider failovers; malformed outputs require strict schema validation and safe abstention; and permanent errors must fail fast rather than waste resources on blind retries."
   },
   {
