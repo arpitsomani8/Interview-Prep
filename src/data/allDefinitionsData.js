@@ -3653,7 +3653,88 @@ export const definitionsData = [
       "question": "Does boosting require normalization?",
       "answer": "Usually not for tree-based boosting algorithms, because tree splits depend on feature thresholds rather than distance calculations. Other preprocessing may still be needed for missing values, categorical data, and data quality."
     },
-    "triadTakeaway": "Embeddings represent information; normalization changes numerical scales or vector lengths; boosting combines models to improve predictions."
+    "triadTakeaway": "Embeddings represent information; normalization changes numerical scales or vector lengths; boosting combines models to improve predictions.",
+    "howBoostingWorks": {
+      "title": "How does Boosting work?",
+      "stages": [
+        {
+          "step": 1,
+          "name": "Training dataset",
+          "desc": "Raw feature matrix and target labels provided as the base ground truth.",
+          "badge": "Input Data",
+          "accent": "text-zinc-300"
+        },
+        {
+          "step": 2,
+          "name": "Model 1",
+          "desc": "Learns an initial pattern from the training data (typically a base weak estimator such as a shallow decision tree).",
+          "badge": "Base Learner",
+          "accent": "text-cyan-400"
+        },
+        {
+          "step": 3,
+          "name": "Model 2",
+          "desc": "Improves on remaining errors by focusing on misclassified instances or fitting to the negative gradients/residuals.",
+          "badge": "Residual Correction",
+          "accent": "text-emerald-400"
+        },
+        {
+          "step": 4,
+          "name": "Model 3, then more models",
+          "desc": "Refines the ensemble sequentially, with each subsequent model targeting the errors left by all prior models.",
+          "badge": "Sequential Refinement",
+          "accent": "text-purple-400"
+        },
+        {
+          "step": 5,
+          "name": "Combined prediction",
+          "desc": "Weighted vote (classification) or weighted sum of all learner outputs (regression).",
+          "badge": "Final Ensemble Output",
+          "accent": "text-amber-400"
+        }
+      ],
+      "note": "The exact way each learner improves the ensemble depends on the boosting algorithm."
+    },
+    "baggingVsBoostingComparison": {
+      "title": "Bagging vs Boosting",
+      "subtitle": "This comparison is a common machine-learning interview question.",
+      "table": [
+        {
+          "feature": "Training",
+          "bagging": "Usually parallel/independent",
+          "boosting": "Sequential"
+        },
+        {
+          "feature": "Main idea",
+          "bagging": "Aggregate different models",
+          "boosting": "Improve the ensemble iteratively"
+        },
+        {
+          "feature": "Data handling",
+          "bagging": "Bootstrap samples commonly used",
+          "boosting": "Algorithm-specific weighting or residual/gradient fitting"
+        },
+        {
+          "feature": "Primary benefit",
+          "bagging": "Often reduces variance",
+          "boosting": "Can reduce bias and improve predictive performance"
+        },
+        {
+          "feature": "Overfitting",
+          "bagging": "Possible",
+          "boosting": "Possible, especially with excessive complexity"
+        },
+        {
+          "feature": "Example",
+          "bagging": "Random Forest",
+          "boosting": "AdaBoost, XGBoost"
+        }
+      ],
+      "memoryTrick": [
+        "Bagging = build models independently, then combine.",
+        "Boosting = build models sequentially, each improving the ensemble."
+      ]
+    }
   },
   {
     "id": "nlp-general-flow",

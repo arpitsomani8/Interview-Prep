@@ -4880,7 +4880,50 @@ export default function AllDefinitionsPage() {
                   {item.gradientLossPrinciple}
                 </div>
 
-                {/* Popular Boosting Algorithms Table */}
+                {/* 1. How does Boosting work? (Sequential Architecture Flow) */}
+                {item.howBoostingWorks && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.howBoostingWorks.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Sequential Pipeline
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-1">
+                      {item.howBoostingWorks.stages.map((st) => (
+                        <div key={st.step} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition flex flex-col justify-between">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="w-5 h-5 rounded-full bg-cyan-950 border border-cyan-700/60 text-cyan-400 text-[10px] font-mono font-bold flex items-center justify-center">
+                                {st.step}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {st.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${st.accent}`}>
+                              {st.name}
+                            </h5>
+                            <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
+                              {st.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800 text-xs text-zinc-300 leading-relaxed font-sans flex items-start gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+                      <span>{item.howBoostingWorks.note}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. Popular Boosting Algorithms Table */}
                 <div className="space-y-2">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
                     Popular Boosting Algorithms Matrix
@@ -4907,23 +4950,87 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
-                {/* Bagging vs Boosting vs Bootstrapping */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
-                    <div className="text-xs font-bold text-amber-300 font-mono uppercase">Bagging</div>
-                    <p className="text-xs text-zinc-400 leading-relaxed">{item.baggingVsBoosting.bagging}</p>
-                  </div>
-                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
-                    <div className="text-xs font-bold text-cyan-400 font-mono uppercase">Boosting</div>
-                    <p className="text-xs text-zinc-400 leading-relaxed">{item.baggingVsBoosting.boosting}</p>
-                  </div>
-                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
-                    <div className="text-xs font-bold text-emerald-300 font-mono uppercase">Bootstrapping</div>
-                    <p className="text-xs text-zinc-400 leading-relaxed">{item.baggingVsBoosting.bootstrapping}</p>
-                  </div>
-                </div>
+                {/* 3. Bagging vs Boosting (Key Interview Distinction & Memory Trick) */}
+                {item.baggingVsBoostingComparison && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-purple-400" />
+                        <span>{item.baggingVsBoostingComparison.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Interview Distinction
+                      </span>
+                    </div>
 
-                {/* Python Scikit-Learn GradientBoostingClassifier Code */}
+                    <p className="text-xs text-zinc-400 font-sans italic">
+                      {item.baggingVsBoostingComparison.subtitle}
+                    </p>
+
+                    <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
+                          <tr>
+                            <th className="py-3 px-3 font-semibold text-zinc-400 w-1/4">Feature</th>
+                            <th className="py-3 px-3 font-semibold text-amber-400 w-3/8">Bagging</th>
+                            <th className="py-3 px-3 font-semibold text-cyan-400 w-3/8">Boosting</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 font-sans">
+                          {item.baggingVsBoostingComparison.table.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-3 px-3 font-mono font-bold text-white align-top">
+                                {row.feature}
+                              </td>
+                              <td className="py-3 px-3 text-amber-200/90 align-top text-xs leading-relaxed font-sans">
+                                {row.bagging}
+                              </td>
+                              <td className="py-3 px-3 text-cyan-200/90 align-top text-xs leading-relaxed font-sans">
+                                {row.boosting}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 md:hidden">
+                      {item.baggingVsBoostingComparison.table.map((row, rIdx) => (
+                        <div key={rIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2">
+                          <h6 className="text-xs font-bold text-white font-mono">{row.feature}</h6>
+                          <div className="p-2 rounded bg-amber-950/20 border border-amber-900/40 text-xs text-amber-200/90">
+                            <strong className="block text-[10px] uppercase font-mono text-amber-400">Bagging:</strong>
+                            {row.bagging}
+                          </div>
+                          <div className="p-2 rounded bg-cyan-950/20 border border-cyan-900/40 text-xs text-cyan-200/90">
+                            <strong className="block text-[10px] uppercase font-mono text-cyan-400">Boosting:</strong>
+                            {row.boosting}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Memory Trick Box */}
+                    <div className="p-4 rounded-xl bg-gradient-to-r from-purple-950/30 via-zinc-950 to-cyan-950/30 border border-purple-800/40 space-y-2.5">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-purple-400" />
+                        <h5 className="text-xs font-bold text-purple-300 font-mono uppercase tracking-wider">
+                          Memory Trick
+                        </h5>
+                      </div>
+                      <ul className="space-y-1.5 pl-1">
+                        {item.baggingVsBoostingComparison.memoryTrick.map((m, mIdx) => (
+                          <li key={mIdx} className="text-xs font-mono text-zinc-200 flex items-start gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+                            <span>{m}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Python Scikit-Learn GradientBoostingClassifier Code */}
                 <div className="space-y-3">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
                     Hands-On Scikit-Learn GradientBoostingClassifier Implementation
@@ -4955,7 +5062,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
-                {/* What did we do? */}
+                {/* 5. What did we do? */}
                 <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
                   <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
                     What did we do?
@@ -4970,7 +5077,7 @@ export default function AllDefinitionsPage() {
                   </ul>
                 </div>
 
-                {/* What do the main parameters mean? */}
+                {/* 6. What do the main parameters mean? */}
                 <div className="space-y-2">
                   <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
                     What do the main parameters mean?
@@ -4985,7 +5092,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
-                {/* Does boosting require normalization? */}
+                {/* 7. Does boosting require normalization? */}
                 <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
                   <div className="text-xs font-bold text-amber-300 font-mono uppercase">
                     {item.normalizationQ.question}
@@ -4995,7 +5102,7 @@ export default function AllDefinitionsPage() {
                   </p>
                 </div>
 
-                {/* Triad Takeaway */}
+                {/* 8. Triad Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-cyan-900/40 text-xs text-cyan-200/90 leading-relaxed">
                   <strong className="text-cyan-400 font-mono uppercase">Triad Takeaway: </strong>
                   {item.triadTakeaway}
