@@ -13751,15 +13751,116 @@ export const definitionsData = [
   },
   {
     "id": "anova",
-    "title": "ANOVA & Kruskal-Wallis",
-    "badge": "Statistical Hypothesis Testing",
-    "summary": "Parametric and non-parametric tests to determine if numerical feature means differ significantly across categories.",
+    "title": "ANOVA & Kruskal-Wallis (Comparing Group Means & Medians)",
+    "badge": "Statistical Hypothesis Testing & Feature Significance",
+    "summary": "ANOVA stands for Analysis of Variance. Despite its name, it is commonly used to test whether the means of three or more independent groups are equal.",
     "details": [
       "One-Way ANOVA: Tests if the mean of a continuous numerical variable differs significantly across 3 or more categorical groups (e.g. Salary differences across Engineering, Sales, and HR).",
       "Assumptions of ANOVA: Requires normal distribution within each group and homogeneity of variance (homoscedasticity).",
       "Kruskal-Wallis Test: Non-parametric alternative to ANOVA used when data is skewed or sample sizes are small; compares group medians and ranks instead of means."
     ],
-    "code": "# One-Way ANOVA in Python\nfrom scipy import stats\nf_stat, p_val = stats.f_oneway(group_tech, group_sales, group_hr)\n# If p_val < 0.05, statistically significant mean difference exists."
+    "code": "# One-Way ANOVA in Python\nfrom scipy import stats\nf_stat, p_val = stats.f_oneway(group_tech, group_sales, group_hr)\n# If p_val < 0.05, statistically significant mean difference exists.",
+    "coreDefinition": "ANOVA stands for Analysis of Variance. Despite its name, it is commonly used to test whether the means of three or more independent groups are equal.",
+    "howAnovaWorks": {
+      "title": "How ANOVA Works",
+      "description": "ANOVA compares two types of variation to compute the F-statistic (F = Between-Group Variance / Within-Group Variance):",
+      "variations": [
+        {
+          "num": "1",
+          "name": "Between-group variation",
+          "desc": "How far the group means are from the overall mean.",
+          "badge": "Treatment Signal",
+          "accent": "text-cyan-400",
+          "border": "border-cyan-800/50"
+        },
+        {
+          "num": "2",
+          "name": "Within-group variation",
+          "desc": "How much individual observations vary within each group.",
+          "badge": "Random Noise",
+          "accent": "text-amber-400",
+          "border": "border-amber-800/50"
+        }
+      ]
+    },
+    "kruskalWallis": {
+      "title": "Kruskal–Wallis Test (Non-Parametric Alternative)",
+      "definition": "Non-parametric alternative to ANOVA used when data is skewed or sample sizes are small; compares group medians and ranks instead of means."
+    },
+    "comparisonTable": {
+      "title": "ANOVA vs. Kruskal–Wallis",
+      "headers": [
+        "Feature",
+        "One-way ANOVA",
+        "Kruskal–Wallis"
+      ],
+      "rows": [
+        {
+          "feature": "Approach",
+          "anova": "Parametric",
+          "kruskal": "Nonparametric, rank-based"
+        },
+        {
+          "feature": "Main comparison",
+          "anova": "Group means",
+          "kruskal": "Rank distributions"
+        },
+        {
+          "feature": "Typical data",
+          "anova": "Continuous",
+          "kruskal": "Ordinal or continuous"
+        },
+        {
+          "feature": "Normality",
+          "anova": "Residuals should be approximately normal for the classical test",
+          "kruskal": "No normality assumption"
+        },
+        {
+          "feature": "Independence",
+          "anova": "Required",
+          "kruskal": "Required"
+        },
+        {
+          "feature": "Equal variances",
+          "anova": "Assumed by classical ANOVA",
+          "kruskal": "Not a universal assumption, but differing distribution shapes affect interpretation"
+        },
+        {
+          "feature": "Python function",
+          "anova": "scipy.stats.f_oneway",
+          "kruskal": "scipy.stats.kruskal"
+        }
+      ],
+      "postHocCaveat": "Both tests can compare three or more independent groups. Neither automatically tells you which specific groups differ."
+    },
+    "scipyFunctions": [
+      {
+        "name": "scipy.stats.f_oneway()",
+        "role": "One-way ANOVA",
+        "desc": "Tests whether two or more groups have the same population mean."
+      },
+      {
+        "name": "scipy.stats.kruskal()",
+        "role": "Kruskal–Wallis",
+        "desc": "Tests whether the population medians of all groups are equal based on ranks."
+      },
+      {
+        "name": "scipy.stats.shapiro()",
+        "role": "Shapiro–Wilk normality test",
+        "desc": "Tests the null hypothesis that sample data was drawn from a normal distribution."
+      },
+      {
+        "name": "scipy.stats.levene()",
+        "role": "Test for equality of variances",
+        "desc": "Tests whether all input groups come from populations with equal variances (homoscedasticity)."
+      }
+    ],
+    "codeExample": {
+      "title": "Python Implementation: Assumption Checks, One-Way ANOVA & Kruskal-Wallis",
+      "language": "python",
+      "code": "import numpy as np\nfrom scipy import stats\n\n# Sample data: performance metrics across 3 independent algorithm versions\ngroup_a = np.array([82, 85, 88, 86, 84, 87])\ngroup_b = np.array([78, 80, 79, 81, 77, 82])\ngroup_c = np.array([91, 89, 93, 90, 94, 92])\n\n# 1. Test Normality (Shapiro-Wilk: p > 0.05 indicates normal residuals)\n_, p_norm_a = stats.shapiro(group_a)\n_, p_norm_b = stats.shapiro(group_b)\n_, p_norm_c = stats.shapiro(group_c)\n\n# 2. Test Homogeneity of Variances (Levene: p > 0.05 indicates equal variances)\n_, p_levene = stats.levene(group_a, group_b, group_c)\n\n# 3. Parametric Route: One-way ANOVA\nf_stat, p_anova = stats.f_oneway(group_a, group_b, group_c)\nprint(f\"One-way ANOVA: F = {f_stat:.4f}, p = {p_anova:.4e}\")\n\n# 4. Non-Parametric Route: Kruskal-Wallis (for skewed data or small samples)\nh_stat, p_kruskal = stats.kruskal(group_a, group_b, group_c)\nprint(f\"Kruskal-Wallis: H = {h_stat:.4f}, p = {p_kruskal:.4e}\")\n\n# Note: Both tests evaluate if ANY group differs. Neither identifies which specific\n# pair differs. When p < 0.05, perform a post-hoc test (e.g. Tukey's HSD or Dunn's)."
+    },
+    "takeaway": "ANOVA tests whether group means differ by comparing between-group variance to within-group variance. When data violates normality or equal variance assumptions, use the non-parametric Kruskal-Wallis test. Neither test specifies which pairs differ, necessitating post-hoc tests (e.g. Tukey's HSD) upon obtaining statistical significance."
   },
   {
     "id": "binning",

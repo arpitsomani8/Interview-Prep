@@ -17089,6 +17089,212 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
+            {/* Item: ANOVA & Kruskal-Wallis */}
+            {item.id === 'anova' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-950/40 via-blue-950/20 to-zinc-950 border border-cyan-800/40 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Statistical Hypothesis Testing</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Group Comparison
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    ANOVA — Analysis of Variance
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. How ANOVA Works */}
+                {item.howAnovaWorks && (
+                  <div className="space-y-3 p-4.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Activity className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                        {item.howAnovaWorks.title}
+                      </h4>
+                    </div>
+                    <p className="text-xs text-zinc-300 font-sans">
+                      {item.howAnovaWorks.description}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+                      {item.howAnovaWorks.variations.map((v, vIdx) => (
+                        <div key={vIdx} className={`p-4 rounded-xl bg-black border ${v.border} space-y-2 flex flex-col justify-between`}>
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-mono font-bold text-white flex items-center gap-1.5">
+                                <span className="w-5 h-5 rounded-full bg-zinc-900 border border-zinc-700 text-cyan-300 text-[10px] flex items-center justify-center font-bold">
+                                  {v.num}
+                                </span>
+                                <span>{v.name}</span>
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {v.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                              {v.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Kruskal-Wallis Callout */}
+                {item.kruskalWallis && (
+                  <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-800/40 space-y-1.5">
+                    <span className="text-xs font-bold font-mono text-purple-400 uppercase flex items-center gap-2">
+                      <Sliders className="w-3.5 h-3.5 text-purple-400" />
+                      <span>{item.kruskalWallis.title}</span>
+                    </span>
+                    <p className="text-xs text-purple-200/90 leading-relaxed font-sans">
+                      {item.kruskalWallis.definition}
+                    </p>
+                  </div>
+                )}
+
+                {/* 4. ANOVA vs. Kruskal-Wallis Comparison Table */}
+                {item.comparisonTable && (
+                  <div className="space-y-3 p-4.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Table className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                        {item.comparisonTable.title}
+                      </h4>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase">
+                            <th className="py-2.5 px-3.5 font-semibold text-cyan-400 w-1/4">Feature</th>
+                            <th className="py-2.5 px-3.5 font-semibold text-amber-400 w-3/8">One-way ANOVA</th>
+                            <th className="py-2.5 px-3.5 font-semibold text-purple-400 w-3/8">Kruskal–Wallis</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 font-sans">
+                          {item.comparisonTable.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3.5 font-mono font-bold text-white text-xs whitespace-nowrap">
+                                {row.feature}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-zinc-200 text-xs">
+                                {row.feature === 'Python function' ? (
+                                  <span className="font-mono text-cyan-300 bg-cyan-950/50 px-1.5 py-0.5 rounded border border-cyan-800/40">
+                                    {row.anova}
+                                  </span>
+                                ) : (
+                                  row.anova
+                                )}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-zinc-200 text-xs">
+                                {row.feature === 'Python function' ? (
+                                  <span className="font-mono text-purple-300 bg-purple-950/50 px-1.5 py-0.5 rounded border border-purple-800/40">
+                                    {row.kruskal}
+                                  </span>
+                                ) : (
+                                  row.kruskal
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Post-Hoc Caveat Callout */}
+                    {item.comparisonTable.postHocCaveat && (
+                      <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 flex items-start gap-3 mt-2">
+                        <AlertTriangle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                        <div className="text-xs text-amber-200/90 leading-relaxed font-sans">
+                          <strong className="text-amber-300 font-mono uppercase text-[11px] block mb-0.5">Critical Interview Insight:</strong>
+                          {item.comparisonTable.postHocCaveat}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 5. Key SciPy Functions Matrix */}
+                {item.scipyFunctions && (
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Key SciPy Statistical Functions</span>
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {item.scipyFunctions.map((fn, fIdx) => (
+                        <div key={fIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-mono font-bold text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/50">
+                              {fn.name}
+                            </span>
+                            <span className="text-[10px] font-mono text-zinc-400">{fn.role}</span>
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-0.5">
+                            {fn.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Python Implementation Box */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Code2 className="w-4 h-4 text-emerald-400" />
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                        {item.codeExample.title}
+                      </h4>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>anova_kruskal_pipeline.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-anova', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-anova' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.codeExample.code} />
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Statistical Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
             {/* Item 115: Regularization */}
             {item.id === 'regularization' && (
               <div className="space-y-6">
