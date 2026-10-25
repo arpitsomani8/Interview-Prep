@@ -8322,37 +8322,13 @@ export default function AllDefinitionsPage() {
 
                 {/* FastAPI Async Code Example */}
                 {item.codeExample && (
-                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black shadow-xl">
-                    <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
-                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-300">
-                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                        <span className="font-bold text-white">{item.codeExample.title}</span>
-                      </div>
-                      <button
-                        onClick={() => handleCopyCode('code-fastapi-async', item.codeExample.code)}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                      >
-                        {copiedId === 'code-fastapi-async' ? (
-                          <>
-                            <Check className="w-3 h-3 text-emerald-400" />
-                            <span>Copied!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3 h-3" />
-                            <span>Copy Code</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-
-                    <div className="p-4 bg-zinc-950/60 border-b border-zinc-800/80">
-                      <pre className="text-xs font-mono text-cyan-300 overflow-x-auto leading-relaxed">
-                        <code>{item.codeExample.code}</code>
-                      </pre>
-                    </div>
-
-                    <div className="p-3.5 bg-black/80 text-xs text-zinc-400 leading-relaxed font-sans">
+                  <div className="space-y-2">
+                    <CodeHighlight
+                      code={item.codeExample.code}
+                      filename="app.py"
+                      showHeader={true}
+                    />
+                    <div className="p-3.5 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-400 leading-relaxed font-sans">
                       <strong className="text-cyan-400 font-mono uppercase mr-1">How it works:</strong>
                       {item.codeExample.explanation}
                     </div>
