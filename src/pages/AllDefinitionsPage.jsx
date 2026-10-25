@@ -23129,26 +23129,160 @@ export default function AllDefinitionsPage() {
 
             {/* Item 157: ANN vs. CNN */}
             {item.id === 'ann-cnn' && (
-              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
-                <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs sm:text-sm text-purple-200/90 leading-relaxed font-sans">
-                  <strong className="text-purple-400 uppercase font-mono font-bold">ANN vs. CNN Architecture: </strong>
-                  {item.coreDefinition}
-                </div>
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. ANN Section */}
+                {item.ann && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-3.5 shadow-xl">
+                    <div className="flex items-center justify-between flex-wrap gap-2 border-b border-cyan-900/40 pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                        <h4 className="text-xs sm:text-sm font-bold text-cyan-300 font-mono">
+                          Artificial Neural Network (ANN)
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Tabular & Numerical Data
+                      </span>
+                    </div>
 
+                    <p className="text-xs text-zinc-200 leading-relaxed font-sans">
+                      {item.ann.definition}
+                    </p>
+
+                    {/* Common uses */}
+                    <div className="space-y-1">
+                      <span className="text-[11px] font-mono uppercase text-cyan-400 font-semibold block">
+                        ANNs are commonly used for:
+                      </span>
+                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                        {item.ann.commonUses?.map((use, uIdx) => (
+                          <li key={uIdx} className="text-xs text-zinc-300 flex items-start gap-1.5 leading-relaxed">
+                            <span className="text-cyan-400 font-bold shrink-0">•</span>
+                            <span>{use}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* 3 Main Layers */}
+                    <div className="space-y-1.5 pt-1">
+                      <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
+                        The Three Main Layers:
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        {item.ann.layers?.map((layer, lIdx) => (
+                          <div key={lIdx} className="p-3 rounded-lg bg-black/60 border border-zinc-800 space-y-1">
+                            <span className="text-xs font-bold font-mono text-cyan-300 block">
+                              {layer.name}
+                            </span>
+                            <p className="text-[11px] text-zinc-400 leading-snug">
+                              {layer.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* How a single neuron works & Interview tip */}
+                    <div className="space-y-2 pt-1 border-t border-zinc-800/80">
+                      <div className="text-xs text-zinc-300 leading-relaxed">
+                        <strong className="text-white font-mono font-bold">How does a single artificial neuron work? </strong>
+                        {item.ann.neuronOperation}
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
+                        <strong className="text-cyan-400 font-mono uppercase font-bold mr-1.5">Interview Tip:</strong>
+                        {item.ann.interviewTip}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. CNN Section */}
+                {item.cnn && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 space-y-3.5 shadow-xl">
+                    <div className="flex items-center justify-between flex-wrap gap-2 border-b border-purple-900/40 pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+                        <h4 className="text-xs sm:text-sm font-bold text-purple-300 font-mono">
+                          Convolutional Neural Network (CNN)
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-purple-950/70 text-purple-400 border border-purple-800/60">
+                        Image & Spatial Data
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-200 leading-relaxed font-sans">
+                      {item.cnn.definition}
+                    </p>
+
+                    {/* Common applications */}
+                    <div className="space-y-1">
+                      <span className="text-[11px] font-mono uppercase text-purple-400 font-semibold block">
+                        Common applications include:
+                      </span>
+                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                        {item.cnn.commonApplications?.map((app, aIdx) => (
+                          <li key={aIdx} className="text-xs text-zinc-300 flex items-start gap-1.5 leading-relaxed">
+                            <span className="text-purple-400 font-bold shrink-0">•</span>
+                            <span>{app}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* CNN Steps */}
+                    <div className="space-y-1.5 pt-1">
+                      <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
+                        A typical CNN follows these steps:
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                        {item.cnn.steps?.map((stepItem, sIdx) => (
+                          <div key={sIdx} className="p-2.5 rounded-lg bg-black/60 border border-zinc-800 space-y-1">
+                            <span className="text-xs font-bold font-mono text-purple-300 block">
+                              {stepItem.step}
+                            </span>
+                            <p className="text-[11px] text-zinc-400 leading-snug">
+                              {stepItem.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Convolution Filter Explanation */}
+                    {item.cnn.filterExplanation && (
+                      <div className="p-3.5 rounded-xl bg-black/50 border border-zinc-800 space-y-2 pt-2.5">
+                        <span className="text-xs font-mono font-bold text-white block">
+                          {item.cnn.filterExplanation.title}
+                        </span>
+                        <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                          {item.cnn.filterExplanation.body}
+                        </p>
+                        <p className="text-xs text-purple-300/90 leading-relaxed font-sans font-medium">
+                          {item.cnn.filterExplanation.weightSharing}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 3. Comparison Table: ANN vs. CNN */}
                 {item.comparisonTable && (
                   <div className="space-y-2">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
                       <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                      <span>ANN (Fully Connected) vs. CNN (Convolutional)</span>
+                      <span>ANN vs. CNN Comparison</span>
                     </h4>
                     <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse text-xs">
                           <thead>
                             <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
-                              <th className="p-3 w-1/4">Aspect</th>
-                              <th className="p-3 w-3/8 text-cyan-400 font-semibold">ANN (Dense MLP)</th>
-                              <th className="p-3 w-3/8 text-purple-400 font-semibold">CNN (Convolutional)</th>
+                              <th className="p-3 w-1/4">Feature</th>
+                              <th className="p-3 w-3/8 text-cyan-400 font-semibold">ANN</th>
+                              <th className="p-3 w-3/8 text-purple-400 font-semibold">CNN</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-zinc-800/80 font-sans">
@@ -23171,32 +23305,6 @@ export default function AllDefinitionsPage() {
                     </div>
                   </div>
                 )}
-
-                {item.cnnBuildingBlocks && (
-                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
-                      <Terminal className="w-4 h-4 text-purple-400" />
-                      <span>Core CNN Building Blocks</span>
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {item.cnnBuildingBlocks.map((blk, bIdx) => (
-                        <div key={bIdx} className="p-3 rounded-lg bg-black border border-zinc-800 space-y-1">
-                          <span className="text-xs font-bold font-mono text-white block">
-                            {blk.layer}
-                          </span>
-                          <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                            {blk.purpose}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="p-3.5 rounded-xl bg-black border border-purple-800/40 text-xs text-purple-200/90 leading-relaxed font-sans">
-                  <strong className="text-purple-400 font-mono uppercase">Vision Deep Learning Takeaway: </strong>
-                  {item.takeaway}
-                </div>
               </div>
             )}
 

@@ -12804,58 +12804,110 @@ export const definitionsData = [
     ],
     "takeaway": "In object detection engineering, never evaluate models using classification accuracy alone. Always inspect mAP@50 for general object recognition capacity and mAP@[0.5:0.95] to measure tight bounding box localization precision."
   },
-      {
+        {
     "id": "ann-cnn",
     "title": "ANN/CNN (Artificial Neural Networks vs. Convolutional Neural Networks)",
     "badge": "Deep Learning • Dense vs. Spatial Convolutions",
-    "summary": "A fundamental comparison between standard Feedforward Artificial Neural Networks (MLPs with fully connected dense layers) and Convolutional Neural Networks (CNNs using parameter-shared filters for spatial data).",
-    "coreDefinition": "An ANN connects every neuron to every input in a flat line, which ruins pixel relationships and creates billions of weights on images. A CNN solves this by scanning images with tiny 3×3 sliding filters to keep nearby pixels together and reuse weights across the whole image.",
+    "summary": "An Artificial Neural Network (ANN) is inspired by biological neurons and is used for tabular numerical data, whereas a Convolutional Neural Network (CNN) uses learnable filters for images and spatial data.",
+    "ann": {
+      "definition": "An Artificial Neural Network (ANN) is a machine learning model inspired by the way biological neurons communicate. It learns patterns from data by adjusting numerical parameters called weights and biases.",
+      "commonUses": [
+        "Predicting house prices.",
+        "Detecting fraud.",
+        "Customer churn prediction.",
+        "Classification and regression.",
+        "Learning patterns in structured numerical data."
+      ],
+      "layers": [
+        {
+          "name": "1. Input layer",
+          "desc": "Receives the input features, such as age, salary, or transaction amount."
+        },
+        {
+          "name": "2. Hidden layer(s)",
+          "desc": "Learn patterns and relationships using weights, biases, and activation functions."
+        },
+        {
+          "name": "3. Output layer",
+          "desc": "Produces the prediction: for example, a fraud probability or a house-price estimate."
+        }
+      ],
+      "neuronOperation": "A neuron takes inputs, multiplies them by weights, adds a bias, and applies an activation function.",
+      "interviewTip": "A neuron's weighted sum alone is a linear operation. Activation functions allow neural networks to learn nonlinear relationships."
+    },
+    "cnn": {
+      "definition": "A Convolutional Neural Network (CNN) is a type of neural network designed primarily for image and spatial data. Instead of treating every pixel as an independent input connected to every neuron, CNNs use small learnable filters to identify local patterns such as edges, shapes, textures, and eventually complex objects.",
+      "commonApplications": [
+        "Image classification.",
+        "Object detection using models such as YOLO.",
+        "Face and medical-image analysis.",
+        "Optical Character Recognition (OCR).",
+        "Video and visual recognition systems."
+      ],
+      "steps": [
+        {
+          "step": "1. Input image",
+          "desc": "An image is represented as a numerical array. A color image might have dimensions 224 × 224 × 3, where 3 represents the RGB channels."
+        },
+        {
+          "step": "2. Convolution",
+          "desc": "Small filters, also called kernels, slide across the image to detect local features."
+        },
+        {
+          "step": "3. Activation",
+          "desc": "ReLU commonly introduces nonlinearity after convolution."
+        },
+        {
+          "step": "4. Pooling",
+          "desc": "Reduces the spatial dimensions of feature maps, often using maximum or average values."
+        },
+        {
+          "step": "5. Flattening or global pooling",
+          "desc": "Converts spatial features into a representation suitable for classification."
+        },
+        {
+          "step": "6. Output layer",
+          "desc": "Produces class probabilities or another prediction, depending on the task."
+        }
+      ],
+      "filterExplanation": {
+        "title": "What is a convolution filter?",
+        "body": "Imagine a small 3 × 3 matrix moving over an image. At each position, it combines the image values with its filter weights to calculate a feature response. As the filter moves, it creates a feature map. Different filters can learn to detect different patterns.",
+        "weightSharing": "The important advantage is weight sharing: the same filter is applied at many locations, which can reduce the number of parameters compared with a fully connected network."
+      }
+    },
     "comparisonTable": [
       {
-        "aspect": "Primary Data Domain",
-        "ann": "Tabular structured data, spreadsheets, and 1D numerical features",
-        "cnn": "Grid-structured spatial data: Images (2D), Video (3D), Audio spectrograms"
+        "aspect": "Typical use",
+        "ann": "Tabular and general numerical data",
+        "cnn": "Images and spatial data"
       },
       {
-        "aspect": "Neuron Connectivity",
-        "ann": "Fully connected (Dense): every input neuron connects to every neuron in next layer",
-        "cnn": "Locally connected: neurons connect only to a local 3×3 pixel patch"
+        "aspect": "Main operations",
+        "ann": "Fully connected layers",
+        "cnn": "Convolution and often pooling"
       },
       {
-        "aspect": "Parameter Efficiency",
-        "ann": "Parameters explode rapidly on images, causing memory crashes",
-        "cnn": "Parameter sharing: identical 3×3 kernel weights are reused across the entire image"
+        "aspect": "Spatial relationships",
+        "ann": "Must learn from input representation",
+        "cnn": "Exploits local spatial structure"
       },
       {
-        "aspect": "Spatial Invariance",
-        "ann": "Not position invariant (thinks a shifted cat is a brand new object)",
-        "cnn": "Translation invariant: recognizes edges and textures wherever they appear"
+        "aspect": "Parameter efficiency for images",
+        "ann": "Often less efficient",
+        "cnn": "Weight sharing can reduce parameters"
       },
       {
-        "aspect": "Core Layer Types",
-        "ann": "Linear / Dense layers + Activation (ReLU, Sigmoid)",
-        "cnn": "Conv2D, BatchNorm, Pooling (MaxPool, AvgPool), followed by Dense classification head"
+        "aspect": "Feature extraction",
+        "ann": "Learned through connected layers",
+        "cnn": "Learned through convolutional filters"
+      },
+      {
+        "aspect": "Examples",
+        "ann": "Churn prediction, price prediction",
+        "cnn": "Image classification, object detection"
       }
-    ],
-    "cnnBuildingBlocks": [
-      {
-        "layer": "Convolution Layer (Conv2D)",
-        "purpose": "Slides learnable 3×3 filter kernels across the input image to extract feature maps (edges, contours, textures)."
-      },
-      {
-        "layer": "Activation Layer (ReLU)",
-        "purpose": "Introduces non-linearity, allowing the network to approximate complex curved visual relationships."
-      },
-      {
-        "layer": "Pooling Layer (MaxPool / AvgPool)",
-        "purpose": "Downsamples feature maps to shrink spatial dimensions, lower compute load, and provide translation invariance."
-      },
-      {
-        "layer": "Fully Connected Head (Dense)",
-        "purpose": "Flattens high-level spatial feature representations into class probabilities via Softmax."
-      }
-    ],
-    "takeaway": "Attempting to process a 1000×1000 color image in an ANN requires 3 million input weights per single neuron, causing catastrophic overfitting. CNNs solve this fundamental computer vision bottleneck through local receptive fields and parameter-shared convolutional filters."
+    ]
   },
   {
     "id": "gaussian-distribution",
