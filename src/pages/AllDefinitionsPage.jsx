@@ -18123,6 +18123,200 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
+            {/* Item: Box-Cox Transformation */}
+            {item.id === 'box-cox' && (
+              <div className="space-y-8 mt-6">
+                {/* Core Concept Banner */}
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-indigo-950/40 via-purple-900/20 to-slate-900/40 border border-indigo-500/30 shadow-xl backdrop-blur-sm">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                      Parametric Power Transform
+                    </span>
+                    <span className="text-xs text-slate-400">Strictly Positive Domain: y &gt; 0</span>
+                  </div>
+                  <p className="text-slate-200 text-base leading-relaxed mb-4">
+                    {item.coreDefinition}
+                  </p>
+                  <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200/90 text-sm">
+                    <span className="text-amber-400 text-lg flex-shrink-0">⚠️</span>
+                    <div>
+                      <strong className="text-amber-300 font-semibold">Important Statistical Caveat: </strong>
+                      {item.importantNote}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mathematical Formulation */}
+                {item.formula && (
+                  <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-700/60 shadow-lg">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                      <h4 className="text-base font-bold text-white tracking-wide">{item.formula.title}</h4>
+                    </div>
+                    <p className="text-sm text-slate-400 mb-4">{item.formula.description}</p>
+                    
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-cyan-500/20 font-mono text-cyan-300 text-sm leading-relaxed overflow-x-auto mb-4 whitespace-pre">
+                      {item.formula.equation}
+                    </div>
+                    
+                    <p className="text-xs text-slate-300 leading-relaxed bg-slate-800/40 p-3.5 rounded-lg border border-slate-700/40">
+                      💡 <strong className="text-cyan-300">How λ Shapes Data: </strong>
+                      {item.formula.explanation}
+                    </p>
+                  </div>
+                )}
+
+                {/* Why Use Box-Cox? (Key Use Cases) */}
+                {item.whyUse && (
+                  <div className="space-y-4">
+                    <h4 className="text-base font-bold text-white tracking-wide flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                      {item.whyUse.title}
+                    </h4>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.whyUse.reasons.map((reason, idx) => (
+                        <div key={idx} className="p-4 rounded-xl bg-slate-900/50 border border-slate-700/40 hover:border-emerald-500/40 transition-colors">
+                          <h5 className="text-sm font-semibold text-emerald-300 mb-1.5 flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs flex items-center justify-center font-bold">
+                              {idx + 1}
+                            </span>
+                            {reason.title}
+                          </h5>
+                          <p className="text-xs text-slate-300 leading-relaxed pl-7">
+                            {reason.description}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Model Invariance Notice */}
+                    <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-500/30 text-xs text-purple-200/90 leading-relaxed">
+                      🌲 <strong className="text-purple-300 font-semibold">Tree-Based Models vs. Linear Models: </strong>
+                      {item.whyUse.modelInvarianceTip}
+                    </div>
+                  </div>
+                )}
+
+                {/* Constraints & Yeo-Johnson Alternative */}
+                {item.constraintsAndAlternatives && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-5 rounded-2xl bg-rose-950/20 border border-rose-500/30">
+                      <div className="flex items-center gap-2 text-rose-400 font-bold text-sm mb-2">
+                        <span>🛑</span> Strict Mathematical Constraint
+                      </div>
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        {item.constraintsAndAlternatives.constraint}
+                      </p>
+                    </div>
+
+                    <div className="p-5 rounded-2xl bg-cyan-950/20 border border-cyan-500/30">
+                      <div className="flex items-center gap-2 text-cyan-400 font-bold text-sm mb-2">
+                        <span>✨</span> Yeo-Johnson Alternative
+                      </div>
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        {item.constraintsAndAlternatives.alternative}
+                      </p>
+                      <div className="mt-3 pt-3 border-t border-cyan-500/20 text-[11px] text-cyan-300/80">
+                        ⚡ {item.constraintsAndAlternatives.powerTransformerTip}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Comparison Table */}
+                {item.comparisonTable && (
+                  <div className="p-6 rounded-2xl bg-slate-900/70 border border-slate-700/60 shadow-xl overflow-hidden">
+                    <h4 className="text-base font-bold text-white mb-4 tracking-wide flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
+                      {item.comparisonTable.title}
+                    </h4>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="border-b border-slate-700/80 bg-slate-800/40 text-slate-300">
+                            <th className="py-3 px-4 font-semibold">Feature / Aspect</th>
+                            <th className="py-3 px-4 font-semibold text-indigo-300">Box-Cox</th>
+                            <th className="py-3 px-4 font-semibold text-amber-300">Log Transformation</th>
+                            <th className="py-3 px-4 font-semibold text-emerald-300">Yeo-Johnson</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                          {item.comparisonTable.rows.map((row, idx) => (
+                            <tr key={idx} className="hover:bg-slate-800/20 transition-colors">
+                              <td className="py-3.5 px-4 font-medium text-slate-200">{row.feature}</td>
+                              <td className="py-3.5 px-4">
+                                <span className={row.boxcox.startsWith('Yes') ? 'text-emerald-400 font-semibold' : 'text-rose-400 font-semibold'}>
+                                  {row.boxcox}
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-4">
+                                <span className={row.log.startsWith('Yes') ? 'text-emerald-400 font-semibold' : 'text-amber-400 font-semibold'}>
+                                  {row.log}
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-4">
+                                <span className="text-emerald-400 font-semibold">
+                                  {row.yeo}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Python Implementation (CodeHighlight) */}
+                {item.code && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-base font-bold text-white tracking-wide flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-blue-400"></span>
+                        Python Implementation: SciPy &amp; Scikit-Learn PowerTransformer
+                      </h4>
+                      <span className="text-xs text-slate-400 font-mono">scipy.stats.boxcox &amp; PowerTransformer</span>
+                    </div>
+                    <div className="rounded-xl overflow-hidden border border-slate-700/60 shadow-lg">
+                      <CodeHighlight code={item.code} language="python" />
+                    </div>
+                  </div>
+                )}
+
+                {/* FAQs */}
+                {item.faqs && item.faqs.length > 0 && (
+                  <div className="space-y-3">
+                    <h4 className="text-base font-bold text-white tracking-wide flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                      Target Interview Defense Questions
+                    </h4>
+                    <div className="grid grid-cols-1 gap-3">
+                      {item.faqs.map((faq, idx) => (
+                        <div key={idx} className="p-4 rounded-xl bg-slate-900/60 border border-slate-700/50">
+                          <p className="text-xs font-semibold text-amber-300 mb-1.5 flex items-start gap-2">
+                            <span className="px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[10px]">
+                              Q{idx + 1}
+                            </span>
+                            {faq.q}
+                          </p>
+                          <p className="text-xs text-slate-300 leading-relaxed pl-7">
+                            {faq.a}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Key Takeaway */}
+                <div className="p-5 rounded-2xl bg-indigo-950/30 border border-indigo-500/30 text-xs text-slate-300 leading-relaxed shadow-lg">
+                  <strong className="text-indigo-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
             {/* Item 115: Regularization */}
             {item.id === 'regularization' && (
               <div className="space-y-6">

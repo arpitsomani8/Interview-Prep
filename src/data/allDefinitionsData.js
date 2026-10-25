@@ -14340,13 +14340,88 @@ export const definitionsData = [
     "id": "box-cox",
     "title": "Box-Cox Transformation",
     "badge": "Power Transformation",
-    "summary": "Parametric power transformation converting non-normal positive data into an approximately normal distribution.",
-    "details": [
-      "The Formula: Applies y^(lambda) based on parameter lambda, automatically optimized using Maximum Likelihood Estimation (MLE).",
-      "Critical Flaw: Strictly requires all values to be positive (x > 0). It immediately crashes if any values are 0 or negative.",
-      "Modern Replacement: If your feature contains zeros or negative values (e.g. net profit, temperature, account balances), use Yeo-Johnson instead."
+    "summary": "Parametric power transformation using an optimized λ parameter to stabilize variance, reduce skewness, and satisfy linear model assumptions on positive numerical data.",
+    "coreDefinition": "Box-Cox transforms a positive numerical variable using a power parameter, λ (lambda), to find a transformation that improves statistical properties such as symmetry, linear correlation, or variance stability.",
+    "importantNote": "Box-Cox does not guarantee a normal distribution. It searches for a useful power transformation under a statistical criterion (e.g., Maximum Likelihood Estimation).",
+    "formula": {
+      "title": "Mathematical Formulation (for y > 0)",
+      "description": "Applies a continuous power function parameterized by λ:",
+      "equation": "y^(λ) = (y^λ - 1) / λ   if λ ≠ 0\ny^(λ) = ln(y)          if λ = 0",
+      "explanation": "When λ = 1, the data is essentially unscaled (linear shift). When λ = 0.5, it acts as a square root transform. When λ = 0, it gracefully converges to the natural logarithm ln(y). When λ = -1, it acts as an inverse transform."
+    },
+    "whyUse": {
+      "title": "Why Use Box-Cox? (Key Use Cases)",
+      "reasons": [
+        {
+          "title": "Reducing Right Skew",
+          "description": "Compresses long positive tails in income, transaction amounts, home prices, and web traffic metrics."
+        },
+        {
+          "title": "Stabilizing Variance (Homoscedasticity)",
+          "description": "Controls heteroscedasticity where the variance of residuals grows proportionally with feature magnitude."
+        },
+        {
+          "title": "Satisfying Regression Assumptions",
+          "description": "Helps linear regression (OLS), ANOVA, and ARIMA models meet their underlying assumptions of normally distributed residuals."
+        },
+        {
+          "title": "Exposing Linear Relationships",
+          "description": "Unfolds non-linear curves into approximately linear associations that gradient-based and linear models can easily capture."
+        }
+      ],
+      "modelInvarianceTip": "Model Sensitivity: Box-Cox is most useful when model assumptions or validation performance improve. Tree-based algorithms (Random Forest, XGBoost, LightGBM) split on rank order and are invariant to monotonic transformations, so they rarely benefit from Box-Cox compared to linear and distance-based models."
+    },
+    "constraintsAndAlternatives": {
+      "title": "Strict Constraints & Yeo-Johnson Alternative",
+      "constraint": "Standard Box-Cox strictly requires one-dimensional, strictly positive (y > 0), and non-constant input data. Any zeros or negative values cause an immediate mathematical failure.",
+      "alternative": "If your feature includes zero or negative values (e.g. net profit, temperature, return on investment), use the Yeo-Johnson transformation instead, which smoothly handles positive, zero, and negative values.",
+      "powerTransformerTip": "scikit-learn's PowerTransformer supports both Box-Cox and Yeo-Johnson methods. By default, it automatically standardizes transformed features to zero mean (μ = 0) and unit variance (σ = 1)."
+    },
+    "comparisonTable": {
+      "title": "Box-Cox vs. Log Transformation vs. Yeo-Johnson",
+      "rows": [
+        {
+          "feature": "Supports positive values (y > 0)",
+          "boxcox": "Yes",
+          "log": "Yes",
+          "yeo": "Yes"
+        },
+        {
+          "feature": "Supports zero & negative values directly (y ≤ 0)",
+          "boxcox": "No (Requires y > 0)",
+          "log": "No (Requires y > 0 or log(1+y))",
+          "yeo": "Yes (Natively supports all real numbers)"
+        },
+        {
+          "feature": "Learns an optimal power parameter (λ)",
+          "boxcox": "Yes (Estimates λ via Maximum Likelihood)",
+          "log": "No (Fixed λ = 0 logarithmic scaling)",
+          "yeo": "Yes (Estimates λ via Maximum Likelihood)"
+        },
+        {
+          "feature": "Best use case",
+          "boxcox": "Positive skewed continuous data needing tailored power tuning",
+          "log": "Often right-skewed positive data with heavy exponential tails",
+          "yeo": "Data containing zero or negative values (e.g., profit/loss, balance deltas)"
+        }
+      ]
+    },
+    "code": "import numpy as np\nimport pandas as pd\nfrom scipy import stats\nfrom sklearn.preprocessing import PowerTransformer\n\n# 1. Positively skewed transaction amounts (strictly > 0)\ndf = pd.DataFrame({\n    \"amount\": [10, 15, 20, 25, 40, 80, 150, 500, 1200]\n})\n\n# 2. Estimate optimal lambda and transform data with SciPy\n# Scipy maximizes profile log-likelihood to discover best lambda\ndf[\"amount_boxcox\"], best_lambda = stats.boxcox(df[\"amount\"])\nprint(f\"Optimal lambda (λ): {best_lambda:.4f}\")\nprint(df[[\"amount\", \"amount_boxcox\"]])\n\n# 3. Using scikit-learn PowerTransformer (standardizes to mean=0, var=1)\npt = PowerTransformer(method=\"box-cox\", standardize=True)\ndf[\"amount_pt\"] = pt.fit_transform(df[[\"amount\"]])\nprint(\"\\nWith Scikit-Learn PowerTransformer (Zero-mean, Unit-variance):\")\nprint(df[[\"amount\", \"amount_pt\"]])",
+    "faqs": [
+      {
+        "q": "Why does Box-Cox fail on zeros or negative numbers, and how do you handle them?",
+        "a": "Box-Cox evaluates y^λ and ln(y), which are undefined or non-real for non-positive numbers (ln(0) = -∞, negative powers of fractional numbers become imaginary). You can either add an arbitrary shift constant (y + c) before Box-Cox, or use the Yeo-Johnson transformation, which is mathematically extended to handle zero and negative values directly."
+      },
+      {
+        "q": "Does Box-Cox guarantee that the resulting distribution will be Gaussian normal?",
+        "a": "No. Box-Cox only finds the power transformation (λ) that makes the distribution as symmetric and variance-stabilized as possible under a maximum likelihood criterion. If the underlying data is multimodal or has extreme discrete outliers, Box-Cox will not magically force it into a normal bell curve."
+      },
+      {
+        "q": "Do tree-based algorithms like XGBoost, LightGBM, or Random Forest benefit from Box-Cox?",
+        "a": "Generally no. Decision trees make greedy axis-aligned splits based purely on the rank order of feature values. Since power transformations with λ > 0 are strictly monotonic, the relative ordering of values remains identical, producing the exact same split points. Box-Cox primarily benefits linear models (OLS), distance-based models (KNN, SVM), and neural networks."
+      }
     ],
-    "code": "from scipy import stats\n# Only works if x > 0\ntransformed_data, fitted_lambda = stats.boxcox(df[df['positive_col'] > 0]['positive_col'])"
+    "takeaway": "Box-Cox is a parametric power transform that optimizes a continuous parameter (λ) to reduce skewness and stabilize variance in strictly positive numerical features. For data containing zeros or negative numbers, use Yeo-Johnson. For tree models, skip both—as trees are naturally invariant to monotonic power transformations."
   },
   {
     "id": "cardinality",
