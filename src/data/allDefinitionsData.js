@@ -10015,10 +10015,10 @@ export const definitionsData = [
   },
   {
     "id": "activation-functions",
-    "title": "Activation Functions (ReLU, Sigmoid, Softmax, GELU & Non-Linear Mappings)",
-    "badge": "Non-Linear Representations, Deep Learning & Transformer Layer Norms",
+    "title": "Activation Functions (ReLU, Sigmoid, Tanh, Softmax & GELU)",
+    "badge": "Non-Linear Representations, Deep Learning & PyTorch Implementations",
     "summary": "Transforms a neuron's weighted sum into an output signal, introducing non-linearity so deep neural networks can learn complex patterns beyond linear relationships.",
-    "coreDefinition": "An activation function introduces non-linearity into a neural network. Without non-linear activation functions, any deep network—regardless of how many layers it has—collapses mathematically into a single linear regression model (W₂ · W₁ · x = W_net · x), making it incapable of learning non-linear patterns.",
+    "coreDefinition": "An activation function introduces non-linearity into a neural network. Without non-linear activation functions, any deep network—regardless of how many layers it has—collapses mathematically into a single linear transformation (W₂ · W₁ · x = W_net · x), making it incapable of learning non-linear patterns.",
     "functionsHeadline": "Common Activation Functions",
     "functionsList": [
       {
@@ -10040,6 +10040,16 @@ export const definitionsData = [
         "accent": "text-blue-400",
         "border": "border-blue-800/50",
         "badge": "Binary Classifier Outputs"
+      },
+      {
+        "name": "Tanh — Hyperbolic Tangent",
+        "formula": "tanh(x) = (e^x - e^(-x)) / (e^x + e^(-x))",
+        "definition": "Zero-centered activation squashing values into a range from -1 to 1, facilitating gradient flow during early training.",
+        "range": "(-1, 1)",
+        "useCase": "Recurrent neural networks (RNNs, LSTMs, GRUs) and classic hidden layers.",
+        "accent": "text-rose-400",
+        "border": "border-rose-800/50",
+        "badge": "RNNs & Recurrent Cell States"
       },
       {
         "name": "Softmax",
@@ -10071,7 +10081,53 @@ export const definitionsData = [
       "language": "python",
       "code": "import numpy as np\nimport torch\nimport torch.nn.functional as F\n\n# 1. ReLU: f(x) = max(0, x)\ndef relu(x):\n    return np.maximum(0, x)\n\n# 2. Sigmoid: σ(x) = 1 / (1 + e^(-x))\ndef sigmoid(x):\n    return 1.0 / (1.0 + np.exp(-x))\n\n# 3. Softmax: Converts scores into probabilities summing to 1\ndef softmax(z):\n    exp_z = np.exp(z - np.max(z))  # Subtract max for numerical stability\n    return exp_z / np.sum(exp_z)\n\n# 4. GELU: Smooth Transformer activation in PyTorch\nx_tensor = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])\ngelu_out = F.gelu(x_tensor)  # Used in BERT, GPT-2/3/4"
     },
-    "takeaway": "Without non-linear activation functions, any deep neural network collapses mathematically into a single linear transformation (W₂ · W₁ · x = W_net · x), making it incapable of learning non-linear manifolds. Choosing the appropriate activation—ReLU for CNNs, GELU for Transformers, Sigmoid for binary tasks, and Softmax for categorical distributions—is foundational to stable gradient propagation."
+    "takeaway": "Without non-linear activation functions, any deep neural network collapses mathematically into a single linear transformation (W₂ · W₁ · x = W_net · x), making it incapable of learning non-linear manifolds. Choosing the appropriate activation—ReLU for CNNs, GELU for Transformers, Sigmoid for binary tasks, and Softmax for categorical distributions—is foundational to stable gradient propagation.",
+    "comparisonTable": {
+      "title": "Compare them at a glance",
+      "headers": [
+        "Property",
+        "ReLU",
+        "Sigmoid",
+        "Tanh",
+        "Softmax"
+      ],
+      "rows": [
+        {
+          "property": "Output range",
+          "relu": "0 to +∞",
+          "sigmoid": "0 to 1",
+          "tanh": "-1 to 1",
+          "softmax": "Each output 0 to 1"
+        },
+        {
+          "property": "Outputs sum to 1?",
+          "relu": "No",
+          "sigmoid": "No",
+          "tanh": "No",
+          "softmax": "Yes"
+        },
+        {
+          "property": "Typical use",
+          "relu": "Hidden layers",
+          "sigmoid": "Binary output",
+          "tanh": "Some hidden layers / recurrent networks",
+          "softmax": "Multiclass output"
+        },
+        {
+          "property": "Main drawback",
+          "relu": "Dead neurons possible",
+          "sigmoid": "Vanishing gradients",
+          "tanh": "Vanishing gradients",
+          "softmax": "Not usually used as a hidden-layer default"
+        }
+      ],
+      "keyNote": "Remember that sigmoid outputs can be interpreted as probabilities when used appropriately in a binary classification model, while softmax produces a normalized probability distribution across classes."
+    },
+    "pytorchInfo": {
+      "title": "PyTorch Activation Functions",
+      "description": "PyTorch provides activation functions through torch.nn and torch.nn.functional.",
+      "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nx = torch.tensor([-2.0, 0.0, 2.0])\n\nprint(F.relu(x))\nprint(torch.sigmoid(x))\nprint(torch.tanh(x))\nprint(F.softmax(x, dim=0))"
+    }
   },
   {
     "id": "regularization",

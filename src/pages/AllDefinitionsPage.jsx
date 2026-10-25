@@ -16872,9 +16872,9 @@ export default function AllDefinitionsPage() {
 
             {/* Item 114: Activation Functions */}
             {item.id === 'activation-functions' && (
-              <div className="space-y-6">
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
                 {/* 1. Core Definition Header Banner */}
-                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-950/40 via-blue-950/20 to-zinc-950 border border-cyan-800/40 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
                       <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
@@ -16887,7 +16887,7 @@ export default function AllDefinitionsPage() {
                   <h3 className="text-sm sm:text-base font-bold text-white font-mono">
                     Activation Functions
                   </h3>
-                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                  <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
                     {item.coreDefinition}
                   </p>
                 </div>
@@ -16901,11 +16901,11 @@ export default function AllDefinitionsPage() {
                         <span>{item.functionsHeadline}</span>
                       </h4>
                       <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
-                        ReLU • Sigmoid • Softmax • GELU
+                        ReLU • Sigmoid • Tanh • Softmax • GELU
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
                       {item.functionsList.map((fn, fIdx) => (
                         <div key={fIdx} className={`p-4 rounded-2xl bg-zinc-950 border ${fn.border} space-y-3 hover:border-zinc-700 transition flex flex-col justify-between shadow-xl`}>
                           <div className="space-y-2">
@@ -16940,34 +16940,86 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 3. Softmax Special Callout */}
-                {item.softmaxSpecialNote && (
-                  <div className="p-4 rounded-xl bg-purple-950/30 border border-purple-800/60 space-y-1.5">
-                    <span className="text-xs font-bold font-mono text-purple-400 uppercase flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                      <span>{item.softmaxSpecialNote.title}</span>
-                    </span>
-                    <p className="text-xs sm:text-sm text-purple-200 font-semibold leading-relaxed font-sans">
-                      {item.softmaxSpecialNote.content}
-                    </p>
+                {/* 3. Compare them at a glance Table */}
+                {item.comparisonTable && (
+                  <div className="space-y-3 p-4.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Table className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                        {item.comparisonTable.title}
+                      </h4>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase">
+                            <th className="py-2.5 px-3.5 font-semibold text-cyan-400">Property</th>
+                            <th className="py-2.5 px-3.5 font-semibold text-amber-400">ReLU</th>
+                            <th className="py-2.5 px-3.5 font-semibold text-blue-400">Sigmoid</th>
+                            <th className="py-2.5 px-3.5 font-semibold text-rose-400">Tanh</th>
+                            <th className="py-2.5 px-3.5 font-semibold text-purple-400">Softmax</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 font-sans">
+                          {item.comparisonTable.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3.5 font-mono font-bold text-white text-xs whitespace-nowrap">
+                                {row.property}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-zinc-200 text-xs font-mono">
+                                {row.relu}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-zinc-200 text-xs font-mono">
+                                {row.sigmoid}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-zinc-200 text-xs font-mono">
+                                {row.tanh}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-zinc-200 text-xs font-mono">
+                                {row.softmax}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Key takeaway note */}
+                    {item.comparisonTable.keyNote && (
+                      <div className="p-3.5 rounded-xl bg-purple-950/20 border border-purple-800/40 flex items-start gap-3 mt-2">
+                        <Sparkles className="w-4 h-4 text-purple-400 mt-0.5 shrink-0" />
+                        <p className="text-xs text-purple-200/90 leading-relaxed font-sans">
+                          {item.comparisonTable.keyNote}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {/* 4. Interactive Python / PyTorch Code Box */}
-                {item.codeExample && (
+                {/* 4. PyTorch Implementation Code Box */}
+                {item.pytorchInfo && (
                   <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>{item.codeExample.title}</span>
-                    </h4>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Code2 className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                          {item.pytorchInfo.title}
+                        </h4>
+                      </div>
+                      <p className="text-xs text-zinc-400 font-sans">
+                        {item.pytorchInfo.description}
+                      </p>
+                    </div>
+
                     <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                       <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
                         <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
                           <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>activation_functions.py</span>
+                          <span>pytorch_activation_demo.py</span>
                         </div>
                         <button
-                          onClick={() => handleCopyCode('code-activation-functions', item.codeExample.code)}
+                          onClick={() => handleCopyCode('code-activation-functions', item.pytorchInfo.code)}
                           className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
                         >
                           {copiedId === 'code-activation-functions' ? (
@@ -16983,12 +17035,12 @@ export default function AllDefinitionsPage() {
                           )}
                         </button>
                       </div>
-                      <CodeHighlight code={item.codeExample.code} />
+                      <CodeHighlight code={item.pytorchInfo.code} />
                     </div>
                   </div>
                 )}
 
-                {/* 5. Takeaway Banner */}
+                {/* 5. Final Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}
