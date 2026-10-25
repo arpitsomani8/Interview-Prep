@@ -5236,7 +5236,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 4. Python Libraries and SDKs */}
+                {/* 4. Python Libraries and Cloud SDKs (boto3 & azure-storage-blob) */}
                 {item.sdkExamples && (
                   <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
                     <div className="space-y-1 border-b border-zinc-800 pb-2.5">
@@ -5331,7 +5331,125 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 5. Final Takeaway */}
+                {/* 5. Azure AI Vision & Azure OpenAI Python Implementations */}
+                <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                    <div className="flex items-center gap-2">
+                      <Code2 className="w-4 h-4 text-purple-400" />
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                        Azure AI Vision & Azure OpenAI SDK Implementations
+                      </h4>
+                    </div>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                      OCR & LLM Inference
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Azure AI Vision */}
+                    {item.visionCodeExample && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-cyan-400 font-mono">
+                            {item.visionCodeExample.title}
+                          </span>
+                          <span className="text-[10px] font-mono text-zinc-500">Image Analysis</span>
+                        </div>
+                        <p className="text-xs text-zinc-300 font-sans">
+                          {item.visionCodeExample.desc}
+                        </p>
+                        <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                          <div className="flex items-center justify-between px-3.5 py-1.5 bg-zinc-950 border-b border-zinc-800">
+                            <span className="text-[11px] font-mono text-zinc-400">{item.visionCodeExample.filename}</span>
+                            <button
+                              onClick={() => handleCopyCode('code-azure-vision', item.visionCodeExample.code)}
+                              className="text-xs text-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1"
+                            >
+                              {copiedId === 'code-azure-vision' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              <span>{copiedId === 'code-azure-vision' ? 'Copied' : 'Copy'}</span>
+                            </button>
+                          </div>
+                          <CodeHighlight code={item.visionCodeExample.code} />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Azure OpenAI */}
+                    {item.openAiCodeExample && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-emerald-400 font-mono">
+                            {item.openAiCodeExample.title}
+                          </span>
+                          <span className="text-[10px] font-mono text-zinc-500">Chat Completions</span>
+                        </div>
+                        <p className="text-xs text-zinc-300 font-sans">
+                          {item.openAiCodeExample.desc}
+                        </p>
+                        <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                          <div className="flex items-center justify-between px-3.5 py-1.5 bg-zinc-950 border-b border-zinc-800">
+                            <span className="text-[11px] font-mono text-zinc-400">{item.openAiCodeExample.filename}</span>
+                            <button
+                              onClick={() => handleCopyCode('code-azure-openai', item.openAiCodeExample.code)}
+                              className="text-xs text-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1"
+                            >
+                              {copiedId === 'code-azure-openai' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              <span>{copiedId === 'code-azure-openai' ? 'Copied' : 'Copy'}</span>
+                            </button>
+                          </div>
+                          <CodeHighlight code={item.openAiCodeExample.code} />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 6. Azure Security and Production AI Deployment */}
+                {item.securityAndProduction && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="space-y-1 border-b border-zinc-800 pb-2.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                          <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                            {item.securityAndProduction.title}
+                          </h4>
+                        </div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                          Production Readiness
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-400 font-sans italic">
+                        {item.securityAndProduction.subtitle}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      {item.securityAndProduction.pillars.map((pil, pIdx) => (
+                        <div
+                          key={pIdx}
+                          className={`p-4 rounded-xl bg-black border ${pil.border} space-y-2 flex flex-col justify-between hover:border-zinc-700 transition`}
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono ${pil.accent}`}>
+                                {pil.title}
+                              </h5>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {pil.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {pil.content}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Final Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}

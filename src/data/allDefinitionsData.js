@@ -4066,7 +4066,53 @@ export const definitionsData = [
         }
       ]
     },
-    "takeaway": "In enterprise AI architectures, AWS and Azure provide the underlying backbone: S3/Blob Storage securely archives raw inputs, AI Vision extracts structured OCR tokens, Azure OpenAI performs contextual reasoning, and IAM/Entra ID with Private Endpoints ensures zero-trust isolation from inception to production deployment."
+    "takeaway": "In enterprise AI architectures, AWS and Azure provide the underlying backbone: S3/Blob Storage securely archives raw inputs, AI Vision extracts structured OCR tokens, Azure OpenAI performs contextual reasoning, and IAM/Entra ID with Private Endpoints ensures zero-trust isolation from inception to production deployment.",
+    "visionCodeExample": {
+      "title": "Azure AI Vision (Image Analysis & OCR)",
+      "filename": "azure_vision_ocr.py",
+      "desc": "Extract image captions and optical character recognition (READ) from images or scanned receipts.",
+      "code": "# Install the SDK\n# pip install azure-ai-vision-imageanalysis\n\nimport os\nfrom azure.ai.vision.imageanalysis import ImageAnalysisClient\nfrom azure.ai.vision.imageanalysis.models import VisualFeatures\nfrom azure.core.credentials import AzureKeyCredential\n\nclient = ImageAnalysisClient(\n    endpoint=os.environ[\"VISION_ENDPOINT\"],\n    credential=AzureKeyCredential(\n        os.environ[\"VISION_KEY\"]\n    ),\n)\n\nresult = client.analyze(\n    image_url=\"https://example.com/receipt.jpg\",\n    visual_features=[VisualFeatures.CAPTION, VisualFeatures.READ],\n)\n\nprint(result.caption)\nprint(result.read)"
+    },
+    "openAiCodeExample": {
+      "title": "Azure OpenAI (Chat Completions & Reasoning)",
+      "filename": "azure_openai_chat.py",
+      "desc": "Query hosted enterprise foundation models with structured system/user prompt definitions.",
+      "code": "import os\nfrom openai import AzureOpenAI\n\nclient = AzureOpenAI(\n    azure_endpoint=os.environ[\"AZURE_OPENAI_ENDPOINT\"],\n    api_key=os.environ[\"AZURE_OPENAI_API_KEY\"],\n    api_version=os.environ[\"AZURE_OPENAI_API_VERSION\"],\n)\n\nresponse = client.chat.completions.create(\n    model=os.environ[\"AZURE_OPENAI_DEPLOYMENT\"],\n    messages=[\n        {\n            \"role\": \"system\",\n            \"content\": \"Summarize customer support issues clearly.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"My card was charged, but the payment failed.\"\n        }\n    ],\n)\n\nprint(response.choices[0].message.content)"
+    },
+    "securityAndProduction": {
+      "title": "Azure Security and Production AI Deployment",
+      "subtitle": "A model that works locally is not automatically safe or reliable in production.",
+      "pillars": [
+        {
+          "title": "Authentication and authorization",
+          "content": "Verify who is making the request and what they are allowed to access. Use Microsoft Entra ID and Azure role-based access control where appropriate.",
+          "badge": "Entra ID & RBAC",
+          "accent": "text-cyan-400",
+          "border": "border-cyan-800/50"
+        },
+        {
+          "title": "Secrets management",
+          "content": "Store API keys and connection strings in Azure Key Vault or an appropriate secret manager. Avoid committing secrets to source code.",
+          "badge": "Azure Key Vault",
+          "accent": "text-amber-400",
+          "border": "border-amber-800/50"
+        },
+        {
+          "title": "Network and data protection",
+          "content": "Use TLS, encryption, suitable network restrictions, and data-access controls. Minimize sensitive information sent to an AI model.",
+          "badge": "TLS & Network Isolation",
+          "accent": "text-blue-400",
+          "border": "border-blue-800/50"
+        },
+        {
+          "title": "Monitoring and reliability",
+          "content": "Track latency, errors, token usage, cost, and response quality. Configure timeouts, retries with backoff, rate limits, and fallbacks where appropriate.",
+          "badge": "Azure Monitor & Resilience",
+          "accent": "text-emerald-400",
+          "border": "border-emerald-800/50"
+        }
+      ]
+    }
   },
   {
     "id": "testing",
