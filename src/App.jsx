@@ -56,6 +56,11 @@ export default function App() {
       window.history.replaceState(null, '', targetHash);
     }
 
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
@@ -67,7 +72,7 @@ export default function App() {
       window.location.hash = targetHash;
     }
     document.title = PAGE_TITLES[activeTab] || 'AI Engineering Master Defense';
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [activeTab]);
 
   return (
