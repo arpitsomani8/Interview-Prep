@@ -6902,8 +6902,8 @@ export const definitionsData = [
   {
     "id": "automl",
     "title": "AutoML & ML Pipelines — Automated Machine Learning",
-    "badge": "Hyperparameter Tuning & Pipeline Automation",
-    "summary": "AutoML stands for Automated Machine Learning. It automates repetitive steps in ML development: preparing datasets, selecting algorithms, choosing hyperparameters, training models, and comparing evaluation metrics.",
+    "badge": "Hyperparameter Tuning, Pipeline Automation & Model Search",
+    "summary": "AutoML stands for Automated Machine Learning. It automates repetitive steps in ML development: preparing datasets, feature encoding, selecting algorithms, tuning hyperparameters, and comparing evaluation metrics.",
     "coreDefinition": "AutoML stands for Automated Machine Learning. It automates some of the repetitive steps involved in developing a machine-learning model.",
     "manualStepsIntro": "Normally, a developer or data scientist may need to:",
     "manualSteps": [
@@ -6953,7 +6953,22 @@ export const definitionsData = [
       "term": "ML Pipeline",
       "definition": "An organized sequence of steps used to prepare data, train or use a machine-learning model, and evaluate or deploy the results."
     },
-    "takeaway": "AutoML automates algorithm exploration, hyperparameter tuning, and metric comparisons, but human domain knowledge and leak-free validation designs remain essential to building reliable production ML pipelines."
+    "takeaway": "AutoML automates algorithm exploration, hyperparameter tuning, and metric comparisons, but human domain knowledge and leak-free validation designs remain essential to building reliable production ML pipelines.",
+    "whyAutoML": {
+      "question": "Why do we need AutoML?",
+      "scenario": "Imagine you have a dataset of customer information and need to predict whether a customer will leave a service (customer churn).",
+      "withoutAutoMLIntro": "Without AutoML, you might manually:",
+      "manualSteps": [
+        "Clean missing values.",
+        "Encode categorical columns.",
+        "Scale numerical features when needed.",
+        "Try logistic regression, random forest, and gradient boosting.",
+        "Tune hyperparameters.",
+        "Compare models using appropriate metrics.",
+        "Select the best model based on validation performance."
+      ],
+      "conclusion": "AutoML can automate many of these steps."
+    }
   },
   {
     "id": "redis",
