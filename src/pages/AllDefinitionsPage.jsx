@@ -21467,33 +21467,152 @@ export default function AllDefinitionsPage() {
 
             {/* Item 143: AI Evaluation */}
             {item.id === 'ai-evaluation' && (
-              <div className="space-y-6">
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
                 {/* 1. Core Header Banner */}
-                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Quality Assurance, Benchmarking & Continuous Observability</span>
-                    </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                      Evaluation Framework
-                    </span>
+                <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-950/40 via-blue-950/20 to-zinc-950 border border-cyan-800/40 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-cyan-400" />
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                      {item.coreQuestion || "AI Evaluation — how do we know whether a model is good?"}
+                    </h4>
                   </div>
-                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
-                    The Three Pillars of AI Evaluation
-                  </h3>
-                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
-                    {item.coreDefinition}
+                  <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                    {item.coreDefinition || item.summary}
                   </p>
                 </div>
 
-                {/* 2. Three Pillars Grid */}
-                {item.pillars && (
+                {/* 2. Classification Metrics Table (Assume fraud is the positive class) */}
+                {item.classificationEvaluation && (
+                  <div className="space-y-4 p-4.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-2">
+                      <div className="flex items-center gap-2">
+                        <Table className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                          Classification Evaluation Metrics
+                        </h4>
+                      </div>
+                      <span className="text-[11px] font-mono px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 font-semibold self-start sm:self-auto">
+                        {item.classificationEvaluation.caseStudy}
+                      </span>
+                    </div>
+
+                    {/* Metrics Table */}
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase">
+                            <th className="py-2.5 px-3.5 font-semibold text-cyan-400 w-1/4">Metric</th>
+                            <th className="py-2.5 px-3.5 font-semibold text-zinc-300 w-1/3">Formula</th>
+                            <th className="py-2.5 px-3.5 font-semibold text-amber-400 w-2/5">What it tells us</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 font-sans">
+                          {item.classificationEvaluation.metrics.map((m, mIdx) => (
+                            <tr key={mIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3.5 font-mono font-bold text-white text-xs">
+                                {m.metric}
+                              </td>
+                              <td className="py-2.5 px-3.5 font-mono text-cyan-300 text-xs">
+                                <span className="bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800/30">
+                                  {m.formula}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3.5 text-zinc-200 text-xs">
+                                {m.tellsUs}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Confusion Matrix Terms (TP, TN, FP, FN) */}
+                    <div className="space-y-2 pt-1">
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block">
+                        Where:
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                        {item.classificationEvaluation.confusionMatrixTerms.map((term, tIdx) => (
+                          <div key={tIdx} className="p-3 rounded-lg bg-black border border-zinc-800/90 space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-mono font-bold text-cyan-300">{term.term}</span>
+                              <span className="text-[10px] font-mono text-zinc-500">{term.name}</span>
+                            </div>
+                            <p className="text-[11px] text-zinc-300 font-sans leading-tight">
+                              {term.meaning}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Interview Tip */}
+                    {item.classificationEvaluation.interviewTip && (
+                      <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 flex items-start gap-3 mt-2">
+                        <AlertTriangle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                        <div className="text-xs text-amber-200/90 leading-relaxed font-sans">
+                          <strong className="text-amber-300 font-mono uppercase text-[11px] block mb-0.5">Interview Tip:</strong>
+                          {item.classificationEvaluation.interviewTip}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 3. Offline vs. Online Evaluation */}
+                {item.offlineVsOnline && (
                   <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider font-mono">
+                        Offline vs. Online Evaluation
+                      </h4>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {/* Offline Evaluation Card */}
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-blue-800/40 space-y-2 hover:border-blue-500/40 transition flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-bold text-blue-400 font-mono">
+                              {item.offlineVsOnline.offline.title}
+                            </span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800/50">
+                              {item.offlineVsOnline.offline.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                            {item.offlineVsOnline.offline.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Online Evaluation Card */}
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-emerald-800/40 space-y-2 hover:border-emerald-500/40 transition flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-bold text-emerald-400 font-mono">
+                              {item.offlineVsOnline.online.title}
+                            </span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/50">
+                              {item.offlineVsOnline.online.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                            {item.offlineVsOnline.online.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. The Three Pillars of AI Evaluation */}
+                {item.pillars && (
+                  <div className="space-y-3 pt-2">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
                         <Terminal className="w-3.5 h-3.5 text-amber-400" />
-                        <span>The 3 Pillars of AI Evaluation</span>
+                        <span>The 3 Pillars of AI Evaluation (GenAI & Agents)</span>
                       </h4>
                       <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
                         Methodology
@@ -21528,7 +21647,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 3. Golden Dataset & Calibration Callouts */}
+                {/* 5. Golden Dataset & Calibration Callouts */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="p-4 rounded-xl bg-zinc-950 border border-purple-800/40 space-y-1.5">
                     <span className="text-xs font-bold font-mono text-purple-400 uppercase flex items-center gap-2">
@@ -21550,157 +21669,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
-                {/* 4. Offline vs Online Evaluation */}
-                {item.lifecycleEvals && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Evaluation Lifecycle: Offline vs. Online</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                        CI/CD & Observability
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {item.lifecycleEvals.map((lc, lIdx) => (
-                        <div key={lIdx} className={`p-4 rounded-xl bg-black border ${lc.border} space-y-2 flex flex-col justify-between`}>
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className={`text-xs font-bold font-mono ${lc.accent} uppercase block`}>
-                                {lc.stage}
-                              </span>
-                              <span className="text-[10px] font-mono text-zinc-400 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800">
-                                {lc.timing}
-                              </span>
-                            </div>
-                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                              {lc.desc}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 5. Interactive Python Code Box */}
-                {item.codeExample && (
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
-                      <Code2 className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>{item.codeExample.title}</span>
-                    </h4>
-                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
-                          <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>llm_judge_calibration.py</span>
-                        </div>
-                        <button
-                          onClick={() => handleCopyCode('code-ai-eval', item.codeExample.code)}
-                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                        >
-                          {copiedId === 'code-ai-eval' ? (
-                            <>
-                              <Check className="w-3 h-3 text-emerald-400" />
-                              <span>Copied!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3 h-3" />
-                              <span>Copy Code</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                      <CodeHighlight code={item.codeExample.code} />
-                    </div>
-                  </div>
-                )}
-
-                {/* 5.1 Practical Evaluation Methodologies (A/B Testing, Automated Evals, Rubrics) */}
-                {item.practicalEvalsSuite && (
-                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-xl">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
-                        <Terminal className="w-4 h-4 text-purple-400" />
-                        <span>A/B Testing, Automated Evaluations & Rubrics</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
-                        Field Testing
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                      {/* A/B Testing */}
-                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between hover:border-purple-500/40 transition">
-                        <div className="space-y-2">
-                          <span className="text-xs font-bold font-mono text-purple-300 uppercase block">
-                            {item.practicalEvalsSuite.abTesting.title}
-                          </span>
-                          <p className="text-xs text-white font-medium font-sans leading-relaxed">
-                            {item.practicalEvalsSuite.abTesting.definition}
-                          </p>
-                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
-                            <strong className="text-zinc-300">Example: </strong>
-                            {item.practicalEvalsSuite.abTesting.example}
-                          </p>
-                        </div>
-                        <div className="pt-2 border-t border-zinc-900 space-y-1">
-                          <span className="text-[10px] font-mono uppercase text-amber-400 font-bold block">
-                            Measure:
-                          </span>
-                          <ul className="text-[11px] text-zinc-300 space-y-0.5 list-disc pl-4 font-sans">
-                            {item.practicalEvalsSuite.abTesting.measureList.map((m, mIdx) => (
-                              <li key={mIdx}>{m}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-
-                      {/* Automated evaluations */}
-                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between hover:border-cyan-500/40 transition">
-                        <div className="space-y-2">
-                          <span className="text-xs font-bold font-mono text-cyan-300 uppercase block">
-                            {item.practicalEvalsSuite.automatedEvaluations.title}
-                          </span>
-                          <p className="text-xs text-white font-medium font-sans leading-relaxed">
-                            {item.practicalEvalsSuite.automatedEvaluations.definition}
-                          </p>
-                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
-                            <strong className="text-zinc-300">Golden Dataset: </strong>
-                            {item.practicalEvalsSuite.automatedEvaluations.example}
-                          </p>
-                        </div>
-                        <div className="p-2.5 rounded-lg bg-cyan-950/20 border border-cyan-800/30 text-[10px] font-mono text-cyan-200">
-                          CI/CD automated regression gate comparing predictions to ground-truth values.
-                        </div>
-                      </div>
-
-                      {/* Evaluation rubrics */}
-                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between hover:border-emerald-500/40 transition">
-                        <div className="space-y-2">
-                          <span className="text-xs font-bold font-mono text-emerald-300 uppercase block">
-                            {item.practicalEvalsSuite.evaluationRubrics.title}
-                          </span>
-                          <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-100 font-sans leading-relaxed font-medium">
-                            “{item.practicalEvalsSuite.evaluationRubrics.definition}”
-                          </div>
-                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
-                            A rubric defines the criteria used to judge the output, preventing subjective variance and establishing consistent scoring guidelines.
-                          </p>
-                        </div>
-                        <div className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-800/30 text-[10px] font-mono text-emerald-300">
-                          Clear scoring thresholds: 1 (hallucination) to 5 (flawless grounded answer).
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* 6. Takeaway Banner */}
+                {/* 6. Architecture Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}

@@ -11997,10 +11997,91 @@ export const definitionsData = [
   },
   {
     "id": "ai-evaluation",
-    "title": "AI Evaluation (The Three Pillars, Calibration & Offline vs Online Lifecycle)",
-    "badge": "LLM-as-a-Judge, Trajectory Evals & Production Golden Datasets",
-    "summary": "The three pillars of AI evaluation: LLM-as-a-Judge, Agent & Trajectory Evals, and Evals in Production. Ensure reliability via calibrated offline test suites and online production observability.",
-    "coreDefinition": "The three pillars of AI evaluation establish rigorous quality benchmarks across generation correctness, agent execution trajectories, and post-deployment production performance. Calibration ensures automated judges align with human ground truth.",
+    "title": "AI Evaluation: How Do We Know Whether a Model Is Good?",
+    "badge": "Model Evaluation, Metrics & Offline vs. Online Lifecycle",
+    "summary": "AI evaluation is the process of measuring whether a model performs accurately, reliably, safely, and appropriately for its intended use.",
+    "coreQuestion": "AI Evaluation — how do we know whether a model is good?",
+    "coreDefinition": "AI evaluation is the process of measuring whether a model performs accurately, reliably, safely, and appropriately for its intended use.",
+    "classificationEvaluation": {
+      "caseStudy": "Assume fraud is the positive class.",
+      "metrics": [
+        {
+          "metric": "Accuracy",
+          "formula": "(TP + TN) / N",
+          "tellsUs": "Overall proportion correct",
+          "accent": "text-cyan-400"
+        },
+        {
+          "metric": "Precision",
+          "formula": "TP / (TP + FP)",
+          "tellsUs": "How many flagged cases are actually fraud",
+          "accent": "text-blue-400"
+        },
+        {
+          "metric": "Recall",
+          "formula": "TP / (TP + FN)",
+          "tellsUs": "How much actual fraud is detected",
+          "accent": "text-emerald-400"
+        },
+        {
+          "metric": "F1-score",
+          "formula": "2PR / (P + R)",
+          "tellsUs": "Balance between precision and recall",
+          "accent": "text-purple-400"
+        },
+        {
+          "metric": "ROC-AUC",
+          "formula": "Area under ROC curve",
+          "tellsUs": "How well scores rank positives above negatives",
+          "accent": "text-amber-400"
+        },
+        {
+          "metric": "Log loss",
+          "formula": "Negative log-likelihood",
+          "tellsUs": "Quality of predicted probabilities",
+          "accent": "text-rose-400"
+        }
+      ],
+      "confusionMatrixTerms": [
+        {
+          "term": "TP",
+          "name": "True Positive",
+          "meaning": "Fraud correctly detected."
+        },
+        {
+          "term": "TN",
+          "name": "True Negative",
+          "meaning": "Legitimate transaction correctly identified."
+        },
+        {
+          "term": "FP",
+          "name": "False Positive",
+          "meaning": "Legitimate transaction incorrectly flagged."
+        },
+        {
+          "term": "FN",
+          "name": "False Negative",
+          "meaning": "Fraud missed by the model."
+        }
+      ],
+      "interviewTip": "Never choose a metric without understanding the business cost of false positives and false negatives."
+    },
+    "offlineVsOnline": {
+      "offline": {
+        "title": "Offline evaluation",
+        "description": "Test on held-out historical data. Measure precision, recall, F1, latency in controlled tests, and subgroup performance.",
+        "badge": "Pre-Deployment / Test Data",
+        "border": "border-blue-500/40",
+        "accent": "text-blue-400"
+      },
+      "online": {
+        "title": "Online evaluation",
+        "description": "Observe performance in a live environment using approved experiments, operational metrics, user feedback, and eventually verified outcomes.",
+        "badge": "Post-Deployment / Live Traffic",
+        "border": "border-emerald-500/40",
+        "accent": "text-emerald-400"
+      }
+    },
     "pillars": [
       {
         "number": "1",
@@ -12032,50 +12113,7 @@ export const definitionsData = [
     ],
     "goldenDatasetInfo": "A golden dataset is a curated collection of representative questions, expected outcomes, source documents, and evaluation criteria.",
     "calibrationInfo": "Calibration means checking whether the judge's scores and decisions agree with a trusted reference—typically human-reviewed examples or deterministic ground truth.",
-    "lifecycleEvals": [
-      {
-        "stage": "Offline evaluation — before release",
-        "desc": "Run a fixed test suite against a proposed model, prompt, or retrieval change. Compare quality, latency, cost, and safety with the current version.",
-        "timing": "Pre-deployment CI/CD gate",
-        "accent": "text-purple-400",
-        "border": "border-purple-800/50"
-      },
-      {
-        "stage": "Online evaluation — after release",
-        "desc": "Monitor actual request failures, latency, user feedback, retrieval quality, and sampled answer quality. Use privacy-appropriate logging and review.",
-        "timing": "Post-deployment production runtime",
-        "accent": "text-cyan-400",
-        "border": "border-cyan-800/50"
-      }
-    ],
-    "codeExample": {
-      "title": "LLM-as-a-Judge Calibration & Pointwise Evaluation Harness",
-      "language": "python",
-      "code": "import json\n\n# Golden dataset sample: question, ground truth context, candidate answer\nsample = {\n    \"question\": \"What is the return window for defective parcels?\",\n    \"context\": \"Company policy clause 4.2: Damaged or defective items can be returned within 30 days.\",\n    \"model_answer\": \"You can return defective parcels within 30 days of delivery.\",\n}\n\n# Calibration prompt for LLM-as-a-Judge\njudge_system_prompt = \"\"\"You are an impartial AI judge. Evaluate the candidate model answer based strictly on the provided context.\nOutput JSON with:\n1. 'grounded': true/false (Is answer supported by context?)\n2. 'score': integer 1-5 (5 = perfectly accurate and complete)\n3. 'reasoning': short justification.\"\"\"\n\njudge_user_prompt = f\"\"\"Context: {sample['context']}\nQuestion: {sample['question']}\nCandidate Answer: {sample['model_answer']}\"\"\"\n\n# Deterministic judge call: Temperature = 0.0, JSON response schema\n# Calibration verification: Compare judge's output score against human annotated ground truth label."
-    },
-    "practicalEvalsSuite": {
-      "abTesting": {
-        "title": "A/B testing",
-        "definition": "Compare two versions on representative traffic or a controlled experiment.",
-        "example": "Compare prompt A with prompt B to see whether the newer prompt improves correct invoice extraction.",
-        "measureList": [
-          "Exact field accuracy",
-          "Human correction rate",
-          "End-to-end completion rate",
-          "Latency and cost per document"
-        ]
-      },
-      "automatedEvaluations": {
-        "title": "Automated evaluations",
-        "definition": "Run a repeatable test suite against a labeled dataset or golden dataset.",
-        "example": "For example, prepare 500 representative invoices with verified ground-truth values, run the extraction pipeline, and compare predicted fields against the expected values."
-      },
-      "evaluationRubrics": {
-        "title": "Evaluation rubrics",
-        "definition": "A rubric defines what a good output means and how it will be scored. A rubric defines the criteria used to judge the output."
-      }
-    },
-    "takeaway": "Robust AI systems cannot rely on ad-hoc gut checks. By combining LLM-as-a-Judge for semantic fidelity, Trajectory Evals for multi-step agent actions, calibrated Golden Datasets in CI/CD, and continuous online production telemetry, engineering teams can iterate safely without silent regressions."
+    "takeaway": "Evaluation is not a single one-off check. Model evaluation requires balancing statistical metrics against business trade-offs (e.g. false positives vs. false negatives in fraud), validating rigorously on offline held-out datasets before deployment, and continuously monitoring live online telemetry."
   },
   {
     "id": "production-ai-playbook",
