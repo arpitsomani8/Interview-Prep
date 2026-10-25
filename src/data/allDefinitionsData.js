@@ -4602,91 +4602,136 @@ export const definitionsData = [
     "id": "ai-assisted-coding-tools",
     "title": "AI-Assisted Coding Tools & Agentic Development",
     "badge": "Developer Tooling & Agentic Engineering",
-    "summary": "What are AI-assisted coding tools? AI-assisted coding tools help developers write, understand, debug, test, and refactor code using AI models.",
-    "coreDefinition": "AI-assisted coding tools integrate large language models, retrieval over codebase repositories, and autonomous tool-execution runtimes to accelerate software development, bug fixing, test creation, and architectural refactoring.",
-    "tools": [
+    "summary": "AI-assisted coding tools combine an AI model with a development environment, codebase context, and the ability to execute commands or modify files to accelerate development.",
+    "whatAreTools": {
+      "definition": "These are tools that combine an AI model with a development environment, codebase context, and sometimes the ability to execute commands or modify files.",
+      "commonExamples": [
+        {
+          "name": "GitHub Copilot",
+          "tag": "Inline Completion & Chat",
+          "description": "Provides inline code completion, chat-based coding assistance, explanations, and agentic coding features in supported environments.",
+          "badgeColor": "border-blue-500/30 text-blue-400 bg-blue-500/10"
+        },
+        {
+          "name": "Cursor",
+          "tag": "AI-Focused Code Editor",
+          "description": "An AI-focused code editor with codebase-aware assistance, editing, and agent workflows.",
+          "badgeColor": "border-purple-500/30 text-purple-400 bg-purple-500/10"
+        },
+        {
+          "name": "Claude Code",
+          "tag": "Autonomous CLI Agent",
+          "description": "A coding agent that can inspect a project, edit files, and run development commands with configured permissions.",
+          "badgeColor": "border-amber-500/30 text-amber-400 bg-amber-500/10"
+        },
+        {
+          "name": "OpenAI Codex",
+          "tag": "Code Intelligence Engine",
+          "description": "A coding agent designed to help implement, understand, and review software tasks, depending on the available environment and configuration.",
+          "badgeColor": "border-emerald-500/30 text-emerald-400 bg-emerald-500/10"
+        }
+      ]
+    },
+    "howItWorks": {
+      "title": "How does an AI coding assistant work?",
+      "steps": [
+        {
+          "step": "1",
+          "title": "Developer instruction",
+          "example": "“Fix the API timeout bug.”",
+          "desc": "The user supplies a goal, bug report, or feature request in natural language."
+        },
+        {
+          "step": "2",
+          "title": "Context collection",
+          "example": "Relevant files, code, instructions, errors, and documentation",
+          "desc": "The assistant gathers pertinent files, syntax, workspace guidelines, and error tracebacks."
+        },
+        {
+          "step": "3",
+          "title": "LLM generates a proposal",
+          "example": "Suggests code changes or tool calls",
+          "desc": "The model reasons over the prompt and context to draft candidate diffs or command plans."
+        },
+        {
+          "step": "4",
+          "title": "Execution and verification",
+          "example": "Run tests, inspect errors, review the diff",
+          "desc": "The developer or system runs tests, linters, and checks runtime execution."
+        },
+        {
+          "step": "5",
+          "title": "Developer approval",
+          "example": "Accept, revise, or reject the changes",
+          "desc": "Human review confirms correctness, design fit, and security before merging."
+        }
+      ],
+      "contextNote": "The LLM does not automatically know your entire repository. The tool must supply relevant context, which might include selected files, retrieved code snippets, terminal output, or project instructions."
+    },
+    "typesOfAssistance": [
       {
-        "name": "GitHub Copilot",
-        "vendor": "GitHub / Microsoft & OpenAI",
-        "tag": "In-Editor Completion & Chat Assistant",
-        "role": "Code completion, chat, explanations, test generation, and agentic coding workflows in supported development environments.",
-        "features": [
-          "Real-time inline ghost-text code completion as you type",
-          "Sidebar conversational chat for explanations and refactoring",
-          "Automated unit test generation for highlighted methods",
-          "Copilot Workspace for PR-level multi-file agentic changes"
-        ]
+        "type": "Code completion",
+        "whatItDoes": "Predicts the next code fragment",
+        "example": "Suggests a Python function while typing"
       },
       {
-        "name": "Cursor",
-        "vendor": "Anysphere",
-        "tag": "Full-Codebase AI Editor",
-        "role": "AI-powered code editing, repository-aware assistance, and multi-file changes.",
-        "features": [
-          "Complete local codebase embedding index (@codebase queries)",
-          "Composer mode for orchestrated multi-file architectural edits",
-          "Predictive cursor navigation and automatic bug fixing",
-          "Custom rules support through .cursorrules configuration"
-        ]
+        "type": "Chat assistant",
+        "whatItDoes": "Answers coding questions",
+        "example": "Explains a KeyError"
       },
       {
-        "name": "Claude Code",
-        "vendor": "Anthropic",
-        "tag": "Autonomous CLI Coding Agent",
-        "role": "A coding agent that can inspect a repository, edit files, and run commands in supported environments.",
-        "features": [
-          "Terminal-native agentic execution with full filesystem access",
-          "Runs git, bash commands, tests, and linters autonomously",
-          "Large 200K token context window for full-repo reasoning",
-          "Autonomous tool loop: reads code, makes edits, runs tests, fixes errors"
-        ]
+        "type": "Codebase-aware assistant",
+        "whatItDoes": "Uses repository context",
+        "example": "Finds related API handlers"
       },
       {
-        "name": "OpenAI Codex",
-        "vendor": "OpenAI",
-        "tag": "Foundational Code Intelligence Engine",
-        "role": "Helps with coding tasks such as implementing features, understanding code, and fixing bugs, depending on the environment and permissions.",
-        "features": [
-          "Foundation neural model family specialized on source code & APIs",
-          "Powers early code-generation breakthroughs and IDE plugins",
-          "Translates natural language descriptions into executable syntax",
-          "Underpins modern coding evaluations, APIs, and execution sandboxes"
-        ]
+        "type": "Coding agent",
+        "whatItDoes": "Plans and executes multi-step coding tasks",
+        "example": "Fixes a bug across several files"
+      },
+      {
+        "type": "Automated code review",
+        "whatItDoes": "Identifies potential defects",
+        "example": "Flags missing input validation"
+      },
+      {
+        "type": "Test generation",
+        "whatItDoes": "Creates test cases",
+        "example": "Generates pytest unit tests"
       }
     ],
-    "evolutionTiers": [
+    "risksAndMitigations": [
       {
-        "tier": "Tier 1: Inline Autocomplete",
-        "desc": "Predicts the next line or block of syntax based on local file tokens (e.g., standard GitHub Copilot tab-completion)."
+        "risk": "Incorrect or hallucinated code",
+        "mitigation": "Run tests and verify behavior"
       },
       {
-        "tier": "Tier 2: Conversational Chat & Refactoring",
-        "desc": "Interactive Q&A in sidebar explaining stack traces, generating docstrings, and suggesting optimized algorithms."
+        "risk": "Security vulnerabilities",
+        "mitigation": "Review authentication, authorization, and input handling"
       },
       {
-        "tier": "Tier 3: Repository-Aware Assistance",
-        "desc": "Semantic vector retrieval over entire workspace to find types, APIs, and patterns across multiple files (Cursor @codebase)."
+        "risk": "Dependency confusion or malicious packages",
+        "mitigation": "Verify packages and their sources"
       },
       {
-        "tier": "Tier 4: Autonomous Agentic Execution",
-        "desc": "Autonomous agent plans steps, edits multiple files, runs terminal tests, inspects failures, and iterates until passing (Claude Code, Antigravity)."
+        "risk": "Unintended file changes",
+        "mitigation": "Inspect diffs and use version control"
+      },
+      {
+        "risk": "Secrets exposed in prompts",
+        "mitigation": "Never submit credentials or sensitive production data"
+      },
+      {
+        "risk": "Tests pass but bugs remain",
+        "mitigation": "Include edge cases, integration tests, and code review"
+      },
+      {
+        "risk": "Excessive autonomous actions",
+        "mitigation": "Limit permissions and require approval for risky operations"
       }
     ],
-    "engineeringBestPractices": [
-      {
-        "title": "Rigorous Human Verification",
-        "desc": "Treat AI outputs as junior-developer PR drafts. Always review logic, enforce automated unit tests, and check security boundaries (e.g. no hardcoded credentials or SQL injections)."
-      },
-      {
-        "title": "High-Signal Context Delivery",
-        "desc": "AI coding tools excel when given clean project guidelines, explicit interfaces, and strong type annotations (e.g. TypeScript, Pydantic, Docstrings, and project rules files)."
-      },
-      {
-        "title": "Test-Driven Agentic Loops",
-        "desc": "Combine AI coding agents with automated linters and test suites. When agents can run tests and inspect failure tracebacks, they self-heal bugs without human intervention."
-      }
-    ],
-    "takeaway": "AI-assisted coding tools shift software engineering from manual syntax writing to high-level architectural specification, test-driven validation, and orchestrating autonomous agentic workflows."
+    "coreRule": "AI-generated code should be treated like code from a contributor whose work needs review—not as automatically correct code.",
+    "takeaway": "AI-assisted coding tools accelerate development across completion, debugging, testing, and multi-file agentic refactoring. However, rigorous human review, test verification, and least-privilege tool execution remain critical to preventing hallucinations and security vulnerabilities."
   },
   {
     "id": "openai-vs-azure-ai",

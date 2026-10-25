@@ -6473,80 +6473,159 @@ export default function AllDefinitionsPage() {
             {/* Item 51: AI-Assisted Coding Tools & Agentic Development */}
             {item.id === 'ai-assisted-coding-tools' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                {/* Core Definition Banner */}
-                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
-                  <strong className="text-cyan-400 uppercase font-sans font-bold">What Are AI-Assisted Coding Tools? </strong>
-                  {item.summary}
-                </div>
+                {/* 1. What are AI-assisted coding tools? */}
+                <div className="space-y-3">
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-950/40 via-blue-950/20 to-zinc-950 border border-cyan-800/40">
+                    <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider font-mono mb-2 flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-cyan-400" />
+                      <span>What are AI-assisted coding tools?</span>
+                    </h4>
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                      {item.whatAreTools?.definition || item.summary}
+                    </p>
+                  </div>
 
-                {/* The Big 4 Tool Matrix */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>Industry Standard AI Coding Platforms</span>
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {item.tools.map((tool, tIdx) => (
-                      <div key={tIdx} className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 flex flex-col justify-between hover:border-cyan-500/30 transition">
-                        <div className="space-y-2">
-                          <div className="flex items-start justify-between gap-2">
-                            <div>
-                              <h5 className="text-sm font-bold text-white font-mono">{tool.name}</h5>
-                              <span className="text-[10px] font-mono text-zinc-400">{tool.vendor}</span>
-                            </div>
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-700">
+                  {/* Common examples */}
+                  <div className="space-y-2 pt-1">
+                    <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider font-semibold">
+                      Common Examples Include:
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.whatAreTools?.commonExamples?.map((tool, idx) => (
+                        <div key={idx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-sm font-bold text-white font-mono">{tool.name}</span>
+                            <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${tool.badgeColor || 'border-zinc-700 text-zinc-300 bg-zinc-900'}`}>
                               {tool.tag}
                             </span>
                           </div>
-                          <p className="text-xs text-cyan-200/90 leading-relaxed font-sans bg-cyan-950/20 p-2.5 rounded-lg border border-cyan-800/30">
-                            {tool.role}
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {tool.description}
                           </p>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
-                        <div className="space-y-1.5 pt-1 border-t border-zinc-800/60">
-                          {tool.features.map((feat, fIdx) => (
-                            <div key={fIdx} className="text-[11px] text-zinc-400 flex items-start gap-2">
-                              <span className="text-cyan-400 font-mono">•</span>
-                              <span>{feat}</span>
-                            </div>
-                          ))}
+                {/* 2. How does an AI coding assistant work? */}
+                <div className="space-y-3 p-4.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
+                  <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider font-mono flex items-center gap-2">
+                    <Workflow className="w-4 h-4 text-cyan-400" />
+                    <span>How does an AI coding assistant work?</span>
+                  </h4>
+
+                  {/* 5-step visual workflow cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5 pt-2">
+                    {item.howItWorks?.steps?.map((step, sIdx) => (
+                      <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800/80 flex flex-col justify-between space-y-2 relative group hover:border-cyan-500/40 transition">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="w-5 h-5 rounded-full bg-cyan-950 border border-cyan-700/60 text-cyan-300 text-[10px] font-mono flex items-center justify-center font-bold">
+                              {step.step}
+                            </span>
+                            <span className="text-[10px] font-mono text-zinc-500">Step {step.step}</span>
+                          </div>
+                          <h5 className="text-xs font-bold text-white font-sans">{step.title}</h5>
+                        </div>
+                        <div className="space-y-1 pt-1.5 border-t border-zinc-900">
+                          <div className="text-[11px] font-mono text-amber-300/90 bg-amber-950/20 px-1.5 py-0.5 rounded border border-amber-800/30">
+                            {step.example}
+                          </div>
+                          {step.desc && (
+                            <p className="text-[10px] text-zinc-400 font-sans leading-tight pt-1">
+                              {step.desc}
+                            </p>
+                          )}
                         </div>
                       </div>
                     ))}
                   </div>
-                </div>
 
-                {/* 4-Tier Evolution of AI-Assisted Coding */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
-                    The 4 Tiers of AI-Assisted Software Development
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {item.evolutionTiers.map((tier, eIdx) => (
-                      <div key={eIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
-                        <span className="text-xs font-bold font-mono text-cyan-300">{tier.tier}</span>
-                        <p className="text-[11px] text-zinc-400 leading-relaxed">{tier.desc}</p>
-                      </div>
-                    ))}
+                  {/* Context note banner */}
+                  <div className="p-3.5 rounded-lg bg-blue-950/20 border border-blue-800/40 flex items-start gap-3 mt-3">
+                    <Terminal className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
+                    <div className="text-xs text-blue-200/90 leading-relaxed font-sans">
+                      <strong className="text-blue-300 font-mono uppercase text-[11px] block mb-0.5">Context Collection Principle:</strong>
+                      {item.howItWorks?.contextNote}
+                    </div>
                   </div>
                 </div>
 
-                {/* Best Practices for Developers */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
-                    Production Engineering Best Practices
+                {/* 3. Types of AI coding assistance */}
+                <div className="space-y-2.5">
+                  <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider font-mono flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-cyan-400" />
+                    <span>Types of AI Coding Assistance</span>
                   </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                    {item.engineeringBestPractices.map((bp, bIdx) => (
-                      <div key={bIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
-                        <h5 className="text-xs font-bold text-amber-300 font-mono uppercase">{bp.title}</h5>
-                        <p className="text-xs text-zinc-400 leading-relaxed font-sans">{bp.desc}</p>
-                      </div>
-                    ))}
+                  <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead>
+                        <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase">
+                          <th className="py-2.5 px-3.5 font-semibold text-cyan-400 w-1/4">Type</th>
+                          <th className="py-2.5 px-3.5 font-semibold text-zinc-300 w-2/5">What it does</th>
+                          <th className="py-2.5 px-3.5 font-semibold text-amber-400 w-1/3">Example</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/60 font-sans">
+                        {item.typesOfAssistance?.map((row, rIdx) => (
+                          <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="py-2.5 px-3.5 font-mono font-semibold text-white text-xs">
+                              {row.type}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-zinc-300 text-xs">
+                              {row.whatItDoes}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-amber-200/90 font-mono text-[11px]">
+                              {row.example}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
 
-                {/* Final Takeaway */}
+                {/* 4. Risks and best practices */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold text-rose-400 uppercase tracking-wider font-mono flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-rose-400" />
+                    <span>Risks and Best Practices</span>
+                  </h4>
+                  <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead>
+                        <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase">
+                          <th className="py-2.5 px-3.5 font-semibold text-rose-400 w-1/2">Risk</th>
+                          <th className="py-2.5 px-3.5 font-semibold text-emerald-400 w-1/2">Mitigation</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/60 font-sans">
+                        {item.risksAndMitigations?.map((rm, rmIdx) => (
+                          <tr key={rmIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="py-2.5 px-3.5 text-rose-200/90 text-xs font-medium">
+                              {rm.risk}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-emerald-300 text-xs">
+                              {rm.mitigation}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Golden Rule Callout */}
+                  <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 flex items-start gap-3">
+                    <ShieldCheck className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                    <div className="text-xs text-amber-200/90 leading-relaxed font-sans">
+                      <strong className="text-amber-300 font-mono uppercase text-[11px] block mb-0.5">Core Engineering Rule:</strong>
+                      {item.coreRule}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Final Engineering Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
                   <strong className="text-cyan-400 uppercase">Engineering Takeaway: </strong>
                   {item.takeaway}
