@@ -35,6 +35,9 @@ import {
   Eye,
   ZoomIn,
   Maximize2,
+  Key,
+  Code,
+  ExternalLink,
   X
 } from 'lucide-react';
 
@@ -7471,25 +7474,405 @@ export default function AllDefinitionsPage() {
             {/* Item 59: Authentication & Authorization */}
             {item.id === 'auth-authorization' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                {/* Core Principles Banner */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-cyan-400" />
-                    <span>Core Authentication & Authorization Architecture</span>
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {item.corePrinciples.map((prin, pIdx) => (
-                      <div key={pIdx} className="p-3 rounded-xl bg-black border border-zinc-800/80 flex items-start gap-2.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                        <span className="text-xs text-zinc-300 font-sans leading-relaxed">
-                          {prin}
-                        </span>
+                {/* 1. AuthN vs AuthZ Side-by-Side */}
+                {item.authConcepts && (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* AuthN Card */}
+                      <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-blue-900/50 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-blue-400 font-mono flex items-center gap-2">
+                            <ShieldCheck className="w-4 h-4 text-blue-400" />
+                            <span>{item.authConcepts.authN.title}</span>
+                          </h4>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
+                            Identity
+                          </span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-blue-950/20 border border-blue-800/30 font-mono text-xs text-blue-200">
+                          <strong>{item.authConcepts.authN.question}</strong>
+                        </div>
+                        <div className="p-3 rounded-xl bg-black border border-zinc-800/80 text-xs text-zinc-300 font-sans leading-relaxed">
+                          <strong className="text-zinc-400 font-mono uppercase text-[10px] block mb-1">Example:</strong>
+                          {item.authConcepts.authN.example}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
 
-                {/* Cloud Security Matrix (AWS / Azure) */}
+                      {/* AuthZ Card */}
+                      <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-emerald-900/50 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                            <Lock className="w-4 h-4 text-emerald-400" />
+                            <span>{item.authConcepts.authZ.title}</span>
+                          </h4>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                            Permissions
+                          </span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-emerald-950/20 border border-emerald-800/30 font-mono text-xs text-emerald-200">
+                          <strong>{item.authConcepts.authZ.question}</strong>
+                        </div>
+                        <div className="p-3 rounded-xl bg-black border border-zinc-800/80 text-xs text-zinc-300 font-sans leading-relaxed">
+                          <strong className="text-zinc-400 font-mono uppercase text-[10px] block mb-1">Example:</strong>
+                          {item.authConcepts.authZ.example}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Easy Memory Trick & 403 Insight */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="p-3 rounded-xl bg-cyan-950/20 border border-cyan-800/40 flex items-start gap-2.5">
+                        <Sparkles className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                        <div className="text-xs font-sans text-cyan-200/90 leading-relaxed">
+                          <strong className="text-cyan-400 font-mono uppercase text-[10px] block mb-0.5">Easy Memory Trick:</strong>
+                          {item.authConcepts.easyMemoryTrick}
+                        </div>
+                      </div>
+                      <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-800/40 flex items-start gap-2.5">
+                        <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                        <div className="text-xs font-sans text-amber-200/90 leading-relaxed">
+                          <strong className="text-amber-400 font-mono uppercase text-[10px] block mb-0.5">Important Security Insight:</strong>
+                          {item.authConcepts.importantNote}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. How Authentication Works (4 Steps) */}
+                {item.howAuthWorks && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Key className="w-4 h-4 text-cyan-400" />
+                        <span>How Authentication Works</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        4-Step Lifecycle
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.howAuthWorks.map((st) => (
+                        <div key={st.step} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition space-y-2">
+                          <div className="flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-full bg-cyan-950 border border-cyan-700/60 text-cyan-400 text-[11px] font-mono font-bold flex items-center justify-center">
+                              {st.step}
+                            </span>
+                            <h5 className="text-xs font-bold text-white font-mono">
+                              {st.title}
+                            </h5>
+                          </div>
+                          <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                            {st.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Sessions vs. JWT */}
+                {item.sessionsVsJwt && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-purple-400" />
+                        <span>Sessions vs. JWT (Maintaining Login State)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        State Architecture
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-400 font-sans">
+                      {item.sessionsVsJwt.intro}
+                    </p>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                              <th className="p-3 w-1/4">Feature</th>
+                              <th className="p-3 w-3/8 text-amber-300">Session-based</th>
+                              <th className="p-3 w-3/8 text-cyan-300">JWT-based</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 font-sans">
+                            {item.sessionsVsJwt.comparison.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                <td className="p-3 font-semibold text-white font-mono text-[11px]">
+                                  {row.feature}
+                                </td>
+                                <td className="p-3 text-zinc-300 text-xs">
+                                  {row.session}
+                                </td>
+                                <td className="p-3 text-zinc-300 text-xs">
+                                  {row.jwt}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* JWT Anatomy breakdown */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-purple-900/40 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h5 className="text-xs font-bold uppercase tracking-wider text-purple-300 font-mono flex items-center gap-2">
+                          <Code className="w-3.5 h-3.5 text-purple-400" />
+                          <span>JWT Anatomy: 3 Dot-Separated Parts</span>
+                        </h5>
+                        <code className="text-xs font-mono px-2.5 py-1 rounded bg-black border border-purple-800/50 text-purple-200">
+                          {item.sessionsVsJwt.jwtAnatomy.format}
+                        </code>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {item.sessionsVsJwt.jwtAnatomy.parts.map((p, pIdx) => (
+                          <div key={pIdx} className={`p-3 rounded-xl ${p.bg} border ${p.border} space-y-1.5`}>
+                            <h6 className={`text-xs font-bold font-mono ${p.accent}`}>
+                              {p.name}
+                            </h6>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {p.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-400 font-mono flex items-start gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                        <span>{item.sessionsVsJwt.jwtAnatomy.validationNote}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. OAuth 2.0 vs. OpenID Connect (OIDC) */}
+                {item.oauthAndOidc && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-amber-400" />
+                        <span>OAuth 2.0 vs. OpenID Connect (OIDC)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Enterprise Delegation
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                        <h5 className="text-xs font-bold font-mono text-cyan-400 uppercase">
+                          OAuth 2.0 (Authorization Framework)
+                        </h5>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {item.oauthAndOidc.oauth2}
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                        <h5 className="text-xs font-bold font-mono text-emerald-400 uppercase">
+                          OpenID Connect / OIDC (Identity Layer)
+                        </h5>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {item.oauthAndOidc.oidc}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Google Example & Interview Trap */}
+                    <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
+                        <h6 className="text-xs font-bold text-white font-mono">
+                          Example: {item.oauthAndOidc.googleExample.scenario}
+                        </h6>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-300 font-sans">
+                          <strong className="text-emerald-400 font-mono block text-[10px] uppercase mb-0.5">OIDC Role:</strong>
+                          {item.oauthAndOidc.googleExample.oidc}
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-300 font-sans">
+                          <strong className="text-cyan-400 font-mono block text-[10px] uppercase mb-0.5">OAuth Role:</strong>
+                          {item.oauthAndOidc.googleExample.oauth}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-rose-950/20 border border-rose-800/40 text-xs text-rose-200/90 leading-relaxed font-sans flex items-start gap-2.5">
+                      <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-rose-400 font-mono uppercase text-[10px] block mb-0.5">Interview Trap:</strong>
+                        {item.oauthAndOidc.interviewTrap}
+                      </div>
+                    </div>
+
+                    {/* Other Important Terms */}
+                    <div className="space-y-2">
+                      <h5 className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 font-mono">
+                        Other Important Authentication Terms
+                      </h5>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        {item.oauthAndOidc.otherTerms.map((t, tIdx) => (
+                          <div key={tIdx} className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <h6 className="text-xs font-bold text-white font-mono">
+                                {t.term}
+                              </h6>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {t.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                              {t.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Authorization Models */}
+                {item.authModels && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Shield className="w-4 h-4 text-cyan-400" />
+                        <span>Authorization Models (Access Control)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        RBAC vs ABAC
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {item.authModels.map((m, mIdx) => (
+                        <div key={mIdx} className={`p-4 rounded-xl bg-zinc-950 border ${m.border} space-y-2`}>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                              {m.badge}
+                            </span>
+                          </div>
+                          <h5 className={`text-xs font-bold font-mono ${m.accent}`}>
+                            {m.model}
+                          </h5>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {m.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. HTTP Status Codes You Must Know */}
+                {item.httpStatusCodes && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-emerald-400" />
+                        <span>HTTP Status Codes You Must Know</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Status Reference
+                      </span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                              <th className="p-3 w-20">Code</th>
+                              <th className="p-3 w-40">Meaning</th>
+                              <th className="p-3">Example / Context</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 font-sans">
+                            {item.httpStatusCodes.codes.map((st, sIdx) => (
+                              <tr key={sIdx} className="hover:bg-zinc-900/40 transition">
+                                <td className="p-3 font-mono">
+                                  <span className={`px-2 py-0.5 rounded border text-[11px] font-bold ${st.badge}`}>
+                                    {st.code}
+                                  </span>
+                                </td>
+                                <td className="p-3 font-semibold text-white font-mono text-xs">
+                                  {st.meaning}
+                                </td>
+                                <td className="p-3 text-zinc-300 text-xs font-sans">
+                                  {st.example}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 font-mono flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span><strong>Remember: </strong>{item.httpStatusCodes.rememberNote}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Security in AI and RAG Applications */}
+                {item.aiRagSecurity && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-rose-400" />
+                        <span>Security in AI and RAG Applications</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
+                        Context Guardrails
+                      </span>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-rose-900/40 space-y-2">
+                      <p className="text-xs text-zinc-200 font-sans leading-relaxed font-semibold">
+                        {item.aiRagSecurity.intro}
+                      </p>
+                      <p className="text-xs text-zinc-400 font-sans">
+                        {item.aiRagSecurity.scenario}
+                      </p>
+                    </div>
+
+                    <div className="p-4 sm:p-5 rounded-2xl bg-black border border-zinc-800 space-y-3">
+                      <h5 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
+                        {item.aiRagSecurity.flowTitle}
+                      </h5>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                        {item.aiRagSecurity.flowSteps.map((step, sIdx) => (
+                          <div key={sIdx} className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-start gap-2.5">
+                            <span className="w-4 h-4 rounded-full bg-rose-950 border border-rose-700/60 text-rose-400 text-[10px] font-mono font-bold flex items-center justify-center shrink-0 mt-0.5">
+                              {sIdx + 1}
+                            </span>
+                            <span className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {step}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-rose-950/20 border border-rose-800/40 text-xs text-rose-200/90 leading-relaxed font-sans flex items-start gap-2.5">
+                      <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-rose-400 font-mono uppercase text-[10px] block mb-0.5">Critical Security Principle:</strong>
+                        {item.aiRagSecurity.criticalPrinciple}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 8. Cloud Security Matrix (AWS / Azure) */}
                 <div className="space-y-2">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono flex items-center gap-2">
                     <Terminal className="w-3.5 h-3.5 text-cyan-400" />
@@ -7523,7 +7906,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
-                {/* Final Takeaway */}
+                {/* 9. Final Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
                   <strong className="text-cyan-400 uppercase">Security Takeaway: </strong>
                   {item.takeaway}

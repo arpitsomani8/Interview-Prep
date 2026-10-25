@@ -5328,18 +5328,209 @@ export const definitionsData = [
     ],
     "takeaway": "A production search system splits the workload: fast vector search (FAISS) fetches high-recall candidates, deterministic metadata filters eliminate violations, and multi-signal reranking ensures the most relevant, profitable items appear at the very top."
   },
-  {
+    {
     "id": "auth-authorization",
-    "title": "Authentication & Authorization in AI Systems",
-    "badge": "Cloud Security, AI Safety & Access Control",
-    "summary": "Comprehensive defense-in-depth security architecture for protecting AI APIs, model inference endpoints, vector databases, and multi-tenant catalog data across enterprise cloud environments.",
-    "corePrinciples": [
-      "Require authentication for all protected endpoints.",
-      "Enforce authorization on the backend for every request.",
-      "Use role-based access control (RBAC) or attribute-based policies (ABAC) where appropriate.",
-      "Apply tenant-level data isolation in a multi-tenant application.",
-      "Avoid relying on frontend checks alone—client-side validation is purely for UX, never security."
+    "title": "Authentication & Authorization in AI & Web Systems",
+    "badge": "AuthN vs AuthZ, JWT, OAuth 2.0/OIDC & RAG Security",
+    "summary": "Core security principles distinguishing authentication (establishing identity) from authorization (enforcing permissions), covering sessions, JWT tokens, OAuth 2.0 / OIDC delegation, authorization models (RBAC, ABAC, resource-level), HTTP security status codes, and enterprise RAG access controls.",
+    "authConcepts": {
+      "authN": {
+        "title": "Authentication (AuthN)",
+        "question": "Answers: Who are you?",
+        "example": "Logging in with a password, passkey, or one-time code."
+      },
+      "authZ": {
+        "title": "Authorization (AuthZ)",
+        "question": "Answers: What are you allowed to do?",
+        "example": "A customer can view their own transactions but cannot access another customer's transactions."
+      },
+      "easyMemoryTrick": "Authentication establishes identity; authorization determines permissions.",
+      "importantNote": "A user can be authenticated successfully and still receive a 403 Forbidden response because they lack permission."
+    },
+    "howAuthWorks": [
+      {
+        "step": 1,
+        "title": "User submits credentials",
+        "desc": "Password, passkey, or identity-provider login"
+      },
+      {
+        "step": 2,
+        "title": "Server verifies identity",
+        "desc": "Check credentials, rate limits, and other required factors"
+      },
+      {
+        "step": 3,
+        "title": "Issue a session or token",
+        "desc": "Establish a way to recognize subsequent requests"
+      },
+      {
+        "step": 4,
+        "title": "Authorize each request",
+        "desc": "Check permissions and resource ownership before returning data"
+      }
     ],
+    "sessionsVsJwt": {
+      "intro": "Two common ways to maintain login state are server-side sessions and token-based authentication.",
+      "comparison": [
+        {
+          "feature": "State",
+          "session": "Session state stored server-side",
+          "jwt": "Claims carried in a signed token"
+        },
+        {
+          "feature": "Client stores",
+          "session": "Usually a session ID",
+          "jwt": "Token, depending on the design"
+        },
+        {
+          "feature": "Server lookup",
+          "session": "Commonly required",
+          "jwt": "May not be needed for basic signature validation"
+        },
+        {
+          "feature": "Revocation",
+          "session": "Often straightforward by invalidating the session",
+          "jwt": "Can require expiry, denylisting, or additional state"
+        },
+        {
+          "feature": "Typical use",
+          "session": "Traditional web applications",
+          "jwt": "APIs and distributed systems"
+        }
+      ],
+      "jwtAnatomy": {
+        "format": "header.payload.signature",
+        "parts": [
+          {
+            "name": "Header",
+            "accent": "text-rose-400",
+            "border": "border-rose-800/40",
+            "bg": "bg-rose-950/20",
+            "desc": "Token type and signing algorithm."
+          },
+          {
+            "name": "Payload",
+            "accent": "text-purple-400",
+            "border": "border-purple-800/40",
+            "bg": "bg-purple-950/20",
+            "desc": "Claims such as subject, issuer, and expiry."
+          },
+          {
+            "name": "Signature",
+            "accent": "text-cyan-400",
+            "border": "border-cyan-800/40",
+            "bg": "bg-cyan-950/20",
+            "desc": "Allows verification that the signed content has not been altered."
+          }
+        ],
+        "validationNote": "Tokens should be validated for signature, allowed algorithm, issuer, audience, and expiry as appropriate."
+      }
+    },
+    "oauthAndOidc": {
+      "intro": "These are common interview questions for enterprise applications.",
+      "oauth2": "OAuth 2.0: An authorization framework that allows an application to access resources with delegated permission.",
+      "oidc": "OpenID Connect (OIDC): An identity layer built on OAuth 2.0 that enables user authentication and returns identity information through an ID token.",
+      "googleExample": {
+        "scenario": "You click “Sign in with Google.”",
+        "oidc": "OIDC helps establish who signed in.",
+        "oauth": "OAuth access tokens can authorize access to permitted resources."
+      },
+      "interviewTrap": "OAuth 2.0 alone is not a user-authentication protocol. Use OIDC when you need standardized authentication through an identity provider.",
+      "otherTerms": [
+        {
+          "term": "Access token",
+          "badge": "Resource Scope",
+          "desc": "Used to access a protected resource."
+        },
+        {
+          "term": "Refresh token",
+          "badge": "Token Renewal",
+          "desc": "Used to obtain new access tokens under defined conditions."
+        },
+        {
+          "term": "API key",
+          "badge": "Client Identity",
+          "desc": "Identifies or authorizes a client, depending on the system; it is not a substitute for full user authentication."
+        },
+        {
+          "term": "MFA",
+          "badge": "Multi-Factor",
+          "desc": "Multi-factor authentication, which combines independent authentication factors."
+        }
+      ]
+    },
+    "authModels": [
+      {
+        "model": "RBAC — Role-Based Access Control",
+        "badge": "Role Mapping",
+        "accent": "text-cyan-400",
+        "border": "border-cyan-800/40",
+        "desc": "Permissions are assigned to roles, such as admin, analyst, or customer."
+      },
+      {
+        "model": "ABAC — Attribute-Based Access Control",
+        "badge": "Context & Policies",
+        "accent": "text-purple-400",
+        "border": "border-purple-800/40",
+        "desc": "Access depends on attributes such as department, resource classification, location, or time."
+      },
+      {
+        "model": "Resource-level authorization",
+        "badge": "Granular Ownership",
+        "accent": "text-amber-400",
+        "border": "border-amber-800/40",
+        "desc": "Checks whether the user can access a particular record, document, transaction, or file."
+      }
+    ],
+    "httpStatusCodes": {
+      "codes": [
+        {
+          "code": "200",
+          "meaning": "OK",
+          "example": "Request succeeded",
+          "badge": "bg-emerald-950 text-emerald-300 border-emerald-800"
+        },
+        {
+          "code": "401",
+          "meaning": "Unauthorized",
+          "example": "Missing or invalid authentication credentials",
+          "badge": "bg-rose-950 text-rose-300 border-rose-800"
+        },
+        {
+          "code": "403",
+          "meaning": "Forbidden",
+          "example": "Authenticated user lacks permission",
+          "badge": "bg-rose-950 text-rose-300 border-rose-800"
+        },
+        {
+          "code": "404",
+          "meaning": "Not Found",
+          "example": "Resource does not exist, or its existence is intentionally concealed",
+          "badge": "bg-amber-950 text-amber-300 border-amber-800"
+        },
+        {
+          "code": "429",
+          "meaning": "Too Many Requests",
+          "example": "Rate limit exceeded",
+          "badge": "bg-purple-950 text-purple-300 border-purple-800"
+        }
+      ],
+      "rememberNote": "401 generally means authentication is missing or invalid; 403 means the request is not permitted."
+    },
+    "aiRagSecurity": {
+      "intro": "Authentication and authorization are especially important when an LLM can retrieve confidential information or call tools.",
+      "scenario": "Consider a company RAG system with HR, finance, and engineering documents.",
+      "flowTitle": "A secure request flow should:",
+      "flowSteps": [
+        "Authenticate the user.",
+        "Determine the user's identity, tenant, and permissions.",
+        "Apply access controls during document retrieval.",
+        "Pass only authorized information into the model's context.",
+        "Restrict tool calls using server-side authorization.",
+        "Log access and relevant actions while protecting sensitive data."
+      ],
+      "criticalPrinciple": "Do not rely on the LLM prompt alone to enforce permissions. Enforce authorization in the application and data-access layers."
+    },
     "cloudSecurityLayers": [
       {
         "layer": "Identity",
