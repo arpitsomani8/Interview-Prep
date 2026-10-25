@@ -2128,7 +2128,7 @@ export const definitionsData = [
       ]
     }
   },
-  {
+    {
     "id": "vector-database",
     "title": "Vector Database",
     "badge": "Vector Indexing & Similarity Search",
@@ -2154,7 +2154,28 @@ export const definitionsData = [
       "Approximate Nearest Neighbor (ANN): Vector DBs utilize algorithmic indexing like HNSW (Hierarchical Navigable Small World) or IVF (Inverted File Index) to retrieve similar vectors in milliseconds without scanning every single vector.",
       "Local vs Cloud-Scale: ChromaDB provides lightweight embedded vector storage ideal for local microservices; Pinecone, Milvus, and Qdrant provide distributed multi-tenant clustering with high concurrency and automatic indexing replication.",
       "Role in RAG: The vector database acts as the external long-term semantic memory for the LLM. It stores passage chunks, metadata, and embeddings, returning context on demand at inference time."
-    ]
+    ],
+    "dbQueryMechanics": {
+      "headline": "How Query Vectors Make DB Queries vs. Standard SQL Queries",
+      "vectorQuery": {
+        "title": "Vector Similarity Query",
+        "sqlSnippet": "SELECT id, content FROM documents\nORDER BY embedding <=> query_vector\nLIMIT 5;",
+        "clause": "ORDER BY embedding <=> query_vector",
+        "explanation": "This is how query vectors make DB queries: computes distance between the stored embedding and the query vector.",
+        "indexLabel": "Vector Query Index",
+        "indexes": "Can use vector indexes such as HNSW or IVFFlat",
+        "indexDetail": "Approximate Nearest Neighbor (ANN) graphs and clustered posting lists designed for high-dimensional geometric search."
+      },
+      "relationalQuery": {
+        "title": "PostgreSQL Relational Query",
+        "sqlSnippet": "SELECT id, content FROM documents\nWHERE department = 'warehouse'\nLIMIT 5;",
+        "clause": "WHERE department = 'warehouse'",
+        "explanation": "Traditional scalar relational filtering in SQL.",
+        "indexLabel": "PostgreSQL Query Index",
+        "indexes": "Uses standard indexes such as B-tree",
+        "indexDetail": "Balanced tree structures optimized for exact equality matches, sorting scalar values, and numerical range scans."
+      }
+    }
   },
   {
     "id": "similarity-semantic-search",
@@ -5787,7 +5808,7 @@ export const definitionsData = [
     },
     "takeaway": "In the modern Python API stack: Uvicorn powers the asynchronous ASGI server runtime, [standard] equips C-speed event loops (uvloop) and HTTP parsing (httptools), FastAPI defines routes and handlers, and Pydantic guarantees strict runtime type validation."
   },
-  {
+    {
     "id": "async-sync",
     "title": "Async/Sync Execution & Database Querying",
     "badge": "Concurrency & Database Querying",
@@ -5804,28 +5825,7 @@ export const definitionsData = [
         "impact": "Non-blocking event loop execution that enables high throughput for I/O-bound workloads like API calls and DB queries."
       }
     ],
-    "dbQueryMechanics": {
-      "headline": "How Query Vectors Make DB Queries vs. Standard SQL Queries",
-      "vectorQuery": {
-        "title": "Vector Similarity Query",
-        "sqlSnippet": "SELECT id, content FROM documents\nORDER BY embedding <=> query_vector\nLIMIT 5;",
-        "clause": "ORDER BY embedding <=> query_vector",
-        "explanation": "This is how query vectors make DB queries: computes distance between the stored embedding and the query vector.",
-        "indexLabel": "Vector Query Index",
-        "indexes": "Can use vector indexes such as HNSW or IVFFlat",
-        "indexDetail": "Approximate Nearest Neighbor (ANN) graphs and clustered posting lists designed for high-dimensional geometric search."
-      },
-      "relationalQuery": {
-        "title": "PostgreSQL Relational Query",
-        "sqlSnippet": "SELECT id, content FROM documents\nWHERE department = 'warehouse'\nLIMIT 5;",
-        "clause": "WHERE department = 'warehouse'",
-        "explanation": "Traditional scalar relational filtering in SQL.",
-        "indexLabel": "PostgreSQL Query Index",
-        "indexes": "Uses standard indexes such as B-tree",
-        "indexDetail": "Balanced tree structures optimized for exact equality matches, sorting scalar values, and numerical range scans."
-      }
-    },
-    "takeaway": "Synchronous code waits sequentially, while asynchronous code yields control during I/O to handle concurrent requests. For database operations, vector queries order records geometrically with operators like `<=>` using HNSW/IVFFlat indexes, whereas standard relational queries filter columns with WHERE clauses using B-tree indexes."
+    "takeaway": "Synchronous code executes sequentially and blocks the worker thread during I/O. Asynchronous code yields execution to the event loop during I/O operations (network, database, files), allowing a single worker process to handle thousands of concurrent requests."
   },
   {
     "id": "load-balancing",
