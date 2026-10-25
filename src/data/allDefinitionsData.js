@@ -5808,24 +5808,77 @@ export const definitionsData = [
     },
     "takeaway": "In the modern Python API stack: Uvicorn powers the asynchronous ASGI server runtime, [standard] equips C-speed event loops (uvloop) and HTTP parsing (httptools), FastAPI defines routes and handlers, and Pydantic guarantees strict runtime type validation."
   },
-    {
-    "id": "async-sync",
-    "title": "Async/Sync Execution & Database Querying",
-    "badge": "Concurrency & Database Querying",
-    "summary": "Synchronous code executes sequentially and blocks while waiting for I/O, whereas Asynchronous code yields control to the event loop during I/O operations, unlocking massive request concurrency.",
-    "coreConcepts": [
       {
-        "type": "Synchronous (Sync)",
-        "behavior": "Synchronous code waits for an operation to finish before proceeding along that execution path.",
-        "impact": "Blocks execution during I/O, preventing the server from handling other tasks on that worker until the operation completes."
+    "id": "async-sync",
+    "title": "Async vs. Sync (Synchronous vs. Asynchronous Concurrency)",
+    "badge": "Concurrency & Python AsyncIO",
+    "summary": "Synchronous programming executes operations in sequence, waiting for each step to finish. Asynchronous programming suspends tasks during I/O waits, freeing the event loop to make progress on other concurrent tasks.",
+    "syncConcept": {
+      "title": "Synchronous Programming",
+      "definition": "Synchronous programming executes operations in sequence. A task generally waits for the current operation to finish before proceeding to the next one."
+    },
+    "asyncConcept": {
+      "title": "Asynchronous Programming",
+      "definition": "Asynchronous programming allows a program to suspend a task while it waits for an operation, then use that time to make progress on other tasks.",
+      "effectiveForTitle": "This is particularly effective for I/O-bound work, such as waiting for:",
+      "effectiveFor": [
+        "LLM API responses.",
+        "HTTP requests.",
+        "Database queries using an async driver.",
+        "Network or file operations supported by asynchronous APIs."
+      ]
+    },
+    "pythonSyntax": {
+      "title": "Python Native Async Syntax",
+      "features": [
+        {
+          "syntax": "async def",
+          "desc": "Defines a coroutine function."
+        },
+        {
+          "syntax": "await",
+          "desc": "Suspends the current coroutine until an awaitable operation can provide its result, allowing the event loop to run other tasks."
+        },
+        {
+          "syntax": "asyncio.gather()",
+          "desc": "Can run multiple awaitables concurrently."
+        }
+      ],
+      "importantNote": "Important: asyncio.sleep() is non-blocking. Replacing it with time.sleep() inside an async function would block the event loop during that sleep."
+    },
+    "comparisonTable": [
+      {
+        "concept": "Synchronous",
+        "howItWorks": "Tasks generally wait for each other",
+        "bestSuitedFor": "Simple sequential logic"
       },
       {
-        "type": "Asynchronous (Async)",
-        "behavior": "Asynchronous code can yield control while waiting for supported I/O, allowing the server to work on other requests.",
-        "impact": "Non-blocking event loop execution that enables high throughput for I/O-bound workloads like API calls and DB queries."
+        "concept": "Asynchronous",
+        "howItWorks": "Tasks can make progress while others await I/O",
+        "bestSuitedFor": "Many concurrent network/API operations"
+      },
+      {
+        "concept": "Multithreading",
+        "howItWorks": "Multiple threads share a process",
+        "bestSuitedFor": "I/O-bound tasks; some native operations"
+      },
+      {
+        "concept": "Multiprocessing",
+        "howItWorks": "Multiple processes execute independently",
+        "bestSuitedFor": "CPU-intensive Python work"
+      },
+      {
+        "concept": "Parallelism",
+        "howItWorks": "Multiple computations execute simultaneously",
+        "bestSuitedFor": "Work that can use multiple execution resources"
+      },
+      {
+        "concept": "Concurrency",
+        "howItWorks": "Multiple tasks make progress over overlapping periods",
+        "bestSuitedFor": "Coordinating multiple operations"
       }
     ],
-    "takeaway": "Synchronous code executes sequentially and blocks the worker thread during I/O. Asynchronous code yields execution to the event loop during I/O operations (network, database, files), allowing a single worker process to handle thousands of concurrent requests."
+    "rememberNote": "Remember: Concurrency does not necessarily mean parallel execution. Async code can handle many concurrent I/O operations on one thread without running CPU calculations simultaneously."
   },
   {
     "id": "load-balancing",

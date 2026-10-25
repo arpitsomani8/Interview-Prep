@@ -8230,49 +8230,141 @@ export default function AllDefinitionsPage() {
             {/* Item 65: Async/Sync */}
             {item.id === 'async-sync' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                {/* Sync vs Async Dual Cards */}
+                {/* 1. Synchronous vs Asynchronous Dual Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {item.coreConcepts.map((c, cIdx) => (
-                    <div
-                      key={cIdx}
-                      className={`p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border space-y-2.5 shadow-xl ${
-                        cIdx === 0 ? 'border-rose-900/40' : 'border-emerald-900/40'
-                      }`}
-                    >
+                  {/* Synchronous */}
+                  {item.syncConcept && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-rose-900/40 space-y-2.5 shadow-xl flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+                            <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider font-mono text-rose-300">
+                              {item.syncConcept.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono text-zinc-400 uppercase bg-black px-2 py-0.5 rounded border border-zinc-800">
+                            Sequential / Blocking
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-200 leading-relaxed font-sans">
+                          {item.syncConcept.definition}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Asynchronous */}
+                  {item.asyncConcept && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-emerald-900/40 space-y-2.5 shadow-xl">
                       <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                         <div className="flex items-center gap-2">
-                          <span
-                            className={`w-2.5 h-2.5 rounded-full ${
-                              cIdx === 0 ? 'bg-rose-400' : 'bg-emerald-400'
-                            }`}
-                          ></span>
-                          <h4
-                            className={`text-xs sm:text-sm font-bold uppercase tracking-wider font-mono ${
-                              cIdx === 0 ? 'text-rose-300' : 'text-emerald-300'
-                            }`}
-                          >
-                            {c.type}
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider font-mono text-emerald-300">
+                            {item.asyncConcept.title}
                           </h4>
                         </div>
                         <span className="text-[10px] font-mono text-zinc-400 uppercase bg-black px-2 py-0.5 rounded border border-zinc-800">
-                          {cIdx === 0 ? 'Blocking I/O' : 'Yielding I/O'}
+                          Non-Blocking / Yielding
                         </span>
                       </div>
                       <p className="text-xs text-zinc-200 leading-relaxed font-sans">
-                        {c.behavior}
+                        {item.asyncConcept.definition}
                       </p>
-                      <p className="text-[11px] text-zinc-400 leading-relaxed font-sans pt-1 border-t border-zinc-900">
-                        {c.impact}
-                      </p>
+
+                      <div className="space-y-1 pt-1 border-t border-zinc-900">
+                        <span className="text-[11px] font-mono uppercase text-emerald-400 font-semibold block">
+                          {item.asyncConcept.effectiveForTitle}
+                        </span>
+                        <ul className="space-y-1">
+                          {item.asyncConcept.effectiveFor?.map((eff, eIdx) => (
+                            <li key={eIdx} className="text-xs text-zinc-300 flex items-start gap-1.5 leading-relaxed">
+                              <span className="text-emerald-400 font-bold shrink-0">•</span>
+                              <span>{eff}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                  ))}
+                  )}
                 </div>
 
-                {/* Architecture Takeaway */}
-                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
-                  <strong className="text-emerald-400 uppercase">Core Takeaway: </strong>
-                  {item.takeaway}
-                </div>
+                {/* 2. Python Native Async Syntax */}
+                {item.pythonSyntax && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-cyan-400" />
+                        <span>{item.pythonSyntax.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono text-zinc-400">asyncio</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {item.pythonSyntax.features.map((feat, fIdx) => (
+                        <div key={fIdx} className="p-3 rounded-xl bg-black border border-zinc-800/80 space-y-1">
+                          <code className="text-xs font-bold font-mono text-cyan-300 block">
+                            {feat.syntax}
+                          </code>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                            {feat.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed flex items-start gap-2">
+                      <span className="text-amber-400 font-mono font-bold uppercase shrink-0">Important:</span>
+                      <span>{item.pythonSyntax.importantNote.replace('Important: ', '')}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Concurrency Comparison Table */}
+                {item.comparisonTable && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Concurrency & Execution Models Comparison</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                              <th className="p-3 w-1/4">Concept</th>
+                              <th className="p-3 w-3/8 text-cyan-400 font-semibold">How it works</th>
+                              <th className="p-3 w-3/8 text-purple-400 font-semibold">Best suited for</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 font-sans">
+                            {item.comparisonTable.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                  {row.concept}
+                                </td>
+                                <td className="p-3 text-cyan-200/90 text-[11px] leading-relaxed">
+                                  {row.howItWorks}
+                                </td>
+                                <td className="p-3 text-purple-200/90 text-[11px] leading-relaxed font-semibold">
+                                  {row.bestSuitedFor}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Remember Note */}
+                {item.rememberNote && (
+                  <div className="p-3.5 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-sans">
+                    <strong className="text-cyan-400 font-mono uppercase mr-1.5 font-bold">Remember:</strong>
+                    {item.rememberNote.replace('Remember: ', '')}
+                  </div>
+                )}
               </div>
             )}
 
