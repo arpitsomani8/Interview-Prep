@@ -13679,64 +13679,6 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 4. Bidirectional Context & Polysemy Resolution */}
-                {item.bidirectionalContext && (
-                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 shadow-lg">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Bidirectional Context & Polysemy Resolution</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
-                        Transformer Encoder
-                      </span>
-                    </div>
-
-                    <div className="p-3.5 rounded-xl bg-black border border-zinc-900 space-y-2 text-xs">
-                      <p className="text-zinc-200 font-semibold leading-relaxed">
-                        {item.bidirectionalContext.fullName}
-                      </p>
-                      <p className="text-zinc-400 leading-relaxed">
-                        {item.bidirectionalContext.contextualExplanation}
-                      </p>
-                    </div>
-
-                    {/* Polysemy Box (The Word 'bank') */}
-                    <div className="p-4 rounded-xl bg-black border border-amber-900/50 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold font-mono text-amber-300 uppercase">
-                          {item.bidirectionalContext.polysemyExample.title}
-                        </span>
-                        <span className="text-[10px] font-mono text-zinc-500">Left + Right Attention</span>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1.5">
-                          <span className="text-xs font-bold text-cyan-300 font-mono block">
-                            {item.bidirectionalContext.polysemyExample.sentence1}
-                          </span>
-                          <span className="text-[11px] text-zinc-400 block font-sans">
-                            Meaning: {item.bidirectionalContext.polysemyExample.meaning1}
-                          </span>
-                        </div>
-                        <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1.5">
-                          <span className="text-xs font-bold text-emerald-300 font-mono block">
-                            {item.bidirectionalContext.polysemyExample.sentence2}
-                          </span>
-                          <span className="text-[11px] text-zinc-400 block font-sans">
-                            Meaning: {item.bidirectionalContext.polysemyExample.meaning2}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="p-2.5 rounded-lg bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 font-mono">
-                        <strong className="text-amber-400 uppercase">BERT Resolution: </strong>
-                        {item.bidirectionalContext.polysemyExample.resolution}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 {/* 5. Is BERT an Embedding? Architectural Distinction */}
                 {item.isBertAnEmbedding && (
                   <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-lg">

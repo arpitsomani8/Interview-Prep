@@ -8668,18 +8668,6 @@ export const definitionsData = [
         }
       ]
     },
-    "bidirectionalContext": {
-      "fullName": "BERT stands for Bidirectional Encoder Representations from Transformers. It is a pretrained language model based on the Transformer encoder architecture.",
-      "contextualExplanation": "BERT learns contextual representations of text. It uses information from both the left and right context of a token to build its representation.",
-      "polysemyExample": {
-        "title": "The Polysemy Problem: The Word 'bank'",
-        "sentence1": "“I deposited money at the bank.”",
-        "meaning1": "Financial institution (money, deposits, vaults)",
-        "sentence2": "“We sat on the river bank.”",
-        "meaning2": "River bank (geographical slope, water, river)",
-        "resolution": "BERT can produce different contextual representations for bank depending on the surrounding words."
-      }
-    },
     "isBertAnEmbedding": {
       "question": "Is BERT an embedding?",
       "importantDistinction": "There is an important distinction:",
