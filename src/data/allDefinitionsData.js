@@ -14218,15 +14218,111 @@ export const definitionsData = [
   {
     "id": "binning",
     "title": "Binning (Discretization)",
-    "badge": "Feature Transformation",
-    "summary": "Converting continuous numerical variables into discrete categorical intervals (bins).",
-    "details": [
-      "Why Use It: When exact numerical values don't matter (e.g. Age groups: 0-18, 19-35, 36-60, 60+), and to prevent tree-based models from overfitting on small spikes in continuous numbers.",
-      "Approach A (pd.cut): Creates custom, user-defined fixed-width bins based on domain logic.",
-      "Approach B (pd.qcut): Quantile-based equal-frequency binning where each bin contains an equal number of records.",
-      "Trade-Off: Introduces loss of fine-grained numerical precision in exchange for noise reduction."
+    "badge": "Feature Transformation & Discretization",
+    "summary": "Binning (discretization) converts continuous numerical variables into discrete intervals or categorical buckets to simplify non-linear relationships, reduce noise, and improve model interpretability.",
+    "coreDefinition": "Converting continuous numerical variables into discrete categorical intervals (bins). Binning simplifies complex patterns, handles skewness, and can prevent certain models from overfitting to fine-grained numerical fluctuations.",
+    "typesOfBinning": {
+      "title": "Types of binning",
+      "types": [
+        {
+          "letter": "A",
+          "name": "Equal-width binning",
+          "description": "Every bin covers the same numerical range.",
+          "example": "Scores from 0 to 100 divided into five bins, each 20 points wide.",
+          "badge": "Uniform Interval Width",
+          "accent": "text-cyan-400",
+          "border": "border-cyan-800/50"
+        },
+        {
+          "letter": "B",
+          "name": "Equal-frequency binning",
+          "description": "Each bin contains approximately the same number of observations.",
+          "note": "Useful when the data distribution is highly skewed.",
+          "badge": "Quantile-Based",
+          "accent": "text-purple-400",
+          "border": "border-purple-800/50"
+        },
+        {
+          "letter": "C",
+          "name": "Supervised binning",
+          "description": "Bin boundaries are chosen using the target variable, often to improve prediction.",
+          "example": "Selecting income thresholds that help distinguish loan defaults.",
+          "badge": "Target-Driven",
+          "accent": "text-amber-400",
+          "border": "border-amber-800/50"
+        }
+      ]
+    },
+    "pandasImplementations": [
+      {
+        "id": "code-binning-cut",
+        "method": "Method A: pd.cut() — equal-width or custom intervals",
+        "filename": "binning_pd_cut.py",
+        "code": "import pandas as pd\n\ndf = pd.DataFrame({\n    \"age\": [17, 23, 28, 36, 44, 57, 68, 75]\n})\n\ndf[\"age_group\"] = pd.cut(\n    df[\"age\"],\n    bins=[0, 30, 60, 100],\n    labels=[\"Young\", \"Middle-aged\", \"Older\"],\n    right=False\n)\n\nprint(df)",
+        "explanation": "Here, right=False makes the intervals left-inclusive and right-exclusive:",
+        "intervals": [
+          {
+            "label": "Young",
+            "interval": "0 ≤ age < 30"
+          },
+          {
+            "label": "Middle-aged",
+            "interval": "30 ≤ age < 60"
+          },
+          {
+            "label": "Older",
+            "interval": "60 ≤ age < 100"
+          }
+        ]
+      },
+      {
+        "id": "code-binning-qcut",
+        "method": "Method B: pd.qcut() — equal-frequency bins",
+        "filename": "binning_pd_qcut.py",
+        "code": "import pandas as pd\n\ndf = pd.DataFrame({\n    \"income\": [20000, 25000, 30000, 35000, 45000,\n               60000, 80000, 100000]\n})\n\ndf[\"income_group\"] = pd.qcut(\n    df[\"income\"],\n    q=4,\n    labels=[\"Q1\", \"Q2\", \"Q3\", \"Q4\"]\n)\n\nprint(df)",
+        "explanation": "q=4 requests four quantile groups. Each group will contain roughly 25% of observations when the data permits it. Repeated values can cause quantile boundaries to collide, so you may need to handle duplicate edges."
+      }
     ],
-    "code": "# Custom-defined bins\ndf['age_group'] = pd.cut(df['age'], bins=[0, 18, 35, 60, 100], labels=['Youth', 'Young Adult', 'Adult', 'Senior'])\n# Equal-frequency quantile binning\ndf['income_decile'] = pd.qcut(df['income'], q=4, labels=['Q1', 'Q2', 'Q3', 'Q4'])"
+    "advantagesDisadvantages": {
+      "title": "Advantages and disadvantages",
+      "rows": [
+        {
+          "advantage": "Can simplify complex numerical patterns",
+          "disadvantage": "Loses information within each bin"
+        },
+        {
+          "advantage": "May help some models capture nonlinear relationships",
+          "disadvantage": "Poor boundaries can reduce predictive performance"
+        },
+        {
+          "advantage": "Can make reports easier to interpret",
+          "disadvantage": "Different datasets may need different boundaries"
+        },
+        {
+          "advantage": "Can reduce the impact of small numerical fluctuations",
+          "disadvantage": "Not always beneficial for tree-based models"
+        }
+      ]
+    },
+    "faqs": [
+      {
+        "q": "What is the difference between pd.cut() and pd.qcut()?",
+        "a": "pd.cut() divides values using specified or equal-width intervals.\npd.qcut() divides observations using quantiles to create groups with roughly equal counts."
+      },
+      {
+        "q": "Is binning feature scaling?",
+        "a": "No. Scaling changes a variable's numerical scale; binning assigns values to discrete intervals or categories."
+      },
+      {
+        "q": "Can binning cause information loss?",
+        "a": "Yes. Values such as 31 and 49 may become identical after assignment to the same bin."
+      },
+      {
+        "q": "How can you avoid data leakage when using target-based binning?",
+        "a": "Fit or determine the bin boundaries using training data only, then apply those learned boundaries to validation and test data."
+      }
+    ],
+    "takeaway": "Binning converts continuous variables into discrete buckets to simplify non-linear relationships or suppress outliers. Use pd.cut() for fixed/domain boundaries and pd.qcut() for equal-frequency quantiles. Beware of irreversible information loss, and always compute supervised bin thresholds strictly on the training set to prevent data leakage."
   },
   {
     "id": "bivariate",
