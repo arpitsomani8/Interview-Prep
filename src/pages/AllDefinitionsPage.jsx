@@ -10393,135 +10393,6 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 75: AI Fairness / Auditing */}
-            {item.id === 'ai-fairness-auditing' && (
-              <div className="space-y-6">
-                {/* Core Definitions: Fairness & Auditing */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
-                      <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
-                      <span>Responsible AI Foundations</span>
-                    </h4>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950/70 text-rose-300 border border-rose-800">
-                      Ethics & Compliance
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Fairness Card */}
-                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold font-mono text-emerald-400">
-                          AI Fairness
-                        </span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black text-emerald-300 border border-zinc-800">
-                          Parity & Equity
-                        </span>
-                      </div>
-                      <p className="text-xs text-zinc-300 leading-relaxed font-sans">
-                        {item.fairnessDefinition}
-                      </p>
-                    </div>
-
-                    {/* Auditing Card */}
-                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold font-mono text-cyan-400">
-                          AI Auditing
-                        </span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black text-cyan-300 border border-zinc-800">
-                          Verification Process
-                        </span>
-                      </div>
-                      <p className="text-xs text-zinc-300 leading-relaxed font-sans">
-                        {item.auditingDefinition}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* What is an AI audit checklist? */}
-                {item.checklist && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>{item.checklistQuestion}</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
-                        7 Core Pillars
-                      </span>
-                    </div>
-
-                    {/* Desktop Table View */}
-                    <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800 bg-black">
-                      <table className="w-full text-left text-xs">
-                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono border-b border-zinc-800">
-                          <tr>
-                            <th className="py-3 px-4 font-semibold text-zinc-300 w-1/4">Audit Pillar</th>
-                            <th className="py-3 px-4 font-semibold text-emerald-400">Key Audit Question</th>
-                            <th className="py-3 px-4 font-semibold text-zinc-300">Engineering Audit Focus</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-zinc-800/80 font-sans">
-                          {item.checklist.map((chk, cIdx) => (
-                            <tr key={cIdx} className="hover:bg-zinc-900/40 transition">
-                              <td className="py-3.5 px-4 font-mono font-bold text-white whitespace-nowrap">
-                                <span className={chk.accent}>{chk.pillar}</span>
-                                <div className="text-[10px] font-normal text-zinc-500 font-mono mt-0.5">
-                                  {chk.badge}
-                                </div>
-                              </td>
-                              <td className="py-3.5 px-4 font-semibold text-zinc-100">
-                                {chk.question}
-                              </td>
-                              <td className="py-3.5 px-4 text-zinc-400 text-xs">
-                                {chk.detail}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    {/* Responsive Grid Cards for Mobile */}
-                    <div className="grid grid-cols-1 md:hidden gap-3">
-                      {item.checklist.map((chk, cIdx) => (
-                        <div
-                          key={cIdx}
-                          className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between"
-                        >
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between gap-1">
-                              <span className={`text-sm font-bold font-mono ${chk.accent}`}>
-                                {chk.pillar}
-                              </span>
-                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black text-zinc-300 border border-zinc-800">
-                                {chk.badge}
-                              </span>
-                            </div>
-                            <div className="text-xs font-semibold text-zinc-200 font-sans">
-                              {chk.question}
-                            </div>
-                            <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
-                              {chk.detail}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Takeaway Banner */}
-                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
-                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
-                  {item.takeaway}
-                </div>
-              </div>
-            )}
-
             {/* Item 76: AutoML & ML Pipelines */}
             {item.id === 'automl' && (
               <div className="space-y-6">
@@ -19681,104 +19552,6 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 130: Acceptance Criteria */}
-            {item.id === 'acceptance-criteria' && (
-              <div className="space-y-6">
-                {/* 1. Core Header Banner */}
-                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Production Deployment & MLOps Gates</span>
-                    </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                      Release Standards
-                    </span>
-                  </div>
-                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
-                    Acceptance Criteria
-                  </h3>
-                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
-                    {item.coreDefinition}
-                  </p>
-                </div>
-
-                {/* 2. Key Dimensions & Evaluation Gates */}
-                {item.dimensions && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Production Release Gates</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
-                        Measurable Conditions
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {item.dimensions.map((dim, dIdx) => (
-                        <div key={dIdx} className={`p-4 rounded-xl bg-black border ${dim.border} space-y-2 flex flex-col justify-between`}>
-                          <div className="space-y-1">
-                            <div className="flex items-center justify-between">
-                              <h5 className={`text-xs font-bold font-mono ${dim.accent}`}>
-                                {dim.name}
-                              </h5>
-                              <span className="text-[10px] font-mono text-zinc-500 uppercase">{dim.metric}</span>
-                            </div>
-                            <p className="text-xs text-zinc-200 font-sans leading-relaxed">
-                              {dim.condition}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 3. Interactive Python Code Box */}
-                {item.codeExample && (
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>{item.codeExample.title}</span>
-                    </h4>
-                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
-                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>acceptance_test_gate.py</span>
-                        </div>
-                        <button
-                          onClick={() => handleCopyCode('code-acceptance', item.codeExample.code)}
-                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                        >
-                          {copiedId === 'code-acceptance' ? (
-                            <>
-                              <Check className="w-3 h-3 text-emerald-400" />
-                              <span>Copied!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3 h-3" />
-                              <span>Copy Code</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                      <CodeHighlight code={item.codeExample.code} />
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. Takeaway Banner */}
-                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
-                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
-                  {item.takeaway}
-                </div>
-              </div>
-            )}
-
             {/* Item 131: Eigenvectors, Eigenvalues & PCA */}
             {item.id === 'eigenvector-pca' && (
               <div className="space-y-6">
@@ -21466,7 +21239,7 @@ export default function AllDefinitionsPage() {
             )}
 
             {/* Item 143: AI Evaluation */}
-            {item.id === 'ai-evaluation' && (
+            {(item.id === 'ai-evaluation' || item.id === 'ai-fairness-auditing' || item.id === 'acceptance-criteria') && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
                 {/* 1. Core Header Banner */}
                 <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-950/40 via-blue-950/20 to-zinc-950 border border-cyan-800/40 space-y-2">
@@ -21606,68 +21379,122 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 4. The Three Pillars of AI Evaluation */}
-                {item.pillars && (
-                  <div className="space-y-3 pt-2">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
-                        <span>The 3 Pillars of AI Evaluation (GenAI & Agents)</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
-                        Methodology
-                      </span>
+                {/* 4. AI Fairness & Auditing Section */}
+                {item.fairnessAndAuditing && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-xl">
+                    <div className="space-y-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Shield className="w-4 h-4 text-purple-400" />
+                        <h4 className="text-sm font-bold text-white uppercase tracking-wider font-mono">
+                          {item.fairnessAndAuditing.title}
+                        </h4>
+                      </div>
+                      <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                        {item.fairnessAndAuditing.definition}
+                      </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      {item.pillars.map((pillar, pIdx) => (
-                        <div key={pIdx} className={`p-4 rounded-xl bg-black border ${pillar.border} space-y-2 flex flex-col justify-between hover:border-cyan-500/30 transition`}>
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className={`text-xs font-bold font-mono ${pillar.accent} uppercase block`}>
-                                Pillar {pillar.number}: {pillar.title}
+                    {/* What should an AI audit examine? (4 Pillars) */}
+                    <div className="space-y-2.5">
+                      <h5 className="text-xs font-bold uppercase tracking-wider text-purple-300 font-mono">
+                        What Should an AI Audit Examine?
+                      </h5>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {item.fairnessAndAuditing.auditPillars.map((p, pIdx) => (
+                          <div key={pIdx} className={`p-4 rounded-xl bg-black border ${p.border} space-y-1.5 flex flex-col justify-between`}>
+                            <div className="flex items-center gap-2">
+                              <span className="w-5 h-5 rounded-full bg-purple-950 border border-purple-800 text-purple-300 text-[10px] font-mono flex items-center justify-center font-bold">
+                                {p.num}
                               </span>
-                              <span className="text-[10px] font-mono text-zinc-400">#0{pillar.number}</span>
-                            </div>
-                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs font-semibold text-white font-sans leading-snug">
-                              "{pillar.question}"
+                              <h6 className={`text-xs font-bold font-mono ${p.accent}`}>{p.title}</h6>
                             </div>
                             <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                              {pillar.description}
+                              {p.questions}
                             </p>
                           </div>
-                          {pillar.details && (
-                            <div className="pt-2 border-t border-zinc-900 text-[11px] font-sans text-zinc-400 leading-normal">
-                              {pillar.details}
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Common fairness metrics */}
+                    <div className="space-y-2 pt-1">
+                      <h5 className="text-xs font-bold uppercase tracking-wider text-purple-300 font-mono">
+                        Common Fairness Metrics
+                      </h5>
+                      <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase">
+                              <th className="py-2.5 px-3.5 font-semibold text-purple-400 w-1/3">Metric</th>
+                              <th className="py-2.5 px-3.5 font-semibold text-zinc-300 w-2/3">Meaning</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/60 font-sans">
+                            {item.fairnessAndAuditing.fairnessMetrics.map((fm, fmIdx) => (
+                              <tr key={fmIdx} className="hover:bg-zinc-900/40 transition">
+                                <td className="py-2.5 px-3.5 font-mono font-bold text-white text-xs">
+                                  {fm.metric}
+                                </td>
+                                <td className="py-2.5 px-3.5 text-zinc-200 text-xs">
+                                  {fm.meaning}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 )}
 
-                {/* 5. Golden Dataset & Calibration Callouts */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-4 rounded-xl bg-zinc-950 border border-purple-800/40 space-y-1.5">
-                    <span className="text-xs font-bold font-mono text-purple-400 uppercase flex items-center gap-2">
-                      <Layers className="w-3.5 h-3.5 text-purple-400" />
-                      <span>Golden Dataset</span>
-                    </span>
-                    <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                      {item.goldenDatasetInfo}
-                    </p>
+                {/* 5. Acceptance Criteria Section */}
+                {item.acceptanceCriteria && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-emerald-800/40 shadow-xl">
+                    <div className="space-y-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <h4 className="text-sm font-bold text-white uppercase tracking-wider font-mono">
+                          {item.acceptanceCriteria.title}
+                        </h4>
+                      </div>
+                      <p className="text-xs text-zinc-200 leading-relaxed font-sans">
+                        {item.acceptanceCriteria.definition}
+                      </p>
+                      <div className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-800/30 text-xs text-emerald-300 font-mono">
+                        💡 {item.acceptanceCriteria.purpose}
+                      </div>
+                    </div>
+
+                    {/* Pre-development Requirements & Criteria Table */}
+                    <div className="space-y-2 pt-1">
+                      <div className="text-[11px] font-mono text-zinc-400">
+                        {item.acceptanceCriteria.tableIntro}
+                      </div>
+                      <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase">
+                              <th className="py-2.5 px-3.5 font-semibold text-emerald-400 w-1/4">Requirement</th>
+                              <th className="py-2.5 px-3.5 font-semibold text-zinc-200 w-3/4">Example acceptance criterion</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/60 font-sans">
+                            {item.acceptanceCriteria.criteria.map((cr, cIdx) => (
+                              <tr key={cIdx} className="hover:bg-zinc-900/40 transition">
+                                <td className={`py-2.5 px-3.5 font-mono font-bold text-xs ${cr.accent}`}>
+                                  {cr.requirement}
+                                </td>
+                                <td className="py-2.5 px-3.5 text-zinc-200 text-xs">
+                                  {cr.criterion}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-4 rounded-xl bg-zinc-950 border border-emerald-800/40 space-y-1.5">
-                    <span className="text-xs font-bold font-mono text-emerald-400 uppercase flex items-center gap-2">
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Judge Calibration</span>
-                    </span>
-                    <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                      {item.calibrationInfo}
-                    </p>
-                  </div>
-                </div>
+                )}
 
                 {/* 6. Architecture Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">

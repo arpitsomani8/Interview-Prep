@@ -25,11 +25,7 @@ export const definitionBookmarks = [
   },
   {
     "id": "ai-evaluation",
-    "label": "AI Evaluation"
-  },
-  {
-    "id": "ai-fairness-auditing",
-    "label": "AI Fairness / Auditing"
+    "label": "AI Evaluation, Fairness & Acceptance Criteria"
   },
   {
     "id": "ai-gateway",
@@ -38,10 +34,6 @@ export const definitionBookmarks = [
   {
     "id": "ai-monitoring-observability",
     "label": "AI Observability (Tracing, Metrics & RAG Debugging)"
-  },
-  {
-    "id": "acceptance-criteria",
-    "label": "Acceptance Criteria"
   },
   {
     "id": "activation-functions",
@@ -11997,9 +11989,9 @@ export const definitionsData = [
   },
   {
     "id": "ai-evaluation",
-    "title": "AI Evaluation: How Do We Know Whether a Model Is Good?",
-    "badge": "Model Evaluation, Metrics & Offline vs. Online Lifecycle",
-    "summary": "AI evaluation is the process of measuring whether a model performs accurately, reliably, safely, and appropriately for its intended use.",
+    "title": "AI Evaluation, Fairness & Acceptance Criteria",
+    "badge": "Model Evaluation, Fairness Auditing & Production Acceptance Gates",
+    "summary": "AI evaluation measures model accuracy, fairness auditing verifies equitable outcomes across demographic cohorts, and explicit acceptance criteria convert abstract goals into non-negotiable pass/fail gates before production deployment.",
     "coreQuestion": "AI Evaluation — how do we know whether a model is good?",
     "coreDefinition": "AI evaluation is the process of measuring whether a model performs accurately, reliably, safely, and appropriately for its intended use.",
     "classificationEvaluation": {
@@ -12082,38 +12074,107 @@ export const definitionsData = [
         "accent": "text-emerald-400"
       }
     },
-    "pillars": [
-      {
-        "number": "1",
-        "title": "LLM-as-a-Judge",
-        "question": "Is the answer good, correct, relevant, and supported by evidence?",
-        "description": "An LLM-as-a-Judge approach uses one language model to evaluate the output of another model against explicit criteria.",
-        "details": "Pointwise scoring is useful for tracking quality over time. Pairwise comparison is useful when comparing prompts, models, or retrieval strategies.",
-        "accent": "text-amber-400",
-        "border": "border-amber-800/50"
-      },
-      {
-        "number": "2",
-        "title": "Agent & Trajectory Evals",
-        "question": "Did the agent choose the right tools, follow the right steps, and complete the task?",
-        "description": "Evaluates multi-step decision chains, tool call parameter accuracy, intermediate reasoning validity, and recovery from environmental errors.",
-        "details": "Checks loop prevention, state transitions, tool redundancy, and whether final outcome matches customer intent.",
-        "accent": "text-blue-400",
-        "border": "border-blue-800/50"
-      },
-      {
-        "number": "3",
-        "title": "Evals in Production",
-        "question": "Does the system continue to work reliably, efficiently, and safely after deployment?",
-        "description": "Maintains real-world reliability through continuous monitoring, p95 latency tracking, failure rate alerting, and sampling live traffic.",
-        "details": "Combines synthetic regression suites with user feedback loops (thumbs up/down) and privacy-compliant audit traces.",
-        "accent": "text-emerald-400",
-        "border": "border-emerald-800/50"
-      }
-    ],
-    "goldenDatasetInfo": "A golden dataset is a curated collection of representative questions, expected outcomes, source documents, and evaluation criteria.",
-    "calibrationInfo": "Calibration means checking whether the judge's scores and decisions agree with a trusted reference—typically human-reviewed examples or deterministic ground truth.",
-    "takeaway": "Evaluation is not a single one-off check. Model evaluation requires balancing statistical metrics against business trade-offs (e.g. false positives vs. false negatives in fraud), validating rigorously on offline held-out datasets before deployment, and continuously monitoring live online telemetry."
+    "fairnessAndAuditing": {
+      "title": "AI Fairness & Auditing",
+      "definition": "AI fairness examines whether model outcomes create unjustified differences between people or groups. AI auditing systematically examines the model, its data, decisions, risks, and controls to identify and document potential problems.",
+      "auditPillars": [
+        {
+          "num": "1",
+          "title": "Data quality and representation",
+          "questions": "Are some groups underrepresented? Are labels reliable? Are there historical biases in the data?",
+          "accent": "text-blue-400",
+          "border": "border-blue-500/30"
+        },
+        {
+          "num": "2",
+          "title": "Outcome disparities",
+          "questions": "Compare approval rates, false positive rates, false negative rates, and other relevant metrics across groups.",
+          "accent": "text-amber-400",
+          "border": "border-amber-500/30"
+        },
+        {
+          "num": "3",
+          "title": "Explainability and traceability",
+          "questions": "Can the organization explain important factors behind decisions, trace model versions, and reproduce evaluations?",
+          "accent": "text-purple-400",
+          "border": "border-purple-500/30"
+        },
+        {
+          "num": "4",
+          "title": "Risk and governance",
+          "questions": "Are privacy, security, applicable laws, human oversight, and escalation processes addressed?",
+          "accent": "text-emerald-400",
+          "border": "border-emerald-500/30"
+        }
+      ],
+      "fairnessMetrics": [
+        {
+          "metric": "Demographic parity",
+          "meaning": "Compares positive prediction rates across groups"
+        },
+        {
+          "metric": "Equal opportunity",
+          "meaning": "Compares true positive rates across groups"
+        },
+        {
+          "metric": "Equalized odds",
+          "meaning": "Compares both true positive and false positive rates"
+        },
+        {
+          "metric": "Calibration",
+          "meaning": "Examines whether predicted probabilities correspond to observed outcome frequencies"
+        }
+      ]
+    },
+    "acceptanceCriteria": {
+      "title": "Acceptance Criteria for Production Release",
+      "definition": "Acceptance criteria are specific, testable conditions that must be satisfied before a deliverable is accepted.",
+      "purpose": "They convert a vague requirement such as “build a good fraud model” into clear pass/fail conditions.",
+      "tableIntro": "For example, a team might define these requirements before development:",
+      "criteria": [
+        {
+          "requirement": "Recall",
+          "criterion": "At least 90% on a specified held-out evaluation set",
+          "accent": "text-emerald-400"
+        },
+        {
+          "requirement": "Precision",
+          "criterion": "At least 80% at the selected operating threshold",
+          "accent": "text-blue-400"
+        },
+        {
+          "requirement": "Latency",
+          "criterion": "P95 prediction latency below 200 ms under a defined load",
+          "accent": "text-amber-400"
+        },
+        {
+          "requirement": "Fairness",
+          "criterion": "Investigate and resolve material, unjustified subgroup disparities against predefined criteria",
+          "accent": "text-purple-400"
+        },
+        {
+          "requirement": "Reliability",
+          "criterion": "Service meets the agreed availability target",
+          "accent": "text-cyan-400"
+        },
+        {
+          "requirement": "Security",
+          "criterion": "No unresolved critical security findings",
+          "accent": "text-rose-400"
+        },
+        {
+          "requirement": "Reproducibility",
+          "criterion": "Evaluation results and model version are recorded",
+          "accent": "text-indigo-400"
+        },
+        {
+          "requirement": "Deployment",
+          "criterion": "Rollback procedure is tested and documented",
+          "accent": "text-teal-400"
+        }
+      ]
+    },
+    "takeaway": "AI evaluation establishes model accuracy, fairness auditing verifies equitable outcomes across demographic cohorts, and explicit acceptance criteria convert abstract goals into non-negotiable pass/fail gates before production deployment."
   },
   {
     "id": "production-ai-playbook",
