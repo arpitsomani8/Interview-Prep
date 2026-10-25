@@ -8751,7 +8751,54 @@ export const definitionsData = [
           "accent": "text-amber-400"
         }
       ]
-    }
+    },
+    "bertVsGptComparison": {
+      "title": "BERT vs GPT",
+      "badge": "Architecture Comparison",
+      "rows": [
+        {
+          "feature": "Main architecture",
+          "bert": "Transformer encoder",
+          "gpt": "Transformer decoder"
+        },
+        {
+          "feature": "Attention",
+          "bert": "Bidirectional",
+          "gpt": "Causal, left-to-right"
+        },
+        {
+          "feature": "Typical strength",
+          "bert": "Understanding text",
+          "gpt": "Generating text"
+        },
+        {
+          "feature": "Common tasks",
+          "bert": "Classification, NER, extractive QA",
+          "gpt": "Chat, text generation, coding"
+        },
+        {
+          "feature": "Original training objective",
+          "bert": "Masked-token prediction, plus NSP",
+          "gpt": "Next-token prediction"
+        }
+      ]
+    },
+    "bertCodeExamples": [
+      {
+        "id": "code-bert-sentiment",
+        "title": "Example A: Sentiment classification",
+        "filename": "bert_sentiment_classification.py",
+        "code": "from transformers import pipeline\n\nclassifier = pipeline(\n    \"sentiment-analysis\",\n    model=\"distilbert/distilbert-base-uncased-finetuned-sst-2-english\"\n)\n\nresult = classifier(\"The service was excellent and very fast.\")\nprint(result)",
+        "explanation": "This example uses DistilBERT, a smaller, distilled BERT-family model fine-tuned for sentiment classification. It returns a predicted label and a score."
+      },
+      {
+        "id": "code-bert-embeddings",
+        "title": "Example B: Extracting contextual token representations",
+        "filename": "bert_contextual_embeddings.py",
+        "code": "import torch\nfrom transformers import AutoTokenizer, AutoModel\n\nmodel_name = \"google-bert/bert-base-uncased\"\ntokenizer = AutoTokenizer.from_pretrained(model_name)\nmodel = AutoModel.from_pretrained(model_name)\n\ntext = \"The bank approved my loan.\"\ninputs = tokenizer(text, return_tensors=\"pt\")\n\nwith torch.no_grad():\n    outputs = model(**inputs)\n\n# Contextual representation for every input token\nembeddings = outputs.last_hidden_state\nprint(\"Token IDs:\", inputs[\"input_ids\"].shape)\nprint(\"Embeddings:\", embeddings.shape)",
+        "explanation": "The embedding tensor has shape: (batch size, sequence length, hidden size)"
+      }
+    ]
   },
   {
     "id": "stemming",
