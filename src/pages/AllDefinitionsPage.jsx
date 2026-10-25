@@ -6633,6 +6633,180 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
+            {/* Item: AI Model (Fundamentals, Types, Training vs Inference) */}
+            {item.id === 'ai-model' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Core Definition Banner */}
+                <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-950/40 via-blue-950/20 to-zinc-950 border border-cyan-800/40 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Cpu className="w-4 h-4 text-cyan-400" />
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                      What is an AI Model?
+                    </h4>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                    {item.definition || item.summary}
+                  </p>
+                </div>
+
+                {/* 2. Real-World Example: Fraud Detection Model */}
+                {item.fraudDetectionExample && (
+                  <div className="p-4.5 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-amber-400" />
+                      <h4 className="text-xs font-bold text-amber-300 uppercase tracking-wider font-mono">
+                        {item.fraudDetectionExample.title}
+                      </h4>
+                    </div>
+                    <p className="text-xs text-zinc-300 font-sans">
+                      {item.fraudDetectionExample.intro}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 pt-1">
+                      {item.fraudDetectionExample.inputs.map((inp, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-black border border-zinc-800/80 flex items-start gap-2">
+                          <span className="w-4 h-4 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-mono flex items-center justify-center shrink-0 mt-0.5">
+                            {idx + 1}
+                          </span>
+                          <span className="text-xs text-zinc-200 font-sans">{inp}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {item.fraudDetectionExample.output && (
+                      <div className="p-3 rounded-lg bg-zinc-900/80 border border-zinc-800 text-xs text-zinc-400 leading-relaxed font-mono flex items-center gap-2">
+                        <span className="text-cyan-400 font-bold uppercase tracking-wider text-[11px]">Model Output:</span>
+                        <span className="text-zinc-200 font-sans">{item.fraudDetectionExample.output}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 3. Common types of AI models */}
+                <div className="space-y-2.5">
+                  <div className="flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-cyan-400" />
+                    <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider font-mono">
+                      Common Types of AI Models
+                    </h4>
+                  </div>
+                  <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead>
+                        <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase">
+                          <th className="py-2.5 px-3.5 font-semibold text-cyan-400 w-1/4">Model family</th>
+                          <th className="py-2.5 px-3.5 font-semibold text-zinc-300 w-2/5">Typical application</th>
+                          <th className="py-2.5 px-3.5 font-semibold text-amber-400 w-1/3">Example</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/60 font-sans">
+                        {item.commonTypes?.map((row, rIdx) => (
+                          <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                            <td className="py-2.5 px-3.5 font-mono font-semibold text-white text-xs">
+                              {row.family}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-zinc-300 text-xs">
+                              {row.application}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-amber-200/90 font-mono text-[11px]">
+                              {row.example}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* 4. Training vs. Inference */}
+                {item.trainingVsInference && (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-emerald-400" />
+                      <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider font-mono">
+                        Training vs. Inference
+                      </h4>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {/* Training Card */}
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2.5 hover:border-blue-500/30 transition">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-bold text-blue-400 font-mono">Training</span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950/60 text-blue-300 border border-blue-800/40">
+                            Learning & Parameter Fitting
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                          {item.trainingVsInference.training.desc}
+                        </p>
+                        {item.trainingVsInference.training.keyMechanism && (
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-2 border-t border-zinc-900">
+                            {item.trainingVsInference.training.keyMechanism}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Inference Card */}
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2.5 hover:border-emerald-500/30 transition">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-bold text-emerald-400 font-mono">Inference</span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-800/40">
+                            Serving & Execution
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                          {item.trainingVsInference.inference.desc}
+                        </p>
+                        {item.trainingVsInference.inference.keyMechanism && (
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-2 border-t border-zinc-900">
+                            {item.trainingVsInference.inference.keyMechanism}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Production Integration Patterns (Hosted vs Self-Hosted) */}
+                {item.patterns && (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center gap-2">
+                      <Server className="w-4 h-4 text-purple-400" />
+                      <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider font-mono">
+                        Production API Integration Patterns
+                      </h4>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.patterns.map((pat, pIdx) => (
+                        <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-1.5">
+                            <h5 className="text-xs font-bold text-white font-mono">{pat.title}</h5>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">{pat.desc}</p>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900 space-y-1 text-[11px] font-sans">
+                            <div className="text-emerald-300">
+                              <strong className="text-emerald-400 font-mono uppercase text-[10px]">Pros: </strong>
+                              {pat.pros}
+                            </div>
+                            <div className="text-rose-300">
+                              <strong className="text-rose-400 font-mono uppercase text-[10px]">Cons: </strong>
+                              {pat.cons}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Final Takeaway */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                  <strong className="text-cyan-400 uppercase">Architecture Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
             {/* Item 52: OpenAI vs. Azure AI & LLM vs. CLIP Inference */}
             {item.id === 'openai-vs-azure-ai' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">

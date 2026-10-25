@@ -1209,9 +1209,66 @@ export const definitionsData = [
   },
   {
     "id": "ai-model",
-    "title": "AI Model (Hosted vs Self-Hosted in API)",
-    "badge": "Inference Integration Architecture",
-    "summary": "The computational brain that makes predictions or generates responses. Two primary architectural patterns exist for production API integration.",
+    "title": "AI Model: Fundamentals, Common Types & Training vs. Inference",
+    "badge": "Foundational AI & Model Architecture",
+    "summary": "An AI model is a mathematical or computational system that learns patterns from data or uses learned representations to generate predictions, classifications, or other outputs.",
+    "definition": "An AI model is a mathematical or computational system that learns patterns from data or uses learned representations to generate predictions, classifications, or other outputs.",
+    "fraudDetectionExample": {
+      "title": "Real-World Example: Fraud Detection Model",
+      "intro": "For example, a fraud detection model might take these inputs:",
+      "inputs": [
+        "Transaction amount",
+        "Time of transaction",
+        "Merchant category",
+        "Number of recent transactions",
+        "Device and location signals, where appropriate and lawfully available"
+      ],
+      "output": "The model processes these input features to produce a fraud risk probability (e.g. 0.94) used to approve, flag, or decline the transaction."
+    },
+    "commonTypes": [
+      {
+        "family": "Classical ML",
+        "application": "Structured data",
+        "example": "Random Forest fraud classifier"
+      },
+      {
+        "family": "Deep learning",
+        "application": "Complex patterns",
+        "example": "CNN image classifier"
+      },
+      {
+        "family": "LLM",
+        "application": "Text and language tasks",
+        "example": "Customer-support assistant"
+      },
+      {
+        "family": "Generative model",
+        "application": "Creating new content",
+        "example": "Text or image generation"
+      },
+      {
+        "family": "Unsupervised model",
+        "application": "Discovering patterns without labels",
+        "example": "K-means clustering"
+      },
+      {
+        "family": "Reinforcement learning",
+        "application": "Learning from rewards and actions",
+        "example": "Policy optimization"
+      }
+    ],
+    "trainingVsInference": {
+      "training": {
+        "title": "Training",
+        "desc": "The model learns from data by adjusting parameters or otherwise fitting its representation.",
+        "keyMechanism": "Involves data ingestion, forward propagation, loss calculation, backpropagation, and updating weights/biases across multiple epochs."
+      },
+      "inference": {
+        "title": "Inference",
+        "desc": "The trained model processes new inputs to produce outputs.",
+        "keyMechanism": "Executes a fast forward-pass through frozen parameters to generate live predictions, classifications, or text tokens via API endpoints."
+      }
+    },
     "patterns": [
       {
         "title": "Pattern 1: Call a Hosted Model (API-based)",
@@ -1225,7 +1282,8 @@ export const definitionsData = [
         "pros": "Zero data leakage, sub-millisecond local latency, no per-token charges, complete operational control.",
         "cons": "Requires dedicated GPU/CPU hardware, memory provisioning, driver maintenance, and auto-scaling management."
       }
-    ]
+    ],
+    "takeaway": "An AI model transforms raw input features into predictions or generative responses. The separation between training (learning parameters from data) and inference (evaluating runtime inputs) forms the foundation of modern machine learning architecture."
   },
   {
     "id": "connect-gpt-fastapi",
