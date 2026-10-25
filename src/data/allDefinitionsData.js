@@ -1097,106 +1097,32 @@ export const definitionsData = [
     "runtimeContrast": "In the GPT example, the model runs on the provider's infrastructure, not inside FastAPI. In the scikit-learn example, the model is loaded into the Python application itself.",
     "ragClarification": "GPT and LLaMA are model families (the generative reasoning brains), whereas RAG (Retrieval-Augmented Generation) is a technique for supplying a model with relevant external information from your knowledge base. They are complementary and frequently used together."
   },
-  {
+    {
     "id": "agentic-ai-workflow",
     "title": "Agentic AI / Workflow",
-    "badge": "Autonomous Execution & Multi-Step Reasoning Architecture",
-    "summary": "An autonomous software architecture where foundation models act as proactive reasoning engines—iteratively decomposing goals, deciding action sequences, invoking external tools, observing outcomes, and self-correcting until an objective is accomplished.",
-    "interviewScript": {
-      "coreShift": "A standard LLM is purely reactive text generation (prompt in → completion out). Agentic AI wraps the model inside an autonomous execution loop where it acts as the decision-making brain.",
-      "theLoop": "Instead of answering in one shot, it follows a 4-step cycle: Plan → Act (Call Tools/APIs) → Observe (Parse Outputs/Errors) → Reflect & Self-Correct until the target goal is verified.",
-      "whyItMatters": "Moves AI from passive conversational advice to active execution—it can query databases, run code, browse the web, heal from runtime errors, and maintain persistent state."
-    },
-    "evolution": [
+    "badge": "Autonomous Execution & Goal Pursuit",
+    "summary": "Agentic AI is AI that can work toward a goal by deciding what actions to take, using tools, observing results, and adapting its next steps.",
+    "concept": "A traditional LLM typically answers a question. An AI agent can use an LLM as its reasoning engine and interact with external systems to accomplish a task.",
+    "howItWorks": [
       {
-        "level": "Level 1: Standard Chatbot",
-        "tag": "Reactive",
-        "trigger": "User prompt",
-        "execution": "One-shot text completion from static model weights",
-        "loop": "No tools, no environmental feedback; halts immediately after completion",
-        "takeaway": "Conversationalist without hands"
+        "step": "1. User Goal",
+        "desc": "What needs to be accomplished?"
       },
       {
-        "level": "Level 2: Tool-Augmented / RAG",
-        "tag": "Assisted",
-        "trigger": "Retrieval or single function trigger",
-        "execution": "Deterministic 1-step tool execution (e.g. fetch vector chunks and feed to prompt)",
-        "loop": "Fixed linear DAG; halts or throws uncaught error if tool returns failure",
-        "takeaway": "Linear script with an LLM step"
+        "step": "2. LLM / Reasoning",
+        "desc": "Understand the task and choose the next step"
       },
       {
-        "level": "Level 3: Agentic AI & Workflow",
-        "tag": "Autonomous",
-        "trigger": "High-level goal (e.g. 'Audit Q3 churn & update CRM')",
-        "execution": "Multi-step autonomous ReAct loop with dynamic tool selection & re-planning",
-        "loop": "Inspects observations, diagnoses errors, modifies arguments, and iterates until goal is verified",
-        "takeaway": "Self-correcting digital worker"
-      }
-    ],
-    "executionLoop": [
-      {
-        "step": "1. Plan & Decompose",
-        "desc": "Breaks high-level business objectives down into structured sub-tasks without requiring rigid hardcoded scripts (e.g. Plan-and-Solve / ReAct reasoning)."
+        "step": "3. Action / Tool Calling",
+        "desc": "Call an API, query a database, search, or run code"
       },
       {
-        "step": "2. Act (Tool Call)",
-        "desc": "Model autonomously selects, formats schema arguments for, and executes external tools (SQL, REST APIs, code interpreter, vector search)."
+        "step": "4. Observe the Result",
+        "desc": "Inspect tool output and determine what to do next"
       },
       {
-        "step": "3. Observe",
-        "desc": "Captures and parses runtime feedback, environmental responses, API status codes, or execution tracebacks."
-      },
-      {
-        "step": "4. Reflect & Self-Correct",
-        "desc": "Inspects observations: if a query fails or returns partial data, formulates alternative paths and re-tries without crashing."
-      }
-    ],
-    "pillars": [
-      {
-        "title": "1. Brain (Planning & Reasoning)",
-        "subtitle": "Cognitive Core",
-        "desc": "Decomposes goals, manages step-by-step Chain-of-Thought, and decides next actions based on intermediate observations."
-      },
-      {
-        "title": "2. Hands (Tool Execution)",
-        "subtitle": "Action Space",
-        "desc": "Invokes external APIs, databases, browsers, and code interpreters via structured JSON function calling schemas."
-      },
-      {
-        "title": "3. Memory (Dual-Layer State)",
-        "subtitle": "Context & Recall",
-        "desc": "Short-term scratchpad (in-context working memory of past steps) + Long-term persistence (Vector DB / Redis session state)."
-      },
-      {
-        "title": "4. Guardrails (Safety & Limits)",
-        "subtitle": "Control & Stopping",
-        "desc": "Hard iteration ceilings (prevents infinite loops), token budgets, schema validators, and Human-in-the-Loop (HITL) approval gates."
-      }
-    ],
-    "tradeoffs": {
-      "whenToUse": [
-        "Unpredictable, multi-step tasks requiring dynamic tool selection based on intermediate findings.",
-        "Workflows requiring autonomous error recovery and self-debugging (e.g., automated coding, data science triage).",
-        "Complex research and multi-source synthesis where the exact search queries cannot be known ahead of time."
-      ],
-      "whenToAvoid": [
-        "Deterministic, linear business pipelines where a standard Python script/DAG is 100% reliable, $0 cost, and faster.",
-        "Strict sub-second latency SLA requirements (agents require multiple sequential LLM round-trips: 5s–30s+).",
-        "Zero-tolerance regulatory paths with no human validation or where non-deterministic tool calls pose security risks."
-      ]
-    },
-    "frameworks": [
-      {
-        "name": "LangGraph",
-        "desc": "Cyclical graph architecture with state machines, checkpointing, and first-class Human-in-the-Loop approval nodes."
-      },
-      {
-        "name": "CrewAI / AutoGen",
-        "desc": "Multi-agent role-playing orchestration (e.g., Planner + Researcher + Coder + Reviewer agents collaborating)."
-      },
-      {
-        "name": "LlamaIndex Workflows",
-        "desc": "Event-driven agentic pipelines tailored for retrieval-intensive and document intelligence tasks."
+        "step": "5. Complete or Continue",
+        "desc": "Return the result or take another action"
       }
     ]
   },
@@ -12820,162 +12746,58 @@ export const definitionsData = [
     ],
     "takeaway": "In object detection engineering, never evaluate models using classification accuracy alone. Always inspect mAP@50 for general object recognition capacity and mAP@[0.5:0.95] to measure tight bounding box localization precision."
   },
-    {
+      {
     "id": "ann-cnn",
-    "title": "ANN vs. CNN (Artificial Neural Networks vs. Convolutional Neural Networks)",
+    "title": "ANN/CNN (Artificial Neural Networks vs. Convolutional Neural Networks)",
     "badge": "Deep Learning • Dense vs. Spatial Convolutions",
-    "summary": "A simple guide comparing standard Feedforward Neural Networks (ANNs for tabular data) with Convolutional Neural Networks (CNNs for images and spatial data).",
-    "interviewScript": {
-      "question": "What is the difference between an ANN and a CNN, and why can't we use an ANN for images?",
-      "verbalAnswer": "An ANN connects every neuron to every input in a flat line, which ruins pixel relationships and creates billions of weights on images. A CNN solves this by scanning images with tiny 3×3 sliding filters. This keeps neighboring pixels together, reuses weights across the whole image, and recognizes objects anywhere they move—using over 3,000,000× fewer parameters."
-    },
-    "quickIntuition": [
-      {
-        "title": "ANN: The Spreadsheet Reader",
-        "analogy": "Like reading an Excel row one cell at a time. Every number connects to everything else. Great for numbers (salary, age, churn), but terrible for photos because turning a photo into a flat line breaks apart neighboring pixels.",
-        "accent": "border-cyan-500/40 bg-cyan-950/20 text-cyan-300"
-      },
-      {
-        "title": "CNN: The Flashlight Scanner",
-        "analogy": "Like shining a small flashlight across a photo (a 3×3 window). It scans small patches to spot edges, curves, and shapes, keeping nearby pixels together regardless of where the object is located in the frame.",
-        "accent": "border-purple-500/40 bg-purple-950/20 text-purple-300"
-      }
-    ],
-    "annDefinition": {
-      "name": "Artificial Neural Network (ANN / Dense MLP)",
-      "subtitle": "Full Connection for Tabular & Structured Numbers",
-      "whatIsIt": "An ANN is a classic neural network where every neuron in one layer connects to every neuron in the next layer. It takes flat 1D lists of numbers and learns patterns through weighted connections.",
-      "mathFormula": "z = W · x + b,   output = ReLU(z)",
-      "mathExplanation": "Multiplies inputs by learned weights, adds a bias, and passes the result through an activation function.",
-      "pipeline": [
-        {
-          "step": "1. Input Layer",
-          "desc": "Takes a flat list of numbers (e.g., age, salary, credit score)."
-        },
-        {
-          "step": "2. Hidden Layers",
-          "desc": "Every node combines all inputs to find non-linear patterns."
-        },
-        {
-          "step": "3. Output Layer",
-          "desc": "Gives a final prediction (e.g., house price or Yes/No classification)."
-        },
-        {
-          "step": "4. Backpropagation",
-          "desc": "Adjusts weights using gradient descent to reduce prediction error."
-        }
-      ],
-      "strengths": [
-        "Perfect for Excel / CSV spreadsheets and business data.",
-        "Fast and lightweight for numerical features.",
-        "Easy to build and train when inputs don't have visual geometry."
-      ],
-      "limitations": [
-        "Flattens 2D images into 1D lines, destroying all spatial relationships (e.g. eyes next to nose).",
-        "Memory explosion: A 1,000×1,000 color photo creates 3 BILLION weights in step 1, crashing the system.",
-        "Position blind: If an object shifts by just 5 pixels, an ANN thinks it's a completely different object."
-      ]
-    },
-    "cnnDefinition": {
-      "name": "Convolutional Neural Network (CNN)",
-      "subtitle": "Sliding Filters for Images & Spatial Data",
-      "whatIsIt": "A CNN is a deep learning network built specifically for grid data (photos, video, medical scans). Instead of connecting everything, it slides small filter windows (like 3×3 pixels) across the image to detect visual features.",
-      "mathFormula": "Feature Map = Image * Filter Kernel (2D Convolution)",
-      "mathExplanation": "Slides a 3×3 grid over pixels, multiplying and adding them up to create an edge/shape map.",
-      "pipeline": [
-        {
-          "step": "1. Conv2D Layer",
-          "desc": "Slides 3×3 filters over the picture to detect lines, edges, and textures."
-        },
-        {
-          "step": "2. ReLU Activation",
-          "desc": "Turns negative values to zero so the network can learn curved shapes."
-        },
-        {
-          "step": "3. Pooling (MaxPool)",
-          "desc": "Shrinks image size by keeping only the strongest highlights to speed up training."
-        },
-        {
-          "step": "4. Dense Head",
-          "desc": "Takes the high-level detected features and outputs the final class (e.g. 95% Cat)."
-        }
-      ],
-      "coreBreakthroughs": [
-        "Local Focus: Neurons only look at small 3×3 patches at a time, just like human eyes scan an image.",
-        "Weight Sharing: Reuses the exact same 3×3 filter over the entire photo, keeping weights tiny.",
-        "Step-by-Step Learning: First layers find edges → middle layers find textures → deep layers find full objects."
-      ]
-    },
-    "imageMathComparison": {
-      "title": "The 1,000 × 1,000 Photo Test (Why ANNs Fail on Images)",
-      "context": "Imagine feeding a single 1,000 × 1,000 pixel color photo into both networks:",
-      "ann": {
-        "label": "ANN (Standard Network)",
-        "calc": "1,000 × 1,000 × 3 colors = 3,000,000 input pixels.\n3,000,000 pixels × 1,000 neurons = 3,000,000,000 (3 BILLION) weights in Layer 1!",
-        "result": "Crashes GPU memory instantly, trains too slowly, and memorizes noise (overfitting)."
-      },
-      "cnn": {
-        "label": "CNN (Image Network)",
-        "calc": "A Conv2D layer with 32 filters of 3×3 size:\n32 filters × (3 × 3 × 3 colors + 1 bias) = 896 total weights!",
-        "result": "Over 3,348,000× lighter, runs super fast, and keeps pixels in their true positions."
-      }
-    },
+    "summary": "A fundamental comparison between standard Feedforward Artificial Neural Networks (MLPs with fully connected dense layers) and Convolutional Neural Networks (CNNs using parameter-shared filters for spatial data).",
+    "coreDefinition": "An ANN connects every neuron to every input in a flat line, which ruins pixel relationships and creates billions of weights on images. A CNN solves this by scanning images with tiny 3×3 sliding filters to keep nearby pixels together and reuse weights across the whole image.",
     "comparisonTable": [
       {
-        "aspect": "Best Used For",
-        "ann": "Spreadsheets & tabular data (CSV rows, customer stats, pricing)",
-        "cnn": "Visual & spatial data (Photos, video clips, medical scans)"
+        "aspect": "Primary Data Domain",
+        "ann": "Tabular structured data, spreadsheets, and 1D numerical features",
+        "cnn": "Grid-structured spatial data: Images (2D), Video (3D), Audio spectrograms"
       },
       {
-        "aspect": "Input Format",
-        "ann": "Flat 1D line of numbers (destroys 2D image layout)",
-        "cnn": "Native 2D/3D grid shape (Height × Width × Color Channels)"
+        "aspect": "Neuron Connectivity",
+        "ann": "Fully connected (Dense): every input neuron connects to every neuron in next layer",
+        "cnn": "Locally connected: neurons connect only to a local 3×3 pixel patch"
       },
       {
-        "aspect": "How Neurons Connect",
-        "ann": "All-to-all: Every neuron connects to all inputs (Dense)",
-        "cnn": "Local patches: Each neuron only looks at a small 3×3 window"
+        "aspect": "Parameter Efficiency",
+        "ann": "Parameters explode rapidly on images, causing memory crashes",
+        "cnn": "Parameter sharing: identical 3×3 kernel weights are reused across the entire image"
       },
       {
-        "aspect": "Weight Sharing",
-        "ann": "No — every single connection needs its own separate weight",
-        "cnn": "Yes — reuses the same 3×3 filter across the entire picture"
+        "aspect": "Spatial Invariance",
+        "ann": "Not position invariant (thinks a shifted cat is a brand new object)",
+        "cnn": "Translation invariant: recognizes edges and textures wherever they appear"
       },
       {
-        "aspect": "If Object Moves",
-        "ann": "Fails — thinks a shifted cat is a brand new object",
-        "cnn": "Succeeds — recognizes the object wherever it appears in the frame"
-      },
-      {
-        "aspect": "Memory & Weight Count",
-        "ann": "Explodes rapidly with image size (Billions of weights)",
-        "cnn": "Super compact and lightweight (reusable filters)"
-      },
-      {
-        "aspect": "How It Learns Features",
-        "ann": "Treats inputs independently with no sense of neighbors",
-        "cnn": "Hierarchical steps: Edges → Textures → Shapes → Full Objects"
+        "aspect": "Core Layer Types",
+        "ann": "Linear / Dense layers + Activation (ReLU, Sigmoid)",
+        "cnn": "Conv2D, BatchNorm, Pooling (MaxPool, AvgPool), followed by Dense classification head"
       }
     ],
     "cnnBuildingBlocks": [
       {
-        "layer": "1. Conv2D (The Feature Scanner)",
-        "purpose": "Slides a small 3×3 filter over the image to detect edges, lines, curves, and textures."
+        "layer": "Convolution Layer (Conv2D)",
+        "purpose": "Slides learnable 3×3 filter kernels across the input image to extract feature maps (edges, contours, textures)."
       },
       {
-        "layer": "2. ReLU Activation (The Filter)",
-        "purpose": "Replaces negative numbers with zero, allowing the network to learn complex real-world shapes."
+        "layer": "Activation Layer (ReLU)",
+        "purpose": "Introduces non-linearity, allowing the network to approximate complex curved visual relationships."
       },
       {
-        "layer": "3. MaxPool (The Shrinker)",
-        "purpose": "Shrinks the image size while keeping the most important highlights, making training faster."
+        "layer": "Pooling Layer (MaxPool / AvgPool)",
+        "purpose": "Downsamples feature maps to shrink spatial dimensions, lower compute load, and provide translation invariance."
       },
       {
-        "layer": "4. Dense Output Head (The Final Judge)",
-        "purpose": "Takes all detected features and gives the final prediction score (e.g. 96% Dog, 4% Cat)."
+        "layer": "Fully Connected Head (Dense)",
+        "purpose": "Flattens high-level spatial feature representations into class probabilities via Softmax."
       }
     ],
-    "takeaway": "Use ANNs for tabular spreadsheets. Use CNNs for images and videos because CNNs scan with small sliding filters, keep nearby pixels together, and reuse weights instead of connecting everything to everything."
+    "takeaway": "Attempting to process a 1000×1000 color image in an ANN requires 3 million input weights per single neuron, causing catastrophic overfitting. CNNs solve this fundamental computer vision bottleneck through local receptive fields and parameter-shared convolutional filters."
   },
   {
     "id": "gaussian-distribution",
