@@ -122,7 +122,7 @@ export default function AllDefinitionsPage() {
     return definitionsData.filter((item) => item.id === effectiveId);
   }, [activeBookmark]);
 
-  // Topic Navigation (Prev / Next)
+  // Topic Navigation (Prev / Next strictly in sync with definitionBookmarks)
   const currentIndex = activeBookmark 
     ? definitionBookmarks.findIndex(b => b.id === activeBookmark) 
     : -1;
@@ -228,12 +228,12 @@ export default function AllDefinitionsPage() {
       {/* Main Definitions Content Cards (Laser-Fast Single-Section View) */}
       <div id="active-content-section" className="space-y-6 scroll-mt-24">
         {activeBookmark && (
-          <>
+          <React.Fragment key={activeBookmark}>
             {/* Active Topic Sticky Navigation Bar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-zinc-950/90 border border-cyan-800/40 backdrop-blur-md shadow-lg">
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                  Chapter {currentIndex + 1} of {definitionBookmarks.length}
+                  Topic {currentIndex + 1} of {definitionBookmarks.length}
                 </span>
                 <span className="text-xs font-bold text-white font-mono truncate max-w-xs sm:max-w-md">
                   {currentBookmarkObj?.label}
@@ -277,9 +277,9 @@ export default function AllDefinitionsPage() {
             </div>
 
             {/* Render ONLY the single active definition */}
-            {displayedDefinitions.map((item) => (
+            {displayedDefinitions.map((item, itemIdx) => (
               <div
-                key={item.id}
+                key={`${item.id}-${itemIdx}`}
                 id={item.id}
                 className="scroll-mt-24 rounded-2xl bg-[#0a0a0c] p-6 sm:p-7 space-y-5 shadow-2xl transition border border-cyan-500 shadow-cyan-500/10"
               >
@@ -3399,7 +3399,7 @@ export default function AllDefinitionsPage() {
                             onClick={() => handleCopyCode('code-rag-doc-versioning', item.documentVersioning.code)}
                             className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition"
                           >
-                            {copiedCodeId === 'code-rag-doc-versioning' ? (
+                            {copiedId === 'code-rag-doc-versioning' ? (
                               <>
                                 <Check className="w-3.5 h-3.5 text-emerald-400" />
                                 <span className="text-emerald-400">Copied</span>
@@ -14090,7 +14090,7 @@ export default function AllDefinitionsPage() {
                         onClick={() => handleCopyCode('code-ks-drift-test', item.ksTestCode)}
                         className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition"
                       >
-                        {copiedCodeId === 'code-ks-drift-test' ? (
+                        {copiedId === 'code-ks-drift-test' ? (
                           <>
                             <Check className="w-3.5 h-3.5 text-emerald-400" />
                             <span className="text-emerald-400">Copied</span>
@@ -30641,7 +30641,7 @@ export default function AllDefinitionsPage() {
                 )}
 
                 {/* Bulleted Detail Points */}
-                {item.id !== 'crud-api' && item.id !== 'coding-best-practices' && item.id !== 'data-cleaning' && item.id !== 'debugging' && item.id !== 'diffusion-model' && (
+                {item.details && Array.isArray(item.details) && item.details.length > 0 && item.id !== 'crud-api' && item.id !== 'coding-best-practices' && item.id !== 'data-cleaning' && item.id !== 'debugging' && item.id !== 'diffusion-model' && (
                   <ul className="space-y-2.5 pt-2 border-t border-zinc-800/80">
                     {item.details.map((detail, dIdx) => (
                       <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
@@ -30703,7 +30703,54 @@ export default function AllDefinitionsPage() {
 
           </div>
             ))}
-          </>
+
+            {/* Bottom Card Navigation (Prev / Next) */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-xl bg-zinc-950/90 border border-zinc-800/80 shadow-lg mt-6">
+              <div className="w-full sm:w-auto flex items-center justify-start">
+                {prevBookmark ? (
+                  <button
+                    onClick={() => selectBookmark(prevBookmark.id)}
+                    className="w-full sm:w-auto px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-300 hover:text-white border border-zinc-800 hover:border-cyan-500/50 transition flex items-center gap-2 cursor-pointer shadow-sm group"
+                    title={`Previous: ${prevBookmark.label}`}
+                  >
+                    <span className="text-cyan-400 group-hover:-translate-x-0.5 transition-transform">←</span>
+                    <span className="font-semibold truncate max-w-[200px] sm:max-w-xs">{prevBookmark.label}</span>
+                  </button>
+                ) : <div />}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={scrollToBookmarks}
+                  className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-400 hover:text-cyan-400 border border-zinc-800 transition flex items-center gap-1 cursor-pointer"
+                  title="Jump to Bookmarks"
+                >
+                  <ArrowUp className="w-3.5 h-3.5" />
+                  <span>Bookmarks</span>
+                </button>
+                <button
+                  onClick={() => setActiveBookmark(null)}
+                  className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-rose-950/50 text-xs font-mono text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-900 transition flex items-center gap-1 cursor-pointer"
+                  title="Close Section"
+                >
+                  <span>✕ Close</span>
+                </button>
+              </div>
+
+              <div className="w-full sm:w-auto flex items-center justify-end">
+                {nextBookmark ? (
+                  <button
+                    onClick={() => selectBookmark(nextBookmark.id)}
+                    className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-950/40 to-cyan-900/40 hover:from-cyan-900/60 hover:to-cyan-800/60 text-xs font-mono text-cyan-200 hover:text-white border border-cyan-800/60 hover:border-cyan-500 transition flex items-center justify-end gap-2 cursor-pointer shadow-sm group ml-auto"
+                    title={`Next: ${nextBookmark.label}`}
+                  >
+                    <span className="font-semibold truncate max-w-[200px] sm:max-w-xs">{nextBookmark.label}</span>
+                    <span className="text-cyan-400 group-hover:translate-x-0.5 transition-transform">→</span>
+                  </button>
+                ) : <div />}
+              </div>
+            </div>
+          </React.Fragment>
         )}
       </div>
 
