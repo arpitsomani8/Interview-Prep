@@ -144,12 +144,8 @@ export const definitionBookmarks = [
     "label": "COCO Dataset"
   },
   {
-    "id": "context-stuffing-vs-rag",
-    "label": "Context Stuffing vs. RAG (Fixing 10s Latency & Runaway Costs)"
-  },
-  {
     "id": "cot-chain-of-thought",
-    "label": "COT / Chain of Thought"
+    "label": "COT(chain of thought)/GOT/TOT"
   },
   {
     "id": "cross-encoder",
@@ -184,10 +180,6 @@ export const definitionBookmarks = [
     "label": "DeepSparse"
   },
   {
-    "id": "dense-sparse",
-    "label": "Dense vs. Sparse"
-  },
-  {
     "id": "denoising",
     "label": "Denoising"
   },
@@ -206,10 +198,6 @@ export const definitionBookmarks = [
   {
     "id": "distillation-quantization",
     "label": "Distillation & Quantization (Model Compression)"
-  },
-  {
-    "id": "document-versioning-rag",
-    "label": "Document Versioning & Freshness in RAG"
   },
   {
     "id": "data-model-drift",
@@ -318,10 +306,6 @@ export const definitionBookmarks = [
   {
     "id": "gpu-cuda",
     "label": "GPU / CUDA"
-  },
-  {
-    "id": "graph-of-thoughts",
-    "label": "Graph-of-Thoughts (GoT)"
   },
   {
     "id": "gaussian-distribution",
@@ -790,10 +774,6 @@ export const definitionBookmarks = [
   {
     "id": "tuple",
     "label": "Tuple"
-  },
-  {
-    "id": "tree-of-thought",
-    "label": "Tree-of-Thought (ToT)"
   },
   {
     "id": "time-space-complexity",
@@ -1288,10 +1268,111 @@ export const definitionsData = [
     "id": "connect-gpt-fastapi",
     "title": "Connect GPT to FastAPI",
     "badge": "Modern Production Integration",
-    "summary": "Full working implementation using modern FastAPI, Pydantic v2 data validation, and OpenAI Python SDK Responses API.",
-    "installCommand": "pip install fastapi \"uvicorn[standard]\" openai",
+    "summary": "Full working implementation using modern FastAPI, Pydantic v2 data validation with bounded length, and OpenAI Python SDK Responses API with try/except APIError handling.",
+    "installCommand": "pip install fastapi uvicorn openai pydantic",
+    "envSetup": {
+      "windows": "$env:OPENAI_API_KEY=\"your-api-key\"",
+      "unix": "export OPENAI_API_KEY=\"your-api-key\""
+    },
     "runCommand": "uvicorn main:app --reload",
-    "code": "from fastapi import FastAPI\nfrom pydantic import BaseModel\nfrom openai import OpenAI\n\napp = FastAPI()\n\n# Reads OPENAI_API_KEY from environment variables\nclient = OpenAI()\n\n\nclass Question(BaseModel):\n    question: str\n\n\n@app.post(\"/ask\")\ndef ask_ai(data: Question):\n    response = client.responses.create(\n        model=\"gpt-5-mini\",\n        input=data.question\n    )\n\n    return {\n        \"question\": data.question,\n        \"answer\": response.output_text\n    }",
+    "testCommand": "curl -X POST http://127.0.0.1:8000/ask -H \"Content-Type: application/json\" -d '{\"question\": \"Hello!\"}'",
+    "code": "from fastapi import FastAPI, HTTPException\nfrom pydantic import BaseModel, Field\nfrom openai import OpenAI, APIError\n\napp = FastAPI()\nclient = OpenAI()  # Reads OPENAI_API_KEY from the environment\n\n\nclass Question(BaseModel):\n    question: str = Field(min_length=1, max_length=4000)\n\n\n@app.post(\"/ask\")\ndef ask_ai(data: Question):\n    try:\n        response = client.responses.create(\n            model=\"gpt-5-mini\",\n            input=data.question\n        )\n        return {\n            \"question\": data.question,\n            \"answer\": response.output_text\n        }\n    except APIError:\n        # Log the actual error securely in production.\n        raise HTTPException(\n            status_code=502,\n            detail=\"AI provider request failed\"\n        )",
+    "codeBreakdown": [
+      {
+        "element": "Field(min_length=1, max_length=4000)",
+        "explanation": "Rejects empty questions and limits input length."
+      },
+      {
+        "element": "try / except APIError",
+        "explanation": "Prevents provider API errors from being returned as uncontrolled exceptions."
+      },
+      {
+        "element": "OpenAI()",
+        "explanation": "Automatically reads OPENAI_API_KEY from your environment."
+      },
+      {
+        "element": "gpt-5-mini",
+        "explanation": "The model you've selected; the API key must have access to it."
+      }
+    ],
+    "productionReady": {
+      "headline": "How do you make this production-ready?",
+      "subheadline": "For a real GenAI service, consider these improvements:",
+      "areas": [
+        {
+          "area": "Security",
+          "implementation": "Authentication, authorization, HTTPS, and secret management",
+          "accent": "text-rose-400"
+        },
+        {
+          "area": "Input control",
+          "implementation": "Request-size limits, validation, and rate limiting",
+          "accent": "text-amber-400"
+        },
+        {
+          "area": "Reliability",
+          "implementation": "Timeouts, bounded retries, and safe error responses",
+          "accent": "text-blue-400"
+        },
+        {
+          "area": "Cost",
+          "implementation": "Token budgets, usage tracking, caching where appropriate",
+          "accent": "text-emerald-400"
+        },
+        {
+          "area": "Observability",
+          "implementation": "Request IDs, latency metrics, error rates, token usage",
+          "accent": "text-purple-400"
+        },
+        {
+          "area": "Quality",
+          "implementation": "Evaluation datasets, regression tests, and output checks",
+          "accent": "text-cyan-400"
+        },
+        {
+          "area": "Scaling",
+          "implementation": "Multiple workers, horizontal replicas, and concurrency limits",
+          "accent": "text-indigo-400"
+        }
+      ],
+      "healthCheckAlert": "Important: A healthy /health endpoint only tells you the API process is responding. It doesn't guarantee the model provider is reachable or that your account has available quota."
+    },
+    "flaskVsFastapi": {
+      "title": "Flask vs. FastAPI",
+      "summary": "For a small GPT endpoint, both frameworks work well. FastAPI is particularly convenient when you want typed request schemas, automatic validation, and generated API documentation.",
+      "table": [
+        {
+          "feature": "Request handling",
+          "flask": "request.get_json()",
+          "fastapi": "Pydantic request models"
+        },
+        {
+          "feature": "Routing",
+          "flask": "@app.route()",
+          "fastapi": "@app.get(), @app.post()"
+        },
+        {
+          "feature": "Automatic validation",
+          "flask": "Usually manual or extension-based",
+          "fastapi": "Built-in Pydantic integration"
+        },
+        {
+          "feature": "API documentation",
+          "flask": "Usually configured separately",
+          "fastapi": "Automatic OpenAPI/Swagger docs"
+        },
+        {
+          "feature": "Async support",
+          "flask": "Available with limitations",
+          "fastapi": "Designed for async API workflows"
+        },
+        {
+          "feature": "Learning curve",
+          "flask": "Simple and minimal",
+          "fastapi": "Structured and API-oriented"
+        }
+      ]
+    },
     "workflow": [
       "1. FastAPI receives incoming HTTP POST request at /ask.",
       "2. Pydantic validates the request body against the Question schema.",
@@ -1306,12 +1387,21 @@ export const definitionsData = [
     "badge": "Lightweight WSGI Integration",
     "summary": "Production Flask microservice demonstrating incoming JSON validation, OpenAI client calls, and JSON error handling.",
     "installCommand": "pip install flask openai",
-    "runCommand": "python main.py",
-    "code": "from flask import Flask, request, jsonify\nfrom openai import OpenAI\n\napp = Flask(__name__)\nclient = OpenAI()\n\n\n@app.route(\"/ask\", methods=[\"POST\"])\ndef ask_ai():\n    data = request.get_json()\n    question = data.get(\"question\", \"\")\n\n    if not question.strip():\n        return jsonify({\"error\": \"Question is required\"}), 400\n\n    response = client.responses.create(\n        model=\"gpt-5-mini\",\n        input=question\n    )\n\n    return jsonify({\n        \"question\": question,\n        \"answer\": response.output_text\n    })\n\n\nif __name__ == \"__main__\":\n    app.run(debug=True)",
+    "envSetup": {
+      "windows": "$env:OPENAI_API_KEY=\"your-api-key\"",
+      "unix": "export OPENAI_API_KEY=\"your-api-key\""
+    },
+    "runCommand": "python app.py",
+    "flaskRunCommand": "flask --app app run --debug",
+    "testCommand": "curl -X POST http://127.0.0.1:5000/ask -H \"Content-Type: application/json\" -d '{\"question\": \"Hello!\"}'",
+    "code": "from flask import Flask, request, jsonify\nfrom openai import OpenAI\n\napp = Flask(__name__)\nclient = OpenAI()\n\n\n@app.route(\"/ask\", methods=[\"POST\"])\ndef ask_ai():\n    data = request.get_json(silent=True)\n\n    if not isinstance(data, dict):\n        return jsonify({\"error\": \"Valid JSON object is required\"}), 400\n\n    question = data.get(\"question\", \"\")\n\n    if not isinstance(question, str) or not question.strip():\n        return jsonify({\"error\": \"Question is required\"}), 400\n\n    response = client.responses.create(\n        model=\"gpt-5-mini\",\n        input=question\n    )\n\n    return jsonify({\n        \"question\": question,\n        \"answer\": response.output_text\n    })\n\n\nif __name__ == \"__main__\":\n    app.run(debug=True)  # Local development only",
     "notes": [
-      "Flask handles incoming JSON parsing via request.get_json().",
-      "Explicit validation ensures empty or whitespace queries return HTTP 400 Bad Request.",
-      "Calls OpenAI SDK using environment credentials and returns serialized JSON via jsonify()."
+      "Run Command: Execute 'python app.py' directly or 'flask --app app run --debug' to start the local Flask server on http://127.0.0.1:5000.",
+      "request.get_json(silent=True) safely parses the request body without raising an unhandled exception on malformed JSON.",
+      "Explicit dictionary validation: Ensures the incoming payload is a valid JSON object, returning HTTP 400 Bad Request if invalid.",
+      "Type & whitespace check: Verifies that question is a string and not empty or whitespace-only, preventing empty prompt billing.",
+      "Calls OpenAI SDK using environment credentials and returns serialized JSON via jsonify().",
+      "app.run(debug=True) is for local development only; use Gunicorn or uWSGI for production deployments."
     ]
   },
   {
@@ -1922,6 +2012,10 @@ export const definitionsData = [
       {
         "question": "Your chatbot takes 10 seconds to respond because you send the entire 50-page manual with every prompt. It's too slow and expensive. How would you fix it?",
         "answer": "Re-sending a 50-page manual with every prompt is paying to re-read the same book for every question. I fix this with a 6-step architectural pipeline: 1) Retrieve instead of resending: Chunk and embed the manual once, retrieving only the top 3-5 relevant chunks (~600 tokens vs 30,000 tokens). 2) Chunk with structure: Split on headings, keep titles/page numbers as metadata, and overlap lightly so steps aren't cut in half. 3) Rerank, then trim: Use a cross-encoder to reorder candidates and keep only what clears a threshold. 4) Cache what repeats: Use prompt caching for static instructions and semantic Redis caching for frequent questions. 5) Control output: Stream the response and cap max_tokens. 6) Measure: Track tokens per request, TTFT, and answer accuracy. The principle: send the model the few paragraphs that answer the question, not the whole document."
+      },
+      {
+        "question": "How do you handle document versioning, stale embeddings, and zero-downtime updates in a production RAG system?",
+        "answer": "We manage document versioning using SHA-256 chunk hashing and metadata state tags. When an updated policy is uploaded, our pipeline diffs chunk hashes so we only re-embed modified sections, skipping 90% of unchanged paragraphs. For major index migrations, we use atomic collection alias pointers (blue/green re-indexing) with zero downtime. During runtime retrieval, we enforce strict metadata filters like 'is_active: true' to guarantee zero stale policy leakage."
       }
     ],
     "eightRagArchitectures": [
@@ -2090,6 +2184,107 @@ export const definitionsData = [
         }
       ],
       "pythonCode": "from rank_bm25 import BM25Okapi\nimport numpy as np\n\n# 1. Corpus of Documents\ndocuments = [\n    \"Error code ERR_502 occurs when the upstream gateway times out.\",\n    \"Vehicle insurance policy extension procedures and payment plans.\",\n    \"How to troubleshoot server 502 bad gateway connection issues.\",\n    \"Automobile collision coverage and annual deductible rates.\"\n]\n\ntokenized_corpus = [doc.lower().split(\" \") for doc in documents]\n\n# 2. BM25 (Sparse Keyword Retrieval)\nbm25 = BM25Okapi(tokenized_corpus)\nquery = \"troubleshoot ERR_502 timeout\"\ntokenized_query = query.lower().split(\" \")\nbm25_scores = bm25.get_scores(tokenized_query)\nbm25_ranked = np.argsort(bm25_scores)[::-1]  # Highest to lowest\n\n# 3. Dense Vector Retrieval (Mocked embeddings)\n# In production: embeddings = model.encode(documents)\ndense_scores = np.array([0.82, 0.12, 0.88, 0.10])\ndense_ranked = np.argsort(dense_scores)[::-1]\n\n# 4. Hybrid Retrieval via Reciprocal Rank Fusion (RRF)\n# Formula: RRF_Score(d) = sum(1 / (k + rank(d))) with k = 60\nk = 60\nrrf_scores = {}\n\nfor rank, doc_idx in enumerate(bm25_ranked):\n    rrf_scores[doc_idx] = rrf_scores.get(doc_idx, 0) + (1.0 / (k + rank + 1))\n\nfor rank, doc_idx in enumerate(dense_ranked):\n    rrf_scores[doc_idx] = rrf_scores.get(doc_idx, 0) + (1.0 / (k + rank + 1))\n\n# Final Hybrid Ranking\nhybrid_ranked = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)\nprint(\"Top Hybrid Chunk:\", documents[hybrid_ranked[0][0]])"
+    },
+    "contextStuffingVsRag": {
+      "title": "Context Stuffing vs. RAG Optimization (Fixing 10s Latency & High Costs)",
+      "badge": "Production RAG Optimization, Prompt Caching & TTFT Reduction",
+      "problemScenario": "Your chatbot takes 10 seconds to respond because you send the entire 50-page manual with every prompt. It is too slow and expensive. How would you fix it?",
+      "flawedInstinct": "Most junior engineers answer 'shorten the manual' or 'summarize it.' That doesn't fix the architecture! Re-sending a 50-page manual (~30,000 tokens) with every prompt is paying the cloud provider to re-read the exact same book for every single question, clogging attention memory and causing 10-second prefill delays.",
+      "guidingPrinciple": "Send the model the few paragraphs that answer the question, not the whole document.",
+      "steps": [
+        {
+          "step": "Step 1",
+          "title": "Retrieve Instead of Resending",
+          "badge": "Vector DB Retrieval",
+          "accent": "text-cyan-400",
+          "border": "border-cyan-800/50",
+          "desc": "Chunk the 50-page manual by section and embed it once offline into a vector database (e.g. ChromaDB or Pinecone). At query time, fetch only the top 3–5 relevant chunks (~600 tokens total), immediately slashing prompt size by 98% and collapsing TTFT from 10 seconds to under 400 milliseconds."
+        },
+        {
+          "step": "Step 2",
+          "title": "Chunk with Semantic Structure",
+          "badge": "Heading-Aware Chunking",
+          "accent": "text-blue-400",
+          "border": "border-blue-800/50",
+          "desc": "Do not use naive fixed character splitting (e.g., splitting every 500 characters). Split logically on markdown/document headings (H1, H2, H3). Preserve section titles, page numbers, and breadcrumbs as chunk metadata. Apply light overlap (10–15% / ~50 tokens) so procedural instructions or numbered steps are never sliced in half."
+        },
+        {
+          "step": "Step 3",
+          "title": "Rerank, Then Trim",
+          "badge": "Cross-Encoder Filtering",
+          "accent": "text-emerald-400",
+          "border": "border-emerald-800/50",
+          "desc": "Initial vector search casts a broad net (top 20 candidate chunks). A cross-encoder (e.g., BGE-Reranker or Cohere Rerank) scores and reorders the candidates by semantic relevance. Discard any chunk that fails to clear a strict relevance threshold (e.g., score < 0.70), passing only the 3 most precise chunks to the LLM."
+        },
+        {
+          "step": "Step 4",
+          "title": "Cache What Repeats",
+          "badge": "Prefix & Semantic Cache",
+          "accent": "text-amber-400",
+          "border": "border-amber-800/50",
+          "desc": "1. Prompt Caching: Enable prefix prompt caching (supported natively by Anthropic, OpenAI, and vLLM) for the system instructions and static guidelines (50–90% cost cut, <50ms). 2. Semantic Caching: Cache common questions and answers in Redis using embedding similarity (>= 0.98), answering frequent customer queries in 5ms at $0 token cost."
+        },
+        {
+          "step": "Step 5",
+          "title": "Control the Output",
+          "badge": "Streaming & Token Caps",
+          "accent": "text-purple-400",
+          "border": "border-purple-800/50",
+          "desc": "Enable Server-Sent Events (SSE) or WebSocket response streaming. Users start seeing tokens within 300ms instead of staring at a blank screen for 10 seconds. Enforce strict max_tokens limits (e.g., max_tokens=350) to prevent verbose, wandering generation."
+        },
+        {
+          "step": "Step 6",
+          "title": "Continuous Measurement",
+          "badge": "Observability Pipeline",
+          "accent": "text-rose-400",
+          "border": "border-rose-800/50",
+          "desc": "Track Time To First Token (TTFT), Time Per Output Token (TPOT), total tokens per request, and answer groundedness/faithfulness in your observability pipeline (OpenTelemetry / Langfuse)."
+        }
+      ],
+      "interviewDefenseScript": "Re-sending a 50-page manual with every prompt is context stuffing. I fix this architecturally by chunking the manual into structured semantic sections, embedding it once into a vector DB, and retrieving only the top 3-5 relevant chunks. I then add a cross-encoder reranker, enable prompt caching for static instructions, use Redis semantic caching for repeated questions, and stream responses. This cuts prompt token costs by over 95% and reduces perceived latency from 10 seconds to under 400ms.",
+      "code": "# ==============================================================================\n# PRODUCTION FIX: RETRIEVE INSTEAD OF RESENDING (CHUNKING, RERANKING & CACHING)\n# ==============================================================================\nimport time\nfrom typing import List, Dict, Any\n# Simulated fast cross-encoder and vector store\n\nclass OptimizedManualAssistant:\n    def __init__(self, vector_store, semantic_cache):\n        self.vector_store = vector_store\n        self.semantic_cache = semantic_cache\n        self.reranker_threshold = 0.70\n\n    def answer_query(self, query: str) -> Dict[str, Any]:\n        start_time = time.time()\n\n        # Step 4: Check Semantic Cache for identical/similar previous questions\n        cached_result = self.semantic_cache.get(query, similarity_threshold=0.98)\n        if cached_result:\n            return {\n                \"answer\": cached_result, \n                \"latency_ms\": round((time.time() - start_time) * 1000, 2),\n                \"tokens_used\": 0,\n                \"source\": \"SEMANTIC_CACHE\"\n            }\n\n        # Step 1 & 2: Retrieve Top-15 Candidate Chunks (Pre-embedded by heading)\n        candidates = self.vector_store.similarity_search(query, top_k=15)\n\n        # Step 3: Cross-Encoder Rerank and Trim Below Threshold\n        # Scores each (query, chunk) pair; keeps only high-confidence matches\n        reranked = [c for c in candidates if c.get(\"rerank_score\", 0.0) >= self.reranker_threshold]\n        top_chunks = sorted(reranked, key=lambda x: x[\"rerank_score\"], reverse=True)[:3]\n\n        if not top_chunks:\n            # Fallback to top 2 if none cleared threshold\n            top_chunks = candidates[:2]\n\n        # Step 5: Construct Lean Prompt (600 tokens instead of 30,000 tokens)\n        context_text = \"\\n\\n\".join([f\"[{c['metadata']['section']} - Pg {c['metadata']['page']}]: {c['text']}\" for c in top_chunks])\n        \n        # Static prompt prefix is prompt-cached by model provider\n        messages = [\n            {\"role\": \"system\", \"content\": \"You are a concise technical manual assistant. Use only provided context.\"},\n            {\"role\": \"user\", \"content\": f\"Context:\\n{context_text}\\n\\nQuestion: {query}\"}\n        ]\n\n        # Call LLM with streaming & capped max_tokens\n        # In production: response = client.chat.completions.create(..., stream=True, max_tokens=300)\n        simulated_answer = \"To calibrate the sensor, press and hold the blue button for 3 seconds until LED turns green.\"\n        \n        # Save to semantic cache for future queries\n        self.semantic_cache.set(query, simulated_answer)\n        \n        elapsed_ms = round((time.time() - start_time) * 1000, 2)\n        return {\n            \"answer\": simulated_answer,\n            \"latency_ms\": elapsed_ms,\n            \"tokens_used\": 620,  # 98% reduction from 30,000 tokens\n            \"source\": \"RAG_RETRIEVAL\"\n        }"
+    },
+    "documentVersioning": {
+      "title": "Document Versioning & Freshness in RAG — Deduplication & Atomic Alias Swaps",
+      "badge": "RAG Production Engineering & Data Freshness",
+      "summary": "Architecting automated document versioning, content-hash deduplication, zero-downtime collection alias swaps, and metadata time-filtering in enterprise RAG systems to ensure answers reflect fresh source documents without duplicate or stale embeddings.",
+      "challenge": "The Core Challenge of RAG Freshness: Documents change constantly (e.g. employee handbook updated from v1 to v2, financial policies revised). If you blindly append new embeddings, the vector DB contains conflicting information. If you delete and re-index the entire database on every small edit, you burn thousands of dollars in embedding API costs and cause query downtime.",
+      "strategies": [
+        {
+          "step": "01",
+          "name": "Content-Hash (SHA-256) Chunk Deduplication",
+          "badge": "Cost & API Saver",
+          "accent": "text-cyan-400",
+          "border": "border-cyan-800/50",
+          "desc": "On ingestion, compute a SHA-256 hash for every chunk. Store hashes in PostgreSQL metadata. When a document is re-uploaded, only embed chunks whose content hash has changed, skipping 90% of unchanged paragraphs."
+        },
+        {
+          "step": "02",
+          "name": "Atomic Collection Alias Pointers (Blue/Green)",
+          "badge": "Zero Downtime",
+          "accent": "text-emerald-400",
+          "border": "border-emerald-800/50",
+          "desc": "For major index rebuilds, create a new collection 'kb_v2024_10_24'. Ingest and verify all vectors offline. Once health checks pass, atomically update the alias pointer ('kb_active' -> 'kb_v2024_10_24') in zero milliseconds with zero downtime."
+        },
+        {
+          "step": "03",
+          "name": "Metadata Temporal Filtering",
+          "badge": "Leakage Defense",
+          "accent": "text-purple-400",
+          "border": "border-purple-800/50",
+          "desc": "Add metadata fields to every chunk: {'doc_id': 'POL_942', 'version': '2.4', 'is_active': true, 'effective_date': '2024-01-01'}. At query time, vector retrieval enforces a strict filter: {'is_active': {'$eq': true}}, making stale versions mathematically invisible."
+        },
+        {
+          "step": "04",
+          "name": "Soft Deletes & CDC (Change Data Capture)",
+          "badge": "Real-time Sync",
+          "accent": "text-amber-400",
+          "border": "border-amber-800/50",
+          "desc": "Use database triggers or Kafka/Debezium on source document stores. When a document is archived, a webhook immediately marks its vector namespace as inactive and schedules asynchronous vector deletion."
+        }
+      ],
+      "code": "import hashlib\nimport time\n\nclass RAGDocumentVersionManager:\n    def __init__(self):\n        # Simulated database of indexed chunks\n        self.chunk_registry = {} # chunk_hash -> metadata\n\n    def compute_hash(self, text: str) -> str:\n        return hashlib.sha256(text.strip().encode(\"utf-8\")).hexdigest()\n\n    def sync_document(self, doc_id: str, version: str, new_chunks: list):\n        \"\"\"\n        Only embeds and upserts chunks that have genuinely changed!\n        \"\"\"\n        upsert_queue = []\n        unchanged_count = 0\n\n        for idx, chunk_text in enumerate(new_chunks):\n            chunk_hash = self.compute_hash(chunk_text)\n            chunk_id = f\"{doc_id}_c{idx}\"\n\n            if chunk_hash in self.chunk_registry:\n                # Chunk identical to existing version — skip expensive embedding call!\n                unchanged_count += 1\n            else:\n                # Modified or new chunk: embed and register\n                record = {\n                    \"doc_id\": doc_id,\n                    \"version\": version,\n                    \"chunk_id\": chunk_id,\n                    \"hash\": chunk_hash,\n                    \"text\": chunk_text,\n                    \"is_active\": True,\n                    \"updated_at\": time.time()\n                }\n                self.chunk_registry[chunk_hash] = record\n                upsert_queue.append(record)\n\n        print(f\"Sync complete for {doc_id} v{version}: {len(upsert_queue)} new/modified chunks upserted, {unchanged_count} unchanged chunks reused.\")\n        return upsert_queue\n\n# Example: Editing 1 sentence in a 3-paragraph policy\nmgr = RAGDocumentVersionManager()\ndoc_v1 = [\"Paragraph 1: Security guidelines...\", \"Paragraph 2: Expense limits $50/day\", \"Paragraph 3: Contact HR\"]\nmgr.sync_document(\"DOC_001\", \"1.0\", doc_v1) # 3 chunks upserted\n\ndoc_v2 = [\"Paragraph 1: Security guidelines...\", \"Paragraph 2: Expense limits $100/day\", \"Paragraph 3: Contact HR\"]\nmgr.sync_document(\"DOC_001\", \"2.0\", doc_v2) # Only 1 chunk upserted, 2 reused!",
+      "interviewAnswer": "We manage document versioning using SHA-256 chunk hashing and metadata state tags. When an updated policy is uploaded, our pipeline diffs chunk hashes so we only re-embed modified sections. We use atomic collection alias pointers for major migrations and enforce 'is_active: True' metadata filters during vector retrieval to guarantee zero stale policy leakage."
     }
   },
   {
@@ -2711,9 +2906,72 @@ export const definitionsData = [
   },
   {
     "id": "deepsparse",
-    "title": "DeepSparse",
+    "title": "DeepSparse: Dense vs. Sparse Inference Runtime",
     "badge": "CPU Inference Engine & Sparsity Runtime",
-    "summary": "DeepSparse is an inference runtime developed by Neural Magic to run supported neural networks efficiently on CPUs using sparse computation and model optimizations.",
+    "summary": "DeepSparse was a sparsity-aware neural-network inference runtime developed by Neural Magic. It was designed to accelerate model inference on CPUs by exploiting sparse computations, with techniques such as pruning and quantization.",
+    "whatIsDeepSparse": "DeepSparse was a sparsity-aware neural-network inference runtime developed by Neural Magic. It was designed to accelerate model inference on CPUs by exploiting sparse computations, with techniques such as pruning and quantization.",
+    "representations": [
+      {
+        "name": "Dense representation",
+        "definition": "Most values are nonzero, so computations are generally performed across the full tensor or matrix.",
+        "example": "[5, 2, 7, 1]",
+        "accent": "text-cyan-400",
+        "border": "border-cyan-800/50",
+        "badge": "Full Tensor Computation"
+      },
+      {
+        "name": "Sparse representation",
+        "definition": "Many values are zero. Specialized operations can skip some zero-valued computations.",
+        "example": "[5, 0, 0, 1]",
+        "accent": "text-amber-400",
+        "border": "border-amber-800/50",
+        "badge": "Zero-Skip Computation"
+      }
+    ],
+    "comparisonTable": [
+      {
+        "feature": "Nonzero values",
+        "dense": "Usually most values",
+        "sparse": "Relatively few values"
+      },
+      {
+        "feature": "Memory",
+        "dense": "Stores all values",
+        "sparse": "Can save memory with suitable storage"
+      },
+      {
+        "feature": "Computation",
+        "dense": "Often computes across full tensors",
+        "sparse": "Can skip supported zero computations"
+      },
+      {
+        "feature": "Hardware support",
+        "dense": "Broad and highly optimized",
+        "sparse": "Depends on sparse format and hardware"
+      },
+      {
+        "feature": "Typical examples",
+        "dense": "Dense neural-network weights",
+        "sparse": "Pruned weights, TF-IDF vectors"
+      },
+      {
+        "feature": "Main challenge",
+        "dense": "Higher compute for some workloads",
+        "sparse": "Sparse overhead and compatibility"
+      }
+    ],
+    "codeExample": {
+      "title": "Simple Python Example: Dense vs. Sparse Sparsity Calculation",
+      "code": "import numpy as np\n\ndense = np.array([5, 2, 7, 1])\nsparse = np.array([5, 0, 0, 1])\n\nprint(\"Dense nonzero values:\", np.count_nonzero(dense))\nprint(\"Sparse nonzero values:\", np.count_nonzero(sparse))\nprint(\"Dense sparsity:\", 1 - np.count_nonzero(dense) / dense.size)\nprint(\"Sparse sparsity:\", 1 - np.count_nonzero(sparse) / sparse.size)",
+      "output": "Dense nonzero values: 4\nSparse nonzero values: 2\nDense sparsity: 0.0\nSparse sparsity: 0.5"
+    },
+    "whereSparsityAppears": [
+      "Neural network weights: pruning can turn small or less important weights into zeros.",
+      "Text processing: TF-IDF and bag-of-words representations often contain mostly zeros.",
+      "Embedding and retrieval systems: some representations or intermediate structures may be sparse.",
+      "Sparse neural networks: specially structured models can avoid unnecessary computations."
+    ],
+    "importantDistinction": "Important distinction: a tensor containing zeros does not automatically make inference faster. The software and hardware must be able to exploit those zeros efficiently.",
     "keyPoints": [
       {
         "title": "Training vs Inference",
@@ -2727,7 +2985,115 @@ export const definitionsData = [
         "title": "Sparse Architecture Execution",
         "desc": "Executes pruned (sparse) and INT8 quantized neural networks on standard x86 and ARM CPUs at speeds competitive with dedicated GPUs, drastically lowering cloud infrastructure costs."
       }
-    ]
+    ],
+    "takeaway": "Dense representations compute across full matrices, while sparse representations exploit zeros to skip redundant operations and reduce memory. DeepSparse was built specifically by Neural Magic to translate these mathematical zeros into real-world CPU speedups through sparsity-aware kernels, pruning, and INT8 quantization."
+  },
+  {
+    "id": "denoising",
+    "title": "Denoising (Noise Reduction & Signal Preservation in AI & Vision)",
+    "badge": "Signal Processing, Computer Vision & Generative AI",
+    "summary": "Denoising is the process of removing unwanted noise from data while preserving useful information. Noise can appear in images, audio, text, sensor readings, or datasets.",
+    "coreDefinition": "Denoising is the process of removing unwanted noise from data while preserving useful information.",
+    "subText": "Noise can appear in images, audio, text, sensor readings, or datasets.",
+    "domains": [
+      {
+        "domain": "Computer Vision",
+        "description": "Remove grain and sensor noise from low-light photographs.",
+        "badge": "Vision / Images",
+        "accent": "text-cyan-400",
+        "border": "border-cyan-800/40"
+      },
+      {
+        "domain": "Audio AI",
+        "description": "Reduce background noise (fan hum, road traffic, room chatter) in speech recordings.",
+        "badge": "Speech / Audio",
+        "accent": "text-emerald-400",
+        "border": "border-emerald-800/40"
+      },
+      {
+        "domain": "Machine Learning",
+        "description": "Detect and handle corrupted sensor readings and irregular measurement spikes.",
+        "badge": "Tabular & Sensors",
+        "accent": "text-amber-400",
+        "border": "border-amber-800/40"
+      },
+      {
+        "domain": "GenAI",
+        "description": "Train diffusion models to generate realistic images by progressively removing noise.",
+        "badge": "Diffusion Models",
+        "accent": "text-purple-400",
+        "border": "border-purple-800/40"
+      }
+    ],
+    "noiseTypesTable": [
+      {
+        "noiseType": "Gaussian noise",
+        "example": "Random fluctuations in image pixels",
+        "commonApproach": "Gaussian filter, bilateral filter, non-local means"
+      },
+      {
+        "noiseType": "Salt-and-pepper noise",
+        "example": "Random black and white pixels",
+        "commonApproach": "Median filter (replaces pixel with neighborhood median)"
+      },
+      {
+        "noiseType": "Audio noise",
+        "example": "Fan, traffic or background chatter",
+        "commonApproach": "Spectral filtering, neural denoising networks"
+      },
+      {
+        "noiseType": "Data noise",
+        "example": "Incorrect or inconsistent measurements",
+        "commonApproach": "Validation, robust statistics (median, IQR)"
+      },
+      {
+        "noiseType": "Diffusion noise",
+        "example": "Artificially added noise during training",
+        "commonApproach": "Learned denoising network (U-Net / DiT)"
+      }
+    ],
+    "codeExample": {
+      "title": "Python: Adding & Removing Artificial Noise with OpenCV",
+      "filename": "denoising_opencv.py",
+      "code": "import cv2\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# 1. Read an image in grayscale\nimage = cv2.imread(\"image.jpg\", cv2.IMREAD_GRAYSCALE)\nif image is None:\n    # Synthetic fallback gradient if image.jpg is not on disk\n    image = np.tile(np.linspace(0, 255, 256, dtype=np.uint8), (256, 1))\n\n# 2. Add artificial Gaussian noise\nnoise = np.random.normal(0, 25, image.shape)\nnoisy_image = np.clip(\n    image.astype(np.float32) + noise, 0, 255\n).astype(np.uint8)\n\n# 3. Apply a median filter\ndenoised_image = cv2.medianBlur(noisy_image, 3)\n\n# 4. Display the results\nplt.figure(figsize=(12, 4))\n\nplt.subplot(1, 3, 1)\nplt.imshow(image, cmap=\"gray\")\nplt.title(\"Original\")\nplt.axis(\"off\")\n\nplt.subplot(1, 3, 2)\nplt.imshow(noisy_image, cmap=\"gray\")\nplt.title(\"Noisy\")\nplt.axis(\"off\")\n\nplt.subplot(1, 3, 3)\nplt.imshow(denoised_image, cmap=\"gray\")\nplt.title(\"Denoised\")\nplt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()"
+    },
+    "filterNote": "A median filter is especially effective for salt-and-pepper noise. For Gaussian noise, a Gaussian filter or non-local means denoising may work better. The best method depends on the noise type.",
+    "relatedConcepts": [
+      {
+        "concept": "Denoising",
+        "definition": "Reduces unwanted noise while preserving the underlying signal.",
+        "badge": "Signal Preservation",
+        "accent": "text-cyan-400",
+        "border": "border-cyan-800/40"
+      },
+      {
+        "concept": "Data Cleaning",
+        "definition": "Handles missing values, duplicates, invalid formats, and inconsistent records.",
+        "badge": "Data Integrity",
+        "accent": "text-amber-400",
+        "border": "border-amber-800/40"
+      },
+      {
+        "concept": "Outlier Detection",
+        "definition": "Identifies observations that are unusually far from the rest of the data.",
+        "badge": "Anomaly Identification",
+        "accent": "text-rose-400",
+        "border": "border-rose-800/40"
+      }
+    ],
+    "details": [
+      "Denoising is the process of removing unwanted noise from data while preserving useful information.",
+      "Noise can appear in images, audio, text, sensor readings, or datasets.",
+      "Computer vision: Remove grain from low-light photographs.",
+      "Audio AI: Reduce background noise in speech recordings (fan, traffic, chatter).",
+      "Machine learning: Detect and handle corrupted sensor readings and irregular fluctuations.",
+      "GenAI: Train diffusion models to generate realistic images by progressively removing noise.",
+      "Noise Types & Filters: Gaussian noise (Gaussian/NLM filter), Salt-and-pepper noise (Median filter), Audio noise (spectral filtering & neural denoising), Data noise (validation & robust statistics), and Diffusion noise (learned denoising network).",
+      "Filter Selection: A median filter is especially effective for salt-and-pepper noise. For Gaussian noise, a Gaussian filter or non-local means denoising may work better. The best method depends on the noise type.",
+      "Related Concepts: Denoising reduces unwanted noise while preserving the underlying signal; Data cleaning handles missing values, duplicates, and invalid formats; Outlier detection identifies observations unusually far from the rest of the data."
+    ],
+    "code": "import cv2\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Read an image in grayscale\nimage = cv2.imread(\"image.jpg\", cv2.IMREAD_GRAYSCALE)\nif image is None:\n    image = np.tile(np.linspace(0, 255, 256, dtype=np.uint8), (256, 1))\n\n# Add artificial Gaussian noise\nnoise = np.random.normal(0, 25, image.shape)\nnoisy_image = np.clip(\n    image.astype(np.float32) + noise, 0, 255\n).astype(np.uint8)\n\n# Apply a median filter\ndenoised_image = cv2.medianBlur(noisy_image, 3)\n\n# Display the results\nplt.figure(figsize=(12, 4))\n\nplt.subplot(1, 3, 1)\nplt.imshow(image, cmap=\"gray\")\nplt.title(\"Original\")\nplt.axis(\"off\")\n\nplt.subplot(1, 3, 2)\nplt.imshow(noisy_image, cmap=\"gray\")\nplt.title(\"Noisy\")\nplt.axis(\"off\")\n\nplt.subplot(1, 3, 3)\nplt.imshow(denoised_image, cmap=\"gray\")\nplt.title(\"Denoised\")\nplt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()",
+    "takeaway": "Denoising aims to eliminate unwanted noise while preserving the underlying signal. The optimal method depends entirely on the noise type: median filters excel at impulsive salt-and-pepper noise, Gaussian or bilateral filters target continuous Gaussian noise, and neural networks power advanced audio and diffusion denoising."
   },
   {
     "id": "pruning",
@@ -2933,60 +3299,131 @@ export const definitionsData = [
   },
   {
     "id": "coding-best-practices",
-    "title": "Coding Best Practices (Production Systems)",
-    "badge": "Software Engineering & Clean Architecture",
-    "summary": "The main software engineering and system architecture practices followed while building scalable, maintainable, and enterprise-grade AI/ML services.",
+    "title": "Coding Best Practices (The 8 Most Important Practices)",
+    "badge": "Clean Code, Security & Production Standards",
+    "summary": "The 8 essential software engineering best practices for building robust, maintainable, and enterprise-grade Python & AI applications — covering meaningful naming, focused functions, comprehensive testing, defensive error handling, secret protection, version control, type hints, and measurement-based optimization.",
     "practices": [
       {
         "number": "1",
-        "title": "Single Responsibility Principle (SRP)",
-        "desc": "Each function or class should have one clear responsibility.",
-        "bad": "One large function that cleans data, loads a model, predicts, writes to a database, and sends a response.",
-        "better": "Separate TextCleaner, Preprocessor, Classifier, and PredictionRepository."
+        "title": "Use Meaningful Names",
+        "desc": "Choose clear, descriptive, and searchable names for variables, functions, and classes that convey intent without guessing.",
+        "example": "Prefer customer_query over q, and calculate_prediction() over func1().",
+        "bad": "q = fetch()\ndef func1(x): return x * 0.2",
+        "better": "customer_query = fetch_customer_query()\ndef calculate_prediction(feature_vector: list) -> float:"
       },
       {
         "number": "2",
-        "title": "Modularity and Reuse",
-        "desc": "Implement reusable preprocessing components. A new normalization method should not require rewriting the entire prediction service.",
-        "bad": "Hardcoding regex cleaning logic directly inside route handlers.",
-        "better": "Reusable pipeline components conforming to common interfaces."
+        "title": "Keep Functions Small and Focused",
+        "desc": "One function should have one clear responsibility (Single Responsibility Principle). Separate data loading, preprocessing, inference, and API handling.",
+        "example": "Separate data loading, preprocessing, inference, and API handling into independent functions.",
+        "bad": "A single 120-line function that parses JSON, cleans text, loads PyTorch weights, predicts, saves to SQL, and builds an HTTP response.",
+        "better": "Separate load_raw_dataset(), clean_text_payload(), run_model_inference(), and persist_prediction_record()."
       },
       {
         "number": "3",
-        "title": "Configuration Over Hardcoding",
-        "desc": "Store tenant-specific model versions, pipeline settings, and thresholds in validated configuration rather than scattered if customer == ... statements.",
-        "bad": "Scattered if customer == 'client_a': ... branches across services.",
-        "better": "Validated JSON/YAML configurations loaded dynamically at runtime."
+        "title": "Write Tests",
+        "desc": "Create automated unit, integration, and property-based test suites using pytest. Never rely only on happy-path manual tests in notebooks.",
+        "example": "Test normal inputs, invalid inputs, boundary conditions, and failure cases.",
+        "bad": "Testing once manually by printing in Jupyter Notebook, with zero test files committed.",
+        "better": "pytest test suite testing normal payloads, empty strings, missing fields, schema mismatches, and mock database timeouts."
       },
       {
         "number": "4",
-        "title": "Tenant Isolation and Security",
-        "desc": "Authorize each request, scope every database query to the authenticated tenant, isolate configuration and model access, and test cross-tenant access attempts.",
-        "bad": "Global un-scoped queries risking cross-tenant data leakage.",
-        "better": "Mandatory tenant_id scoping on every DB transaction and model context."
+        "title": "Handle Errors Properly",
+        "desc": "Use defensive programming. Catch expected exceptions, log useful diagnostic information, and return safe error messages without leaking internal stack traces.",
+        "example": "Catch expected exceptions, log useful diagnostic information, and return safe error messages.",
+        "bad": "try: ... except: pass (silent swallow) or leaking full internal SQL traceback in HTTP 500.",
+        "better": "except (ValueError, KeyError) as exc: logger.error(f'Validation failed: {exc}'); raise HTTPException(status_code=400, detail='Invalid query format')"
       },
       {
         "number": "5",
-        "title": "Input Validation and Error Handling",
-        "desc": "Reject missing text, invalid settings, unsupported model versions, and malformed input. Return safe, consistent errors and log diagnostic details without exposing sensitive data.",
-        "bad": "Unchecked exceptions returning 500 stack traces to API consumers.",
-        "better": "Strict Pydantic schema validation and clean, structured error responses."
+        "title": "Protect Secrets",
+        "desc": "Never hardcode API keys, passwords, private certificates, or database credentials in source code or Git repositories.",
+        "example": "Keep API keys, passwords, and database credentials out of source code and version control.",
+        "bad": "OPENAI_API_KEY = 'sk-proj-98214...' committed directly in app.py and pushed to GitHub.",
+        "better": "api_key = os.getenv('OPENAI_API_KEY'); enforce secrets in .env ignored by .gitignore and injected via AWS Secrets Manager or K8s secrets."
       },
       {
         "number": "6",
-        "title": "Testing (Software vs Model)",
-        "desc": "Test preprocessing steps individually, the full prediction pipeline, tenant-specific configurations, and security boundaries. Validate model quality separately from software correctness.",
-        "bad": "Testing only happy-path HTTP calls without edge-case or security checks.",
-        "better": "Unit tests for transforms, pipeline integration tests, and model metric validation."
+        "title": "Use Version Control",
+        "desc": "Follow Git collaboration workflows. Make small atomic commits, write descriptive commit messages, review PRs, and isolate work in feature branches.",
+        "example": "Make focused Git commits, review changes, and use branches for new features.",
+        "bad": "Working directly on main, committing 2,000 modified files with message 'update code'.",
+        "better": "Branching (git switch -c feat/llm-streaming), atomic conventional commits (feat(api): add streaming response), and pull requests."
       },
       {
         "number": "7",
-        "title": "Observability and Reproducibility",
-        "desc": "Track latency, errors, model version, pipeline version, and prediction metrics. Version the preprocessing logic together with the model so predictions can be reproduced.",
-        "bad": "Unstructured log prints with no trace IDs or version metadata.",
-        "better": "Structured logging, latency metrics, and linked model/pipeline versioning."
+        "title": "Use Type Hints and Documentation",
+        "desc": "Use Python type annotations (mypy, typing) and descriptive docstrings to clarify function inputs, outputs, and non-obvious behavior.",
+        "example": "Clarify function inputs, outputs, and non-obvious behavior.",
+        "bad": "def process(data, flag=False): # No types, no docstring, unclear what data format is expected",
+        "better": "def process_query(prompt: str, max_tokens: int = 512) -> QueryResponse:\n    \"\"\"Tokenizes prompt and invokes LLM endpoint with retry logic.\"\"\""
+      },
+      {
+        "number": "8",
+        "title": "Optimize Based on Measurements",
+        "desc": "Avoid premature optimization. Always profile bottlenecks with real metrics before rewriting code or scaling hardware.",
+        "example": "Profile slow code before optimizing. In AI applications, measure model latency, token usage, memory, and throughput.",
+        "bad": "Rewriting Python code into C++ or buying larger GPUs without measuring where the actual delay is.",
+        "better": "Measure Time-to-First-Token (TTFT), tokens/sec throughput, GPU VRAM usage, and profile with cProfile/PyTorch Profiler."
       }
-    ]
+    ],
+    "usefulTools": [
+      {
+        "tool": "ruff",
+        "purpose": "Linting and many code-quality checks",
+        "command": "ruff check .",
+        "badge": "Linter",
+        "desc": "Extremely fast Rust-based Python linter that replaces flake8, isort, pydocstyle, and pyupgrade in milliseconds."
+      },
+      {
+        "tool": "black",
+        "purpose": "Consistent code formatting",
+        "command": "black .",
+        "badge": "Formatter",
+        "desc": "The uncompromising code formatter that eliminates code style arguments by enforcing PEP 8 standards automatically."
+      },
+      {
+        "tool": "pytest",
+        "purpose": "Unit and integration tests",
+        "command": "pytest -v",
+        "badge": "Testing",
+        "desc": "Standard test framework featuring expressive fixtures, parametrized testing, assertion rewriting, and mocking."
+      },
+      {
+        "tool": "mypy",
+        "purpose": "Static type checking",
+        "command": "mypy main.py",
+        "badge": "Type Checker",
+        "desc": "Static type checker that analyzes Python type annotations to catch bugs, NoneType crashes, and bad arguments before execution."
+      },
+      {
+        "tool": "logging",
+        "purpose": "Application diagnostics",
+        "command": "import logging",
+        "badge": "Observability",
+        "desc": "Python built-in structured logging module for tracking errors, request trace IDs, execution timestamps, and performance."
+      },
+      {
+        "tool": "pre-commit",
+        "purpose": "Run checks before commits",
+        "command": "pre-commit run --all-files",
+        "badge": "Git Hooks",
+        "desc": "Multi-language package manager for Git pre-commit hooks that automatically runs ruff, black, and tests before every git commit."
+      }
+    ],
+    "details": [
+      "1. Use meaningful names: Prefer customer_query over q, and calculate_prediction() over func1().",
+      "2. Keep functions small and focused: One function should have one clear responsibility. Separate data loading, preprocessing, inference, and API handling.",
+      "3. Write tests: Test normal inputs, invalid inputs, boundary conditions, and failure cases.",
+      "4. Handle errors properly: Catch expected exceptions, log useful diagnostic information, and return safe error messages.",
+      "5. Protect secrets: Keep API keys, passwords, and database credentials out of source code and version control.",
+      "6. Use version control: Make focused Git commits, review changes, and use branches for new features.",
+      "7. Use type hints and documentation: Clarify function inputs, outputs, and non-obvious behavior.",
+      "8. Optimize based on measurements: Profile slow code before optimizing. In AI applications, measure model latency, token usage, memory, and throughput.",
+      "Useful Python tools: ruff (linting), black (formatting), pytest (tests), mypy (static type checking), logging (diagnostics), pre-commit (pre-commit checks)."
+    ],
+    "code": "# ==============================================================\n# DEMONSTRATING THE 8 BEST CODING PRACTICES IN A PYTHON AI APP\n# ==============================================================\n\nimport os\nimport time\nimport logging\nfrom typing import Dict, Any, Optional\nfrom dataclasses import dataclass\n\n# 4. Configure Application Logging (Diagnostics)\nlogging.basicConfig(\n    level=logging.INFO,\n    format=\"%(asctime)s [%(levelname)s] %(name)s: %(message)s\"\n)\nlogger = logging.getLogger(\"InferenceService\")\n\n# 5. Protect Secrets: Read API Key safely from Environment\nAPI_KEY: Optional[str] = os.getenv(\"OPENAI_API_KEY\")\nif not API_KEY:\n    logger.warning(\"OPENAI_API_KEY not found in environment; using secure fallback\")\n\n\n# 7. Type Hints & Data Validation (Data Classes)\n@dataclass\nclass PredictionResult:\n    query: str\n    intent: str\n    confidence: float\n    latency_ms: float\n\n\n# 1. Meaningful Names + 2. Small Focused Function (Preprocessing)\ndef clean_customer_query(raw_query: str) -> str:\n    \"\"\"Sanitizes and normalizes incoming customer query string.\"\"\"\n    if not isinstance(raw_query, str):\n        raise ValueError(\"Customer query must be a valid string\")\n    return raw_query.strip().lower()\n\n\n# 1. Meaningful Names + 2. Focused Inference Function + 8. Measurement\ndef calculate_prediction(customer_query: str) -> PredictionResult:\n    \"\"\"Classifies user query intent and measures inference latency.\"\"\"\n    # 8. Optimize Based on Measurements: Measure execution latency\n    start_time = time.perf_counter()\n\n    # 4. Defensive Error Handling: Catch invalid or empty input\n    if not customer_query:\n        logger.error(\"Attempted to process empty query\")\n        raise ValueError(\"Query cannot be empty\")\n\n    # Simulated model inference logic\n    intent = \"ACCOUNT_BALANCE\" if \"balance\" in customer_query else \"GENERAL_FAQ\"\n    confidence = 0.96 if intent == \"ACCOUNT_BALANCE\" else 0.82\n\n    latency_ms = (time.perf_counter() - start_time) * 1000.0\n    logger.info(f\"Processed query '{customer_query}' in {latency_ms:.2f}ms with intent {intent}\")\n\n    return PredictionResult(\n        query=customer_query,\n        intent=intent,\n        confidence=confidence,\n        latency_ms=latency_ms\n    )\n\n\n# 3. Automated Unit Tests (Compatible with pytest)\ndef test_clean_customer_query():\n    assert clean_customer_query(\"  CHECK BALANCE  \") == \"check balance\"\n\ndef test_calculate_prediction_valid():\n    result = calculate_prediction(\"check my account balance\")\n    assert result.intent == \"ACCOUNT_BALANCE\"\n    assert result.confidence > 0.9\n    assert result.latency_ms >= 0.0\n\ndef test_calculate_prediction_empty_raises_error():\n    import pytest\n    with pytest.raises(ValueError):\n        calculate_prediction(\"\")"
   },
   {
     "id": "llm",
@@ -3546,6 +3983,90 @@ export const definitionsData = [
       "1. Start with random noise, or a noisy version of an input image.",
       "2. Iteratively denoise it, conditioned on information such as a text prompt, garment image, or pose.",
       "3. Decode the result into an image."
+    ],
+    "pythonNoiseDemo": {
+      "title": "Hands-on Python: Add Noise to an Image",
+      "subtitle": "Let's implement a small part of the forward diffusion process using NumPy.",
+      "filename": "forward_diffusion_step.py",
+      "code": "import numpy as np\nimport matplotlib.pyplot as plt\n\n# Simulated grayscale image, values between 0 and 1\nimage = np.ones((64, 64), dtype=np.float32) * 0.7\nimage[16:48, 16:48] = 0.2\n\n# Gaussian noise\nrng = np.random.default_rng(42)\nnoise = rng.normal(0, 1, image.shape).astype(np.float32)\n\n# Noise level\nbeta = 0.3\n\n# Forward diffusion at one step\nnoisy_image = (\n    np.sqrt(1 - beta) * image\n    + np.sqrt(beta) * noise\n)\n\nplt.figure(figsize=(8, 4))\nplt.subplot(1, 2, 1)\nplt.imshow(image, cmap=\"gray\", vmin=-1, vmax=1)\nplt.title(\"Original\")\nplt.axis(\"off\")\n\nplt.subplot(1, 2, 2)\nplt.imshow(noisy_image, cmap=\"gray\", vmin=-1, vmax=1)\nplt.title(\"After adding noise\")\nplt.axis(\"off\")\nplt.show()",
+      "note": "This demonstrates a single forward step. It does not train a diffusion model or perform learned denoising."
+    },
+    "keyConceptsTable": [
+      {
+        "concept": "DDPM",
+        "meaning": "Denoising Diffusion Probabilistic Model (the foundation of modern diffusion formulation)",
+        "badge": "Base Architecture"
+      },
+      {
+        "concept": "Noise schedule",
+        "meaning": "Controls noise variance levels (beta_t) added at each timestep over time",
+        "badge": "Forward Process"
+      },
+      {
+        "concept": "Denoising network",
+        "meaning": "Predicts noise (epsilon) or another training target to subtract from the noisy image",
+        "badge": "Neural Estimator"
+      },
+      {
+        "concept": "U-Net",
+        "meaning": "A neural-network architecture commonly used for image denoising with encoder-decoder skip connections",
+        "badge": "Backbone Network"
+      },
+      {
+        "concept": "Latent diffusion",
+        "meaning": "Performs diffusion in a compressed latent space via VAE instead of high-res pixel space for compute efficiency",
+        "badge": "Compute Efficiency"
+      },
+      {
+        "concept": "Sampler",
+        "meaning": "Defines how reverse denoising steps are traversed (e.g., DDIM, Euler, DPM-Solver)",
+        "badge": "Inference Scheduler"
+      },
+      {
+        "concept": "Classifier-free guidance",
+        "meaning": "Adjusts how strongly generation adheres to conditioning such as a text prompt vs unconditional diversity",
+        "badge": "Conditioning Control"
+      }
+    ],
+    "diffusionVsGans": {
+      "title": "Diffusion Models vs. GANs",
+      "summary": "Key structural differences between iterative denoising models and adversarial networks:",
+      "points": [
+        "Diffusion models: generate samples through iterative denoising.",
+        "GANs: train a generator against a discriminator.",
+        "Diffusion models can produce high-quality, diverse images but may require multiple denoising steps.",
+        "GANs can generate samples quickly at inference, but their training can be less stable."
+      ],
+      "comparisonTable": [
+        {
+          "dimension": "Sampling Mechanism",
+          "diffusion": "Iterative denoising over multiple timesteps (e.g., 20–50 steps)",
+          "gans": "Single forward pass through the generator network"
+        },
+        {
+          "dimension": "Training Stability",
+          "diffusion": "Highly stable, optimized using standard MSE loss on predicted noise",
+          "gans": "Minimax saddle-point objective; prone to training instabilities"
+        },
+        {
+          "dimension": "Mode Coverage & Diversity",
+          "diffusion": "High diversity and full mode coverage; avoids mode collapse",
+          "gans": "Prone to mode collapse (generating repetitive variations)"
+        },
+        {
+          "dimension": "Inference Latency",
+          "diffusion": "Higher latency due to sequential reverse sampling steps",
+          "gans": "Extremely fast sub-second inference in real time"
+        }
+      ]
+    },
+    "details": [
+      "Core Definition: A diffusion model is a generative model that learns to create images by learning how to reverse a process that gradually adds noise to training images.",
+      "Training Phase (Forward): 1) Start with real image; 2) Add noise over discrete timesteps (noise schedule); 3) Train neural network to predict or remove that noise.",
+      "Generation Phase (Reverse): 1) Start with random Gaussian noise; 2) Iteratively denoise conditioned on text/prompt/pose; 3) Decode result into clean image.",
+      "Hands-on Forward Step: noisy_image = sqrt(1 - beta) * image + sqrt(beta) * noise simulates one forward step with Gaussian noise.",
+      "Key Concepts: DDPM (probabilistic formulation), Noise Schedule (beta levels), U-Net (skip connections), Latent Diffusion (compressed VAE space), Sampler (DDIM/Euler), and Classifier-Free Guidance (CFG scale).",
+      "Diffusion vs. GANs: Diffusion models generate via iterative denoising with superior mode coverage; GANs train generator vs discriminator in 1-step inference but face mode collapse."
     ]
   },
   {
@@ -5564,8 +6085,154 @@ export const definitionsData = [
     "id": "debugging",
     "title": "Debugging AI & Search Pipelines",
     "badge": "Pipeline Diagnostics & Root-Cause Analysis",
-    "summary": "A rigorous, step-by-step methodology for isolating, reproducing, and solving search anomalies, relevance degradations, and model failures across multi-stage GenAI systems.",
+    "summary": "A rigorous, step-by-step methodology for isolating, reproducing, and solving errors, relevance degradations, and model failures across traditional ML and modern GenAI/RAG systems.",
     "corePhilosophy": "The solution is not simply to change the prompt. We need to identify which part of the pipeline caused the bad result.",
+    "errorTypesTable": [
+      {
+        "type": "Syntax error",
+        "example": "Missing : or unclosed parenthesis",
+        "howToInvestigate": "Read the traceback line numbers and check syntax structure.",
+        "badge": "Code Structure",
+        "color": "text-rose-400"
+      },
+      {
+        "type": "Runtime error",
+        "example": "ZeroDivisionError, KeyError, IndexError",
+        "howToInvestigate": "Check the failing operation, verify variable values and dictionary keys.",
+        "badge": "Execution",
+        "color": "text-amber-400"
+      },
+      {
+        "type": "Logical error",
+        "example": "Model returns incorrect results or wrong formulas",
+        "howToInvestigate": "Validate business logic, unit tests, and print intermediate calculation steps.",
+        "badge": "Logic / Math",
+        "color": "text-cyan-400"
+      },
+      {
+        "type": "Data error",
+        "example": "Missing or unexpected columns, mismatched dtypes",
+        "howToInvestigate": "Inspect data schema, df.info(), null counts, and input validation bounds.",
+        "badge": "Data Hygiene",
+        "color": "text-purple-400"
+      },
+      {
+        "type": "API error",
+        "example": "HTTP 500, 429 Rate Limit, Connection Timeout",
+        "howToInvestigate": "Check server logs, inspect request payloads, headers, and upstream dependencies.",
+        "badge": "Network & Auth",
+        "color": "text-red-400"
+      },
+      {
+        "type": "ML error",
+        "example": "Overfitting, data leakage, poor test accuracy",
+        "howToInvestigate": "Evaluate train/test splits, feature distributions, class imbalance, and metric choices.",
+        "badge": "Model Drift",
+        "color": "text-emerald-400"
+      },
+      {
+        "type": "GenAI / RAG error",
+        "example": "Hallucinations, incorrect answers from retrieved docs",
+        "howToInvestigate": "Inspect chunking, vector similarity, reranker scores, context windows, and prompts.",
+        "badge": "Retrieval & Prompt",
+        "color": "text-sky-400"
+      }
+    ],
+    "mlDebuggingChecklist": {
+      "title": "Debugging an ML Model in Production",
+      "subtitle": "Suppose your classifier suddenly has poor accuracy after deployment. Don't immediately change the algorithm. Follow this checklist:",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Validate Input Data",
+          "desc": "Check missing values, schema changes, unexpected data types, and unobserved categorical values.",
+          "badge": "Data Validation",
+          "accent": "text-cyan-400"
+        },
+        {
+          "step": 2,
+          "title": "Check Preprocessing",
+          "desc": "Confirm the exact same fitted encoder, scaler, and imputer artifacts from training are applied in production.",
+          "badge": "Artifact Alignment",
+          "accent": "text-purple-400"
+        },
+        {
+          "step": 3,
+          "title": "Inspect Predictions",
+          "desc": "Review sample inputs, predicted probability distributions, confusion matrix slices, and misclassified examples.",
+          "badge": "Output Diagnostics",
+          "accent": "text-amber-400"
+        },
+        {
+          "step": 4,
+          "title": "Evaluate Correctly",
+          "desc": "Verify train/test separation, check severe class imbalance, and assess Precision, Recall, and PR-AUC instead of raw accuracy.",
+          "badge": "Evaluation Metrics",
+          "accent": "text-emerald-400"
+        },
+        {
+          "step": 5,
+          "title": "Monitor Drift",
+          "desc": "Compare production feature distributions against training data using PSI, KS tests, and performance over time.",
+          "badge": "Drift Detection",
+          "accent": "text-rose-400"
+        }
+      ]
+    },
+    "tryExceptBlock": {
+      "title": "Use try-except for Expected Failures",
+      "desc": "Consider calling an external AI API. The request may fail because of a timeout or a temporary network issue. Wrap external calls in robust exception blocks to prevent application crashes.",
+      "filename": "resilient_api_call.py",
+      "code": "import requests\n\ntry:\n    response = requests.get(\n        \"https://example.com/api\",\n        timeout=5\n    )\n    response.raise_for_status()\n    print(response.json())\nexcept requests.Timeout:\n    print(\"The request timed out.\")\nexcept requests.RequestException as exc:\n    print(f\"Request failed: {exc}\")"
+    },
+    "ragDebuggingPipeline": {
+      "title": "Debugging a RAG Application (6-Stage Pipeline Trace)",
+      "desc": "Since RAG is critical for AI engineering interviews, remember to trace the complete pipeline end-to-end to isolate hallucinations and retrieval failures:",
+      "stages": [
+        {
+          "stage": 1,
+          "name": "User Query",
+          "question": "Is the question parsed correctly?",
+          "diagnostic": "Verify query cleaning, intent extraction, and boolean filter generation before embedding.",
+          "accent": "text-zinc-200"
+        },
+        {
+          "stage": 2,
+          "name": "Retrieval",
+          "question": "Are the relevant documents retrieved?",
+          "diagnostic": "Check vector similarity thresholds, chunk overlap, and test hybrid sparse (BM25) search.",
+          "accent": "text-cyan-400"
+        },
+        {
+          "stage": 3,
+          "name": "Reranking",
+          "question": "Are the best passages ranked first?",
+          "diagnostic": "Evaluate cross-encoder reranker scores to ensure the most specific answer sits at the top.",
+          "accent": "text-amber-400"
+        },
+        {
+          "stage": 4,
+          "name": "Prompt Construction",
+          "question": "Is the required context included?",
+          "diagnostic": "Verify that context didn't get truncated by token limits or 'lost in the middle'.",
+          "accent": "text-purple-400"
+        },
+        {
+          "stage": 5,
+          "name": "LLM Generation",
+          "question": "Does the answer follow the evidence?",
+          "diagnostic": "Set temperature to 0.0, use strict system constraints, and require citation references.",
+          "accent": "text-emerald-400"
+        },
+        {
+          "stage": 6,
+          "name": "Response Validation",
+          "question": "Is the final output grounded and correctly formatted?",
+          "diagnostic": "Validate response using Pydantic schemas, hallucination guardrails, and regex assertions.",
+          "accent": "text-sky-400"
+        }
+      ]
+    },
     "debuggingSteps": [
       {
         "step": 1,
@@ -5640,7 +6307,15 @@ export const definitionsData = [
         "howItWorks": "Refines system prompts, few-shot examples, and Pydantic schemas for deterministic intent extraction and formatting."
       }
     ],
-    "takeaway": "Prompt engineering is just one layer of an AI application. Production debugging requires tracing failures back to their root causes—whether corrupted metadata, conflated hard constraints, under-retrieval in vector search, or missing reranking."
+    "details": [
+      "Core Principle: The solution is not simply to change the prompt. We need to identify which part of the pipeline caused the bad result.",
+      "Types of Errors: Syntax (traceback), Runtime (ZeroDivision/KeyError), Logical (validate intermediate steps), Data (schema/dtypes), API (HTTP 500/logs), ML (overfitting/metrics), and GenAI/RAG (retrieval/prompt diagnostics).",
+      "ML Model Debugging Checklist: 1) Validate input data (schema/types); 2) Check preprocessing (identical fitted transformers); 3) Inspect predictions (probabilities/misclassifications); 4) Evaluate correctly (imbalance/Precision/Recall); 5) Monitor drift (PSI/distribution shifts).",
+      "Network Resilience: Wrap external AI API calls in try-except blocks handling requests.Timeout and requests.RequestException to prevent unhandled service crashes.",
+      "6-Stage RAG Pipeline Trace: Trace User Query -> Retrieval -> Reranking -> Prompt Construction -> LLM Generation -> Response Validation to pinpoint hallucination origins.",
+      "5-Step Production Framework: Reproduce the problem -> Check catalog/upstream data -> Separate hard boolean constraints from dense similarity -> Tune retrieval & ranking (top-K/rerankers) -> Offline benchmark evaluation before release."
+    ],
+    "takeaway": "Prompt engineering is just one layer of an AI application. Production debugging requires tracing failures back to their root causes—whether corrupted upstream data, conflated hard constraints, under-retrieval in vector search, missing reranking, or downstream hallucination."
   },
   {
     "id": "prompt-engineering",
@@ -6563,6 +7238,32 @@ export const definitionsData = [
     "badge": "Containerization & Reproducibility",
     "summary": "Docker packages your application and dependencies into an image so it can run consistently in different environments.",
     "coreConcept": "Docker packages your application and dependencies into an image so it can run consistently in different environments.",
+    "fourCoreConcepts": [
+      {
+        "concept": "Dockerfile",
+        "definition": "The instructions for building your application image.",
+        "example": "Install Python dependencies and set the startup command.",
+        "badge": "Build Recipe"
+      },
+      {
+        "concept": "Image",
+        "definition": "The built, versioned package used to create containers.",
+        "example": "A frozen snapshot containing OS, Python, libraries, and code.",
+        "badge": "Packaged Template"
+      },
+      {
+        "concept": "Container",
+        "definition": "A running instance of an image, isolated from other processes using operating-system features.",
+        "example": "Your live API running in its own lightweight sandboxed process.",
+        "badge": "Running Process"
+      },
+      {
+        "concept": "Registry",
+        "definition": "A place to store and distribute images, such as Docker Hub or a private container registry.",
+        "example": "Docker Hub, AWS ECR, Azure ACR, or Google Artifact Registry.",
+        "badge": "Image Storage"
+      }
+    ],
     "verbatimCoreTerms": [
       {
         "term": "Docker image",
@@ -6610,43 +7311,63 @@ export const definitionsData = [
       }
     ],
     "dockerfileCode": "FROM python:3.12-slim\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY main.py .\nCOPY parcel_model.joblib .\n\nEXPOSE 8000\n\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+    "quickDirectivesReference": [
+      { "keyword": "FROM", "meaning": "Selects the base image" },
+      { "keyword": "WORKDIR", "meaning": "Sets the working directory" },
+      { "keyword": "COPY", "meaning": "Copies files into the image" },
+      { "keyword": "RUN", "meaning": "Executes commands during image building" },
+      { "keyword": "EXPOSE", "meaning": "Documents the intended container port" },
+      { "keyword": "CMD", "meaning": "Defines the default command when the container starts" }
+    ],
     "dockerfileDirectives": [
       {
         "directive": "FROM python:3.12-slim",
         "purpose": "Base Image",
-        "desc": "Uses a lightweight, debian-slim Python base image to keep container image small and secure."
+        "simpleRole": "Selects the base image",
+        "desc": "Selects a lightweight, debian-slim Python base image to keep container image small and secure."
       },
       {
         "directive": "WORKDIR /app",
         "purpose": "Working Directory",
+        "simpleRole": "Sets the working directory",
         "desc": "Sets the execution context path inside the container for all subsequent commands."
       },
       {
         "directive": "COPY requirements.txt .",
         "purpose": "Layer Caching",
+        "simpleRole": "Copies files into the image",
         "desc": "Copies only requirements first so Docker can cache installed packages across app code modifications."
       },
       {
         "directive": "RUN pip install --no-cache-dir",
         "purpose": "Dependency Installation",
+        "simpleRole": "Executes commands during image building",
         "desc": "Installs dependencies without storing pip caches, keeping image layers lightweight."
       },
       {
         "directive": "COPY main.py . & model.joblib",
         "purpose": "Artifact Copy",
+        "simpleRole": "Copies files into the image",
         "desc": "Copies application code and the serialized ML model file into the image filesystem."
       },
       {
         "directive": "EXPOSE 8000",
         "purpose": "Port Metadata",
+        "simpleRole": "Documents the intended container port",
         "desc": "Declares that the container listens on port 8000 at runtime."
       },
       {
         "directive": "CMD [\"uvicorn\", ...]",
         "purpose": "Entrypoint Execution",
+        "simpleRole": "Defines the default command when the container starts",
         "desc": "Runs Uvicorn bound to 0.0.0.0 to accept external requests from host and reverse proxies."
       }
     ],
+    "dockerignore": {
+      "title": "Create .dockerignore",
+      "code": ".git\n.venv\n__pycache__\n*.pyc\n.env",
+      "purpose": "This prevents unnecessary files and local secrets from being included in the Docker build context. Never copy API keys into the image."
+    },
     "cliCommands": [
       {
         "title": "Build the Docker Image",
@@ -6657,6 +7378,16 @@ export const definitionsData = [
         "title": "Run the Docker Container",
         "cmd": "docker run -p 8000:8000 parcel-api",
         "explanation": "-p 8000:8000 maps host port 8000 to container port 8000, routing incoming localhost requests to the container."
+      },
+      {
+        "title": "Check Running Containers (Troubleshooting)",
+        "cmd": "docker ps",
+        "explanation": "Lists active containers to verify if your FastAPI container is currently running or crashed."
+      },
+      {
+        "title": "View Application Logs (Debugging)",
+        "cmd": "docker logs <container_id>",
+        "explanation": "If your FastAPI endpoint isn't responding, check container logs to see whether the application encountered an error."
       }
     ],
     "packageModelApi": {
@@ -7561,46 +8292,152 @@ export const definitionsData = [
     "id": "data-model-drift",
     "title": "Data Drift & Model Drift — Production ML Monitoring & Reliability",
     "badge": "MLOps & Model Monitoring",
-    "summary": "Data drift occurs when the characteristics or distribution of incoming data change compared with the training set. Model drift occurs when real-world relationships evolve, causing predictive performance and accuracy to degrade over time.",
+    "summary": "Data drift happens when incoming production data changes compared to the training data. Model drift happens when model performance drops over time because real-world patterns change.",
     "coreDefinitions": {
       "dataDrift": {
         "term": "Data Drift (Feature Drift / Covariate Shift)",
-        "math": "P(X) changes while P(Y|X) remains unchanged",
-        "definition": "Data drift occurs when the characteristics or distribution of incoming data change compared with the data a model was trained or validated on.",
-        "explanation": "The input data distribution shifts over time, even if the real-world relationship between inputs and outputs has not altered. Can be detected immediately without waiting for ground truth labels.",
+        "math": "Inputs P(X) change, but real-world rules stay the same",
+        "definition": "Data drift occurs when the distribution of incoming production data changes compared with the data used during training.",
+        "explanation": "The inputs change, but the correct answer for any given input has not changed. You can detect this immediately at inference time without needing true outcome labels.",
         "causes": [
-          "Changes in user demographics or consumer behavior trends",
-          "Hardware or sensor upgrades (e.g. higher camera resolutions, new phone models)",
-          "Data pipeline bugs, missing values, or altered schema transformations",
-          "Seasonality, macro-economic events, or geographical expansion"
+          "Users change: new demographics, age groups, or regions",
+          "Device upgrades: new phone cameras or app versions",
+          "Data pipeline changes: missing columns or modified schemas",
+          "Seasonality: summer vs. winter shopping habits"
         ],
         "detectionMetrics": [
           "Population Stability Index (PSI)",
           "Kolmogorov-Smirnov (KS) Test",
-          "Wasserstein Distance / Earth Mover's Distance",
+          "Chi-Square Test",
           "Jensen-Shannon (JS) Divergence"
         ],
-        "example": "A retail model trained on winter apparel queries receives sudden surges of swimwear and sandal queries in May, or camera images arrive with different lighting conditions."
+        "example": "A loan approval model trained on applicants aged 30-50 suddenly receives applicants aged 18-25, or an e-commerce model trained on winter clothes suddenly gets swimwear searches in summer."
       },
       "modelDrift": {
-        "term": "Model Drift (Concept Drift / Performance Degradation)",
-        "math": "P(Y|X) changes, with or without P(X) shift",
-        "definition": "Model drift occurs when the statistical relationship between input features and target predictions changes over time, causing the trained model's predictive performance and accuracy to degrade in production.",
-        "explanation": "External real-world rules or ground truths change, so identical inputs no longer produce the same correct outputs. Requires ground truth labels or feedback to confirm accuracy decline.",
+        "term": "Model Drift (Concept Drift / Performance Drop)",
+        "math": "Relationship P(Y|X) changes",
+        "definition": "Model drift is used broadly to describe a decline in model performance and accuracy over time.",
+        "explanation": "The real world changes. Even if inputs look normal, the correct output has changed. You can only confirm this after true ground-truth labels or customer feedback arrive.",
         "causes": [
-          "Competitor price changes or sudden regulatory shifts",
-          "Fraud patterns evolving to bypass existing detection logic",
-          "Economic inflation or changes in customer purchasing power",
-          "Shifts in medical or fashion definitions over long time horizons"
+          "Competitors change prices or interest rates",
+          "Criminals invent new fraud tactics",
+          "Economic inflation alters purchasing power",
+          "Language or user behavior habits shift over time"
         ],
         "detectionMetrics": [
-          "Accuracy, Precision, Recall, and F1-Score degradation",
-          "Receiver Operating Characteristic Area Under Curve (ROC-AUC) drop",
-          "Mean Absolute Error (MAE) / Root Mean Squared Error (RMSE) increase",
-          "Customer override rates and human review escalation surges"
+          "Accuracy, Precision, Recall, and F1 degradation",
+          "ROC-AUC score decline",
+          "Mean Absolute Error (MAE) increase",
+          "Customer complaints and manual overrides"
         ],
-        "example": "A fraud detection model trained before an economic shift: transactions that previously looked fraudulent now represent legitimate emergency spending, causing precision to plummet."
+        "example": "In fraud detection, criminals invent new spending tricks that look like normal purchases. The input data looks clean, but the model fails to catch the fraud."
       }
+    },
+    "howToDetect": {
+      "title": "How Do You Detect Drift?",
+      "intro": "A production monitoring system continuously tracks these 5 areas:",
+      "areas": [
+        {
+          "name": "Input Features & Missing Values",
+          "desc": "Track changes in feature numbers (like average age or income) and watch for sudden spikes in null values."
+        },
+        {
+          "name": "Prediction Scores & Confidence",
+          "desc": "Check if model confidence drops or if the model suddenly predicts one class much more often."
+        },
+        {
+          "name": "Ground-Truth Performance",
+          "desc": "Measure actual accuracy, F1-score, and error rates as soon as true outcome labels become available."
+        },
+        {
+          "name": "Segment-Level Performance",
+          "desc": "Break down accuracy by customer type, region, device, or age group to catch localized drift early."
+        },
+        {
+          "name": "Data Quality & System Health",
+          "desc": "Monitor API latency, server timeouts, upstream database changes, and unexpected column type shifts."
+        }
+      ]
+    },
+    "detectionMethodsTable": [
+      {
+        "method": "PSI (Population Stability Index)",
+        "use": "Compare feature distributions across two time periods. Values above 0.2 indicate significant drift."
+      },
+      {
+        "method": "KS Test (Kolmogorov-Smirnov)",
+        "use": "Compare continuous numerical variables (such as age, salary, transaction amounts) to see if shapes differ."
+      },
+      {
+        "method": "Chi-Square Test",
+        "use": "Compare categorical variables (such as country, device type, marital status) for frequency shifts."
+      },
+      {
+        "method": "Jensen–Shannon Divergence",
+        "use": "Measure the statistical difference between two probability distributions (symmetric and bounded 0 to 1)."
+      },
+      {
+        "method": "Performance Monitoring",
+        "use": "Track F1-score, precision, recall, MAE, or log-loss as actual delayed labels arrive."
+      }
+    ],
+    "ksTestCode": "import numpy as np\nfrom scipy.stats import ks_2samp\n\nrng = np.random.default_rng(42)\n\n# 1. Historical training feature (mean = 35, std = 8)\ntrain_data = rng.normal(loc=35, scale=8, size=1000)\n\n# 2. Simulated production feature with a shifted mean (mean = 28, std = 8)\nproduction_data = rng.normal(loc=28, scale=8, size=1000)\n\n# 3. Run two-sample Kolmogorov-Smirnov test\nstatistic, p_value = ks_2samp(train_data, production_data)\n\nprint(\"KS statistic:\", round(statistic, 4))\nprint(\"P-value:\", round(p_value, 6))\n\n# If p-value < 0.05, we reject the null hypothesis (distributions differ!)\nif p_value < 0.05:\n    print(\"Evidence of a distribution shift (Data Drift detected)!\")\nelse:\n    print(\"No statistically significant shift detected.\")",
+    "codeExplanation": "The simulated distributions differ (mean 35 vs 28), so the KS test produces a tiny p-value (< 0.05), successfully detecting data drift.",
+    "actionPlan": {
+      "title": "What Should Happen When Drift is Detected? (5-Step Action Plan)",
+      "steps": [
+        {
+          "step": "1",
+          "name": "Detect",
+          "desc": "Automated monitoring flags a distribution shift or an accuracy metric change."
+        },
+        {
+          "step": "2",
+          "name": "Diagnose",
+          "desc": "Check data pipelines, seasonality, upstream schema changes, and label quality to find the root cause."
+        },
+        {
+          "step": "3",
+          "name": "Evaluate Impact",
+          "desc": "Test the existing model on recent labeled data to measure the actual business damage."
+        },
+        {
+          "step": "4",
+          "name": "Choose a Response",
+          "desc": "Fix data pipeline bugs, adjust decision thresholds, recalibrate probabilities, or retrain the model with fresh data."
+        },
+        {
+          "step": "5",
+          "name": "Validate & Deploy",
+          "desc": "Compare the retrained candidate model against the baseline in shadow mode or an A/B test before full rollout."
+        }
+      ]
+    },
+    "genAiAndRagDrift": {
+      "title": "How Does Drift Apply to GenAI and RAG?",
+      "intro": "Drift affects Large Language Model (LLM) applications too, although the monitoring approach is different:",
+      "points": [
+        {
+          "type": "Retrieval Drift",
+          "desc": "New documents or changed company terminology reduce vector retrieval accuracy, returning less relevant context."
+        },
+        {
+          "type": "Prompt or Workload Drift",
+          "desc": "Users begin asking different types of questions or use different phrasing than what the system was tested on."
+        },
+        {
+          "type": "Model Behavior Drift",
+          "desc": "Cloud model providers silently update weights or system settings, changing output quality, tone, or formatting."
+        },
+        {
+          "type": "Knowledge Freshness Issues",
+          "desc": "Outdated documents in the vector database produce outdated answers or hallucinations."
+        },
+        {
+          "type": "Cost and Latency Drift",
+          "desc": "Longer customer prompts or extra agent tool calls raise token usage, increasing monthly cloud bills and slowdowns."
+        }
+      ]
     },
     "comparisonMatrix": [
       {
@@ -7629,29 +8466,7 @@ export const definitionsData = [
         "modelDrift": "Re-architect features, retrain with recent labels, update target definitions"
       }
     ],
-    "productionMitigationPlaybook": [
-      {
-        "strategy": "Continuous Monitoring & Alerts",
-        "desc": "Deploy automated drift monitoring (e.g., Evidently AI, AWS SageMaker Model Monitor, Great Expectations) to compute drift scores on hourly or daily batches.",
-        "tag": "Telemetry"
-      },
-      {
-        "strategy": "Automated Retraining Pipelines",
-        "desc": "Trigger CI/CD retraining workflows (via Airflow DAGs or Vertex AI Pipelines) when PSI or error rates cross predefined alert thresholds.",
-        "tag": "MLOps"
-      },
-      {
-        "strategy": "Shadow Deployment & Champion-Challenger",
-        "desc": "Evaluate freshly retrained challenger models in shadow mode against production traffic before promoting them to active endpoints.",
-        "tag": "Safe Rollout"
-      },
-      {
-        "strategy": "Fallback Heuristics & Human-in-the-Loop",
-        "desc": "When severe drift is flagged, route low-confidence predictions to manual review queues or conservative rule-based fallbacks.",
-        "tag": "Resilience"
-      }
-    ],
-    "takeaway": "Data drift alerts you that incoming data has changed (leading indicator, no labels required), while model drift proves that your model's real-world predictive accuracy has decayed (lagging indicator, requires ground truth). Robust MLOps monitors both to trigger safe, automated retraining before business metrics suffer."
+    "interviewAnswer": "Data drift is when the input data changes (like new customer age groups), which we can detect immediately using statistical tests like the KS test or PSI without needing true labels. Model drift is when real-world rules change (like new fraud patterns) and the model's accuracy drops, which is a lagging indicator that requires ground-truth labels to confirm. When drift is detected, we follow a 5-step playbook: Detect, Diagnose, Evaluate Impact, Choose Response (retrain or re-calibrate), and Validate in shadow mode before deploying."
   },
   {
     "id": "throughput-latency",
@@ -8341,20 +9156,52 @@ export const definitionsData = [
       }
     ],
     "howClipWorks": {
-      "title": "How CLIP Connects Images with Text (Contrastive Architecture)",
-      "dualEncoders": [
+      "title": "How does CLIP work?",
+      "steps": [
         {
-          "name": "Image Encoder",
-          "type": "Vision Transformer (ViT) or ResNet",
-          "desc": "Processes 2D pixel grids into a dense visual feature embedding vector."
+          "step": "Input image",
+          "details": "A photograph of a dog",
+          "badge": "Input Modality 1",
+          "accent": "text-blue-400",
+          "border": "border-blue-800/50"
         },
         {
-          "name": "Text Encoder",
-          "type": "Decoder-only or Standard Transformer",
-          "desc": "Processes tokenized natural language descriptions into a dense semantic embedding vector."
+          "step": "Image encoder",
+          "details": "Often a Vision Transformer (ViT) or a ResNet. Produces an image embedding.",
+          "badge": "Vision Backbone",
+          "accent": "text-cyan-400",
+          "border": "border-cyan-800/50"
+        },
+        {
+          "step": "Candidate text descriptions",
+          "details": "“A dog”, “A car”, “A bird”",
+          "badge": "Input Modality 2",
+          "accent": "text-purple-400",
+          "border": "border-purple-800/50"
+        },
+        {
+          "step": "Text encoder",
+          "details": "Converts each description into a text embedding.",
+          "badge": "Text Backbone",
+          "accent": "text-pink-400",
+          "border": "border-pink-800/50"
+        },
+        {
+          "step": "Similarity comparison",
+          "details": "Compare the image embedding with each text embedding, commonly using cosine similarity or scaled dot products.",
+          "badge": "Joint Embedding Match",
+          "accent": "text-amber-400",
+          "border": "border-amber-800/50"
         }
       ],
       "trainingMechanism": "During pre-training on 400M internet (image, text) pairs, CLIP computes an N x N similarity matrix. It maximizes cosine similarity along the diagonal (matching image-text pairs) while minimizing similarity for off-diagonal pairs using symmetric cross-entropy loss."
+    },
+    "zeroShotExample": {
+      "title": "Example: zero-shot image classification",
+      "language": "python",
+      "code": "import torch\nfrom PIL import Image\nfrom transformers import CLIPModel, CLIPProcessor\n\nmodel_name = \"openai/clip-vit-base-patch32\"\nmodel = CLIPModel.from_pretrained(model_name)\nprocessor = CLIPProcessor.from_pretrained(model_name)\nmodel.eval()\n\nimage = Image.open(\"animal.jpg\").convert(\"RGB\")\nlabels = [\n    \"a photo of a dog\",\n    \"a photo of a cat\",\n    \"a photo of a horse\",\n    \"a photo of a bird\"\n]\n\ninputs = processor(\n    text=labels,\n    images=image,\n    return_tensors=\"pt\",\n    padding=True\n)\n\nwith torch.no_grad():\n    outputs = model(**inputs)\n\n# Similarity scores between the image and candidate text\nscores = outputs.logits_per_image.softmax(dim=1)[0]\n\nfor label, score in sorted(\n    zip(labels, scores.tolist()),\n    key=lambda item: item[1],\n    reverse=True\n):\n    print(f\"{label}: {score:.4f}\")",
+      "sampleOutputTitle": "Example output for an image of a dog might look like:",
+      "sampleOutput": "a photo of a dog: 0.91\na photo of a horse: 0.05\na photo of a cat: 0.03\na photo of a bird: 0.01"
     },
     "takeaway": "CLIP bridges computer vision and natural language by mapping both modalities into a unified metric vector space. Rather than predicting fixed discrete classes, CLIP learns visual concepts from free-form text, enabling instant zero-shot image classification, natural-language visual search, and seamless integration into modern multimodal AI pipelines."
   },
@@ -9481,107 +10328,119 @@ export const definitionsData = [
   },
   {
     "id": "cot-chain-of-thought",
-    "title": "Chain-of-Thought (CoT), Tree-of-Thought (ToT) & Graph-of-Thoughts (GoT)",
-    "badge": "Advanced Reasoning Paradigms, Heuristic Search & Thought Graphing",
-    "summary": "Comprehensive architectural breakdown of LLM reasoning paradigms: from linear step-by-step reasoning (Chain-of-Thought) to heuristic branching and backtracking (Tree-of-Thoughts), and multi-perspective network synthesis and merging (Graph-of-Thoughts).",
-    "coreDefinition": "Reasoning paradigms structure how large language models generate, explore, evaluate, and combine intermediate problem-solving steps ('thoughts') before arriving at a final response.",
-    "reasoningParadigms": [
+    "title": "COT(chain of thought)/GOT/TOT",
+    "badge": "Prompting Paradigms, Heuristic Tree Search & Graph Reasoning",
+    "summary": "Chain of Thought is an approach that encourages an LLM to handle a problem through intermediate reasoning steps rather than jumping directly to an answer. Tree of Thoughts (ToT) expands search by evaluating multiple candidate branches, and Graph of Thoughts (GoT) models reasoning as an interconnected network that merges, branches, and reuses earlier insights.",
+    "coreDefinition": "Chain of Thought is an approach that encourages an LLM to handle a problem through intermediate reasoning steps rather than jumping directly to an answer.",
+    "zeroVsFewShot": {
+      "title": "Zero-shot CoT vs. Few-shot CoT",
+      "zeroShot": {
+        "title": "Zero-shot CoT",
+        "badge": "Zero-Shot Prompting",
+        "accent": "text-amber-400",
+        "border": "border-amber-800/50",
+        "desc": "Give the model a question and a reasoning instruction, without providing worked examples.",
+        "exampleInstruction": "Work through the problem carefully and provide the answer with a brief explanation.",
+        "trigger": "Trigger phrase: 'Let's think step by step.'"
+      },
+      "fewShot": {
+        "title": "Few-shot CoT",
+        "badge": "Demonstration-Based",
+        "accent": "text-cyan-400",
+        "border": "border-cyan-800/50",
+        "desc": "Provide examples that demonstrate the desired problem-solving format before asking the actual question.",
+        "benefit": "This can help the model follow a consistent approach for a particular task.",
+        "trigger": "Includes 2–3 worked examples showing input, intermediate reasoning steps, and final answer."
+      }
+    },
+    "threeStructures": [
       {
-        "name": "Chain-of-Thought (CoT)",
+        "number": "1",
+        "name": "1. Chain of Thought (CoT) — A chain",
         "acronym": "CoT",
-        "badge": "Linear Sequential Reasoning",
+        "badge": "Linear Chain",
         "accent": "text-cyan-400",
         "border": "border-cyan-800/60",
-        "topology": "Linear Chain (A → B → C → Answer)",
-        "mechanism": "Generates a sequential progression of intermediate reasoning tokens before outputting the final answer. Allocates compute directly within the autoregressive token generation window.",
-        "search": "Greedy Forward: Single linear stream with no exploration or branching.",
-        "backtracking": "None: If an early intermediate step contains a logical or arithmetic flaw, all subsequent steps inherit and amplify the hallucination.",
-        "idealUseCases": "Multi-step math word problems (GSM8K), procedural explanations, sequential logic problems, rule-based reasoning."
+        "concept": "Work through a sequence of steps, where each step builds on the previous one.",
+        "think": "Step 1 → Step 2 → Step 3",
+        "example": "Solving multi-step math or sequential logic problems where each step depends directly on the one before it."
       },
       {
-        "name": "Tree-of-Thoughts (ToT)",
+        "number": "2",
+        "name": "2. Tree of Thoughts (ToT) — A tree",
         "acronym": "ToT",
-        "badge": "Branching & Heuristic Tree Search",
+        "badge": "Branching & Evaluation",
         "accent": "text-purple-400",
         "border": "border-purple-800/60",
-        "topology": "Tree Hierarchy (Root → Branches → Evaluated Nodes → Leaves)",
-        "mechanism": "Generates multiple candidate thoughts at each reasoning juncture. An evaluation prompt acts as a heuristic state-value function, scoring intermediate nodes (e.g. Sure / Likely / Impossible).",
-        "search": "BFS / DFS with Lookahead: Systematically explores promising reasoning branches while pruning low-scoring subtrees.",
-        "backtracking": "Full Backtracking: When a branch hits a dead end or score falls below threshold, the search algorithm retreats to the parent node and explores alternative siblings.",
-        "idealUseCases": "Combinatorial exploration (Game of 24), crosswords, strategic game moves (chess/planning), complex software architecture decomposition."
+        "concept": "Explore multiple candidate approaches, evaluate them, and pursue promising branches.",
+        "think": "One problem → Several alternatives → Best candidate",
+        "example": "Imagine an AI agent planning a route through three cities. It could explore multiple candidate routes, evaluate their estimated costs, and select a promising route."
       },
       {
-        "name": "Graph-of-Thoughts (GoT)",
+        "number": "3",
+        "name": "3. Graph of Thoughts (GoT) — A graph",
         "acronym": "GoT",
-        "badge": "Arbitrary Network & Thought Merging",
+        "badge": "Interconnected Network",
         "accent": "text-emerald-400",
         "border": "border-emerald-800/60",
-        "topology": "Directed Graph / DAG (Splits, Merges, Loops & Consensus)",
-        "mechanism": "Treats thoughts as vertices in an arbitrary graph. Introduces graph transformation primitives: generating thoughts, evaluating thoughts, merging thoughts from distinct branches, and cyclical self-refinement.",
-        "search": "Graph Transformations: Aggregates multiple independent thought streams into a single synthesized consensus node; refines nodes via feedback loops.",
-        "backtracking": "Complete Flexibility: Can branch, backtrack, combine divergent ideas from different branches, and iteratively polish thoughts through graph-level feedback.",
-        "idealUseCases": "Multi-document synthesis, cross-perspective deliberation/consensus, conflicting source summarization, complex iterative code refactoring."
+        "concept": "Represent reasoning as interconnected thoughts that can combine, branch, or reuse earlier results.",
+        "think": "Branching + merging + revisiting",
+        "example": "When designing an enterprise RAG chatbot, you might independently evaluate retrieval quality, security, and latency, then combine those findings into a final architecture."
+      }
+    ],
+    "howToChoose": [
+      {
+        "approach": "Choose CoT when",
+        "rule": "The task has a straightforward sequence of steps and doesn't need extensive exploration.",
+        "badge": "Linear Sequence",
+        "accent": "text-cyan-400",
+        "border": "border-cyan-800/60"
+      },
+      {
+        "approach": "Choose ToT when",
+        "rule": "You need to explore alternatives and evaluate candidates before selecting a solution.",
+        "badge": "Heuristic Exploration",
+        "accent": "text-purple-400",
+        "border": "border-purple-800/60"
+      },
+      {
+        "approach": "Choose GoT when",
+        "rule": "Multiple analyses depend on one another or their results need to be combined and refined.",
+        "badge": "Network Merging",
+        "accent": "text-emerald-400",
+        "border": "border-emerald-800/60"
       }
     ],
     "paradigmsTable": [
       {
-        "dimension": "Graph Topology",
-        "cot": "Linear sequence (Chain)",
-        "tot": "Tree hierarchy (Branches)",
-        "got": "Directed Acyclic / Cyclic Graph (DAG)"
+        "dimension": "Reasoning Topology",
+        "cot": "Linear sequence: Step 1 → Step 2 → Step 3",
+        "tot": "Tree: Root → Multiple candidate branches → Best candidate",
+        "got": "Graph: Interconnected thoughts (Branching + Merging + Revisiting)"
       },
       {
-        "dimension": "Search Algorithm",
-        "cot": "Greedy forward generation",
-        "tot": "BFS or DFS with lookahead & pruning",
-        "got": "Graph transformations (Generate, Score, Merge, Loop)"
+        "dimension": "Search Strategy",
+        "cot": "Greedy forward step-by-step",
+        "tot": "BFS / DFS with heuristic candidate scoring",
+        "got": "Graph transformations (Generate, Score, Merge, Feedback loop)"
       },
       {
-        "dimension": "Backtracking Capability",
-        "cot": "❌ None (Errors propagate to end)",
-        "tot": "✅ Full (Returns to parent node on dead end)",
-        "got": "✅ Complete (Can backtrack, branch, & recombine)"
+        "dimension": "Backtracking Ability",
+        "cot": "❌ None (Errors propagate forward)",
+        "tot": "✅ Full (Retreats to parent node on dead ends)",
+        "got": "✅ Complete (Branches, re-evaluates, and merges)"
       },
       {
         "dimension": "Thought Merging / Synthesis",
         "cot": "❌ None (Single isolated thread)",
-        "tot": "❌ None (Branches remain strictly isolated)",
-        "got": "✅ Yes (Combines multiple thoughts into consensus)"
+        "tot": "❌ None (Branches remain separate paths)",
+        "got": "✅ Yes (Combines multiple independent analyses into one solution)"
       },
       {
-        "dimension": "Token & Latency Cost",
-        "cot": "Lowest (1× baseline)",
-        "tot": "High (5× - 20× due to tree expansion)",
-        "got": "Tunable (3× - 10×; reuses & merges nodes)"
-      },
-      {
-        "dimension": "Classic Benchmark Tasks",
-        "cot": "GSM8K, standard math & logic",
-        "tot": "Game of 24, Mini-Crosswords, Creative Writing",
-        "got": "Document Merging, Graph Sorting, Consensus Voting"
-      }
-    ],
-    "cotVariations": [
-      {
-        "type": "Zero-Shot CoT",
-        "trigger": "Trigger phrase: 'Let's think step by step.'",
-        "desc": "Encourages the model to allocate output tokens to an explicit reasoning scratchpad before committing to a final conclusion without needing prior examples.",
-        "accent": "text-amber-400",
-        "badge": "Zero-Shot Prompting"
-      },
-      {
-        "type": "Few-Shot CoT",
-        "trigger": "Prompt includes 2–4 worked demonstrations showing step-by-step reasoning chains.",
-        "desc": "Steers formatting, depth of reasoning, and logical decomposition structure through In-Context Learning demonstrations.",
-        "accent": "text-cyan-400",
-        "badge": "Demonstration-Based"
-      },
-      {
-        "type": "Native Test-Time Reasoning (RL-Trained)",
-        "trigger": "Frontier reasoners (e.g. OpenAI o1/o3, DeepSeek-R1)",
-        "desc": "Uses test-time compute where the model generates hundreds of internal hidden reasoning tokens, backtracking and correcting mistakes autonomously.",
-        "accent": "text-purple-400",
-        "badge": "Test-Time Compute"
+        "dimension": "Real-World Example",
+        "cot": "Sequential math problems & arithmetic audit trails",
+        "tot": "Route planning through 3 cities; chess move trees",
+        "got": "Enterprise RAG: Independently evaluating retrieval, security & latency"
       }
     ],
     "reasoningTraceExample": {
@@ -9594,23 +10453,23 @@ export const definitionsData = [
       "points": [
         {
           "hazard": "Pure Generated Arithmetic",
-          "explanation": "LLMs predict the next token based on statistical patterns; multiplying large numbers often hallucinations subtle digit errors.",
+          "explanation": "LLMs predict tokens statistically; calculating large numbers without tools can produce subtle math hallucinations.",
           "solution": "Delegate calculations to a deterministic Python interpreter or Calculator API."
         },
         {
           "hazard": "Factual Drift & Hallucination",
-          "explanation": "Multi-step reasoning over internal parametric memory can propagate erroneous initial assumptions across intermediate steps.",
+          "explanation": "Multi-step reasoning purely in model memory can carry an early mistake forward across subsequent steps.",
           "solution": "Ground each step against SQL databases, Vector indices, or real-time APIs (ReAct / Tool-Use)."
         },
         {
           "hazard": "Strict Business Logic",
-          "explanation": "Tax rates, discount rules, and SLA dates must adhere to deterministic enterprise rules rather than probabilistic next-token generation.",
-          "solution": "Validate step transitions with strongly-typed Pydantic schemas and deterministic services."
+          "explanation": "Tax rates, discount rules, and bank policies require deterministic code rather than next-token guesses.",
+          "solution": "Validate step transitions with strongly-typed Pydantic schemas and backend APIs."
         }
       ]
     },
-    "code": "# ==============================================================\n# REASONING PARADIGMS IN PYTHON: CoT vs. ToT vs. GoT\n# ==============================================================\n\nfrom typing import List, Dict\n\n# --- 1. CHAIN-OF-THOUGHT (CoT): Linear Sequential Stream ---\ndef chain_of_thought_solve(problem: str) -> str:\n    \"\"\"CoT: Direct greedy progression with step-by-step scratchpad.\"\"\"\n    prompt = f\"Problem: {problem}\\nLet's think step by step:\"\n    # response = llm.generate(prompt)\n    return \"Step 1: ... -> Step 2: ... -> Step 3: ... -> Final Answer\"\n\n\n# --- 2. TREE-OF-THOUGHTS (ToT): Branching, Scoring & Backtracking ---\ndef tree_of_thoughts_solve(problem: str, branch_factor: int = 3, depth_limit: int = 3) -> str:\n    \"\"\"ToT: Explores candidate thoughts via BFS/DFS with heuristic scoring.\"\"\"\n    current_thoughts = [problem]\n    \n    for depth in range(depth_limit):\n        candidates = []\n        for thought in current_thoughts:\n            # Generate K alternative next thoughts\n            new_thoughts = [f\"{thought} -> Branch {i+1}\" for i in range(branch_factor)]\n            candidates.extend(new_thoughts)\n        \n        # Evaluate/Score intermediate nodes using an LLM evaluator prompt\n        scored_candidates = []\n        for c in candidates:\n            score = 0.9 if \"valid_step\" in c else 0.4  # Mock heuristic score\n            scored_candidates.append((c, score))\n        \n        # Pruning & Backtracking: Keep only top-scoring branches (Beam/BFS)\n        scored_candidates.sort(key=lambda x: x[1], reverse=True)\n        current_thoughts = [t for t, s in scored_candidates[:2]]  # Top 2 branches\n        \n    return current_thoughts[0]  # Best leaf thought\n\n\n# --- 3. GRAPH-OF-THOUGHTS (GoT): Graph Operations & Merging ---\ndef graph_of_thoughts_solve(problem: str) -> str:\n    \"\"\"GoT: Allows thoughts to branch, merge, and refine through cycles.\"\"\"\n    # Step A: Generate diverse independent perspectives\n    perspective_a = \"Perspective A: Focus on cost efficiency and speed\"\n    perspective_b = \"Perspective B: Focus on QA accuracy and failure rates\"\n    \n    # Step B: Graph Merge Operation (Combine multiple thoughts into a consensus)\n    merge_prompt = f\"Combine insights from:\\n1. {perspective_a}\\n2. {perspective_b}\\nSynthesize unified plan:\"\n    # synthesized_thought = llm.generate(merge_prompt)\n    synthesized_thought = \"Hybrid Strategy: Prioritize high-speed inspection with fallback QA re-check\"\n    \n    # Step C: Self-Refinement Feedback Loop\n    refined_thought = f\"{synthesized_thought} -> Polished & verified via schema check\"\n    return refined_thought",
-    "takeaway": "Chain-of-Thought (CoT) provides fast, low-cost linear reasoning suitable for math and sequential logic. Tree-of-Thoughts (ToT) introduces branching, heuristic evaluation, and backtracking for combinatorial puzzles and search spaces. Graph-of-Thoughts (GoT) extends reasoning to arbitrary networks, enabling the combination, merging, and cyclic refinement of multiple thought streams into a unified consensus."
+    "code": "# ==============================================================\n# REASONING PARADIGMS IN PYTHON: CoT vs. ToT vs. GoT\n# ==============================================================\n\nfrom typing import List, Dict\n\n# --- 1. CHAIN-OF-THOUGHT (CoT): Linear Sequential Stream ---\ndef chain_of_thought_solve(problem: str) -> str:\n    \"\"\"\n    CoT: Step 1 -> Step 2 -> Step 3\n    Sequential reasoning scratchpad where each step builds on the previous one.\n    \"\"\"\n    prompt = f\"Problem: {problem}\\nLet's work through this step by step:\"\n    # response = llm.generate(prompt)\n    return \"Step 1: Calculate 54 flagged parcels -> Step 2: 216 labor mins -> Step 3: 3.6 staff -> Final: 4 staff\"\n\n\n# --- 2. TREE-OF-THOUGHTS (ToT): Multiple Candidates & Best Branch ---\ndef tree_of_thoughts_solve(problem: str, candidate_routes: List[str]) -> str:\n    \"\"\"\n    ToT: One problem -> Several alternatives -> Best candidate\n    Example: AI agent planning a route through three cities.\n    \"\"\"\n    scored_candidates = []\n    for route in candidate_routes:\n        # Evaluate cost and travel time for each candidate branch\n        estimated_cost = evaluate_route_cost(route)  # Heuristic scoring\n        scored_candidates.append((route, estimated_cost))\n    \n    # Select the most promising branch\n    best_route = min(scored_candidates, key=lambda x: x[1])[0]\n    return f\"Best Route Selected: {best_route}\"\n\n\n# --- 3. GRAPH-OF-THOUGHTS (GoT): Branching + Merging + Revisiting ---\ndef graph_of_thoughts_solve(problem: str) -> str:\n    \"\"\"\n    GoT: Interconnected thoughts that can combine, branch, or reuse earlier results.\n    Example: Designing an enterprise RAG chatbot by combining independent analyses.\n    \"\"\"\n    # Independent parallel analyses\n    retrieval_finding = \"Hybrid BM25 + Vector yields 94% recall\"\n    security_finding = \"Single-stage JWT metadata filter prevents cross-tenant leaks\"\n    latency_finding = \"Prompt caching reduces TTFT to 350ms\"\n    \n    # Graph Merge: Combine independent findings into final unified architecture\n    final_architecture = f\"Unified Design: Use {retrieval_finding}, protect via {security_finding}, and optimize with {latency_finding}.\"\n    return final_architecture",
+    "takeaway": "Choose Chain of Thought (CoT) for straightforward, step-by-step sequential tasks. Choose Tree of Thoughts (ToT) when you need to explore and evaluate multiple candidate options before picking the best solution. Choose Graph of Thoughts (GoT) when multiple independent analyses need to be combined, branched, or refined into a unified plan."
   },
   {
     "id": "bagging",
@@ -10449,68 +11308,6 @@ export const definitionsData = [
       "code": "from sentence_transformers import CrossEncoder\n\n# Stage 1: Initial Ranking / Vector Search (Retrieves top 50 candidates)\n# query_vec = embed_model.encode(query)\n# candidate_docs = vector_db.similarity_search(query_vec, top_k=50)\n\n# Stage 2: Reranking with deep Cross-Encoder\nreranker = CrossEncoder(\"BAAI/bge-reranker-large\")\n\n# Construct (query, candidate) sentence pairs for joint attention\npairs = [[query, doc.page_content] for doc in candidate_docs]\nscores = reranker.predict(pairs)\n\n# Order candidate results by second-stage relevance score\nranked_results = sorted(zip(candidate_docs, scores), key=lambda x: x[1], reverse=True)\n\n# Select top 5 pristine passages for LLM context injection\ntop_passages = [doc for doc, score in ranked_results[:5]]"
     },
     "takeaway": "In modern production search and RAG pipelines, single-stage vector search alone often suffers from semantic drift and false positives. Combining first-stage Ranking (high-recall Bi-encoders filtering millions of items) with second-stage Reranking (high-precision Cross-encoders re-ordering the top 50 candidates) yields the optimal balance of sub-second latency and pinpoint factual accuracy."
-  },
-  {
-    "id": "dense-sparse",
-    "title": "Dense vs. Sparse Representations (BM25, Lexical Search & Semantic Embeddings)",
-    "badge": "Vector Representations, BM25 & Hybrid Search",
-    "summary": "Sparse representation: Most values in the vector are zero. Dense representation: Most values are nonzero, and the values can encode learned patterns or semantic relationships. Sparse representations include bag-of-words and TF-IDF vectors. BM25 is a popular sparse, lexical retrieval method, although it uses its own term-weighting and scoring formula rather than requiring a dense fixed-length vector. Sparse search is particularly useful for exact terms, product IDs, error codes, and rare keywords. A dense embedding model converts text into a fixed-length vector whose dimensions are learned by the model.",
-    "coreDefinition": "Sparse representation: Most values in the vector are zero. Dense representation: Most values are nonzero, and the values can encode learned patterns or semantic relationships.",
-    "representations": [
-      {
-        "type": "Sparse Representation",
-        "definition": "Sparse representation: Most values in the vector are zero.",
-        "details": "Sparse representations include bag-of-words and TF-IDF vectors. BM25 is a popular sparse, lexical retrieval method, although it uses its own term-weighting and scoring formula rather than requiring a dense fixed-length vector.",
-        "useCases": "Sparse search is particularly useful for exact terms, product IDs, error codes, and rare keywords.",
-        "vectorShape": "High-dimensional (vocab size V ~ 50,000+), mostly 0.0s with non-zero weights for exact matched tokens.",
-        "accent": "text-amber-400",
-        "border": "border-amber-800/50",
-        "badge": "Lexical & Exact Match"
-      },
-      {
-        "type": "Dense Representation",
-        "definition": "Dense representation: Most values are nonzero, and the values can encode learned patterns or semantic relationships.",
-        "details": "A dense embedding model converts text into a fixed-length vector whose dimensions are learned by the model.",
-        "useCases": "Dense search excels at conceptual matching, multilingual retrieval, synonyms, paraphrasing, and semantic intent.",
-        "vectorShape": "Fixed low-dimensional (e.g., 768, 1536, or 3072 floats), dense non-zero continuous coordinates.",
-        "accent": "text-cyan-400",
-        "border": "border-cyan-800/50",
-        "badge": "Semantic & Continuous"
-      }
-    ],
-    "comparisonTable": [
-      {
-        "attribute": "Vector Sparsity",
-        "sparse": "Most values are zero (>99% zeros)",
-        "dense": "Virtually all values are non-zero floats"
-      },
-      {
-        "attribute": "Dimensionality",
-        "sparse": "Huge: 30,000 – 100,000+ (vocabulary size)",
-        "dense": "Compact & fixed: 256 – 3,072 dimensions"
-      },
-      {
-        "attribute": "Core Strengths",
-        "sparse": "Exact terms, SKU codes, product IDs, rare keywords",
-        "dense": "Synonyms, conceptual nuances, paraphrased queries"
-      },
-      {
-        "attribute": "Popular Methods",
-        "sparse": "BM25, TF-IDF, SPLADE",
-        "dense": "OpenAI text-embedding-3, BGE, E5, Cohere Embed"
-      },
-      {
-        "attribute": "Index Structure",
-        "sparse": "Inverted Index (Lucene / Elasticsearch)",
-        "dense": "Approximate Nearest Neighbors (HNSW, IVF-PQ)"
-      }
-    ],
-    "codeExample": {
-      "title": "Production Hybrid Search (BM25 Sparse + Dense Vector via RRF)",
-      "language": "python",
-      "code": "def reciprocal_rank_fusion(dense_ranks, sparse_ranks, k=60):\n    \"\"\"\n    Combines dense semantic ranking with sparse BM25 lexical ranking.\n    RRF Score = 1 / (k + rank_dense) + 1 / (k + rank_sparse)\n    \"\"\"\n    scores = {}\n    for rank, doc_id in enumerate(dense_ranks):\n        scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (k + rank)\n    for rank, doc_id in enumerate(sparse_ranks):\n        scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (k + rank)\n    \n    # Sort merged candidate pool by combined fusion score\n    return sorted(scores.items(), key=lambda x: x[1], reverse=True)\n\n# Sparse search captures exact SKU: \"CR-9042-ERR\"\n# Dense search captures semantic query: \"how to troubleshoot payment failure\""
-    },
-    "takeaway": "Neither sparse nor dense retrieval alone is sufficient for production RAG. Sparse search (BM25) guarantees precision on exact serial numbers, acronyms, and error codes where embeddings fail; dense search captures contextual semantics and synonyms where exact keywords miss. Combining both in Hybrid Search via Reciprocal Rank Fusion (RRF) yields the industry standard for enterprise search accuracy."
   },
   {
     "id": "which-is-better",
@@ -12051,55 +12848,95 @@ export const definitionsData = [
     "summary": "A cross-encoder is a model that takes a query and a candidate document together and predicts how relevant that document is to the query. It's commonly used to rerank search results in RAG.",
     "coreDefinition": "A cross-encoder is a model that takes a query and a candidate document together and predicts how relevant that document is to the query.",
     "ragApplication": "It's commonly used to rerank search results in RAG.",
+    "interviewDistinction": {
+      "title": "Cross-Encoder vs. Bi-Encoder",
+      "subtitle": "This is the most important interview distinction.",
+      "biEncoder": {
+        "title": "Bi-Encoder",
+        "subtitle": "Fast retrieval",
+        "badge": "Initial Retrieval",
+        "accent": "text-blue-400",
+        "border": "border-blue-800/60",
+        "points": [
+          "Encodes query and document separately.",
+          "Compares embeddings, often with cosine similarity.",
+          "Document embeddings can be precomputed and stored.",
+          "Suitable for searching millions of documents."
+        ]
+      },
+      "crossEncoder": {
+        "title": "Cross-Encoder",
+        "subtitle": "Accurate reranking",
+        "badge": "Reranking",
+        "accent": "text-amber-400",
+        "border": "border-amber-800/60",
+        "points": [
+          "Processes query and document together.",
+          "Models their token-level interactions.",
+          "Usually requires a separate model inference for each candidate pair.",
+          "Best for reranking a smaller candidate set."
+        ]
+      },
+      "remember": "A Cross-Encoder doesn't usually replace your vector database. It improves the ranking of documents retrieved by it."
+    },
     "comparisonTable": [
       {
-        "feature": "Architecture",
-        "biEncoder": "Separate encoders: E(query) and E(doc)",
-        "crossEncoder": "Single encoder: E(query + doc jointly)"
+        "feature": "Inputs",
+        "biEncoder": "Query and document separately",
+        "crossEncoder": "Query + document together"
       },
       {
-        "feature": "Attention Mechanism",
-        "biEncoder": "Self-attention within query only, and doc only (no interaction during encoding)",
-        "crossEncoder": "Full cross-attention across all tokens of query and candidate document simultaneously"
+        "feature": "Speed at large scale",
+        "biEncoder": "Faster",
+        "crossEncoder": "Slower"
       },
       {
-        "feature": "Speed & Scalability",
-        "biEncoder": "Ultra-fast (<10ms). Pre-computes doc vectors; searches millions via vector index (ANN)",
-        "crossEncoder": "Computationally expensive. Must process query-doc pairs through the full transformer at runtime"
+        "feature": "Pairwise relevance modeling",
+        "biEncoder": "Indirect via embeddings",
+        "crossEncoder": "Direct"
       },
       {
-        "feature": "Retrieval Role in RAG",
-        "biEncoder": "Stage 1 Candidate Retrieval (pulls top 50–100 candidates from millions)",
-        "crossEncoder": "Stage 2 Reranking (scores top 50–100 candidates to select the top 3–5 most relevant)"
+        "feature": "Precompute document vectors",
+        "biEncoder": "Yes",
+        "crossEncoder": "Not in the same way"
       },
       {
-        "feature": "Accuracy / Precision",
-        "biEncoder": "Moderate precision (coarse semantic alignment)",
-        "crossEncoder": "State-of-the-art precision (captures subtle nuances, negations, and term dependencies)"
+        "feature": "Typical use",
+        "biEncoder": "Initial retrieval",
+        "crossEncoder": "Reranking"
       }
     ],
-    "twoStagePipeline": [
-      {
-        "stage": "Stage 1: Fast Candidate Retrieval",
-        "tool": "Bi-Encoder / Hybrid Search (BM25 + Vector)",
-        "latency": "~5–15 ms",
-        "throughput": "Millions of documents filtered to Top 50–100 chunks",
-        "accent": "text-blue-400"
-      },
-      {
-        "stage": "Stage 2: Cross-Encoder Reranking",
-        "tool": "Cross-Encoder (e.g. BAAI/bge-reranker-large, ms-marco-MiniLM)",
-        "latency": "~20–50 ms",
-        "throughput": "Top 50–100 pairs scored jointly to pick Top 3–5 chunks for LLM context",
-        "accent": "text-amber-400"
-      }
+    "typicalPipeline": [
+      "Combine the query and candidate document.",
+      "Tokenize the combined text.",
+      "Pass the tokens through the model.",
+      "Produce a relevance score, often a logit or scalar.",
+      "Sort candidate documents by score.",
+      "Send the highest-ranked documents to the LLM."
     ],
-    "codeExample": {
-      "title": "RAG Reranking with Sentence-Transformers CrossEncoder in Python",
-      "language": "python",
-      "code": "from sentence_transformers import CrossEncoder\n\n# 1. Initialize a pretrained Cross-Encoder model\nreranker = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')\n\nquery = \"What is the policy for shipping damaged parcels?\"\n\n# Candidate documents retrieved from Stage 1 (Vector DB search)\ncandidates = [\n    \"General corporate travel expense guidelines and lodging reimbursement limits.\",\n    \"Parcels with exterior crush damage must be quarantined and photographed within 2 hours.\",\n    \"Annual paid leave accrual schedules and holiday calendars for regional logistics staff.\",\n    \"Customer refund procedures for lost packages and delayed transit tracking notifications.\"\n]\n\n# 2. Pair query with each candidate: [ [query, doc1], [query, doc2], ... ]\npairs = [[query, doc] for doc in candidates]\n\n# 3. Predict relevance scores via full cross-attention\nscores = reranker.predict(pairs)\n\n# 4. Sort and select top reranked chunks\nranked_results = sorted(zip(candidates, scores), key=lambda x: x[1], reverse=True)\n\nprint(f\"Query: {query}\n\")\nprint(\"Reranked Results (Highest to Lowest Relevance):\")\nfor rank, (doc, score) in enumerate(ranked_results, 1):\n    print(f\"  [{rank}] Score: {score:.4f} | {doc[:75]}...\")"
+    "ragFit": [
+      { "step": "1. User query", "detail": "What does the user want to know?" },
+      { "step": "2. Candidate retrieval", "detail": "BM25, vector search, or hybrid search" },
+      { "step": "3. Cross-Encoder reranking", "detail": "Score query-document pairs" },
+      { "step": "4. Top-K selection", "detail": "Keep the best-ranked passages" },
+      { "step": "5. LLM generation", "detail": "Answer using the selected context" }
+    ],
+    "whenToUse": {
+      "title": "When should you use one?",
+      "reasons": [
+        "Vector search returns relevant-looking but incorrect documents.",
+        "Your RAG system retrieves too much irrelevant context.",
+        "Search precision matters more than a small increase in latency.",
+        "You need to rerank results from BM25 and vector search together."
+      ],
+      "warning": "Avoid blindly reranking hundreds or thousands of long documents per query: inference cost and latency can increase substantially."
     },
-    "takeaway": "While bi-encoders enable scalable vector search over millions of documents via independent embeddings, cross-encoders achieve peak semantic accuracy by processing query and candidate tokens together through all Transformer attention layers. In production RAG, using cross-encoders as a Stage-2 reranker yields optimal retrieval quality without sacrificing overall system latency."
+    "codeExample": {
+      "title": "Sentence-Transformers CrossEncoder in Python",
+      "language": "python",
+      "code": "from sentence_transformers import CrossEncoder\n\n# Load a model trained for query-document relevance scoring\nmodel = CrossEncoder(\"cross-encoder/ms-marco-MiniLM-L-6-v2\")\n\nquery = \"How can I reset my banking password?\"\n\ndocuments = [\n    \"To reset your banking password, open Settings and select Reset Password.\",\n    \"You can change your debit card PIN through the ATM.\",\n    \"To open a new bank account, submit your identity documents.\"\n]\n\n# Score every query-document pair\npairs = [(query, document) for document in documents]\nscores = model.predict(pairs)\n\n# Sort documents by descending relevance score\nranked = sorted(\n    zip(documents, scores),\n    key=lambda item: float(item[1]),\n    reverse=True\n)\n\nfor rank, (document, score) in enumerate(ranked, start=1):\n    print(f\"Rank {rank} | Score: {float(score):.4f}\")\n    print(document)\n    print()"
+    },
+    "takeaway": "Remember: A Cross-Encoder doesn't usually replace your vector database. It improves the ranking of documents retrieved by it. While Bi-Encoders enable fast searching across millions of precomputed document vectors, Cross-Encoders process the query and document together to capture direct token interactions and deliver high-precision reranking."
   },
   {
     "id": "k-fold",
@@ -13970,28 +14807,120 @@ export const definitionsData = [
         "accent": "text-purple-400"
       }
     ],
+    "tasksSupportedHeading": "It supports several computer-vision tasks:",
     "tasksSupported": [
       {
-        "task": "Object Detection",
-        "output": "Bounding box coordinates and class probability (YOLO, SSD, Faster R-CNN)",
-        "primaryMetric": "mAP@[0.5:0.95]"
+        "task": "Object detection",
+        "desc": "Identify objects and predict bounding boxes around them, along with class labels.",
+        "badge": "Bounding Boxes",
+        "accent": "text-cyan-400"
       },
       {
-        "task": "Instance Segmentation",
-        "output": "Pixel-accurate polygon mask for every individual object (Mask R-CNN, YOLO-Seg)",
-        "primaryMetric": "mask mAP"
+        "task": "Instance segmentation",
+        "desc": "Identify individual objects and determine which pixels belong to each instance.",
+        "badge": "Pixel Masks",
+        "accent": "text-emerald-400"
       },
       {
-        "task": "Keypoint Detection",
-        "output": "Coordinates and visibility flag for 17 body keypoints",
-        "primaryMetric": "Object Keypoint Similarity (OKS)"
+        "task": "Segmentation research",
+        "desc": "COCO instance masks can support segmentation-related research, although semantic segmentation requires appropriate labels or conversions.",
+        "badge": "Mask Research",
+        "accent": "text-purple-400"
       },
       {
-        "task": "Image Captioning",
-        "output": "5 human-written descriptive sentences per image for vision-language evaluation",
-        "primaryMetric": "BLEU, CIDEr, ROUGE"
+        "task": "Image captioning",
+        "desc": "Generate natural-language descriptions of image contents using the dataset's captions.",
+        "badge": "Vision-Language",
+        "accent": "text-amber-400"
       }
     ],
+    "pycocoCode": {
+      "title": "Inspecting Annotations with pycocotools",
+      "filename": "inspect_coco.py",
+      "code": "from pycocotools.coco import COCO\n\n# Load object detection annotations\ncoco = COCO(\"instances_train2017.json\")\n\n# Get all category names\ncategories = coco.loadCats(coco.getCatIds())\ncategory_names = [category[\"name\"] for category in categories]\n\nprint(\"Number of categories:\", len(category_names))\nprint(category_names[:10])\n\n# Find images containing people\nperson_ids = coco.getCatIds(catNms=[\"person\"])\nimage_ids = coco.getImgIds(catIds=person_ids)\n\nprint(\"Images containing people:\", len(image_ids))\n\n# Inspect one image and its annotations\nif image_ids:\n    image_info = coco.loadImgs(image_ids[0])[0]\n    annotation_ids = coco.getAnnIds(imgIds=[image_info[\"id\"]])\n    annotations = coco.loadAnns(annotation_ids)\n\n    print(\"Image:\", image_info[\"file_name\"])\n    print(\"Number of annotations:\", len(annotations))\n    print(\"First annotation:\", annotations[0] if annotations else None)"
+    },
+    "trainingWorkflow": {
+      "title": "How is COCO used to train an object detector?",
+      "subtitle": "A typical workflow looks like this:",
+      "steps": [
+        {
+          "step": "COCO images + annotations",
+          "desc": "Raw images paired with ground-truth bounding box coordinates and category labels.",
+          "badge": "Input Data"
+        },
+        {
+          "step": "Preprocessing and augmentation",
+          "desc": "Resize, normalize, Mosaic augmentation, MixUp, random crops, and flips.",
+          "badge": "Pipeline"
+        },
+        {
+          "step": "Train a detector",
+          "desc": "Feed augmented batches into architectures such as YOLO, Faster R-CNN, or RetinaNet.",
+          "badge": "Model Training"
+        },
+        {
+          "step": "Evaluate on validation data",
+          "desc": "Validate detection performance using standard metrics: mAP, precision, and recall.",
+          "badge": "Evaluation"
+        }
+      ]
+    },
+    "cocoEvaluation": {
+      "title": "COCO evaluation: mAP",
+      "intro": "A common evaluation metric for object detection is mean Average Precision (mAP).",
+      "metrics": [
+        {
+          "name": "IoU (Intersection over Union)",
+          "desc": "Measures the overlap between a predicted bounding box and the ground-truth box.",
+          "accent": "text-cyan-400"
+        },
+        {
+          "name": "Precision",
+          "desc": "Fraction of predicted detections that are correct.",
+          "accent": "text-emerald-400"
+        },
+        {
+          "name": "Recall",
+          "desc": "Fraction of ground-truth objects successfully detected.",
+          "accent": "text-purple-400"
+        },
+        {
+          "name": "AP",
+          "desc": "Summarizes the precision–recall curve for a class.",
+          "accent": "text-amber-400"
+        },
+        {
+          "name": "mAP",
+          "desc": "Averages AP across classes and, for some benchmarks, across multiple IoU thresholds.",
+          "accent": "text-rose-400"
+        }
+      ]
+    },
+    "cocoVsImageNet": {
+      "title": "COCO vs. ImageNet",
+      "comparison": [
+        {
+          "feature": "Main tasks",
+          "coco": "Detection, instance segmentation, captioning",
+          "imageNet": "Primarily image classification"
+        },
+        {
+          "feature": "Typical label",
+          "coco": "Class plus object location or mask",
+          "imageNet": "Image-level class"
+        },
+        {
+          "feature": "Multiple objects per image",
+          "coco": "Explicitly annotated for detection tasks",
+          "imageNet": "Not the core classification setup"
+        },
+        {
+          "feature": "Typical models",
+          "coco": "YOLO, Mask R-CNN",
+          "imageNet": "ResNet, EfficientNet, ViT"
+        }
+      ]
+    },
     "takeaway": "COCO is the industry standard benchmark in computer vision. When evaluating object detectors like YOLOv8 or YOLOv11, reporting mAP@50 and mAP@50-95 on the COCO val2017 split represents the universal currency of detection accuracy."
   },
   {
@@ -14996,16 +15925,158 @@ export const definitionsData = [
   },
   {
     "id": "data-cleaning",
-    "title": "Data Cleaning & Missing Data",
-    "badge": "Data Preprocessing",
-    "summary": "Systematic remediation of missing values, duplicate records, inconsistent categories, and type mismatches.",
-    "details": [
-      "Missing Data Rules: < 5% missing is safe to median/mode impute or drop; 5%–30% requires careful imputation (KNN / Iterative Imputer); > 50% should be dropped or turned into a binary missing indicator.",
-      "Handling Duplicates: Duplicate rows artificially inflate training metrics, cause data leakage across train/test splits, and bias models toward repeated rows. Drop with df.drop_duplicates().",
-      "Inconsistent Categories: Standardize string casing (e.g. 'NY' vs 'New York', 'apple' vs 'Apple'), strip whitespace, and group rare long-tail classes into 'Other'.",
-      "Pandas Gotcha: In pandas, missing integer columns are automatically cast to float64 because NaN is natively a float."
+    "title": "Data Cleaning & Preprocessing (End-to-End Pipeline & Leakage Prevention)",
+    "badge": "Data Quality, Feature Transformation & Scikit-Learn Pipelines",
+    "summary": "Data cleaning and preprocessing prepare raw data so a machine-learning model can learn from it reliably. An end-to-end workflow handles raw ingestion, inspection, duplicate removal, missing value imputation, categorical encoding, and feature scaling inside production-grade scikit-learn pipelines without data leakage.",
+    "coreDefinition": "Data cleaning and preprocessing prepare raw data so a machine-learning model can learn from it reliably.",
+    "workflowSteps": [
+      {
+        "step": "1",
+        "name": "Raw Data",
+        "desc": "Ingest raw files from CSV, SQL databases, REST APIs, or cloud object stores.",
+        "badge": "Input Sources",
+        "accent": "text-zinc-300",
+        "border": "border-zinc-800"
+      },
+      {
+        "step": "2",
+        "name": "Inspect & Validate",
+        "desc": "Examine shapes, column data types, missing null counts, and summary statistics.",
+        "badge": "Sanity Checks",
+        "accent": "text-cyan-400",
+        "border": "border-cyan-800/50"
+      },
+      {
+        "step": "3",
+        "name": "Clean the Data",
+        "desc": "Drop confirmed duplicates, fix corrupted values, and standardize inconsistent text formats.",
+        "badge": "Data Hygiene",
+        "accent": "text-amber-400",
+        "border": "border-amber-800/50"
+      },
+      {
+        "step": "4",
+        "name": "Transform Features",
+        "desc": "Impute missing entries (median/mode), one-hot encode categories, and standardize numerical scales.",
+        "badge": "Feature Engineering",
+        "accent": "text-purple-400",
+        "border": "border-purple-800/50"
+      },
+      {
+        "step": "5",
+        "name": "Train & Evaluate",
+        "desc": "Fit all preprocessing transformations strictly on training data only to guarantee zero data leakage.",
+        "badge": "Model Ingestion",
+        "accent": "text-emerald-400",
+        "border": "border-emerald-800/50"
+      }
     ],
-    "code": "# Missing value percentage\nmissing_pct = (df.isna().mean() * 100).sort_values(ascending=False)\n# Median imputation for skewed numeric columns\ndf['income'] = df['income'].fillna(df['income'].median())\n# Drop duplicates\ndf.drop_duplicates(inplace=True)"
+    "cleaningOperationsTable": [
+      {
+        "problem": "Missing numerical values",
+        "solution": "Fill with median (robust to skew) or mean",
+        "tool": "SimpleImputer(strategy='median') / df.fillna()"
+      },
+      {
+        "problem": "Missing categorical values",
+        "solution": "Fill with most frequent value or 'Missing' label",
+        "tool": "SimpleImputer(strategy='most_frequent')"
+      },
+      {
+        "problem": "Duplicate records",
+        "solution": "Remove confirmed redundant duplicates",
+        "tool": "df.drop_duplicates()"
+      },
+      {
+        "problem": "Categorical text features",
+        "solution": "Convert categories into numeric vectors",
+        "tool": "OneHotEncoder(handle_unknown='ignore') / pd.get_dummies()"
+      },
+      {
+        "problem": "Different numerical scales",
+        "solution": "Standardize (z-score) or normalize (0 to 1)",
+        "tool": "StandardScaler() / MinMaxScaler()"
+      },
+      {
+        "problem": "Invalid / corrupted values",
+        "solution": "Validate and correct using domain bounds",
+        "tool": "Pandas boolean indexing / np.where()"
+      },
+      {
+        "problem": "Extreme values & outliers",
+        "solution": "Investigate, cap percentiles, or use robust transforms",
+        "tool": "RobustScaler() / np.clip() / Winsorization"
+      }
+    ],
+    "pandasPractical": {
+      "title": "Practical Example: Step-by-Step Data Cleaning in Pandas",
+      "filename": "pandas_cleaning_pipeline.py",
+      "code": "import pandas as pd\nimport numpy as np\n\n# Initial raw dataset with missing values and a duplicate row\ndf = pd.DataFrame({\n    \"age\": [25, 30, np.nan, 30],\n    \"salary\": [30000, 50000, 40000, 50000],\n    \"city\": [\"Delhi\", \"Mumbai\", \"Delhi\", \"Mumbai\"]\n})\nprint(\"--- Raw DataFrame ---\")\nprint(df)\n\n# Step 1: Inspect the dataset\nprint(\"\\n--- Step 1: Inspection ---\")\nprint(\"Head:\\n\", df.head())\nprint(\"Shape (rows, cols):\", df.shape)\nprint(\"Missing values per column:\\n\", df.isnull().sum())\nprint(\"Duplicate rows count:\", df.duplicated().sum())\n# Note: df.info() displays column dtypes and non-null counts\n\n# Step 2: Remove duplicate rows\n# Caution: Only drop duplicates when genuinely redundant.\n# Two identical-looking transactions might still be separate valid events.\ndf = df.drop_duplicates()\nprint(\"\\n--- Step 2: After Dropping Duplicates ---\")\nprint(df)\n\n# Step 3: Handle missing numerical values\n# Why use median? Median is less sensitive to extreme outliers than the mean.\ndf[\"age\"] = df[\"age\".fillna(df[\"age\"].median())]\nprint(\"\\n--- Step 3: After Median Imputation ---\")\nprint(df)\n\n# Step 4: Encode categorical variables\n# Converts 'city' into binary indicator features (city_Delhi, city_Mumbai)\ndf = pd.get_dummies(df, columns=[\"city\"], dtype=int)\nprint(\"\\n--- Step 4: After One-Hot Encoding ---\")\nprint(df)",
+      "inspectionTools": [
+        { "func": "df.head()", "desc": "Preview first 5 rows to visually verify structure." },
+        { "func": "df.shape", "desc": "Tuple returning total count of rows and columns." },
+        { "func": "df.info()", "desc": "Summary of data types, memory usage, and non-null counts." },
+        { "func": "df.isnull().sum()", "desc": "Total count of missing (NaN) values per column." },
+        { "func": "df.duplicated().sum()", "desc": "Total count of completely identical duplicate rows." }
+      ],
+      "duplicateCaution": "Only remove duplicates when they are genuinely redundant. Two identical-looking transactions might still be separate valid financial events.",
+      "imputationReason": "Why use median? The median represents the 50th percentile and is far less sensitive to extreme outliers than the arithmetic mean."
+    },
+    "scalingSection": {
+      "title": "Scaling Numerical Features (Standardization vs. Normalization)",
+      "formula": "z = \\frac{x - \\mu}{\\sigma}",
+      "formulaExplanation": "Here, μ is the training-set mean and σ is the training-set standard deviation.",
+      "explanation": "Suppose age ranges from 18 to 70, while salary ranges from 20,000 to 200,000. Distance-based models (KNN, SVM) and gradient-based algorithms (Logistic Regression, Neural Networks) become heavily biased toward the larger numbers. Standardization centers features at 0 with unit variance. Decision trees and Random Forests generally do not require scaling because splitting thresholds are invariant to monotonic transformations.",
+      "snippet": "from sklearn.preprocessing import StandardScaler\n\nscaler = StandardScaler()\ndf[[\"age\", \"salary\"]] = scaler.fit_transform(df[[\"age\", \"salary\"]])"
+    },
+    "productionPipeline": {
+      "title": "Production-Ready Preprocessing with Scikit-Learn: Pipeline & ColumnTransformer",
+      "filename": "production_pipeline.py",
+      "code": "import pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.preprocessing import StandardScaler, OneHotEncoder\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\n\n# 1. Example dataset\ndf = pd.DataFrame({\n    \"age\": [22, 35, 28, 45, 31, 50],\n    \"salary\": [25000, 60000, 40000, 90000, 55000, 100000],\n    \"city\": [\"Delhi\", \"Mumbai\", \"Delhi\", \"Pune\", \"Mumbai\", \"Pune\"],\n    \"bought\": [0, 1, 0, 1, 1, 1]\n})\n\nX = df.drop(columns=[\"bought\"])\ny = df[\"bought\"]\n\n# 2. Strict Train / Test Split BEFORE fitting any transformer (prevents leakage!)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.33, random_state=42\n)\n\nnumeric_features = [\"age\", \"salary\"]\ncategorical_features = [\"city\"]\n\n# 3. Numeric Sub-Pipeline: Median Imputation + Standard Scaling\nnumeric_pipeline = Pipeline([\n    (\"imputer\", SimpleImputer(strategy=\"median\")),\n    (\"scaler\", StandardScaler())\n])\n\n# 4. Categorical Sub-Pipeline: Mode Imputation + One-Hot Encoding\n# handle_unknown='ignore' prevents crashes on novel categories in production\ncategorical_pipeline = Pipeline([\n    (\"imputer\", SimpleImputer(strategy=\"most_frequent\")),\n    (\"encoder\", OneHotEncoder(handle_unknown=\"ignore\"))\n])\n\n# 5. Composite ColumnTransformer\npreprocessor = ColumnTransformer([\n    (\"numeric\", numeric_pipeline, numeric_features),\n    (\"categorical\", categorical_pipeline, categorical_features)\n])\n\n# 6. Unified End-to-End Estimator Pipeline\nmodel = Pipeline([\n    (\"preprocessing\", preprocessor),\n    (\"classifier\", LogisticRegression())\n])\n\n# Fit preprocessor & classifier strictly on X_train\nmodel.fit(X_train, y_train)\nprint(\"Test Accuracy:\", round(model.score(X_test, y_test), 3))",
+      "advantages": [
+        "Missing values are handled consistently between train and test.",
+        "Categorical features are encoded automatically without manual mapping.",
+        "Scaling parameters (mean & std) are learned solely from training data.",
+        "Unknown categories at inference time are handled gracefully (handle_unknown='ignore').",
+        "The entire preprocessing and model bundle can be serialized and deployed as one unified pipeline artifact."
+      ]
+    },
+    "dataLeakageAlert": {
+      "title": "Critical Interview Concept: Data Leakage Prevention",
+      "rule": "Never fit an imputer, scaler, or encoder using the full dataset before splitting into training and test sets. Doing so leaks distribution parameters (mean, standard deviation, category levels) from the unseen test set into training.",
+      "bestPractice": "Always call fit or fit_transform ONLY on training data (X_train), and only invoke transform on test or production data (X_test). A scikit-learn Pipeline automatically enforces this discipline."
+    },
+    "rulesOfThumb": [
+      {
+        "title": "Missing Data Rules",
+        "desc": "< 5% missing is safe to median/mode impute or drop; 5%–30% requires careful imputation (KNN / Iterative Imputer); > 50% should be dropped or turned into a binary missing indicator."
+      },
+      {
+        "title": "Handling Duplicates",
+        "desc": "Duplicate rows artificially inflate training metrics, cause data leakage across train/test splits, and bias models toward repeated rows. Drop with df.drop_duplicates()."
+      },
+      {
+        "title": "Inconsistent Categories",
+        "desc": "Standardize string casing (e.g. 'NY' vs 'New York', 'apple' vs 'Apple'), strip whitespace, and group rare long-tail classes into 'Other'."
+      },
+      {
+        "title": "Pandas Gotcha: Integer Casting",
+        "desc": "In pandas, missing integer columns are automatically cast to float64 because NaN is natively a float."
+      }
+    ],
+    "details": [
+      "Core Definition: Data cleaning and preprocessing prepare raw data so a machine-learning model can learn from it reliably.",
+      "End-to-End Workflow: 1) Raw Data (CSV, DB, API); 2) Inspect & Validate (head, shape, info, isnull); 3) Clean (drop duplicates, fix formats); 4) Transform (impute, encode, scale); 5) Train & Evaluate (fit on train only).",
+      "Common Operations: Missing numerical values (SimpleImputer median), Missing categorical (SimpleImputer mode), Duplicates (drop_duplicates), Categorical text (OneHotEncoder), Numerical scale differences (StandardScaler), Invalid values (domain rules), Extreme values (clipping/RobustScaler).",
+      "Inspection Functions: head() previews rows; shape gives dimensions; info() reveals dtypes and non-null counts; isnull().sum() counts nulls; duplicated().sum() counts duplicate rows.",
+      "Standardization Formula: z = (x - μ) / σ. Centers features around 0 with unit variance. Essential for KNN, SVM, and gradient models; decision trees are scale-invariant.",
+      "Scikit-Learn Production Pipeline: Combining ColumnTransformer with numeric and categorical pipelines ensures consistent transformation and prevents unknown category crashes with handle_unknown='ignore'.",
+      "Data Leakage Defense: Never fit an imputer or scaler on the whole dataset prior to train/test split. Fit strictly on X_train and transform on X_test.",
+      "Missing Data Rules: < 5% missing is safe to median/mode impute or drop; 5%–30% requires careful imputation; > 50% should be dropped or turned into a binary missing flag.",
+      "Duplicates & Categories: Duplicates inflate metrics and bias models; categories must be trimmed and case-standardized. Remember that in pandas, missing int columns become float64."
+    ],
+    "code": "# Production Scikit-Learn Pipeline with ColumnTransformer\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.preprocessing import StandardScaler, OneHotEncoder\nfrom sklearn.linear_model import LogisticRegression\n\nnumeric_pipeline = Pipeline([\n    ('imputer', SimpleImputer(strategy='median')),\n    ('scaler', StandardScaler())\n])\n\ncategorical_pipeline = Pipeline([\n    ('imputer', SimpleImputer(strategy='most_frequent')),\n    ('encoder', OneHotEncoder(handle_unknown='ignore'))\n])\n\npreprocessor = ColumnTransformer([\n    ('num', numeric_pipeline, ['age', 'salary']),\n    ('cat', categorical_pipeline, ['city'])\n])\n\nmodel = Pipeline([\n    ('preprocessor', preprocessor),\n    ('classifier', LogisticRegression())\n])\n\nmodel.fit(X_train, y_train)",
+    "takeaway": "Data cleaning and preprocessing transform messy raw data into reliable, model-ready features. By encapsulating imputation, one-hot encoding, and scaling inside a scikit-learn ColumnTransformer Pipeline, you guarantee zero data leakage between training and evaluation, handle novel categories gracefully, and deploy a robust single artifact to production."
   },
   {
     "id": "eda",
@@ -15216,18 +16287,94 @@ export const definitionsData = [
   },
   {
     "id": "crud-api",
-    "title": "CRUD API with FastAPI & LLM Calling (Create, Read, Update, Delete)",
-    "badge": "RESTful Backend, FastAPI & LLM Calling Pipeline",
-    "summary": "Comprehensive production guide to building a RESTful CRUD API using FastAPI and Pydantic, enriched with an asynchronous LLM calling step that evaluates unstructured notes and returns structured JSON responses.",
-    "details": [
-      "1. CREATE (`POST /parcels` with LLM Triage Step): Client submits parcel info + defect description. FastAPI validates fields via Pydantic → triggers an LLM call to classify defect severity ('CRITICAL', 'WARNING', 'BENIGN') and draft an automated operator action plan → persists enriched record in DB → returns HTTP `201 Created` with structured JSON output.",
-      "2. READ (`GET /parcels/{tracking_id}` & `GET /parcels`): Retrieves individual records by path parameter with HTTP `200 OK` or raises HTTP `404 Not Found` if missing. Supports query parameters for pagination (`?skip=0&limit=50`) and severity filtering (`?severity=CRITICAL`).",
-      "3. UPDATE (`PATCH /parcels/{tracking_id}` with Conditional LLM Re-evaluation): Supports partial record updates using `model_dump(exclude_unset=True)`. If human operators submit revised inspection notes, optionally re-triggers the LLM to update severity or resolution steps → updates timestamp → returns HTTP `200 OK`.",
-      "4. DELETE (`DELETE /parcels/{tracking_id}`): Implements safe soft-deletion or active queue pruning. Checks existence before deletion and returns standard HTTP `204 No Content` (empty payload) or HTTP `200 OK` deletion receipt.",
-      "5. Pydantic Request/Response Boundary Separation: Separates `ParcelCreate` (input schema), `ParcelUpdate` (optional fields), and `ParcelResponse` (output schema containing server-generated IDs, timestamps, and LLM reasoning) to prevent sensitive field leaks.",
-      "6. Idempotence & Error Handling: `GET`, `PUT`, and `DELETE` are idempotent; `POST` uses tracking ID deduplication to prevent duplicate insertions. Centralized exception handlers catch Pydantic validation errors (`422`) and DB constraint conflicts (`400`)."
+    "title": "CRUD API with FastAPI (Create, Read, Update, Delete)",
+    "badge": "RESTful Backend & HTTP Methods",
+    "summary": "CRUD represents the four fundamental operations of persistent data storage in web development: Create, Read, Update, and Delete. In FastAPI, each operation maps directly to standard HTTP methods, route decorators, status codes, and Pydantic validation models.",
+    "installCommand": "pip install fastapi uvicorn",
+    "runCommand": "uvicorn main:app --reload",
+    "crudMeaning": [
+      {
+        "letter": "C",
+        "action": "Create",
+        "desc": "Add a new record.",
+        "http": "HTTP POST",
+        "color": "emerald",
+        "status": "201 Created"
+      },
+      {
+        "letter": "R",
+        "action": "Read",
+        "desc": "Retrieve records.",
+        "http": "HTTP GET",
+        "color": "cyan",
+        "status": "200 OK / 404 Not Found"
+      },
+      {
+        "letter": "U",
+        "action": "Update",
+        "desc": "Modify an existing record.",
+        "http": "HTTP PUT or PATCH",
+        "color": "amber",
+        "status": "200 OK / 404 Not Found"
+      },
+      {
+        "letter": "D",
+        "action": "Delete",
+        "desc": "Remove a record.",
+        "http": "HTTP DELETE",
+        "color": "rose",
+        "status": "200 OK / 404 Not Found"
+      }
     ],
-    "code": "# ==============================================================\n# FASTAPI CRUD API WITH LLM CALLING & STRUCTURED JSON RESPONSE\n# ==============================================================\n\nimport os\nimport json\nfrom datetime import datetime\nfrom typing import Optional, List, Dict\nfrom fastapi import FastAPI, HTTPException, status, Query\nfrom pydantic import BaseModel, Field\nfrom openai import OpenAI\n\napp = FastAPI(\n    title=\"Logistics Anomaly & Parcel CRUD API with LLM Triage\",\n    version=\"2.0.0\"\n)\n\n# Simulated in-memory database store\ndb_parcels: Dict[str, dict] = {}\n\n# Initialize LLM client (reads OPENAI_API_KEY from environment)\nopenai_client = OpenAI(api_key=os.getenv(\"OPENAI_API_KEY\", \"mock-key\"))\n\n# --------------------------------------------------------------\n# 1. PYDANTIC SCHEMAS (Validation & Serialization)\n# --------------------------------------------------------------\n\nclass LLMAnalysisOutput(BaseModel):\n    severity: str = Field(..., description=\"CRITICAL, WARNING, or BENIGN\")\n    root_cause: str = Field(..., description=\"Likely cause of package damage\")\n    recommended_action: str = Field(..., description=\"Divert to rework or proceed\")\n\nclass ParcelCreateRequest(BaseModel):\n    tracking_id: str = Field(..., example=\"TRK-98214\", min_length=5)\n    conveyor_lane: int = Field(..., ge=1, le=20, example=3)\n    weight_kg: float = Field(..., gt=0.0, example=2.45)\n    operator_notes: str = Field(..., example=\"Punctured corner tape, visible box deformation\")\n\nclass ParcelUpdateRequest(BaseModel):\n    conveyor_lane: Optional[int] = Field(None, ge=1, le=20)\n    operator_notes: Optional[str] = None\n    status: Optional[str] = Field(None, example=\"diverted_to_rework\")\n\nclass ParcelResponse(BaseModel):\n    tracking_id: str\n    conveyor_lane: int\n    weight_kg: float\n    operator_notes: str\n    status: str\n    llm_analysis: Optional[LLMAnalysisOutput] = None\n    created_at: str\n    updated_at: str\n\n# --------------------------------------------------------------\n# 2. LLM CALLING HELPER STEP\n# --------------------------------------------------------------\n\ndef call_llm_for_anomaly_triage(notes: str, weight: float) -> LLMAnalysisOutput:\n    \"\"\"Invokes LLM with structured JSON output to analyze parcel incident.\"\"\"\n    prompt = f\"Analyze parcel defect. Weight: {weight}kg. Operator Notes: '{notes}'.\"\n    \n    # In production, call OpenAI/Anthropic structured outputs:\n    # response = openai_client.beta.chat.completions.parse(\n    #     model=\"gpt-4o-mini\",\n    #     messages=[\n    #         {\"role\": \"system\", \"content\": \"You are a warehouse QA AI. Output JSON conforming to schema.\"},\n    #         {\"role\": \"user\", \"content\": prompt}\n    #     ],\n    #     response_format=LLMAnalysisOutput\n    # )\n    # return response.choices[0].message.parsed\n\n    # Fallback / Fast mock response for illustration:\n    return LLMAnalysisOutput(\n        severity=\"CRITICAL\" if \"puncture\" in notes.lower() or \"tear\" in notes.lower() else \"WARNING\",\n        root_cause=\"Cardboard puncture caused by mechanical diverter arm friction\",\n        recommended_action=\"Pneumatic arm: Divert to inspection chute 3B immediately\"\n    )\n\n# --------------------------------------------------------------\n# 3. CRUD API ENDPOINTS\n# --------------------------------------------------------------\n\n# [CREATE] POST /api/v1/parcels -> 201 Created with LLM Calling Step\n@app.post(\"/api/v1/parcels\", status_code=status.HTTP_201_CREATED, response_model=ParcelResponse)\ndef create_parcel(payload: ParcelCreateRequest):\n    \"\"\"\n    STEP 1: Validate payload via Pydantic\n    STEP 2: Call LLM to triage incident severity & generate action plan\n    STEP 3: Persist record in database & return 201 Created\n    \"\"\"\n    if payload.tracking_id in db_parcels:\n        raise HTTPException(\n            status_code=status.HTTP_400_BAD_REQUEST,\n            detail=f\"Parcel with tracking ID '{payload.tracking_id}' already exists.\"\n        )\n\n    # Trigger LLM Analysis Step\n    llm_result = call_llm_for_anomaly_triage(payload.operator_notes, payload.weight_kg)\n\n    now = datetime.utcnow().isoformat()\n    record = {\n        **payload.model_dump(),\n        \"status\": \"diverted\" if llm_result.severity == \"CRITICAL\" else \"in_transit\",\n        \"llm_analysis\": llm_result.model_dump(),\n        \"created_at\": now,\n        \"updated_at\": now\n    }\n    db_parcels[payload.tracking_id] = record\n    return record\n\n\n# [READ] GET /api/v1/parcels/{tracking_id} -> 200 OK\n@app.get(\"/api/v1/parcels/{tracking_id}\", response_model=ParcelResponse)\ndef get_parcel(tracking_id: str):\n    \"\"\"Fetches a single parcel and its LLM diagnostic summary by Tracking ID.\"\"\"\n    if tracking_id not in db_parcels:\n        raise HTTPException(\n            status_code=status.HTTP_404_NOT_FOUND,\n            detail=f\"Parcel '{tracking_id}' not found.\"\n        )\n    return db_parcels[tracking_id]\n\n\n# [READ LIST] GET /api/v1/parcels?severity=CRITICAL&limit=20 -> 200 OK\n@app.get(\"/api/v1/parcels\", response_model=List[ParcelResponse])\ndef list_parcels(\n    severity: Optional[str] = Query(None, description=\"Filter by LLM severity (CRITICAL, WARNING, BENIGN)\"),\n    skip: int = Query(0, ge=0),\n    limit: int = Query(20, ge=1, le=100)\n):\n    \"\"\"Lists parcels with optional LLM severity filtering and pagination.\"\"\"\n    results = list(db_parcels.values())\n    if severity:\n        results = [p for p in results if p.get(\"llm_analysis\", {}).get(\"severity\") == severity.upper()]\n    return results[skip : skip + limit]\n\n\n# [UPDATE] PATCH /api/v1/parcels/{tracking_id} -> 200 OK Partial Update\n@app.patch(\"/api/v1/parcels/{tracking_id}\", response_model=ParcelResponse)\ndef update_parcel(tracking_id: str, updates: ParcelUpdateRequest):\n    \"\"\"\n    STEP 1: Retrieve existing record\n    STEP 2: Apply partial updates (exclude_unset=True)\n    STEP 3: If operator notes changed, re-trigger LLM evaluation\n    STEP 4: Persist and return updated record\n    \"\"\"\n    if tracking_id not in db_parcels:\n        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f\"Parcel '{tracking_id}' not found.\")\n\n    record = db_parcels[tracking_id]\n    update_data = updates.model_dump(exclude_unset=True)\n\n    # Re-evaluate LLM if operator notes were modified\n    if \"operator_notes\" in update_data and update_data[\"operator_notes\"]:\n        new_analysis = call_llm_for_anomaly_triage(update_data[\"operator_notes\"], record[\"weight_kg\"])\n        record[\"llm_analysis\"] = new_analysis.model_dump()\n\n    record.update(update_data)\n    record[\"updated_at\"] = datetime.utcnow().isoformat()\n    db_parcels[tracking_id] = record\n    return record\n\n\n# [DELETE] DELETE /api/v1/parcels/{tracking_id} -> 204 No Content\n@app.delete(\"/api/v1/parcels/{tracking_id}\", status_code=status.HTTP_204_NO_CONTENT)\ndef delete_parcel(tracking_id: str):\n    \"\"\"Safely removes a parcel from active queue; returns 204 No Content on success.\"\"\"\n    if tracking_id not in db_parcels:\n        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f\"Parcel '{tracking_id}' not found.\")\n    del db_parcels[tracking_id]\n    return None\n\n# ==============================================================\n# SAMPLE CURL REQUEST & LLM STRUCTURED RESPONSE OUTPUT\n# ==============================================================\n# Request:\n# curl -X POST \"http://localhost:8000/api/v1/parcels\" \\\n#      -H \"Content-Type: application/json\" \\\n#      -d '{\"tracking_id\": \"TRK-98214\", \"conveyor_lane\": 3, \"weight_kg\": 2.45, \"operator_notes\": \"Punctured corner tape\"}'\n#\n# Response Output (201 Created):\n# {\n#   \"tracking_id\": \"TRK-98214\",\n#   \"conveyor_lane\": 3,\n#   \"weight_kg\": 2.45,\n#   \"operator_notes\": \"Punctured corner tape\",\n#   \"status\": \"diverted\",\n#   \"llm_analysis\": {\n#     \"severity\": \"CRITICAL\",\n#     \"root_cause\": \"Cardboard puncture caused by mechanical diverter arm friction\",\n#     \"recommended_action\": \"Pneumatic arm: Divert to inspection chute 3B immediately\"\n#   },\n#   \"created_at\": \"2026-10-19T15:25:00.123456\",\n#   \"updated_at\": \"2026-10-19T15:25:00.123456\"\n# }"
+    "keyConcepts": [
+      {
+        "concept": "Path parameter",
+        "syntax": "/projects/{project_id}",
+        "explanation": "Identifies a particular project. FastAPI extracts project_id from the URL and casts it to an integer."
+      },
+      {
+        "concept": "Pydantic model",
+        "syntax": "class ProjectCreate(BaseModel)",
+        "explanation": "Validates incoming request fields and types (e.g. min/max length), returning automatic HTTP 422 if invalid."
+      },
+      {
+        "concept": "HTTP 201",
+        "syntax": "status.HTTP_201_CREATED",
+        "explanation": "Indicates a resource was created successfully."
+      },
+      {
+        "concept": "HTTP 404",
+        "syntax": "raise HTTPException(status_code=404)",
+        "explanation": "Indicates the requested resource doesn't exist in the database."
+      },
+      {
+        "concept": "PUT vs. PATCH",
+        "syntax": "PUT (full replace) vs PATCH (partial)",
+        "explanation": "PUT generally replaces the editable representation; PATCH applies partial changes."
+      },
+      {
+        "concept": "Database vs. in-memory dictionary",
+        "syntax": "projects = {} vs. PostgreSQL",
+        "explanation": "Production APIs typically use PostgreSQL, MySQL, or another persistent data store rather than an in-memory dictionary."
+      }
+    ],
+    "testCommands": [
+      { "label": "Create Project (POST)", "cmd": "curl -X POST http://127.0.0.1:8000/projects -H \"Content-Type: application/json\" -d '{\"name\": \"AI Chatbot\", \"description\": \"FastAPI backend\"}'" },
+      { "label": "Read All Projects (GET)", "cmd": "curl http://127.0.0.1:8000/projects" },
+      { "label": "Read One Project (GET)", "cmd": "curl http://127.0.0.1:8000/projects/1" },
+      { "label": "Update Project (PUT)", "cmd": "curl -X PUT http://127.0.0.1:8000/projects/1 -H \"Content-Type: application/json\" -d '{\"name\": \"AI Agent\", \"description\": \"Updated description\"}'" },
+      { "label": "Delete Project (DELETE)", "cmd": "curl -X DELETE http://127.0.0.1:8000/projects/1" }
+    ],
+    "details": [
+      "What does CRUD mean? C — Create (Add a new record, HTTP POST), R — Read (Retrieve records, HTTP GET), U — Update (Modify an existing record, HTTP PUT or PATCH), D — Delete (Remove a record, HTTP DELETE).",
+      "Path parameter: /projects/{project_id} identifies a particular project.",
+      "Pydantic model: validates incoming request fields and types.",
+      "HTTP 201: indicates a resource was created.",
+      "HTTP 404: indicates the requested resource doesn't exist.",
+      "PUT vs. PATCH: PUT generally replaces the editable representation; PATCH applies partial changes.",
+      "Database vs. in-memory dictionary: production APIs typically use PostgreSQL, MySQL, or another persistent data store."
+    ],
+    "code": "from fastapi import FastAPI, HTTPException, status\nfrom pydantic import BaseModel, Field\n\napp = FastAPI()\n\n# In-memory dictionary database\nprojects = {}\n\n\nclass ProjectCreate(BaseModel):\n    name: str = Field(min_length=1, max_length=100)\n    description: str = Field(default=\"\", max_length=500)\n\n\nclass ProjectUpdate(BaseModel):\n    name: str = Field(min_length=1, max_length=100)\n    description: str = Field(default=\"\", max_length=500)\n\n\n# CREATE\n@app.post(\"/projects\", status_code=status.HTTP_201_CREATED)\ndef create_project(data: ProjectCreate):\n    new_id = len(projects) + 1\n    project = {\n        \"id\": new_id,\n        **data.model_dump()\n    }\n    projects[new_id] = project\n    return project\n\n\n# READ ALL\n@app.get(\"/projects\")\ndef get_projects():\n    return list(projects.values())\n\n\n# READ ONE\n@app.get(\"/projects/{project_id}\")\ndef get_project(project_id: int):\n    project = projects.get(project_id)\n    if project is None:\n        raise HTTPException(\n            status_code=404,\n            detail=\"Project not found\"\n        )\n    return project\n\n\n# UPDATE\n@app.put(\"/projects/{project_id}\")\ndef update_project(project_id: int, data: ProjectUpdate):\n    if project_id not in projects:\n        raise HTTPException(\n            status_code=404,\n            detail=\"Project not found\"\n        )\n    projects[project_id] = {\n        \"id\": project_id,\n        **data.model_dump()\n    }\n    return projects[project_id]\n\n\n# DELETE\n@app.delete(\"/projects/{project_id}\")\ndef delete_project(project_id: int):\n    if project_id not in projects:\n        raise HTTPException(\n            status_code=404,\n            detail=\"Project not found\"\n        )\n    deleted = projects.pop(project_id)\n    return {\n        \"message\": \"Project deleted successfully\",\n        \"project\": deleted\n    }"
   },
   {
     "id": "git-github",
@@ -15372,21 +16519,6 @@ export const definitionsData = [
       "Interview Answer: 'To handle tables spanning multiple pages, our ingestion pipeline detects table continuations and re-injects the column schema into every page segment. We convert each table row into an atomic, header-hydrated JSON object for vector indexing, while storing the complete Markdown table in PostgreSQL. When a user asks a numerical question, vector search retrieves the exact row, and Parent-Document retrieval provides the entire table context to the LLM.'"
     ],
     "code": "import json\n\n# Pipeline: Stitch multi-page table and convert to header-hydrated semantic chunks\ndef parse_multipage_table(pages_data):\n    \"\"\"\n    pages_data = [\n        {\"page\": 1, \"rows\": [[\"Department\", \"Q1 Spend\", \"Budget\"], [\"Engineering\", \"$120k\", \"$150k\"]]},\n        {\"page\": 2, \"rows\": [[\"Marketing\", \"$80k\", \"$90k\"], [\"Sales\", \"$200k\", \"$210k\"]]} # Header missing on page 2!\n    ]\n    \"\"\"\n    global_headers = pages_data[0][\"rows\"][0] # Extract headers from Page 1\n    semantic_chunks = []\n\n    for p in pages_data:\n        rows = p[\"rows\"]\n        # If Page > 1 and doesn't repeat headers, use global_headers\n        data_rows = rows[1:] if p[\"page\"] == 1 else rows\n        \n        for r in data_rows:\n            # Map cell value to column header\n            row_dict = {global_headers[i]: r[i] for i in range(len(r))}\n            row_dict[\"source_page\"] = p[\"page\"]\n            \n            # Form self-contained text representation for embedding\n            text_rep = f\"Table Row [Page {p['page']}]: \" + \", \".join([f\"{k}: {v}\" for k, v in row_dict.items() if k != 'source_page'])\n            \n            semantic_chunks.append({\n                \"chunk_text\": text_rep,\n                \"metadata\": row_dict\n            })\n            \n    return semantic_chunks\n\n# Test ingestion\ntest_pages = [\n    {\"page\": 1, \"rows\": [[\"Dept\", \"Expenses\", \"Headcount\"], [\"AI Team\", \"$450k\", \"12\"]]},\n    {\"page\": 2, \"rows\": [[\"Cloud DevOps\", \"$210k\", \"6\"]]}\n]\nchunks = parse_multipage_table(test_pages)\nfor c in chunks:\n    print(c[\"chunk_text\"])\n# Output:\n# Table Row [Page 1]: Dept: AI Team, Expenses: $450k, Headcount: 12\n# Table Row [Page 2]: Dept: Cloud DevOps, Expenses: $210k, Headcount: 6"
-  },
-  {
-    "id": "document-versioning-rag",
-    "title": "Document Versioning & Freshness in RAG — Deduplication & Atomic Alias Swaps",
-    "badge": "RAG Production Engineering & Data Freshness",
-    "summary": "Architecting automated document versioning, content-hash deduplication, zero-downtime collection alias swaps, and metadata time-filtering in enterprise RAG systems to ensure answers reflect fresh source documents without duplicate or stale embeddings.",
-    "details": [
-      "The Core Challenge of RAG Freshness: Documents change constantly (e.g. employee handbook updated from v1 to v2, financial policies revised). If you blindly append new embeddings, the vector DB contains conflicting information. If you delete and re-index the entire database on every small edit, you burn thousands of dollars in embedding API costs and cause query downtime.",
-      "Strategy 1 — Content-Hash (SHA-256) Chunk Deduplication: On ingestion, compute SHA-256 hash for every chunk. Store hash in PostgreSQL metadata. When a document is re-uploaded, only embed chunks whose content hash has changed, skipping 90% of unchanged paragraphs.",
-      "Strategy 2 — Atomic Collection Alias Pointers (Blue/Green Re-indexing): For major index rebuilds, create a new collection 'kb_v2024_10_24'. Ingest and verify all vectors offline. Once health checks pass, atomically update the alias pointer ('kb_active' -> 'kb_v2024_10_24') in zero milliseconds with zero downtime.",
-      "Strategy 3 — Metadata Temporal Filtering: Add metadata fields to every chunk: {'doc_id': 'POL_942', 'version': '2.4', 'is_active': true, 'effective_date': '2024-01-01', 'deprecated_date': null}. At query time, vector retrieval enforces a strict filter: {'is_active': {'$eq': true}}, ensuring outdated versions are mathematically invisible to the retriever.",
-      "Strategy 4 — Soft Deletes & CDC (Change Data Capture): Use database triggers or Kafka/Debezium on source document stores. When a document is archived, a webhook immediately marks its vector namespace as inactive and schedules asynchronous vector deletion.",
-      "Interview Answer: 'We manage document versioning using SHA-256 chunk hashing and metadata state tags. When an updated policy is uploaded, our pipeline diffs chunk hashes so we only re-embed modified sections. We use atomic collection alias pointers for major migrations and enforce 'is_active: True' metadata filters during vector retrieval to guarantee zero stale policy leakage.'"
-    ],
-    "code": "import hashlib\nimport time\n\nclass RAGDocumentVersionManager:\n    def __init__(self):\n        # Simulated database of indexed chunks\n        self.chunk_registry = {} # chunk_hash -> metadata\n\n    def compute_hash(self, text: str) -> str:\n        return hashlib.sha256(text.strip().encode(\"utf-8\")).hexdigest()\n\n    def sync_document(self, doc_id: str, version: str, new_chunks: list):\n        \"\"\"\n        Only embeds and upserts chunks that have genuinely changed!\n        \"\"\"\n        upsert_queue = []\n        unchanged_count = 0\n\n        for idx, chunk_text in enumerate(new_chunks):\n            chunk_hash = self.compute_hash(chunk_text)\n            chunk_id = f\"{doc_id}_c{idx}\"\n\n            if chunk_hash in self.chunk_registry:\n                # Chunk identical to existing version — skip expensive embedding call!\n                unchanged_count += 1\n            else:\n                # Modified or new chunk: embed and register\n                record = {\n                    \"doc_id\": doc_id,\n                    \"version\": version,\n                    \"chunk_id\": chunk_id,\n                    \"hash\": chunk_hash,\n                    \"text\": chunk_text,\n                    \"is_active\": True,\n                    \"updated_at\": time.time()\n                }\n                self.chunk_registry[chunk_hash] = record\n                upsert_queue.append(record)\n\n        print(f\"Sync complete for {doc_id} v{version}: {len(upsert_queue)} new/modified chunks upserted, {unchanged_count} unchanged chunks reused.\")\n        return upsert_queue\n\n# Example: Editing 1 sentence in a 3-paragraph policy\nmgr = RAGDocumentVersionManager()\ndoc_v1 = [\"Paragraph 1: Security guidelines...\", \"Paragraph 2: Expense limits $50/day\", \"Paragraph 3: Contact HR\"]\nmgr.sync_document(\"DOC_001\", \"1.0\", doc_v1) # 3 chunks upserted\n\ndoc_v2 = [\"Paragraph 1: Security guidelines...\", \"Paragraph 2: Expense limits $100/day\", \"Paragraph 3: Contact HR\"]\nmgr.sync_document(\"DOC_001\", \"2.0\", doc_v2) # Only 1 chunk upserted, 2 reused!"
   },
   {
     "id": "micro-macro-f1",
@@ -15892,31 +17024,6 @@ export const definitionsData = [
     "code": "# ==============================================================================\n# PERMISSION-AWARE RAG: SINGLE-STAGE METADATA FILTERING LINKED TO USER JWT\n# ==============================================================================\nfrom typing import List, Dict, Any\n\nclass PermissionAwareRetriever:\n    def __init__(self, vector_db_client):\n        self.db = vector_db_client\n\n    def retrieve_authorized_chunks(\n        self, \n        query_vector: List[float], \n        user_jwt_claims: Dict[str, Any], \n        top_k: int = 5\n    ) -> List[Dict[str, Any]]:\n        \"\"\"\n        Executes vector search with guaranteed security boundaries.\n        Filters are evaluated during graph traversal (single-stage).\n        \"\"\"\n        user_id = user_jwt_claims.get(\"sub\")\n        user_groups = user_jwt_claims.get(\"groups\", [])\n        clearance = user_jwt_claims.get(\"clearance_level\", 1)\n        tenant_id = user_jwt_claims.get(\"tenant_id\")\n\n        # Construct in-index metadata filter\n        security_filter = {\n            \"$and\": [\n                {\"tenant_id\": {\"$eq\": tenant_id}},\n                {\"allowed_groups\": {\"$in\": user_groups}},\n                {\"min_clearance_level\": {\"$lte\": clearance}}\n            ]\n        }\n\n        # Query vector database with filter\n        results = self.db.query(\n            vector=query_vector,\n            top_k=top_k,\n            filter=security_filter,\n            include_metadata=True\n        )\n        return results.get(\"matches\", [])"
   },
   {
-    "id": "context-stuffing-vs-rag",
-    "title": "Context Stuffing vs. RAG Optimization (Fixing 10s Latency & High Costs)",
-    "badge": "Production RAG Optimization, Prompt Caching & TTFT Reduction",
-    "summary": "Architectural diagnosis and 6-step engineering solution for fixing slow, expensive LLM applications suffering from context stuffing (sending an entire 50-page manual with every prompt). Eliminates 10-second latency stalls, drops token costs by 95%, and restores sub-500ms response times using structured chunking, cross-encoder reranking, prompt caching, and response streaming.",
-    "details": [
-      "The Problem Scenario: 'Your chatbot takes 10 seconds to respond because you send the entire 50-page manual with every prompt. It is too slow and expensive. How would you fix it?'",
-      "The Flawed Instinct vs. Real Architecture: Most junior engineers answer 'shorten the manual' or 'summarize it.' That doesn't fix the architecture! Re-sending a 50-page manual (~30,000 tokens) with every prompt is paying the cloud provider to re-read the exact same book for every single question, clogging attention memory and causing 10-second prefill delays.",
-      "The Guiding Architectural Principle: 'Send the model the few paragraphs that answer the question, not the whole document.'",
-      "Step 1. Retrieve Instead of Resending: Chunk the 50-page manual by section and embed it once offline into a vector database (e.g. ChromaDB or Pinecone). At query time, fetch only the top 3–5 relevant chunks (~600 tokens total), immediately slashing prompt size by 98% and collapsing TTFT from 10 seconds to under 400 milliseconds.",
-      "Step 2. Chunk with Semantic Structure: Do not use naive fixed character splitting (e.g., splitting every 500 characters). Split logically on markdown/document headings (H1, H2, H3). Preserve section titles, page numbers, and breadcrumbs as chunk metadata. Apply light overlap (10–15% / ~50 tokens) so procedural instructions or numbered steps are never sliced in half.",
-      "Step 3. Rerank, Then Trim: Initial vector search casts a broad net (top 20 candidate chunks). A cross-encoder (e.g., BGE-Reranker or Cohere Rerank) scores and reorders the candidates by semantic relevance. Discard any chunk that fails to clear a strict relevance threshold (e.g., score < 0.70), passing only the 3 most precise chunks to the LLM.",
-      "Step 4. Cache What Repeats: 1. Prompt Caching: Enable prefix prompt caching (supported natively by Anthropic, OpenAI, and vLLM) for the system instructions and static guidelines. Cached prefixes cost 50–90% less and process in <50ms. 2. Semantic Caching: Cache common questions and answers in Redis using embedding similarity (e.g., threshold >= 0.98), answering frequent customer queries in 5ms at $0 token cost.",
-      "Step 5. Control the Output: Enable Server-Sent Events (SSE) or WebSocket response streaming. Users start seeing tokens within 300ms instead of staring at a blank screen for 10 seconds. Enforce strict max_tokens limits (e.g., max_tokens=350) to prevent verbose, wandering generation.",
-      "Step 6. Continuous Measurement: Track Time To First Token (TTFT), Time Per Output Token (TPOT), total tokens per request, and answer groundedness/faithfulness in your observability pipeline (OpenTelemetry / Langfuse).",
-      "Interview Defense Script: 'Re-sending a 50-page manual with every prompt is context stuffing. I fix this architecturally by chunking the manual into structured semantic sections, embedding it once into a vector DB, and retrieving only the top 3-5 relevant chunks. I then add a cross-encoder reranker, enable prompt caching for static instructions, use Redis semantic caching for repeated questions, and stream responses. This cuts prompt token costs by over 95% and reduces perceived latency from 10 seconds to under 400ms.'"
-    ],
-    "interviewAnswers": [
-      {
-        "question": "Your chatbot takes 10 seconds to respond because you send the entire 50-page manual with every prompt. It's too slow and expensive. How would you fix it?",
-        "answer": "Re-sending a 50-page manual with every prompt is paying to re-read the same book for every question. I fix this with a 6-step architectural pipeline: 1) Retrieve instead of resending: Chunk and embed the manual once, retrieving only the top 3-5 relevant chunks (~600 tokens vs 30,000 tokens). 2) Chunk with structure: Split on headings, keep titles/page numbers as metadata, and overlap lightly so steps aren't cut in half. 3) Rerank, then trim: Use a cross-encoder to reorder candidates and keep only what clears a threshold. 4) Cache what repeats: Use prompt caching for static instructions and semantic Redis caching for frequent questions. 5) Control output: Stream the response and cap max_tokens. 6) Measure: Track tokens per request, TTFT, and answer accuracy. The principle: send the model the few paragraphs that answer the question, not the whole document."
-      }
-    ],
-    "code": "# ==============================================================================\n# PRODUCTION FIX: RETRIEVE INSTEAD OF RESENDING (CHUNKING, RERANKING & CACHING)\n# ==============================================================================\nimport time\nfrom typing import List, Dict, Any\n# Simulated fast cross-encoder and vector store\n\nclass OptimizedManualAssistant:\n    def __init__(self, vector_store, semantic_cache):\n        self.vector_store = vector_store\n        self.semantic_cache = semantic_cache\n        self.reranker_threshold = 0.70\n\n    def answer_query(self, query: str) -> Dict[str, Any]:\n        start_time = time.time()\n\n        # Step 4: Check Semantic Cache for identical/similar previous questions\n        cached_result = self.semantic_cache.get(query, similarity_threshold=0.98)\n        if cached_result:\n            return {\n                \"answer\": cached_result, \n                \"latency_ms\": round((time.time() - start_time) * 1000, 2),\n                \"tokens_used\": 0,\n                \"source\": \"SEMANTIC_CACHE\"\n            }\n\n        # Step 1 & 2: Retrieve Top-15 Candidate Chunks (Pre-embedded by heading)\n        candidates = self.vector_store.similarity_search(query, top_k=15)\n\n        # Step 3: Cross-Encoder Rerank and Trim Below Threshold\n        # Scores each (query, chunk) pair; keeps only high-confidence matches\n        reranked = [c for c in candidates if c.get(\"rerank_score\", 0.0) >= self.reranker_threshold]\n        top_chunks = sorted(reranked, key=lambda x: x[\"rerank_score\"], reverse=True)[:3]\n\n        if not top_chunks:\n            # Fallback to top 2 if none cleared threshold\n            top_chunks = candidates[:2]\n\n        # Step 5: Construct Lean Prompt (600 tokens instead of 30,000 tokens)\n        context_text = \"\\n\\n\".join([f\"[{c['metadata']['section']} - Pg {c['metadata']['page']}]: {c['text']}\" for c in top_chunks])\n        \n        # Static prompt prefix is prompt-cached by model provider\n        messages = [\n            {\"role\": \"system\", \"content\": \"You are a concise technical manual assistant. Use only provided context.\"},\n            {\"role\": \"user\", \"content\": f\"Context:\\n{context_text}\\n\\nQuestion: {query}\"}\n        ]\n\n        # Call LLM with streaming & capped max_tokens\n        # In production: response = client.chat.completions.create(..., stream=True, max_tokens=300)\n        simulated_answer = \"To calibrate the sensor, press and hold the blue button for 3 seconds until LED turns green.\"\n        \n        # Save to semantic cache for future queries\n        self.semantic_cache.set(query, simulated_answer)\n        \n        elapsed_ms = round((time.time() - start_time) * 1000, 2)\n        return {\n            \"answer\": simulated_answer,\n            \"latency_ms\": elapsed_ms,\n            \"tokens_used\": 620,  # 98% reduction from 30,000 tokens\n            \"source\": \"RAG_RETRIEVAL\"\n        }"
-  },
-  {
     "id": "tool-calling",
     "title": "Tool Calling & Function Calling in LLMs (Agentic Decision Engine)",
     "badge": "Agentic Decision Engine, JSON Schemas & Function Execution",
@@ -16404,124 +17511,122 @@ export const definitionsData = [
   {
     "id": "design-chatgpt",
     "title": "Design 'ChatGPT' (A General-Purpose Conversational AI System Design)",
-    "badge": "System Design, Large Language Models, RLHF Alignment & High-Concurrency Serving",
-    "summary": "Comprehensive architectural system design for a general-purpose conversational AI ('ChatGPT') capable of handling open-ended multi-turn dialog, maintaining coherent context across sessions, enforcing safety/helpfulness/honesty via RLHF, and serving millions of concurrent users with sub-second time-to-first-token (TTFT).",
-    "designChatGptArchitecture": {
-      "title": "End-to-End Conversational AI Architecture ('ChatGPT')",
-      "badge": "5-Tier High-Concurrency Architecture",
-      "requirements": {
-        "functional": [
-          "Handle open-ended multi-turn conversations with persona consistency and factual grounding.",
-          "Maintain conversation context across long sessions within finite token limits.",
-          "Be helpful, harmless, and honest (enforced via RLHF/DPO alignment and guardrails).",
-          "Support tool use (web search, python code interpreter, DALL-E image generation)."
-        ],
-        "nonFunctional": [
-          "Scale to millions of concurrent active users (100k+ generated tokens/sec).",
-          "Ultra-low perceived latency: Time to First Token (TTFT) < 300ms via token-by-token streaming.",
-          "Zero toxic/harmful outputs or prompt injection breaches (dual moderation layers).",
-          "High availability (99.99%) with graceful queue degradation during traffic surges."
-        ]
-      },
-      "coreComponents": [
+    "badge": "System Design, Large Language Models, Orchestration & Real-Time Streaming",
+    "summary": "Complete production system design for a general-purpose conversational AI ('ChatGPT') capable of handling multi-turn conversations, smart context management, safety guardrails, tool execution, and token streaming via Server-Sent Events (SSE).",
+    "highLevelArchitecture": {
+      "title": "High-Level Architecture (4 Core Layers)",
+      "badge": "Logical Architecture",
+      "note": "This is a logical architecture. In production, these components may be separate microservices or combined depending on traffic volume and scale.",
+      "layers": [
         {
           "step": 1,
-          "name": "Core Foundation Model & RLHF Alignment",
-          "badge": "Decoder-Only Transformer + PPO/DPO",
-          "border": "border-cyan-500/40",
-          "accent": "text-cyan-400",
-          "bgBadge": "bg-cyan-950/80 text-cyan-300 border-cyan-800",
-          "mechanism": "Massive pretraining followed by Supervised Fine-Tuning (SFT) and Reinforcement Learning from Human Feedback (RLHF).",
-          "details": [
-            "Pretraining: Autoregressive next-token prediction across multi-trillion tokens of web text, books, code, and math.",
-            "Supervised Fine-Tuning (SFT): High-quality prompt/response dialog pairs written by human experts to teach conversational turn-taking and instruction-following.",
-            "RLHF / DPO: A Reward Model trained on human preferences (thumbs up/down) trains the policy model via PPO or Direct Preference Optimization (DPO) to maximize helpfulness and eliminate hallucinations and toxicity."
-          ]
+          "name": "1. Client Layer",
+          "tools": ["Web app", "Mobile app", "Chat UI"],
+          "desc": "Where users type messages or issue voice commands. Connects via secure WebSockets or Server-Sent Events (SSE) for low-latency token streaming and markdown rendering."
         },
         {
           "step": 2,
-          "name": "Conversation State & Context Window Handling",
-          "badge": "Session Memory & Window Management",
-          "border": "border-amber-500/40",
-          "accent": "text-amber-400",
-          "bgBadge": "bg-amber-950/80 text-amber-300 border-amber-800",
-          "mechanism": "Low-latency state persistence in Redis combined with dynamic context pruning when dialogue exceeds the token window.",
-          "details": [
-            "Session Store: Client submits session_id with each message; Redis/DynamoDB caches recent turn history.",
-            "Truncation Strategy: Keep only the latest N messages (simplest, but drops foundational early instructions).",
-            "Rolling Summarization: A lightweight background model summarizes older turns (1 to k-4) into an executive 100-token context block prepended to recent raw turns.",
-            "Retrieval-Augmented Memory (Semantic History RAG): Embed all past turns into a vector database; query past conversation history to retrieve only the turns semantically relevant to the current question."
-          ]
+          "name": "2. API Gateway",
+          "tools": ["Authentication", "Rate limiting", "Request validation"],
+          "desc": "First line of defense. Verifies identity (JWT), checks quotas and user-level rate limits, and validates payload sizes to protect backend clusters from denial-of-wallet spikes."
         },
         {
           "step": 3,
-          "name": "Dual Safety & Moderation Layer",
-          "badge": "Input/Output Guardrails",
-          "border": "border-rose-500/40",
-          "accent": "text-rose-400",
-          "bgBadge": "bg-rose-950/80 text-rose-300 border-rose-800",
-          "mechanism": "Ultra-fast (<15ms) specialized classifiers guarding both ingress user queries and egress generated tokens.",
-          "details": [
-            "Pre-Inference Input Filter: Small, fast classifier (DeBERTa / Azure Content Safety) screens prompt for prompt injection, jailbreaks (DAN attacks), self-harm, hate speech, and cyber threats before hitting the expensive LLM.",
-            "Post-Inference Output Filter: Streaming token inspector checks generated tokens for PII leaks (credit cards, SSNs), copyright violations, and toxic language.",
-            "Why System Prompts Aren't Enough: System prompts ('You are a helpful assistant, do not do X') can easily be bypassed via adversarial jailbreaks. Dedicated external classification guardrails are mandatory."
+          "name": "3. Conversation Orchestrator",
+          "tools": ["Context assembly", "Safety checks", "Routing", "Tool execution"],
+          "desc": "The central control plane coordinating prompt construction, safety moderation, model calls, and tools.",
+          "subComponents": [
+            { "name": "Model Router", "role": "Chooses the right model by task difficulty, latency targets, and budget." },
+            { "name": "Retrieval & Tools", "role": "Executes RAG document search, live web search, APIs, or Python code." },
+            { "name": "Data Layer", "role": "Stores messages, active sessions, and user preferences in durable DB and Redis cache." },
+            { "name": "Observability", "role": "Tracks p95 latency, error rates, token usage, tool failures, and answer quality in real time." }
           ]
         },
         {
           "step": 4,
-          "name": "High-Throughput Serving & Inference Engine",
-          "badge": "vLLM, Continuous Batching & Streaming",
-          "border": "border-emerald-500/40",
-          "accent": "text-emerald-400",
-          "bgBadge": "bg-emerald-950/80 text-emerald-300 border-emerald-800",
-          "mechanism": "Distributed tensor-parallel serving cluster optimized for maximum GPU memory bandwidth utilization.",
-          "details": [
-            "PagedAttention & KV Cache (vLLM / TensorRT-LLM): Eliminates VRAM memory fragmentation, enabling 2-4x larger concurrent batch sizes.",
-            "Continuous / Iterative Batching: Inserts incoming requests into active decoding steps dynamically rather than waiting for an entire batch to finish generating.",
-            "Model Quantization (FP8 / AWQ INT4): Halves VRAM memory bandwidth requirements, doubling token generation speed without loss of reasoning capability.",
-            "Server-Sent Events (SSE) Streaming: Streams tokens back to the frontend immediately as they are decoded (30-50 tokens/sec), keeping perceived TTFT under 300ms."
-          ]
-        },
-        {
-          "step": 5,
-          "name": "Continuous RLHF Feedback Loop & Data Flywheel",
-          "badge": "Telemetry & Model Iteration",
-          "border": "border-purple-500/40",
-          "accent": "text-purple-400",
-          "bgBadge": "bg-purple-950/80 text-purple-300 border-purple-800",
-          "mechanism": "Real-time logging of user signals (thumbs up/down, copy, regenerations) to drive iterative alignment.",
-          "details": [
-            "Explicit Signals: Thumbs up / thumbs down with optional user critique.",
-            "Implicit Signals: Message regenerations (signal of dissatisfaction), user prompt edits, copy-to-clipboard (signal of success).",
-            "Data Flywheel: High-impact negative and positive pairs are anonymized and queued for human reviewer grading to fine-tune the next generation Reward Model."
-          ]
-        }
-      ],
-      "contextExhaustionStrategies": [
-        {
-          "strategy": "1. Sliding Window Truncation",
-          "howItWorks": "Drop the oldest user/assistant turns once total tokens exceed context window - margin. Keep system prompt and latest k turns.",
-          "tradeoff": "Zero compute overhead; however, causes total amnesia of initial instructions, user preferences, or file uploads discussed early in the chat."
-        },
-        {
-          "strategy": "2. Rolling Hierarchical Summarization",
-          "howItWorks": "When token threshold is reached, trigger an asynchronous background LLM call to condense turns 1 through N into an executive summary block. Inject [Summary of previous chat] + [Recent 3-5 raw turns].",
-          "tradeoff": "Preserves the essential gist of the conversation while consuming <150 tokens. Adds minor background token compute cost."
-        },
-        {
-          "strategy": "3. Semantic History Retrieval (Memory RAG)",
-          "howItWorks": "Every conversation turn is embedded and indexed in an episodic vector database (e.g. Chroma/Pinecone keyed by user_id). When user asks a question, retrieve top-3 most relevant historical turns from 20 turns ago.",
-          "tradeoff": "Maximum recall for long, multi-topic sessions. Allows user to say 'Remember the budget we talked about an hour ago?' and retrieve the exact numbers."
+          "name": "4. Streaming Response",
+          "tools": ["Server-Sent Events (SSE)", "Token-by-Token Streaming"],
+          "desc": "Sends generated tokens to the client as they arrive from the model, keeping perceived Time-to-First-Token (TTFT) under 300ms."
         }
       ]
     },
+    "componentBreakdown": [
+      {
+        "name": "API Gateway & Authentication",
+        "tag": "Security & Gatekeeper",
+        "desc": "Verifies identity, checks permissions, validates requests, applies quotas, and protects backend from abuse using user-level and tenant-level limits."
+      },
+      {
+        "name": "Conversation Manager",
+        "tag": "State & Session Memory",
+        "desc": "Stores conversation IDs, message history, and relevant user preferences. Retrieves only the context needed for current request rather than sending entire history every turn."
+      },
+      {
+        "name": "Conversation Orchestrator",
+        "tag": "Control Plane",
+        "desc": "Coordinates prompt construction, safety checks, retrieval, model calls, tool execution, retries, and final response generation for each dialogue turn."
+      },
+      {
+        "name": "Model Router",
+        "tag": "Intelligent Routing",
+        "desc": "Routes requests to an appropriate model based on capability, context-window limits, availability, latency targets, and cost (small 8B models for simple queries, frontier models for complex reasoning)."
+      },
+      {
+        "name": "RAG and Tool Layer",
+        "tag": "External Augmentation",
+        "desc": "Retrieves relevant documents, performs web searches, or calls approved APIs. Tool execution independently validates arguments and enforces permissions before returning output."
+      },
+      {
+        "name": "Storage and Observability",
+        "tag": "Data & Telemetry",
+        "desc": "Uses a durable database for messages and metadata, an in-memory Redis cache for repeated reads, and monitors for errors, p95 latency, token consumption, and answer quality."
+      }
+    ],
+    "requestLifecycle": {
+      "title": "Request Lifecycle: What Happens When a User Sends a Message?",
+      "streamingInsight": "Important production detail: Streaming and persistence are different concerns. The user can receive text chunks before the full answer has been saved to the database. Production systems must explicitly define how partial responses, cancellations, and retries are handled.",
+      "steps": [
+        { "step": 1, "name": "Receive", "desc": "Client sends message with a conversation ID and authentication credentials." },
+        { "step": 2, "name": "Validate", "desc": "Gateway checks identity, permissions, input size, and rate limits." },
+        { "step": 3, "name": "Load Context", "desc": "Retrieve recent messages, a conversation summary, and authorized long-term memory." },
+        { "step": 4, "name": "Prepare", "desc": "Apply input safety checks, build prompt, and retrieve relevant information if task requires RAG." },
+        { "step": 5, "name": "Generate or Act", "desc": "Route to a model. If the model requests a tool, validate and execute it, then pass result back to model." },
+        { "step": 6, "name": "Stream", "desc": "Send response chunks to the client via Server-Sent Events (SSE) as they become available, rather than waiting for complete answer." },
+        { "step": 7, "name": "Finalize", "desc": "Persist completed response and usage metadata; record operational metrics and handle interrupted or failed generations." }
+      ]
+    },
+    "productionConsiderations": [
+      "Authenticate and authorize before opening the streaming connection.",
+      "Integrate the real model's async streaming interface to avoid blocking the server event loop.",
+      "Support client cancellation and request timeouts so aborted chats stop burning GPU tokens.",
+      "Persist the final assistant response and track incomplete or interrupted generations.",
+      "Handle proxy buffering (disable proxy buffering in Nginx), connection limits, and provider errors.",
+      "Avoid exposing stack traces, API keys, or sensitive backend details in client error payloads."
+    ],
+    "contextExhaustionStrategies": [
+      {
+        "strategy": "1. Sliding Window Truncation",
+        "howItWorks": "Drop the oldest user and assistant turns once total tokens exceed context window minus margin. Keep system prompt and latest N turns.",
+        "tradeoff": "Zero compute overhead; however, causes total amnesia of initial instructions, user preferences, or file uploads discussed early in the chat."
+      },
+      {
+        "strategy": "2. Rolling Hierarchical Summarization",
+        "howItWorks": "When token threshold is reached (e.g. 75% of context window), trigger an async background LLM call to condense turns 1 through N into an executive summary block: [System Prompt] + [Conversation Summary] + [Latest 3-4 Raw Turns].",
+        "tradeoff": "Preserves the essential gist of the conversation while consuming <150 tokens. Adds minor background token compute cost."
+      },
+      {
+        "strategy": "3. Semantic History Retrieval (Memory RAG)",
+        "howItWorks": "Every conversation turn is embedded and indexed in an episodic vector database. When a user asks a question, retrieve top 2-3 most relevant historical turns from earlier in the session.",
+        "tradeoff": "Maximum recall for long, multi-topic sessions. Allows users to reference topics discussed hours ago without stuffing the prompt."
+      }
+    ],
     "details": [
-      "System Requirements: A general-purpose conversational AI ('ChatGPT') must balance open-ended flexibility, strict safety guardrails, stateful memory across dialog turns, and high-concurrency token throughput across thousands of GPU nodes.",
-      "Decoupled Architecture: Never couple the frontend directly to the LLM. Modern architectures use an API Gateway / Orchestrator layer that coordinates Redis session history, pre-inference moderation, model routing, caching, and SSE token streaming.",
-      "The Memory Illusion: LLMs are completely stateless functions (f(prompt) -> tokens). The illusion of memory is maintained entirely by the application layer appending past conversation turns to the prompt input on every turn.",
-      "Context Window Overflow Solutions: 1) Sliding window truncation (fastest, forgets early turns); 2) Rolling summarization (compresses older context into a concise summary); 3) Vector memory RAG (embeds past turns into an episodic store and retrieves on demand).",
-      "Production Safety Defense: Safety cannot be left to prompt engineering alone. A hardened architecture uses dual dedicated classifiers: Input moderation (checks prompt for jailbreaks/toxicity before LLM invocation) and Output guardrails (screens tokens for PII or dangerous content before streaming to client).",
-      "Serving Architecture: Models are partitioned using Tensor Parallelism (TP) across GPUs inside a single node, and Pipeline Parallelism (PP) across nodes. Engines like vLLM use PagedAttention and continuous iteration batching to maximize hardware saturation."
+      "System Architecture: High-level ChatGPT design consists of 4 tiers: Client (Web/Mobile), API Gateway (Auth & Rate Limiting), Conversation Orchestrator (Context, Routing, Tools, Storage, Observability), and Streaming Response.",
+      "Control Plane Role: The Orchestrator acts as the central control plane, coordinating prompt construction, safety checks, model routing (cheap vs frontier models), tool execution, and retries.",
+      "Request Lifecycle: 7 sequential steps: Receive -> Validate -> Load Context -> Prepare -> Generate or Act -> Stream (SSE) -> Finalize & Persist.",
+      "Streaming vs Persistence: Streaming and database persistence are decoupled. Users receive live tokens via Server-Sent Events (SSE) before the database transaction commits, ensuring instant responsiveness (TTFT < 300ms).",
+      "Context Window Overflow Solutions: 1) Sliding window truncation (fastest, forgets early turns); 2) Rolling summarization (compresses older context); 3) Semantic Memory RAG (retrieves relevant past turns on demand).",
+      "Production Safety Defense: Safety cannot be left to system prompts alone. Production systems run external pre-inference moderation (<15ms) to block jailbreaks/injections before hitting expensive models, plus post-inference output filters for PII."
     ],
     "interviewAnswers": [
       {
@@ -16537,6 +17642,6 @@ export const definitionsData = [
         "answer": "System prompts are easily bypassed using adversarial attacks, role-playing jailbreaks ('Do Anything Now / DAN'), or multi-turn prompt injections. A production system must decouple safety from the generation model by running external classifiers: an Input Moderation model that screens the user prompt before it ever reaches the expensive LLM, and an Output Safety Filter that evaluates streaming tokens before display. This saves GPU compute and provides deterministic policy enforcement."
       }
     ],
-    "code": "import asyncio\nfrom typing import AsyncGenerator\nfrom fastapi import FastAPI, HTTPException\nfrom fastapi.responses import StreamingResponse\nfrom pydantic import BaseModel\n\napp = FastAPI(title=\"ChatGPT Orchestration Service\")\n\nclass ChatRequest(BaseModel):\n    session_id: str\n    user_prompt: str\n\n# Mock Session Cache & Moderation Layer\nSESSION_HISTORY = {}\n\nasync def safety_moderation_check(prompt: str) -> bool:\n    # In production: DeBERTa / Azure Content Safety API (<15ms)\n    banned_keywords = [\"dan jailbreak\", \"bypass safety\", \"make explosive\"]\n    return not any(bad in prompt.lower() for bad in banned_keywords)\n\ndef get_context_with_truncation(session_id: str, new_prompt: str, max_turns: int = 5) -> list:\n    history = SESSION_HISTORY.get(session_id, [])\n    history.append({\"role\": \"user\", \"content\": new_prompt})\n    \n    # Strategy: Sliding Window Truncation (Keep latest max_turns)\n    truncated = history[-max_turns:]\n    SESSION_HISTORY[session_id] = truncated\n    return truncated\n\nasync def stream_llm_response(prompt_tokens: list) -> AsyncGenerator[str, None]:\n    # Mock token-by-token streaming from vLLM / TensorRT-LLM\n    mock_tokens = [\"Hello!\", \" I\", \" am\", \" ChatGPT,\", \" your\", \" AI\", \" assistant.\", \" How\", \" can\", \" I\", \" help?\"]\n    for token in mock_tokens:\n        await asyncio.sleep(0.04)  # ~25 tokens per second\n        yield f\"data: {token}\\n\\n\"\n\n@app.post(\"/api/chat/stream\")\nasync def chat_stream_endpoint(request: ChatRequest):\n    # 1. Pre-Inference Safety Guardrail\n    if not await safety_moderation_check(request.user_prompt):\n        raise HTTPException(status_code=400, detail=\"Query flagged by Content Moderation Layer.\")\n\n    # 2. Context Assembly & Memory Management\n    context = get_context_with_truncation(request.session_id, request.user_prompt)\n\n    # 3. Server-Sent Events (SSE) Streaming Response\n    return StreamingResponse(\n        stream_llm_response(context),\n        media_type=\"text/event-stream\"\n    )"
+    "code": "from fastapi import FastAPI\nfrom fastapi.responses import StreamingResponse\nfrom pydantic import BaseModel\nimport json\n\napp = FastAPI(title=\"ChatGPT SSE Streaming Gateway\")\n\nclass ChatRequest(BaseModel):\n    conversation_id: str\n    message: str\n\nasync def generate_tokens(message: str):\n    # Replace with an actual LLM streaming API (e.g. OpenAI, Anthropic, or vLLM)\n    sample_tokens = [\"Hello\", \", \", \"how \", \"can \", \"I \", \"help \", \"you \", \"today?\"]\n    for token in sample_tokens:\n        yield token\n\n@app.post(\"/chat\")\nasync def chat(request: ChatRequest):\n    async def event_stream():\n        try:\n            async for token in generate_tokens(request.message):\n                payload = json.dumps({\"token\": token})\n                yield f\"data: {payload}\\n\\n\"\n            yield \"data: [DONE]\\n\\n\"\n        except Exception:\n            # Log the detailed error securely on the server without exposing stack traces to the client\n            payload = json.dumps({\"error\": \"Generation failed\"})\n            yield f\"data: {payload}\\n\\n\"\n\n    return StreamingResponse(\n        event_stream(),\n        media_type=\"text/event-stream\",\n        headers={\"Cache-Control\": \"no-cache\"}\n    )"
   }
 ];

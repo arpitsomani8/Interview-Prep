@@ -81,6 +81,8 @@ export default function AllDefinitionsPage() {
     if (id === 'tree-of-thought' || id === 'graph-of-thoughts') return 'cot-chain-of-thought';
     if (id === 'agentic-ai' || id === 'agentic-workflow') return 'agentic-ai-workflow';
     if (id === 'bivariate') return 'univariate';
+    if (id === 'context-stuffing-vs-rag' || id === 'document-versioning-rag' || id === 'document-versioning') return 'rag';
+    if (id === 'dense-sparse' || id === 'dense-vs-sparse') return 'deepsparse';
     return id;
   };
 
@@ -887,31 +889,106 @@ export default function AllDefinitionsPage() {
 
             {/* Item 9: Connect GPT to FastAPI */}
             {item.id === 'connect-gpt-fastapi' && (
-              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
-                {/* Install & Run Commands */}
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <div className="flex-1 p-2.5 rounded-lg bg-black border border-zinc-800 flex items-center justify-between font-mono text-xs">
-                    <span className="text-cyan-400">{item.installCommand}</span>
-                    <button
-                      onClick={() => handleCopyCode('inst-fastapi', item.installCommand)}
-                      className="text-zinc-500 hover:text-white transition p-1"
-                      title="Copy command"
-                    >
-                      {copiedId === 'inst-fastapi' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    </button>
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Dependencies, Environment Setup & Run Commands */}
+                <div className="space-y-3 p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                  <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Setup & Execution Commands</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                      CLI & Environment
+                    </span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-black border border-zinc-800 font-mono text-xs text-emerald-400 flex items-center gap-2">
-                    <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>{item.runCommand}</span>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                    {/* Pip Install */}
+                    <div className="p-3 rounded-lg bg-black border border-zinc-800/80 flex items-center justify-between font-mono text-xs">
+                      <div>
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-0.5">Install Dependencies</span>
+                        <span className="text-cyan-300">{item.installCommand}</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('inst-fastapi', item.installCommand)}
+                        className="text-zinc-400 hover:text-white transition p-1.5 rounded hover:bg-zinc-800"
+                        title="Copy install command"
+                      >
+                        {copiedId === 'inst-fastapi' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+
+                    {/* Run Command */}
+                    <div className="p-3 rounded-lg bg-black border border-zinc-800/80 flex items-center justify-between font-mono text-xs">
+                      <div>
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-0.5">Run Dev Server</span>
+                        <span className="text-emerald-400">{item.runCommand}</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('run-fastapi', item.runCommand)}
+                        className="text-zinc-400 hover:text-white transition p-1.5 rounded hover:bg-zinc-800"
+                        title="Copy run command"
+                      >
+                        {copiedId === 'run-fastapi' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
                   </div>
+
+                  {/* Environment Variable Setup */}
+                  {item.envSetup && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                      <div className="p-2.5 rounded-lg bg-black border border-zinc-800/70 flex items-center justify-between font-mono text-xs">
+                        <div>
+                          <span className="text-[10px] text-blue-400 uppercase font-bold block mb-0.5">Windows PowerShell</span>
+                          <span className="text-zinc-300">{item.envSetup.windows}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('env-win', item.envSetup.windows)}
+                          className="text-zinc-400 hover:text-white transition p-1"
+                        >
+                          {copiedId === 'env-win' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+
+                      <div className="p-2.5 rounded-lg bg-black border border-zinc-800/70 flex items-center justify-between font-mono text-xs">
+                        <div>
+                          <span className="text-[10px] text-amber-400 uppercase font-bold block mb-0.5">macOS / Linux</span>
+                          <span className="text-zinc-300">{item.envSetup.unix}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('env-unix', item.envSetup.unix)}
+                          className="text-zinc-400 hover:text-white transition p-1"
+                        >
+                          {copiedId === 'env-unix' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Test with cURL */}
+                  {item.testCommand && (
+                    <div className="p-2.5 rounded-lg bg-black border border-zinc-800/80 flex items-center justify-between font-mono text-xs">
+                      <div className="overflow-x-auto mr-2">
+                        <span className="text-[10px] text-purple-400 uppercase font-bold block mb-0.5">Test with cURL</span>
+                        <span className="text-zinc-300">{item.testCommand}</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('test-fastapi', item.testCommand)}
+                        className="text-zinc-400 hover:text-white transition p-1.5 rounded hover:bg-zinc-800 shrink-0"
+                        title="Copy test command"
+                      >
+                        {copiedId === 'test-fastapi' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                {/* Python Implementation Code Block */}
+                {/* 2. Python Implementation Code Block */}
                 <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                   <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
                     <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
                       <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>main.py (FastAPI + OpenAI Responses API)</span>
+                      <span>main.py (FastAPI + OpenAI Responses API + try/except APIError)</span>
                     </div>
                     <button
                       onClick={() => handleCopyCode('code-fastapi', item.code)}
@@ -933,7 +1010,108 @@ export default function AllDefinitionsPage() {
                   <CodeHighlight code={item.code} />
                 </div>
 
-                {/* Explanation: What just happened? */}
+                {/* 3. Code Breakdown Cards */}
+                {item.codeBreakdown && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {item.codeBreakdown.map((b, bIdx) => (
+                      <div key={bIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 space-y-1">
+                        <span className="text-xs font-mono font-bold text-amber-300 block">
+                          {b.element}
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {b.explanation}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 4. How do you make this production-ready? */}
+                {item.productionReady && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <div>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                          <Sparkles className="w-3.5 h-3.5 text-rose-400" />
+                          <span>{item.productionReady.headline}</span>
+                        </h4>
+                        <p className="text-[11px] font-mono text-zinc-400 mt-0.5">
+                          {item.productionReady.subheadline}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-semibold">
+                        Production Checklist
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+                      {item.productionReady.areas.map((a, aIdx) => (
+                        <div key={aIdx} className="p-3 rounded-xl bg-black border border-zinc-800/80 space-y-1">
+                          <span className={`text-xs font-mono font-bold uppercase ${a.accent}`}>
+                            {a.area}
+                          </span>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {a.implementation}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Health Check Alert */}
+                    <div className="p-3 rounded-xl bg-black border border-amber-800/40 font-mono text-xs text-amber-300 flex items-start gap-2.5">
+                      <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                      <span>{item.productionReady.healthCheckAlert}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Flask vs. FastAPI Comparison Table */}
+                {item.flaskVsFastapi && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.flaskVsFastapi.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                        Framework Comparison
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead className="bg-zinc-900 border-b border-zinc-800 font-mono text-[11px] text-zinc-300">
+                          <tr>
+                            <th className="py-2.5 px-3.5">Feature</th>
+                            <th className="py-2.5 px-3.5 text-amber-400">Flask</th>
+                            <th className="py-2.5 px-3.5 text-cyan-400">FastAPI</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+                          {item.flaskVsFastapi.table.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/50 transition">
+                              <td className="py-2.5 px-3.5 font-mono text-zinc-400 font-bold text-[11px] whitespace-nowrap">
+                                {row.feature}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-amber-200/90 text-xs">
+                                {row.flask}
+                              </td>
+                              <td className="py-2.5 px-3.5 text-cyan-200/90 text-xs font-medium">
+                                {row.fastapi}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <p className="text-xs text-zinc-400 font-sans leading-relaxed pt-1">
+                      {item.flaskVsFastapi.summary}
+                    </p>
+                  </div>
+                )}
+
+                {/* 6. Explanation: What just happened? */}
                 <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-2">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">What Just Happened Inside the Flow?</h4>
                   <div className="space-y-1 text-xs text-zinc-300">
@@ -947,20 +1125,104 @@ export default function AllDefinitionsPage() {
 
             {/* Item 10: Connect GPT to Flask */}
             {item.id === 'connect-gpt-flask' && (
-              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
-                {/* Install Command */}
-                <div className="p-2.5 rounded-lg bg-black border border-zinc-800 flex items-center justify-between font-mono text-xs max-w-md">
-                  <span className="text-cyan-400">{item.installCommand}</span>
-                  <button
-                    onClick={() => handleCopyCode('inst-flask', item.installCommand)}
-                    className="text-zinc-500 hover:text-white transition p-1"
-                    title="Copy command"
-                  >
-                    {copiedId === 'inst-flask' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
+              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Dependencies, Environment Setup & Run Commands */}
+                <div className="space-y-3 p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                  <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Setup & Execution Commands</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                      CLI & Environment
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                    {/* Pip Install */}
+                    <div className="p-3 rounded-lg bg-black border border-zinc-800/80 flex items-center justify-between font-mono text-xs">
+                      <div>
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-0.5">Install Dependencies</span>
+                        <span className="text-cyan-300">{item.installCommand}</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('inst-flask', item.installCommand)}
+                        className="text-zinc-400 hover:text-white transition p-1.5 rounded hover:bg-zinc-800"
+                        title="Copy install command"
+                      >
+                        {copiedId === 'inst-flask' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+
+                    {/* Run Command */}
+                    <div className="p-3 rounded-lg bg-black border border-zinc-800/80 flex items-center justify-between font-mono text-xs">
+                      <div>
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-0.5">Run Dev Server</span>
+                        <span className="text-emerald-400">{item.runCommand}</span>
+                        {item.flaskRunCommand && (
+                          <span className="text-zinc-500 block text-[11px] mt-0.5">or: {item.flaskRunCommand}</span>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('run-flask', item.runCommand)}
+                        className="text-zinc-400 hover:text-white transition p-1.5 rounded hover:bg-zinc-800"
+                        title="Copy run command"
+                      >
+                        {copiedId === 'run-flask' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Environment Variable Setup */}
+                  {item.envSetup && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                      <div className="p-2.5 rounded-lg bg-black border border-zinc-800/70 flex items-center justify-between font-mono text-xs">
+                        <div>
+                          <span className="text-[10px] text-blue-400 uppercase font-bold block mb-0.5">Windows PowerShell</span>
+                          <span className="text-zinc-300">{item.envSetup.windows}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('env-win-flask', item.envSetup.windows)}
+                          className="text-zinc-400 hover:text-white transition p-1"
+                        >
+                          {copiedId === 'env-win-flask' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+
+                      <div className="p-2.5 rounded-lg bg-black border border-zinc-800/70 flex items-center justify-between font-mono text-xs">
+                        <div>
+                          <span className="text-[10px] text-amber-400 uppercase font-bold block mb-0.5">macOS / Linux</span>
+                          <span className="text-zinc-300">{item.envSetup.unix}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('env-unix-flask', item.envSetup.unix)}
+                          className="text-zinc-400 hover:text-white transition p-1"
+                        >
+                          {copiedId === 'env-unix-flask' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Test with cURL */}
+                  {item.testCommand && (
+                    <div className="p-2.5 rounded-lg bg-black border border-zinc-800/80 flex items-center justify-between font-mono text-xs">
+                      <div className="overflow-x-auto mr-2">
+                        <span className="text-[10px] text-purple-400 uppercase font-bold block mb-0.5">Test with cURL</span>
+                        <span className="text-zinc-300">{item.testCommand}</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('test-flask', item.testCommand)}
+                        className="text-zinc-400 hover:text-white transition p-1.5 rounded hover:bg-zinc-800 shrink-0"
+                        title="Copy test command"
+                      >
+                        {copiedId === 'test-flask' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                {/* Python Implementation Code Block */}
+                {/* 2. Python Implementation Code Block */}
                 <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                   <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
                     <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
@@ -987,12 +1249,12 @@ export default function AllDefinitionsPage() {
                   <CodeHighlight code={item.code} />
                 </div>
 
-                {/* Architectural Notes */}
-                <ul className="space-y-1.5 pt-1">
+                {/* 3. Architectural Notes */}
+                <ul className="space-y-2 p-4 rounded-xl bg-zinc-950/80 border border-zinc-800">
                   {item.notes.map((n, nIdx) => (
                     <li key={nIdx} className="text-xs text-zinc-300 flex items-start gap-2">
-                      <span className="text-cyan-400 mt-0.5">•</span>
-                      <span>{n}</span>
+                      <span className="text-cyan-400 mt-0.5 font-bold">•</span>
+                      <span className="leading-relaxed">{n}</span>
                     </li>
                   ))}
                 </ul>
@@ -1041,6 +1303,188 @@ export default function AllDefinitionsPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Item: CRUD API with FastAPI */}
+            {item.id === 'crud-api' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. What does CRUD mean? 4 Core Operations */}
+                {item.crudMeaning && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                          What does CRUD mean?
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-semibold">
+                        4 Core Operations
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+                      {item.crudMeaning.map((c, cIdx) => (
+                        <div
+                          key={cIdx}
+                          className="p-3.5 rounded-xl bg-black border border-zinc-800/80 flex flex-col justify-between hover:border-cyan-500/40 transition"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-base font-black font-mono px-2 py-0.5 rounded ${
+                                c.color === 'emerald' ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800' :
+                                c.color === 'cyan' ? 'bg-cyan-950/80 text-cyan-400 border border-cyan-800' :
+                                c.color === 'amber' ? 'bg-amber-950/80 text-amber-400 border border-amber-800' :
+                                'bg-rose-950/80 text-rose-400 border border-rose-800'
+                              }`}>
+                                {c.letter}
+                              </span>
+                              <span className="text-xs font-bold text-white font-mono">{c.action}</span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">{c.desc}</p>
+                          </div>
+
+                          <div className="pt-2 mt-2 border-t border-zinc-900 flex items-center justify-between font-mono text-[11px]">
+                            <span className="text-cyan-300 font-bold">{c.http}</span>
+                            <span className="text-[10px] text-zinc-500">{c.status}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. Setup & Execution Commands */}
+                <div className="space-y-3 p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                  <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Setup & Run the API</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                      FastAPI CLI
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                    {/* Pip Install */}
+                    <div className="p-3 rounded-lg bg-black border border-zinc-800/80 flex items-center justify-between font-mono text-xs">
+                      <div>
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-0.5">1. Install Dependencies</span>
+                        <span className="text-cyan-300">{item.installCommand}</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('inst-crud', item.installCommand)}
+                        className="text-zinc-400 hover:text-white transition p-1.5 rounded hover:bg-zinc-800"
+                        title="Copy install command"
+                      >
+                        {copiedId === 'inst-crud' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+
+                    {/* Run Command */}
+                    <div className="p-3 rounded-lg bg-black border border-zinc-800/80 flex items-center justify-between font-mono text-xs">
+                      <div>
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-0.5">2. Run the API</span>
+                        <span className="text-emerald-400">{item.runCommand}</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('run-crud', item.runCommand)}
+                        className="text-zinc-400 hover:text-white transition p-1.5 rounded hover:bg-zinc-800"
+                        title="Copy run command"
+                      >
+                        {copiedId === 'run-crud' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Test Endpoints with cURL */}
+                  {item.testCommands && (
+                    <div className="space-y-2 pt-2 border-t border-zinc-800/60">
+                      <span className="text-[11px] font-mono font-bold text-purple-400 uppercase block">
+                        3. Test Endpoints with cURL
+                      </span>
+                      <div className="space-y-1.5">
+                        {item.testCommands.map((tc, tcIdx) => (
+                          <div key={tcIdx} className="p-2.5 rounded-lg bg-black border border-zinc-800/80 flex items-center justify-between font-mono text-xs">
+                            <div className="overflow-x-auto mr-2">
+                              <span className="text-[10px] text-zinc-400 uppercase font-bold block mb-0.5">{tc.label}</span>
+                              <span className="text-zinc-300">{tc.cmd}</span>
+                            </div>
+                            <button
+                              onClick={() => handleCopyCode(`curl-crud-${tcIdx}`, tc.cmd)}
+                              className="text-zinc-400 hover:text-white transition p-1.5 rounded hover:bg-zinc-800 shrink-0"
+                              title="Copy cURL"
+                            >
+                              {copiedId === `curl-crud-${tcIdx}` ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. Python Implementation (main.py) */}
+                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                  <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                    <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>main.py (FastAPI CRUD API Implementation)</span>
+                    </div>
+                    <button
+                      onClick={() => handleCopyCode('code-crud', item.code)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                    >
+                      {copiedId === 'code-crud' ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy Code</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <CodeHighlight code={item.code} />
+                </div>
+
+                {/* 4. Key Concepts Breakdown */}
+                {item.keyConcepts && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <div className="flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-amber-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+                          Key Architectural Concepts & Best Practices
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-semibold">
+                        FastAPI & REST
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                      {item.keyConcepts.map((kc, kcIdx) => (
+                        <div key={kcIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800/80 space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-white font-mono text-cyan-300">{kc.concept}</span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-800">
+                              {kc.syntax}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {kc.explanation}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -2769,6 +3213,225 @@ export default function AllDefinitionsPage() {
                     </div>
                   </div>
                 )}
+
+                {/* Context Stuffing vs. RAG (Fixing 10s Latency & Runaway Costs) */}
+                {item.contextStuffingVsRag && (
+                  <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-[#09090e] border border-amber-500/40 shadow-2xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2 text-amber-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Zap className="w-4 h-4 text-amber-400 shrink-0" />
+                        <span>{item.contextStuffingVsRag.title}</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800/60 shrink-0 font-semibold">
+                        {item.contextStuffingVsRag.badge}
+                      </span>
+                    </div>
+
+                    {/* Problem Scenario & Architectural Principle Alert */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      <div className="p-4 rounded-xl bg-black border border-rose-900/40 space-y-1.5">
+                        <div className="text-[11px] font-mono uppercase text-rose-400 font-bold flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                          <span>The Problem Scenario:</span>
+                        </div>
+                        <p className="text-xs text-zinc-200 italic font-medium leading-relaxed">
+                          "{item.contextStuffingVsRag.problemScenario}"
+                        </p>
+                        <p className="text-[11px] text-zinc-400 font-sans pt-1 leading-relaxed">
+                          <strong className="text-amber-400 font-mono">The Flawed Instinct: </strong>
+                          {item.contextStuffingVsRag.flawedInstinct}
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-black border border-emerald-900/40 space-y-2 flex flex-col justify-between">
+                        <div>
+                          <div className="text-[11px] font-mono uppercase text-emerald-400 font-bold flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Guiding Architectural Principle:</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-emerald-200 font-semibold font-mono pt-2 leading-relaxed">
+                            "{item.contextStuffingVsRag.guidingPrinciple}"
+                          </p>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-300">
+                          <span className="text-cyan-400 font-mono font-bold">Latency Impact: </span>
+                          Collapses TTFT from 10s stalls to &lt;400ms while slashing token costs by 95%+.
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 6-Step Production Optimization Roadmap */}
+                    <div className="space-y-2.5 pt-1">
+                      <div className="text-xs font-bold text-zinc-300 font-mono uppercase tracking-wider flex items-center gap-1.5">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>6-Step Engineering Optimization Pipeline</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {item.contextStuffingVsRag.steps.map((st, sIdx) => (
+                          <div key={sIdx} className={`p-3.5 rounded-xl bg-black border ${st.border} space-y-2 flex flex-col justify-between hover:border-amber-500/40 transition`}>
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-zinc-900 ${st.accent} border border-zinc-800`}>
+                                  {st.step}
+                                </span>
+                                <span className="text-[9px] font-mono text-zinc-400 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">
+                                  {st.badge}
+                                </span>
+                              </div>
+                              <h5 className="text-xs font-bold text-white font-mono">{st.title}</h5>
+                              <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{st.desc}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Production Python Code */}
+                    {item.contextStuffingVsRag.code && (
+                      <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black pt-1">
+                        <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                          <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                            <Code2 className="w-3.5 h-3.5 text-amber-400" />
+                            <span>optimize_rag_pipeline.py (Chunking, Reranking & Semantic Redis Cache)</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopyCode('code-context-stuffing-rag', item.contextStuffingVsRag.code)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                          >
+                            {copiedId === 'code-context-stuffing-rag' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-400" />
+                                <span>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                <span>Copy Code</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <CodeHighlight code={item.contextStuffingVsRag.code} />
+                      </div>
+                    )}
+
+                    {/* Interview Defense Script */}
+                    {item.contextStuffingVsRag.interviewDefenseScript && (
+                      <div className="p-4 rounded-xl bg-black border border-amber-800/50 space-y-2">
+                        <div className="text-[11px] font-mono uppercase text-amber-400 font-bold flex items-center gap-1.5">
+                          <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Interview Defense Script (Spoken Response):</span>
+                        </div>
+                        <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans pl-3 border-l-2 border-amber-500/50">
+                          "{item.contextStuffingVsRag.interviewDefenseScript}"
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Document Versioning & Freshness in RAG */}
+                {item.documentVersioning && (
+                  <div className="space-y-4 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-cyan-500/40 shadow-2xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <span>{item.documentVersioning.title}</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 shrink-0 font-semibold">
+                        {item.documentVersioning.badge}
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans bg-black/60 p-3 rounded-xl border border-zinc-800">
+                      {item.documentVersioning.summary}
+                    </p>
+
+                    {/* Challenge Banner */}
+                    {item.documentVersioning.challenge && (
+                      <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 space-y-1.5">
+                        <div className="text-[11px] font-mono uppercase text-amber-400 font-bold flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                          <span>The Core Challenge of RAG Freshness:</span>
+                        </div>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {item.documentVersioning.challenge}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* 4 Strategy Cards */}
+                    {item.documentVersioning.strategies && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                        {item.documentVersioning.strategies.map((strat) => (
+                          <div
+                            key={strat.step}
+                            className={`p-4 rounded-xl bg-zinc-950/90 border ${strat.border || 'border-zinc-800'} space-y-2 hover:border-cyan-500/50 transition`}
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60">
+                                STRATEGY {strat.step}
+                              </span>
+                              <span className="text-[9px] font-mono text-zinc-400 bg-black/80 px-2 py-0.5 rounded border border-zinc-800">
+                                {strat.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${strat.accent || 'text-white'}`}>
+                              {strat.name}
+                            </h5>
+                            <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
+                              {strat.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Python Code: RAGDocumentVersionManager */}
+                    {item.documentVersioning.code && (
+                      <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black mt-2">
+                        <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                          <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                            <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>Python: RAGDocumentVersionManager (SHA-256 Deduplication & Incremental Upsert)</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopyCode('code-rag-doc-versioning', item.documentVersioning.code)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition"
+                          >
+                            {copiedCodeId === 'code-rag-doc-versioning' ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                <span className="text-emerald-400">Copied</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3.5 h-3.5" />
+                                <span>Copy Code</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <div className="p-4 overflow-x-auto text-xs font-mono leading-relaxed">
+                          <CodeHighlight code={item.documentVersioning.code} />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Interview Defense Answer */}
+                    {item.documentVersioning.interviewAnswer && (
+                      <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                        <div className="text-[11px] font-mono uppercase text-cyan-400 font-bold flex items-center gap-1.5">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>Interview Answer (Document Freshness & Deduplication):</span>
+                        </div>
+                        <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans pl-3 border-l-2 border-cyan-500/50">
+                          "{item.documentVersioning.interviewAnswer}"
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -3988,14 +4651,187 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 23: DeepSparse */}
+            {/* Item 23: DeepSparse (Dense vs. Sparse Unified) */}
             {item.id === 'deepsparse' && (
-              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
-                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
-                  <strong className="text-cyan-400 font-mono uppercase">Core Concept: </strong>
-                  Training creates a model; inference uses that trained model to make predictions. DeepSparse was designed to make inference faster on supported hardware and models.
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. What is DeepSparse? Hero Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-black to-zinc-950 border border-cyan-800/50 space-y-2.5 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Cpu className="w-4 h-4 text-cyan-400" />
+                      <span>What is DeepSparse?</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Neural Magic Sparsity Engine
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                    {item.whatIsDeepSparse}
+                  </p>
                 </div>
 
+                {/* 2. Side-by-Side Dual Representations (Dense vs. Sparse) */}
+                {item.representations && (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-purple-400">
+                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Dense vs. Sparse Representation</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.representations.map((rep, rIdx) => (
+                        <div
+                          key={rIdx}
+                          className={`p-4 rounded-2xl bg-zinc-950 border ${rep.border} space-y-3.5 flex flex-col justify-between shadow-xl`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <h4 className={`text-sm font-bold font-mono ${rep.accent}`}>
+                                {rep.name}
+                              </h4>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {rep.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                              {rep.definition}
+                            </p>
+                          </div>
+
+                          <div className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1">
+                            <span className="text-[10px] font-mono font-bold uppercase text-zinc-400 block">
+                              Example:
+                            </span>
+                            <code className={`font-mono text-sm font-bold ${rep.accent}`}>
+                              {rep.example}
+                            </code>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Dense vs. Sparse Comparison Table */}
+                {item.comparisonTable && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Dense vs. Sparse Comparison</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Feature Matrix
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px]">
+                            <th className="py-2.5 px-3">Feature</th>
+                            <th className="py-2.5 px-3 text-cyan-400">Dense</th>
+                            <th className="py-2.5 px-3 text-amber-400">Sparse</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.comparisonTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-semibold text-zinc-300 font-mono text-[11px] whitespace-nowrap">
+                                {row.feature}
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 font-medium">
+                                {row.dense}
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 font-medium">
+                                {row.sparse}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Simple Python Example (Code + Terminal Output) */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.codeExample.title}</span>
+                      </h4>
+                      <button
+                        onClick={() => handleCopyCode('code-deepsparse-example', item.codeExample.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-deepsparse-example' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="rounded-2xl overflow-hidden border border-zinc-800 bg-black shadow-xl">
+                      <div className="px-4 py-2 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
+                        <span>dense_vs_sparse.py</span>
+                        <span className="text-[10px] text-zinc-500">NumPy Sparsity Check</span>
+                      </div>
+                      <CodeHighlight code={item.codeExample.code} />
+                      {item.codeExample.output && (
+                        <div className="p-3.5 bg-zinc-950/90 border-t border-zinc-800/80 font-mono text-xs space-y-1">
+                          <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Terminal Output
+                          </span>
+                          <pre className="text-zinc-300 leading-relaxed overflow-x-auto whitespace-pre">
+                            {item.codeExample.output}
+                          </pre>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Where does Sparsity appear in AI/ML? */}
+                {item.whereSparsityAppears && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                      <Zap className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Where Does Sparsity Appear in AI/ML?</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {item.whereSparsityAppears.map((text, idx) => (
+                        <div
+                          key={idx}
+                          className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 flex items-start gap-2.5 text-xs text-zinc-300 leading-relaxed"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0 mt-1.5"></span>
+                          <span>{text}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Important Distinction Alert */}
+                    {item.importantDistinction && (
+                      <div className="p-3.5 rounded-xl bg-amber-950/25 border border-amber-800/40 flex items-start gap-2.5 text-xs text-amber-200/90 leading-relaxed font-sans">
+                        <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                        <div>{item.importantDistinction}</div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 6. Architectural Role Cards (DeepSparse Core Execution) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                   {item.keyPoints.map((pt, pIdx) => (
                     <div key={pIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
@@ -4005,13 +4841,13 @@ export default function AllDefinitionsPage() {
                   ))}
                 </div>
 
-                <div className="p-4 rounded-xl bg-black border border-zinc-800 flex items-center justify-between text-xs text-zinc-400">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span>Role: Inference Technology & Sparse CPU Execution</span>
+                {/* 7. Takeaway Banner */}
+                {item.takeaway && (
+                  <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                    <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                    {item.takeaway}
                   </div>
-                  <span className="font-mono text-cyan-400 text-[11px]">Not an Object Detector · Not Model Training</span>
-                </div>
+                )}
               </div>
             )}
 
@@ -4358,44 +5194,144 @@ export default function AllDefinitionsPage() {
 
             {/* Item 29: Coding Best Practices */}
             {item.id === 'coding-best-practices' && (
-              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. The 8 Most Important Coding Practices */}
                 <div className="space-y-3.5">
-                  {item.practices.map((practice, pIdx) => (
-                    <div key={pIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-cyan-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                        The 8 Most Important Coding Practices
+                      </h4>
+                    </div>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-semibold">
+                      Production Engineering
+                    </span>
+                  </div>
+
+                  <div className="space-y-3">
+                    {item.practices.map((practice, pIdx) => (
+                      <div key={pIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
+                        <div className="flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-md bg-cyan-950 border border-cyan-800/80 text-cyan-300 font-mono text-xs flex items-center justify-center font-bold">
+                            {practice.number}
+                          </span>
+                          <h4 className="text-xs sm:text-sm font-bold text-white font-mono uppercase tracking-wide">
+                            {practice.title}
+                          </h4>
+                        </div>
+
+                        <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                          {practice.desc}
+                        </p>
+
+                        {/* Practical Rule / Example */}
+                        {practice.example && (
+                          <div className="p-2.5 rounded-lg bg-zinc-900/90 border border-cyan-900/30 font-mono text-[11px] text-cyan-200 flex items-start gap-2">
+                            <span className="text-cyan-400 font-bold shrink-0">Rule:</span>
+                            <span className="leading-relaxed">{practice.example}</span>
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                          <div className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-900/40 text-xs">
+                            <span className="text-rose-400 font-mono font-bold uppercase text-[10px] block mb-1">
+                              ✕ Bad Pattern
+                            </span>
+                            <span className="text-rose-200/90 leading-relaxed text-[11px] font-mono block">
+                              {practice.bad}
+                            </span>
+                          </div>
+                          <div className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-900/40 text-xs">
+                            <span className="text-emerald-400 font-mono font-bold uppercase text-[10px] block mb-1">
+                              ✓ Better Production Approach
+                            </span>
+                            <span className="text-emerald-200/90 leading-relaxed text-[11px] font-mono block">
+                              {practice.better}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 2. Useful Python Tools */}
+                {item.usefulTools && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                       <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-md bg-cyan-950 border border-cyan-800/80 text-cyan-300 font-mono text-xs flex items-center justify-center font-bold">
-                          {practice.number}
-                        </span>
-                        <h4 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
-                          {practice.title}
+                        <Terminal className="w-4 h-4 text-amber-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+                          Useful Python Tools (Code Quality & Testing)
                         </h4>
                       </div>
-
-                      <p className="text-xs text-zinc-300 leading-relaxed">
-                        {practice.desc}
-                      </p>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                        <div className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-900/40 text-xs">
-                          <span className="text-rose-400 font-mono font-bold uppercase text-[10px] block mb-1">
-                            ✕ Bad Pattern
-                          </span>
-                          <span className="text-rose-200/90 leading-relaxed text-[11px]">
-                            {practice.bad}
-                          </span>
-                        </div>
-                        <div className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-900/40 text-xs">
-                          <span className="text-emerald-400 font-mono font-bold uppercase text-[10px] block mb-1">
-                            ✓ Better Architectural Approach
-                          </span>
-                          <span className="text-emerald-200/90 leading-relaxed text-[11px]">
-                            {practice.better}
-                          </span>
-                        </div>
-                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-semibold">
+                        Dev Toolchain
+                      </span>
                     </div>
-                  ))}
-                </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+                      {item.usefulTools.map((t, tIdx) => (
+                        <div
+                          key={tIdx}
+                          className="p-3.5 rounded-xl bg-black border border-zinc-800/80 flex flex-col justify-between hover:border-amber-500/40 transition"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-bold text-white font-mono text-cyan-300">{t.tool}</span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-amber-400 border border-zinc-800">
+                                {t.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs font-semibold text-zinc-200 font-sans">{t.purpose}</p>
+                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-0.5">{t.desc}</p>
+                          </div>
+
+                          <div className="pt-2 mt-2 border-t border-zinc-900 flex items-center justify-between font-mono text-[11px]">
+                            <span className="text-zinc-400">{t.command}</span>
+                            <button
+                              onClick={() => handleCopyCode(`tool-${tIdx}`, t.command)}
+                              className="text-zinc-400 hover:text-white transition p-1 rounded hover:bg-zinc-800"
+                              title="Copy command"
+                            >
+                              {copiedId === `tool-${tIdx}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Python Implementation Example */}
+                {item.code && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>clean_architecture_service.py (All 8 Best Practices in Action)</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-best-practices', item.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-best-practices' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <CodeHighlight code={item.code} />
+                  </div>
+                )}
               </div>
             )}
 
@@ -5384,47 +6320,226 @@ export default function AllDefinitionsPage() {
 
             {/* Item 36: Diffusion Model */}
             {item.id === 'diffusion-model' && (
-              <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Core Definition Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-950/30 via-zinc-950 to-cyan-950/30 border border-purple-800/40 text-xs sm:text-sm text-purple-200/95 leading-relaxed font-mono flex items-start gap-3 shadow-xl">
+                  <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 shrink-0">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div className="space-y-1">
+                    <strong className="text-purple-400 uppercase font-sans font-bold block text-xs tracking-wider">
+                      What is a Diffusion Model?
+                    </strong>
+                    <p className="text-xs sm:text-sm text-purple-100 font-sans font-medium">
+                      {item.summary}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 2. Training vs Generation Phases */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Training Phase */}
-                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">
-                      During Training (Forward Noising & Noise Prediction)
-                    </h4>
-                    <ul className="space-y-2 pt-1">
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 space-y-3 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                        <span>During Training</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Forward Noising & Prediction
+                      </span>
+                    </div>
+                    <ul className="space-y-2.5 pt-1">
                       {item.trainingPhase.map((tr, tIdx) => (
-                        <li key={tIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
-                          <span className="text-amber-400 mt-0.5">•</span>
-                          <span>{tr}</span>
+                        <li key={tIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2.5">
+                          <span className="w-5 h-5 rounded-md bg-amber-950/60 border border-amber-800/50 flex items-center justify-center text-amber-400 font-mono font-bold text-[10px] shrink-0 mt-0.5">
+                            {tIdx + 1}
+                          </span>
+                          <span className="font-sans">{tr.replace(/^[0-9]+\.\s*/, '')}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
 
                   {/* Generation Phase */}
-                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">
-                      During Generation (Reverse Denoising)
-                    </h4>
-                    <ul className="space-y-2 pt-1">
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-emerald-800/40 space-y-3 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>During Generation</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Reverse Denoising
+                      </span>
+                    </div>
+                    <ul className="space-y-2.5 pt-1">
                       {item.generationPhase.map((gen, gIdx) => (
-                        <li key={gIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
-                          <span className="text-emerald-400 mt-0.5">•</span>
-                          <span>{gen}</span>
+                        <li key={gIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2.5">
+                          <span className="w-5 h-5 rounded-md bg-emerald-950/60 border border-emerald-800/50 flex items-center justify-center text-emerald-400 font-mono font-bold text-[10px] shrink-0 mt-0.5">
+                            {gIdx + 1}
+                          </span>
+                          <span className="font-sans">{gen.replace(/^[0-9]+\.\s*/, '')}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
 
-                {/* Core Ecosystem Role */}
+                {/* 3. Core Ecosystem Role & Context */}
                 {item.takeaway && (
-                  <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-cyan-400 shrink-0"></span>
-                      <span className="font-bold text-white font-mono">{item.takeaway}</span>
+                  <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shrink-0"></span>
+                      <span className="font-bold text-white font-mono text-xs sm:text-sm">
+                        {item.takeaway}
+                      </span>
                     </div>
-                    <span className="text-[11px] text-zinc-400 italic font-mono">{item.ecosystemContext}</span>
+                    <span className="text-[11px] text-zinc-300 font-mono bg-black/60 px-3 py-1.5 rounded-lg border border-zinc-800">
+                      {item.ecosystemContext}
+                    </span>
+                  </div>
+                )}
+
+                {/* 4. Hands-on Python: Add Noise to an Image */}
+                {item.pythonNoiseDemo && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 shadow-xl space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.pythonNoiseDemo.title}</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 font-sans">
+                          {item.pythonNoiseDemo.subtitle}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-diffusion-noise', item.pythonNoiseDemo.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer self-start sm:self-auto"
+                      >
+                        {copiedId === 'code-diffusion-noise' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="px-4 py-2 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
+                        <span>{item.pythonNoiseDemo.filename}</span>
+                        <span className="text-[10px] text-zinc-500">NumPy Forward Diffusion</span>
+                      </div>
+                      <CodeHighlight code={item.pythonNoiseDemo.code} />
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-black border border-amber-800/30 text-[11px] font-mono text-amber-300/90 flex items-center gap-2">
+                      <span className="text-amber-400 font-bold">Note:</span>
+                      <span>{item.pythonNoiseDemo.note}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Key Concepts for Interviews Table */}
+                {item.keyConceptsTable && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Key Concepts for Interviews</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Terminology Cheatsheet
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2.5 px-3 font-semibold text-cyan-400 w-1/4">Concept</th>
+                            <th className="py-2.5 px-3 font-semibold text-emerald-400 w-7/12">Meaning</th>
+                            <th className="py-2.5 px-3 font-semibold text-zinc-400 w-2/12">Category</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.keyConceptsTable.map((kc, kIdx) => (
+                            <tr key={kIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-semibold text-white text-[11px] whitespace-nowrap">
+                                <span className="px-2 py-0.5 rounded bg-black border border-zinc-800 text-cyan-300">
+                                  {kc.concept}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 font-sans text-xs">
+                                {kc.meaning}
+                              </td>
+                              <td className="py-2.5 px-3 font-mono text-[10px] text-zinc-400">
+                                {kc.badge}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Diffusion Models vs. GANs */}
+                {item.diffusionVsGans && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-xl space-y-4">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                        <span>{item.diffusionVsGans.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Architectural Comparison
+                      </span>
+                    </div>
+
+                    {/* Quick Bullet Takeaways */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {item.diffusionVsGans.points.map((pt, pIdx) => (
+                        <div key={pIdx} className="p-3 rounded-xl bg-black border border-zinc-800/80 text-xs text-zinc-300 font-sans flex items-start gap-2">
+                          <span className="text-purple-400 font-bold mt-0.5">•</span>
+                          <span>{pt}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Detailed Comparison Table */}
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="bg-zinc-900 border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2.5 px-3 font-semibold text-white w-1/4">Dimension</th>
+                            <th className="py-2.5 px-3 font-semibold text-cyan-400 w-3/8">Diffusion Models</th>
+                            <th className="py-2.5 px-3 font-semibold text-rose-400 w-3/8">GANs</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900 font-sans">
+                          {item.diffusionVsGans.comparisonTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-semibold text-zinc-200 text-[11px]">
+                                {row.dimension}
+                              </td>
+                              <td className="py-2.5 px-3 text-cyan-200/90 text-xs">
+                                {row.diffusion}
+                              </td>
+                              <td className="py-2.5 px-3 text-rose-200/90 text-xs">
+                                {row.gans}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 )}
               </div>
@@ -6551,98 +7666,521 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 45: Denoising in Generative AI */}
+            {/* Item 45: Denoising */}
             {item.id === 'denoising' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                {/* Core Concept Banner */}
-                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
-                  <strong className="text-cyan-400 uppercase">Core Principle: </strong>
-                  {item.coreConcept}
-                </div>
-
-                {/* Forward vs Reverse Process Grid */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>The Diffusion Process: Forward Noising vs. Reverse Denoising</span>
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {item.forwardVsReverse.map((f, fIdx) => (
-                      <div key={fIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between">
-                        <div>
-                          <span className="text-xs font-bold text-white font-mono text-cyan-300">{f.stage}</span>
-                          <p className="text-xs text-zinc-400 leading-relaxed mt-1">{f.desc}</p>
-                        </div>
-                        <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800/80 font-mono text-[11px] text-emerald-300 break-all">
-                          {f.math}
-                        </div>
-                      </div>
-                    ))}
+                {/* 1. Core Principle Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-black to-zinc-950 border border-cyan-800/50 space-y-2.5 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-cyan-400" />
+                      <span>What is Denoising?</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Signal & Feature Integrity
+                    </span>
                   </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                  <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                    {item.subText}
+                  </p>
                 </div>
 
-                {/* 3 Use Cases in Fashion AI */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono">
-                    Practical Applications in Fashion & Design Generation
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                    {item.useCases.map((uc, uIdx) => (
-                      <div key={uIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 flex flex-col justify-between">
-                        <div className="text-xs font-bold text-amber-300 font-mono">{uc.title}</div>
-                        <p className="text-[11px] text-zinc-400 leading-relaxed">{uc.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                {/* 2. Where Noise Appears (4 Real-World Application Cards) */}
+                {item.domains && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Where Noise Appears (Practical Examples)</span>
+                    </h4>
 
-                {/* PyTorch Denoising Step Code */}
-                {item.pytorchExample && (
-                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
-                      <div className="space-y-0.5">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
-                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>{item.pytorchExample.title}</span>
-                        </h4>
-                        <p className="text-[11px] text-zinc-400 font-sans italic">{item.pytorchExample.explanation}</p>
-                      </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/50">PyTorch Math</span>
-                    </div>
-
-                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
-                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>{item.pytorchExample.filename}</span>
-                        </div>
-                        <button
-                          onClick={() => handleCopyCode('code-denoising', item.pytorchExample.code)}
-                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                      {item.domains.map((d, dIdx) => (
+                        <div
+                          key={dIdx}
+                          className={`p-4 rounded-xl bg-zinc-950 border ${d.border} space-y-2 flex flex-col justify-between shadow-xl`}
                         >
-                          {copiedId === 'code-denoising' ? (
-                            <>
-                              <Check className="w-3 h-3 text-emerald-400" />
-                              <span>Copied!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3 h-3" />
-                              <span>Copy Code</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                      <CodeHighlight code={item.pytorchExample.code} />
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${d.accent}`}>
+                                {d.domain}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {d.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {d.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
 
-                {/* Final Takeaway */}
-                <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
-                  <strong className="text-cyan-400 uppercase">Core Architectural Takeaway: </strong>
-                  {item.takeaway}
+                {/* 3. Types of Noise Table */}
+                {item.noiseTypesTable && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Types of Noise & Common Approaches</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Filter Matrix
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2.5 px-3 font-semibold text-cyan-400 w-1/4">Noise Type</th>
+                            <th className="py-2.5 px-3 font-semibold text-amber-300 w-3/8">Real-World Example</th>
+                            <th className="py-2.5 px-3 font-semibold text-emerald-400 w-3/8">Common Approach</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.noiseTypesTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-semibold text-zinc-200 text-[11px] whitespace-nowrap">
+                                {row.noiseType}
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 font-sans">
+                                {row.example}
+                              </td>
+                              <td className="py-2.5 px-3 font-mono text-emerald-300 text-[11px]">
+                                {row.commonApproach}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. OpenCV Python Code Example */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.codeExample.title}</span>
+                      </h4>
+                      <button
+                        onClick={() => handleCopyCode('code-denoising-cv2', item.codeExample.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-denoising-cv2' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="rounded-2xl overflow-hidden border border-zinc-800 bg-black shadow-xl">
+                      <div className="px-4 py-2 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
+                        <span>{item.codeExample.filename || 'denoising_opencv.py'}</span>
+                        <span className="text-[10px] text-zinc-500">OpenCV & NumPy Simulation</span>
+                      </div>
+                      <CodeHighlight code={item.codeExample.code} />
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Filter Selection Note */}
+                {item.filterNote && (
+                  <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 flex items-start gap-3 text-xs text-amber-200/90 leading-relaxed font-sans shadow-lg">
+                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-amber-400 font-mono uppercase">Filter Selection Note: </strong>
+                      {item.filterNote}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Related Concepts vs. Differences */}
+                {item.relatedConcepts && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Related Concepts (Related But Different)</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.relatedConcepts.map((rc, rIdx) => (
+                        <div
+                          key={rIdx}
+                          className={`p-4 rounded-xl bg-zinc-950 border ${rc.border} space-y-2 flex flex-col justify-between shadow-xl`}
+                        >
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono ${rc.accent}`}>
+                                {rc.concept}
+                              </h5>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {rc.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {rc.definition}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Takeaway Banner */}
+                {item.takeaway && (
+                  <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                    <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                    {item.takeaway}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Item: Data Cleaning & Preprocessing */}
+            {item.id === 'data-cleaning' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Core Principle Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-black to-zinc-950 border border-cyan-800/50 space-y-2.5 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-cyan-400" />
+                      <span>Data Cleaning & Preprocessing Core Principle</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Reliable Machine Learning
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans font-medium">
+                    {item.coreDefinition}
+                  </p>
                 </div>
+
+                {/* 2. The End-to-End Workflow (5 Steps) */}
+                {item.workflowSteps && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>The End-to-End Workflow (5 Stages)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Ingestion to Modeling
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                      {item.workflowSteps.map((wf, wIdx) => (
+                        <div
+                          key={wIdx}
+                          className={`p-4 rounded-xl bg-zinc-950 border ${wf.border} space-y-2 flex flex-col justify-between shadow-xl`}
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono px-2 py-0.5 rounded bg-black border border-zinc-800 text-cyan-300">
+                                Step {wf.step}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {wf.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${wf.accent}`}>
+                              {wf.name}
+                            </h5>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {wf.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. The Most Important Cleaning Operations Table */}
+                {item.cleaningOperationsTable && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-amber-400" />
+                        <span>The Most Important Cleaning Operations</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Problem & Solution Matrix
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2.5 px-3 font-semibold text-amber-400 w-1/3">Problem</th>
+                            <th className="py-2.5 px-3 font-semibold text-zinc-300 w-1/3">Common Solution</th>
+                            <th className="py-2.5 px-3 font-semibold text-cyan-400 w-1/3">Python Tool</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.cleaningOperationsTable.map((op, oIdx) => (
+                            <tr key={oIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-semibold text-amber-200/90 text-[11px] whitespace-nowrap">
+                                {op.problem}
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 font-sans">
+                                {op.solution}
+                              </td>
+                              <td className="py-2.5 px-3 font-mono text-cyan-300 text-[11px]">
+                                {op.tool}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Practical Example Using Pandas */}
+                {item.pandasPractical && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 shadow-xl space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.pandasPractical.title}</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 font-sans">
+                          Inspecting datasets, removing redundant duplicates, imputing missing values, and one-hot encoding.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-pandas-cleaning', item.pandasPractical.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer self-start sm:self-auto"
+                      >
+                        {copiedId === 'code-pandas-cleaning' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Useful Inspection Functions Grid */}
+                    {item.pandasPractical.inspectionTools && (
+                      <div className="space-y-2">
+                        <span className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider">
+                          Step 1: Useful Inspection Functions:
+                        </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+                          {item.pandasPractical.inspectionTools.map((it, itIdx) => (
+                            <div key={itIdx} className="p-2.5 rounded-lg bg-black border border-zinc-800 space-y-1">
+                              <span className="text-xs font-bold font-mono text-cyan-400 block">
+                                {it.func}
+                              </span>
+                              <p className="text-[11px] text-zinc-400 leading-tight font-sans">
+                                {it.desc}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Python Code Display */}
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="px-4 py-2 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
+                        <span>{item.pandasPractical.filename}</span>
+                        <span className="text-[10px] text-zinc-500">Pandas Dataframe Pipeline</span>
+                      </div>
+                      <CodeHighlight code={item.pandasPractical.code} />
+                    </div>
+
+                    {/* Step 2 & Step 3 Engineering Insights */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                      <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed font-sans space-y-1">
+                        <strong className="text-amber-400 font-mono uppercase block">Step 2 Duplicate Caution:</strong>
+                        <span>{item.pandasPractical.duplicateCaution}</span>
+                      </div>
+                      <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-sans space-y-1">
+                        <strong className="text-cyan-400 font-mono uppercase block">Step 3 Imputation Reason:</strong>
+                        <span>{item.pandasPractical.imputationReason}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Scaling Numerical Features */}
+                {item.scalingSection && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5 text-purple-400" />
+                        <span>{item.scalingSection.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
+                        Standardization Math
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                      {item.scalingSection.explanation}
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 items-center">
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
+                        <span className="text-[10px] font-mono uppercase text-purple-400 font-bold block">
+                          Z-Score Normalization Formula:
+                        </span>
+                        <div className="text-lg font-mono font-bold text-emerald-400 bg-zinc-950 p-3 rounded-lg border border-zinc-800 text-center">
+                          z = (x - μ) / σ
+                        </div>
+                        <p className="text-[11px] text-zinc-400 font-sans">
+                          {item.scalingSection.formulaExplanation}
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
+                        <span className="text-[10px] font-mono uppercase text-cyan-400 font-bold block">
+                          Scikit-Learn Implementation:
+                        </span>
+                        <div className="bg-zinc-950 p-3 rounded-lg border border-zinc-800 font-mono text-xs text-cyan-300">
+                          {item.scalingSection.snippet}
+                        </div>
+                        <p className="text-[11px] text-zinc-400 font-sans">
+                          Required for KNN, SVM, Logistic Regression, and Neural Nets. Tree algorithms are invariant.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Production-Ready Preprocessing with Scikit-Learn */}
+                {item.productionPipeline && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>{item.productionPipeline.title}</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 font-sans">
+                          ColumnTransformer + Pipeline: Missing imputation, one-hot encoding, and standard scaling.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-sklearn-pipeline', item.productionPipeline.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer self-start sm:self-auto"
+                      >
+                        {copiedId === 'code-sklearn-pipeline' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="px-4 py-2 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
+                        <span>{item.productionPipeline.filename}</span>
+                        <span className="text-[10px] text-zinc-500">Pipeline & ColumnTransformer</span>
+                      </div>
+                      <CodeHighlight code={item.productionPipeline.code} />
+                    </div>
+
+                    {/* Why this approach is good */}
+                    <div className="space-y-2">
+                      <span className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider">
+                        Why this approach is recommended for production & interviews:
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                        {item.productionPipeline.advantages.map((adv, aIdx) => (
+                          <div key={aIdx} className="p-3 rounded-xl bg-black border border-zinc-800 flex items-start gap-2">
+                            <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                            <span className="text-xs text-zinc-300 font-sans leading-relaxed">{adv}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Critical Interview Concept: Data Leakage Prevention */}
+                {item.dataLeakageAlert && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-rose-950/20 border border-rose-800/50 space-y-2.5 shadow-xl">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-rose-400 font-mono">
+                        {item.dataLeakageAlert.title}
+                      </h4>
+                    </div>
+                    <p className="text-xs text-zinc-200 leading-relaxed font-sans">
+                      <strong className="text-rose-300">The Golden Rule: </strong>
+                      {item.dataLeakageAlert.rule}
+                    </p>
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans pl-4 border-l-2 border-rose-500/40">
+                      <strong className="text-emerald-400 font-mono">Best Practice: </strong>
+                      {item.dataLeakageAlert.bestPractice}
+                    </p>
+                  </div>
+                )}
+
+                {/* 8. Rules of Thumb */}
+                {item.rulesOfThumb && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Production Rules of Thumb (Interview Cheatsheet)</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {item.rulesOfThumb.map((rot, rIdx) => (
+                        <div key={rIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1 hover:border-amber-800/40 transition">
+                          <span className="text-xs font-bold font-mono text-amber-300 block">
+                            • {rot.title}
+                          </span>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {rot.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 9. Takeaway Banner */}
+                {item.takeaway && (
+                  <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                    <strong className="text-emerald-400 uppercase">Production Takeaway: </strong>
+                    {item.takeaway}
+                  </div>
+                )}
               </div>
             )}
 
@@ -8526,27 +10064,213 @@ export default function AllDefinitionsPage() {
             )}
 
             {/* Item 56: Debugging AI & Search Pipelines */}
+            {/* Item 47: Debugging AI & ML Pipelines */}
             {item.id === 'debugging' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                {/* Core Philosophy Callout */}
-                <div className="p-4 rounded-xl bg-gradient-to-r from-amber-950/30 via-zinc-950 to-rose-950/20 border border-amber-800/40 text-xs sm:text-sm text-amber-200/95 leading-relaxed font-mono flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
+                {/* 1. Core Philosophy Callout */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-950/30 via-zinc-950 to-rose-950/20 border border-amber-800/40 text-xs sm:text-sm text-amber-200/95 leading-relaxed font-mono flex items-start gap-3 shadow-xl">
+                  <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
                     <Bug className="w-4 h-4" />
                   </div>
-                  <div>
-                    <strong className="text-amber-400 uppercase font-sans font-bold block mb-1">
+                  <div className="space-y-1">
+                    <strong className="text-amber-400 uppercase font-sans font-bold block text-xs tracking-wider">
                       First Principle of AI Debugging:
                     </strong>
-                    <span>{item.corePhilosophy}</span>
+                    <p className="text-xs sm:text-sm text-amber-100 font-sans font-medium">
+                      {item.corePhilosophy}
+                    </p>
                   </div>
                 </div>
 
-                {/* Step-by-Step Debugging Approach */}
+                {/* 2. Types of Errors Table */}
+                {item.errorTypesTable && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                        <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                        <span>Types of Errors & How to Investigate</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
+                        Diagnostics Cheatsheet
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2.5 px-3 font-semibold text-rose-400 w-1/4">Error Type</th>
+                            <th className="py-2.5 px-3 font-semibold text-zinc-300 w-1/3">Example</th>
+                            <th className="py-2.5 px-3 font-semibold text-cyan-400 w-5/12">How to Investigate</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.errorTypesTable.map((err, eIdx) => (
+                            <tr key={eIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-semibold text-[11px] whitespace-nowrap">
+                                <span className={`px-2 py-0.5 rounded bg-black border border-zinc-800 ${err.color}`}>
+                                  {err.type}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 font-mono text-[11px]">
+                                {err.example}
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 font-sans text-xs">
+                                {err.howToInvestigate}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Debugging an ML Model Checklist */}
+                {item.mlDebuggingChecklist && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-xl space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-zinc-800 pb-2.5">
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+                          <span>{item.mlDebuggingChecklist.title}</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 font-sans">
+                          {item.mlDebuggingChecklist.subtitle}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 self-start sm:self-auto">
+                        5-Point Checklist
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-1">
+                      {item.mlDebuggingChecklist.steps.map((st) => (
+                        <div
+                          key={st.step}
+                          className="p-3.5 rounded-xl bg-black border border-zinc-800 hover:border-cyan-500/30 transition space-y-2 flex flex-col justify-between"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-cyan-300">
+                                #{st.step}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-950 text-zinc-400 border border-zinc-800">
+                                {st.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${st.accent}`}>
+                              {st.title}
+                            </h5>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {st.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Use try-except for Expected Failures */}
+                {item.tryExceptBlock && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 shadow-xl space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                          <Code2 className="w-3.5 h-3.5 text-amber-400" />
+                          <span>{item.tryExceptBlock.title}</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 font-sans">
+                          {item.tryExceptBlock.desc}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-try-except-api', item.tryExceptBlock.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer self-start sm:self-auto"
+                      >
+                        {copiedId === 'code-try-except-api' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="px-4 py-2 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
+                        <span>{item.tryExceptBlock.filename}</span>
+                        <span className="text-[10px] text-zinc-500">Resilient Network Calls</span>
+                      </div>
+                      <CodeHighlight code={item.tryExceptBlock.code} />
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Debugging a RAG Application (6-Stage Pipeline Trace) */}
+                {item.ragDebuggingPipeline && (
+                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-sky-800/40 shadow-xl space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-zinc-800 pb-2.5">
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-sky-400 font-mono flex items-center gap-2">
+                          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+                          <span>{item.ragDebuggingPipeline.title}</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 font-sans">
+                          {item.ragDebuggingPipeline.desc}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 self-start sm:self-auto">
+                        End-to-End Audit
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+                      {item.ragDebuggingPipeline.stages.map((stg) => (
+                        <div
+                          key={stg.stage}
+                          className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between hover:border-sky-500/30 transition"
+                        >
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-sky-300">
+                                Stage {stg.stage}
+                              </span>
+                              <span className={`text-xs font-bold font-mono ${stg.accent}`}>
+                                {stg.name}
+                              </span>
+                            </div>
+                            <p className="text-xs text-white font-semibold font-sans pt-1">
+                              {stg.question}
+                            </p>
+                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                              {stg.diagnostic}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Step-by-Step Production Debugging Framework (5 Steps) */}
                 <div className="space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>Step-by-Step Production Debugging Framework</span>
-                  </h4>
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Step-by-Step Production Debugging Framework</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                      Root-Cause Isolation
+                    </span>
+                  </div>
+
                   <div className="space-y-3">
                     {item.debuggingSteps.map((step) => (
                       <div
@@ -8581,49 +10305,53 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
-                {/* Common Techniques for Improving Model Results */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono flex items-center gap-2">
-                    <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Common Techniques for Improving Model Results</span>
-                  </h4>
-                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse text-xs">
-                        <thead>
-                          <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
-                            <th className="p-3 w-1/4">Technique</th>
-                            <th className="p-3 w-1/3 text-cyan-400">What It Improves</th>
-                            <th className="p-3 w-5/12 text-emerald-400">Implementation Details</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-zinc-800/80 font-sans">
-                          {item.techniquesTable.map((tech, tIdx) => (
-                            <tr key={tIdx} className="hover:bg-zinc-900/40 transition">
-                              <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
-                                <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-cyan-300">
-                                  {tech.technique}
-                                </span>
-                              </td>
-                              <td className="p-3 text-cyan-200/90 text-[11px] leading-relaxed">
-                                {tech.improves}
-                              </td>
-                              <td className="p-3 text-zinc-400 text-[11px] leading-relaxed font-sans">
-                                {tech.howItWorks}
-                              </td>
+                {/* 7. Common Techniques for Improving Model Results */}
+                {item.techniquesTable && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 font-mono flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Common Techniques for Improving Model Results</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                              <th className="p-3 w-1/4">Technique</th>
+                              <th className="p-3 w-1/3 text-cyan-400">What It Improves</th>
+                              <th className="p-3 w-5/12 text-emerald-400">Implementation Details</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 font-sans">
+                            {item.techniquesTable.map((tech, tIdx) => (
+                              <tr key={tIdx} className="hover:bg-zinc-900/40 transition">
+                                <td className="p-3 font-semibold text-white font-mono text-[11px] whitespace-nowrap">
+                                  <span className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-cyan-300">
+                                    {tech.technique}
+                                  </span>
+                                </td>
+                                <td className="p-3 text-cyan-200/90 text-[11px] leading-relaxed">
+                                  {tech.improves}
+                                </td>
+                                <td className="p-3 text-zinc-400 text-[11px] leading-relaxed font-sans">
+                                  {tech.howItWorks}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* Final Takeaway */}
-                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
-                  <strong className="text-emerald-400 uppercase">Production Takeaway: </strong>
-                  {item.takeaway}
-                </div>
+                {/* 8. Final Takeaway */}
+                {item.takeaway && (
+                  <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                    <strong className="text-emerald-400 uppercase">Production Takeaway: </strong>
+                    {item.takeaway}
+                  </div>
+                )}
               </div>
             )}
 
@@ -10268,19 +11996,44 @@ export default function AllDefinitionsPage() {
             {/* Item 67: Docker */}
             {item.id === 'docker' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                {/* Verbatim Core Definitions: Image, Container, Docker, Kubernetes */}
-                {item.verbatimCoreTerms && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {item.verbatimCoreTerms.map((term, tIdx) => (
-                      <div key={tIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-cyan-500/40 transition">
-                        <span className="text-xs font-mono font-bold text-cyan-400 uppercase block">
-                          {term.term}:
-                        </span>
-                        <p className="text-xs text-zinc-200 font-medium font-sans">
-                          {term.definition}
-                        </p>
+                {/* 1. The Four Core Docker Concepts */}
+                {item.fourCoreConcepts && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <div className="flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                          The Four Core Docker Concepts
+                        </h4>
                       </div>
-                    ))}
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-semibold">
+                        Core Fundamentals
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.fourCoreConcepts.map((concept, cIdx) => (
+                        <div
+                          key={cIdx}
+                          className="p-3.5 rounded-xl bg-black border border-zinc-800 hover:border-cyan-500/40 transition space-y-2.5 flex flex-col justify-between"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-bold font-mono text-cyan-300">{concept.concept}</span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-800 font-semibold">
+                                {concept.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-200 font-sans leading-relaxed">{concept.definition}</p>
+                          </div>
+                          {concept.example && (
+                            <div className="pt-2 border-t border-zinc-900 text-[11px] text-zinc-400 font-sans leading-relaxed">
+                              <strong className="text-amber-400 font-mono text-[10px] uppercase">Example: </strong>
+                              {concept.example}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -10381,11 +12134,31 @@ export default function AllDefinitionsPage() {
 
                 {/* Dockerfile & Directives Breakdown */}
                 <div className="space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                    <FileCode className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>A Simple FastAPI Dockerfile</span>
-                  </h4>
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                    <div className="flex items-center gap-2">
+                      <FileCode className="w-3.5 h-3.5 text-cyan-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                        A Simple FastAPI Dockerfile & Directive Rules
+                      </h4>
+                    </div>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-semibold">
+                      Easy Reference
+                    </span>
+                  </div>
+
+                  {/* Quick Directives Reference */}
+                  {item.quickDirectivesReference && (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+                      {item.quickDirectivesReference.map((ref, rIdx) => (
+                        <div key={rIdx} className="p-2 rounded-lg bg-black border border-zinc-800/90 text-center space-y-0.5">
+                          <code className="text-xs font-mono font-bold text-cyan-300">{ref.keyword}</code>
+                          <div className="text-[10px] text-zinc-300 font-sans leading-snug">{ref.meaning}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-1">
                     {/* Code Block */}
                     <div className="lg:col-span-6 rounded-xl overflow-hidden border border-zinc-800 bg-black flex flex-col justify-between">
                       <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
@@ -10424,11 +12197,11 @@ export default function AllDefinitionsPage() {
                             <code className="text-[11px] font-mono text-cyan-300 font-bold">
                               {dir.directive}
                             </code>
-                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-800">
-                              {dir.purpose}
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-800 font-semibold">
+                              {dir.simpleRole || dir.purpose}
                             </span>
                           </div>
-                          <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+                          <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
                             {dir.desc}
                           </p>
                         </div>
@@ -10437,12 +12210,55 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
-                {/* Build and Run CLI Commands */}
+                {/* .dockerignore Section */}
+                {item.dockerignore && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-amber-400 font-bold">
+                        <FileCode className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.dockerignore.title}</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-dockerignore', item.dockerignore.code)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                      >
+                        {copiedId === 'code-dockerignore' ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy .dockerignore</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-3 bg-zinc-950/60 border-b border-zinc-800/80">
+                      <pre className="font-mono text-xs text-cyan-300 whitespace-pre leading-relaxed">{item.dockerignore.code}</pre>
+                    </div>
+                    <div className="p-3 text-xs text-zinc-300 font-sans leading-relaxed bg-black flex items-start gap-2">
+                      <span className="text-amber-400 font-bold shrink-0">⚠️ Security Rule:</span>
+                      <span>{item.dockerignore.purpose}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Build, Run & Troubleshooting CLI Commands */}
                 <div className="space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                    <Terminal className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Build and Run Commands</span>
-                  </h4>
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                    <div className="flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+                        Build, Run & Troubleshooting Commands
+                      </h4>
+                    </div>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-semibold">
+                      CLI Essentials
+                    </span>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {item.cliCommands.map((cmdItem, cIdx) => (
                       <div
@@ -12196,6 +14012,175 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* How Do You Detect Drift? (5 Signal Areas) */}
+                {item.howToDetect && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.howToDetect.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        5 Monitoring Signals
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-300 font-sans">{item.howToDetect.intro}</p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.howToDetect.areas.map((area, aIdx) => (
+                        <div key={aIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-amber-400 font-mono text-xs font-bold">#{aIdx + 1}</span>
+                            <h5 className="text-xs font-bold text-zinc-200 font-mono">{area.name}</h5>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">{area.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Common Drift Detection Methods & Statistical Tests Table */}
+                {item.detectionMethodsTable && (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-blue-400 font-mono flex items-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-400" />
+                        <span>Common Drift Detection Methods & Statistical Tests</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950/60 text-blue-300 border border-blue-900">
+                        Statistical Toolbox
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead className="bg-black border-b border-zinc-800 font-mono text-[11px] text-zinc-400">
+                          <tr>
+                            <th className="p-3 w-1/3 text-blue-300">Method</th>
+                            <th className="p-3 w-2/3 text-zinc-300">Typical Production Use</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900 text-zinc-300">
+                          {item.detectionMethodsTable.map((dm, dIdx) => (
+                            <tr key={dIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-bold font-mono text-blue-200 text-xs">
+                                {dm.method}
+                              </td>
+                              <td className="p-3 text-zinc-300 leading-relaxed font-sans">
+                                {dm.use}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Hands-on Python: KS Test */}
+                {item.ksTestCode && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                    <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                      <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Python: Detecting Data Drift with Kolmogorov–Smirnov (KS) Test</span>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('code-ks-drift-test', item.ksTestCode)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition"
+                      >
+                        {copiedCodeId === 'code-ks-drift-test' ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <span className="text-emerald-400">Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="p-4 overflow-x-auto text-xs font-mono leading-relaxed">
+                      <CodeHighlight code={item.ksTestCode} />
+                    </div>
+                    {item.codeExplanation && (
+                      <div className="px-4 py-2.5 bg-zinc-950 border-t border-zinc-900 text-[11px] text-zinc-400 font-sans">
+                        <strong className="text-cyan-400 font-mono">Result: </strong>
+                        {item.codeExplanation}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 5-Step Action Plan */}
+                {item.actionPlan && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.actionPlan.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-900">
+                        Incident Playbook
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                      {item.actionPlan.steps.map((step) => (
+                        <div key={step.step} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between hover:border-emerald-500/40 transition">
+                          <div className="space-y-1.5">
+                            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                              STEP {step.step}
+                            </span>
+                            <h5 className="text-xs font-bold text-zinc-200 font-mono pt-1">
+                              {step.name}
+                            </h5>
+                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                              {step.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* How Drift Applies to GenAI & RAG */}
+                {item.genAiAndRagDrift && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-[#09090d] border border-purple-500/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <div className="flex items-center gap-2 text-purple-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-purple-400" />
+                        <span>{item.genAiAndRagDrift.title}</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        GenAI & LLM Ops
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                      {item.genAiAndRagDrift.intro}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.genAiAndRagDrift.points.map((pt, pIdx) => (
+                        <div key={pIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800/80 space-y-1.5 hover:border-purple-500/40 transition">
+                          <h5 className="text-xs font-bold text-purple-300 font-mono flex items-center gap-1.5">
+                            <span className="text-purple-400">•</span>
+                            <span>{pt.type}</span>
+                          </h5>
+                          <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
+                            {pt.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Head-to-Head Comparison Table */}
                 {item.comparisonMatrix && (
                   <div className="space-y-2.5">
@@ -12219,10 +14204,10 @@ export default function AllDefinitionsPage() {
                               <td className="p-3.5 font-bold font-mono text-zinc-300 text-[11px]">
                                 {row.dimension}
                               </td>
-                              <td className="p-3.5 text-blue-200/90 leading-relaxed">
+                              <td className="p-3.5 text-blue-200/90 leading-relaxed font-sans">
                                 {row.dataDrift}
                               </td>
-                              <td className="p-3.5 text-purple-200/90 leading-relaxed">
+                              <td className="p-3.5 text-purple-200/90 leading-relaxed font-sans">
                                 {row.modelDrift}
                               </td>
                             </tr>
@@ -12233,41 +14218,26 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* Production Mitigation Playbook */}
-                {item.productionMitigationPlaybook && (
-                  <div className="space-y-2.5">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Production Mitigation & Retraining Playbook</span>
-                    </h4>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                      {item.productionMitigationPlaybook.map((play, pIdx) => (
-                        <div key={pIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 flex flex-col justify-between">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-black text-emerald-400 border border-emerald-950">
-                                {play.tag}
-                              </span>
-                            </div>
-                            <h5 className="text-xs font-bold text-zinc-200 font-mono">
-                              {play.strategy}
-                            </h5>
-                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
-                              {play.desc}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
+                {/* Spoken Interview Answer / Defense Script */}
+                {item.interviewAnswer && (
+                  <div className="p-4 rounded-xl bg-black border border-amber-800/50 space-y-2">
+                    <div className="text-[11px] font-mono uppercase text-amber-400 font-bold flex items-center gap-1.5">
+                      <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Interview Defense Script (Spoken Response):</span>
                     </div>
+                    <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans pl-3 border-l-2 border-amber-500/50">
+                      "{item.interviewAnswer}"
+                    </p>
                   </div>
                 )}
 
                 {/* Takeaway Banner */}
-                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
-                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
-                  {item.takeaway}
-                </div>
+                {item.takeaway && (
+                  <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                    <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                    {item.takeaway}
+                  </div>
+                )}
               </div>
             )}
 
@@ -13493,41 +15463,127 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* How CLIP Works (Dual Encoders & Contrastive Loss) */}
+                {/* How does CLIP work? */}
                 {item.howClipWorks && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
                         <Layers className="w-3.5 h-3.5 text-amber-400" />
-                        <span>{item.howClipWorks.title}</span>
+                        <span>{item.howClipWorks.title || "How does CLIP work?"}</span>
                       </h4>
                       <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
-                        Dual Encoder Architecture
+                        Dual Encoder Workflow
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                      {item.howClipWorks.dualEncoders.map((enc, eIdx) => (
-                        <div key={eIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <h6 className="text-xs font-bold font-mono text-amber-300">
-                              {enc.name}
-                            </h6>
-                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
-                              {enc.type}
+                    {item.howClipWorks.steps && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {item.howClipWorks.steps.map((st, sIdx) => (
+                          <div
+                            key={sIdx}
+                            className={`p-4 rounded-xl bg-black border ${st.border || 'border-zinc-800'} space-y-2 hover:border-zinc-700 transition flex flex-col justify-between`}
+                          >
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className={`text-xs font-bold font-mono ${st.accent || 'text-amber-300'}`}>
+                                  {st.step}
+                                </span>
+                                {st.badge && (
+                                  <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                    {st.badge}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                {st.details}
+                              </p>
+                            </div>
+                            <span className="text-[9px] font-mono text-zinc-500 self-end">
+                              0{sIdx + 1}
                             </span>
                           </div>
-                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                            {enc.desc}
-                          </p>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
+                    )}
+
+                    {item.howClipWorks.dualEncoders && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        {item.howClipWorks.dualEncoders.map((enc, eIdx) => (
+                          <div key={eIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <h6 className="text-xs font-bold font-mono text-amber-300">
+                                {enc.name}
+                              </h6>
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {enc.type}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {enc.desc}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {item.howClipWorks.trainingMechanism && (
+                      <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-mono leading-relaxed">
+                        <strong className="text-amber-400 uppercase font-sans">Training Mechanism: </strong>
+                        {item.howClipWorks.trainingMechanism}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Example: Zero-Shot Image Classification Code & Sample Output */}
+                {item.zeroShotExample && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.zeroShotExample.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Zero-Shot Inference
+                      </span>
                     </div>
 
-                    <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-mono leading-relaxed">
-                      <strong className="text-amber-400 uppercase font-sans">Training Mechanism: </strong>
-                      {item.howClipWorks.trainingMechanism}
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>clip_zero_shot.py</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-clip-zeroshot', item.zeroShotExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-clip-zeroshot' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.zeroShotExample.code} />
                     </div>
+
+                    {item.zeroShotExample.sampleOutput && (
+                      <div className="p-4 rounded-xl bg-zinc-950/90 border border-zinc-800 space-y-2">
+                        <span className="text-xs font-mono text-zinc-400 block font-bold">
+                          {item.zeroShotExample.sampleOutputTitle || "Example output for an image of a dog might look like:"}
+                        </span>
+                        <pre className="p-3 rounded-lg bg-black border border-zinc-800 font-mono text-xs text-emerald-300 overflow-x-auto leading-relaxed">
+                          {item.zeroShotExample.sampleOutput}
+                        </pre>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -15943,28 +17999,97 @@ export default function AllDefinitionsPage() {
             {item.id === 'cot-chain-of-thought' && (
               <div className="space-y-6">
                 {/* 1. Core Definition Banner */}
-                <div className="p-4 rounded-xl bg-black border border-purple-800/50 space-y-2">
+                <div className="p-4 sm:p-5 rounded-2xl bg-black border border-cyan-800/50 space-y-2 shadow-lg">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-mono text-purple-400 uppercase flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                      <span>Core Reasoning Architecture</span>
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Core Reasoning Approach</span>
                     </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
                       Reasoning Paradigms
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm text-zinc-200 font-medium leading-relaxed font-sans">
+                  <p className="text-xs sm:text-sm text-zinc-100 font-medium leading-relaxed font-sans">
                     {item.coreDefinition}
                   </p>
                 </div>
 
-                {/* 2. The 3 Reasoning Paradigms: CoT vs ToT vs GoT */}
-                {item.reasoningParadigms && (
+                {/* 2. Zero-shot CoT vs. Few-shot CoT */}
+                {item.zeroVsFewShot && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.zeroVsFewShot.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Prompting Methodologies
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                      {/* Zero-shot CoT */}
+                      <div className={`p-4 rounded-xl bg-black border ${item.zeroVsFewShot.zeroShot.border} space-y-2.5 flex flex-col justify-between`}>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <h5 className={`text-xs font-bold font-mono ${item.zeroVsFewShot.zeroShot.accent}`}>
+                              {item.zeroVsFewShot.zeroShot.title}
+                            </h5>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {item.zeroVsFewShot.zeroShot.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {item.zeroVsFewShot.zeroShot.desc}
+                          </p>
+                          <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-900 space-y-1">
+                            <span className="text-[10px] font-mono text-zinc-500 uppercase font-bold block">Example Instruction:</span>
+                            <p className="text-xs font-mono text-amber-300 italic">
+                              "{item.zeroVsFewShot.zeroShot.exampleInstruction}"
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-[11px] font-mono text-zinc-400 bg-zinc-900/60 p-2 rounded border border-zinc-800/80">
+                          {item.zeroVsFewShot.zeroShot.trigger}
+                        </div>
+                      </div>
+
+                      {/* Few-shot CoT */}
+                      <div className={`p-4 rounded-xl bg-black border ${item.zeroVsFewShot.fewShot.border} space-y-2.5 flex flex-col justify-between`}>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <h5 className={`text-xs font-bold font-mono ${item.zeroVsFewShot.fewShot.accent}`}>
+                              {item.zeroVsFewShot.fewShot.title}
+                            </h5>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                              {item.zeroVsFewShot.fewShot.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                            {item.zeroVsFewShot.fewShot.desc}
+                          </p>
+                          <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-900 space-y-1">
+                            <span className="text-[10px] font-mono text-zinc-500 uppercase font-bold block">Key Benefit:</span>
+                            <p className="text-xs font-sans text-cyan-200">
+                              {item.zeroVsFewShot.fewShot.benefit}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-[11px] font-mono text-zinc-400 bg-zinc-900/60 p-2 rounded border border-zinc-800/80">
+                          {item.zeroVsFewShot.fewShot.trigger}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. The 3 Reasoning Structures: CoT vs ToT vs GoT */}
+                {item.threeStructures && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
                         <Workflow className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>The 3 Frontier Reasoning Paradigms</span>
+                        <span>The 3 Reasoning Structures (Chain, Tree & Graph)</span>
                       </h4>
                       <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-400 border border-zinc-700">
                         Linear vs Tree vs Graph
@@ -15972,14 +18097,14 @@ export default function AllDefinitionsPage() {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-1">
-                      {item.reasoningParadigms.map((p, pIdx) => {
+                      {item.threeStructures.map((p, pIdx) => {
                         const targetAnchor = p.acronym === 'ToT' ? 'tree-of-thought' : p.acronym === 'GoT' ? 'graph-of-thoughts' : 'chain-of-thought';
                         const isCardActive = activeBookmark === targetAnchor;
                         return (
                           <div
                             key={pIdx}
                             id={targetAnchor}
-                            className={`scroll-mt-28 p-5 rounded-2xl bg-zinc-950 border ${p.border} space-y-3.5 hover:border-zinc-600 transition flex flex-col justify-between shadow-lg ${
+                            className={`scroll-mt-28 p-5 rounded-2xl bg-zinc-950 border ${p.border} space-y-3.5 hover:border-zinc-500 transition flex flex-col justify-between shadow-lg ${
                               isCardActive ? 'ring-2 ring-cyan-500/50 shadow-cyan-500/10' : ''
                             }`}
                           >
@@ -16004,45 +18129,27 @@ export default function AllDefinitionsPage() {
                                 </span>
                               </div>
 
-                              {/* Topology Badge */}
-                              <div className="p-2 rounded-lg bg-black border border-zinc-900 text-xs font-mono text-amber-300">
-                                <span className="text-[10px] font-bold uppercase text-zinc-500 block mb-0.5">Topology</span>
-                                {p.topology}
-                              </div>
-
-                              {/* Mechanism */}
+                              {/* How it Works Concept */}
                               <div className="space-y-1">
-                                <span className="text-[10px] font-bold font-mono uppercase text-zinc-400">Mechanism</span>
-                                <p className="text-xs text-zinc-300 leading-relaxed font-sans">
-                                  {p.mechanism}
+                                <span className="text-[10px] font-bold font-mono uppercase text-zinc-400">Concept</span>
+                                <p className="text-xs text-zinc-200 leading-relaxed font-sans">
+                                  {p.concept}
                                 </p>
                               </div>
 
-                              {/* Search Strategy */}
+                              {/* Mental Model / Think Badge */}
+                              <div className="p-2.5 rounded-lg bg-black border border-zinc-900 text-xs font-mono text-amber-300 space-y-0.5">
+                                <span className="text-[10px] font-bold uppercase text-zinc-500 block">Think:</span>
+                                <span className="text-xs font-semibold text-amber-300">{p.think}</span>
+                              </div>
+
+                              {/* Real-World Concrete Example */}
                               <div className="p-2.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
-                                <div className="text-[10px] font-mono font-bold text-cyan-400 uppercase">Search Algorithm</div>
-                                <p className="text-[11px] text-zinc-300 leading-relaxed font-mono">
-                                  {p.search}
+                                <div className="text-[10px] font-mono font-bold text-cyan-400 uppercase">Real-World Scenario</div>
+                                <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
+                                  {p.example}
                                 </p>
                               </div>
-
-                              {/* Backtracking */}
-                              <div className="p-2.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
-                                <div className="text-[10px] font-mono font-bold text-rose-400 uppercase">Backtracking & Self-Correction</div>
-                                <p className="text-[11px] text-zinc-300 leading-relaxed font-mono">
-                                  {p.backtracking}
-                                </p>
-                              </div>
-                            </div>
-
-                            {/* Ideal Use Cases */}
-                            <div className="pt-2 border-t border-zinc-800/80">
-                              <span className="text-[10px] font-bold font-mono uppercase text-emerald-400 block mb-1">
-                                Ideal Production Use Cases
-                              </span>
-                              <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
-                                {p.idealUseCases}
-                              </p>
                             </div>
                           </div>
                         );
@@ -16051,7 +18158,42 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 3. Comprehensive Paradigms Comparison Table */}
+                {/* 4. How to Choose the Right Approach */}
+                {item.howToChoose && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>How to Choose the Right Approach</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Decision Guide
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+                      {item.howToChoose.map((c, cIdx) => (
+                        <div key={cIdx} className={`p-4 rounded-xl bg-black border ${c.border} space-y-2 flex flex-col justify-between hover:border-zinc-600 transition`}>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono ${c.accent}`}>
+                                {c.approach}
+                              </h5>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {c.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-200 leading-relaxed font-sans pt-1">
+                              {c.rule}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Comprehensive Paradigms Comparison Table */}
                 {item.paradigmsTable && (
                   <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -16085,44 +18227,6 @@ export default function AllDefinitionsPage() {
                           ))}
                         </tbody>
                       </table>
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. CoT Methodologies & Test-Time Reasoning */}
-                {item.cotVariations && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Chain of Thought Methodologies & Evolution</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
-                        Prompt vs Test-Time Compute
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
-                      {item.cotVariations.map((v, vIdx) => (
-                        <div key={vIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition flex flex-col justify-between">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <h5 className={`text-xs font-bold font-mono ${v.accent}`}>
-                                {v.type}
-                              </h5>
-                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
-                                {v.badge}
-                              </span>
-                            </div>
-                            <div className="p-1.5 rounded bg-zinc-950 border border-zinc-900 font-mono text-[11px] text-amber-300">
-                              {v.trigger}
-                            </div>
-                          </div>
-                          <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
-                            {v.desc}
-                          </p>
-                        </div>
-                      ))}
                     </div>
                   </div>
                 )}
@@ -18049,153 +20153,6 @@ export default function AllDefinitionsPage() {
                           className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
                         >
                           {copiedId === 'code-rerank' ? (
-                            <>
-                              <Check className="w-3 h-3 text-emerald-400" />
-                              <span>Copied!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3 h-3" />
-                              <span>Copy Code</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                      <CodeHighlight code={item.codeExample.code} />
-                    </div>
-                  </div>
-                )}
-
-                {/* 5. Takeaway Banner */}
-                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
-                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
-                  {item.takeaway}
-                </div>
-              </div>
-            )}
-
-            {/* Item 110: Dense vs. Sparse */}
-            {item.id === 'dense-sparse' && (
-              <div className="space-y-6">
-                {/* 1. Core Header Banner */}
-                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Vector Space Foundations</span>
-                    </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                      Lexical vs. Semantic
-                    </span>
-                  </div>
-                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
-                    Dense vs. Sparse Representations
-                  </h3>
-                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
-                    {item.coreDefinition}
-                  </p>
-                </div>
-
-                {/* 2. Side-by-Side Dual Representations Grid */}
-                {item.representations && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {item.representations.map((rep, rIdx) => (
-                      <div key={rIdx} className={`p-4 rounded-2xl bg-zinc-950 border ${rep.border} space-y-3 hover:border-zinc-700 transition flex flex-col justify-between shadow-xl`}>
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <h4 className={`text-sm font-bold font-mono ${rep.accent}`}>
-                              {rep.type}
-                            </h4>
-                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
-                              {rep.badge}
-                            </span>
-                          </div>
-                          <p className="text-xs text-zinc-200 font-semibold font-sans leading-relaxed">
-                            {rep.definition}
-                          </p>
-                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                            {rep.details}
-                          </p>
-                        </div>
-
-                        <div className="space-y-2 pt-2 border-t border-zinc-900">
-                          <div className="p-2.5 rounded-xl bg-black border border-zinc-800 space-y-1">
-                            <span className="text-[10px] font-mono font-bold uppercase text-amber-400 block">
-                              Primary Utility:
-                            </span>
-                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                              {rep.useCases}
-                            </p>
-                          </div>
-                          <span className="text-[10px] font-mono text-zinc-500 block">
-                            Shape: {rep.vectorShape}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* 3. Comparison Table */}
-                {item.comparisonTable && (
-                  <div className="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-purple-400" />
-                        <span>Representation Matrix (Sparse vs. Dense)</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
-                        Search Tradeoffs
-                      </span>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left text-xs font-sans">
-                        <thead>
-                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px]">
-                            <th className="py-2 px-3">Attribute</th>
-                            <th className="py-2 px-3 text-amber-400">Sparse (BM25 / TF-IDF)</th>
-                            <th className="py-2 px-3 text-cyan-400">Dense (Embedding Models)</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-zinc-900">
-                          {item.comparisonTable.map((row, rIdx) => (
-                            <tr key={rIdx} className="hover:bg-zinc-900/40">
-                              <td className="py-2.5 px-3 font-semibold text-zinc-300 font-mono text-[11px] whitespace-nowrap">
-                                {row.attribute}
-                              </td>
-                              <td className="py-2.5 px-3 text-zinc-300 font-medium">
-                                {row.sparse}
-                              </td>
-                              <td className="py-2.5 px-3 text-zinc-300 font-medium">
-                                {row.dense}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. Interactive Hybrid Search Python Code Box */}
-                {item.codeExample && (
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>{item.codeExample.title}</span>
-                    </h4>
-                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
-                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>hybrid_rrf_search.py</span>
-                        </div>
-                        <button
-                          onClick={() => handleCopyCode('code-dense-sparse', item.codeExample.code)}
-                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                        >
-                          {copiedId === 'code-dense-sparse' ? (
                             <>
                               <Check className="w-3 h-3 text-emerald-400" />
                               <span>Copied!</span>
@@ -22595,16 +24552,101 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
-                {/* 2. Bi-Encoder vs. Cross-Encoder Architectural Comparison Table */}
+                {/* 2. Cross-Encoder vs. Bi-Encoder (Most Important Interview Distinction) */}
+                {item.interviewDistinction && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <div>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                          <Layers className="w-3.5 h-3.5 text-amber-400" />
+                          <span>{item.interviewDistinction.title}</span>
+                        </h4>
+                        <p className="text-[11px] font-mono text-zinc-400 mt-0.5">
+                          {item.interviewDistinction.subtitle}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 shrink-0 font-semibold">
+                        Core Interview Concept
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                      {/* Bi-Encoder */}
+                      <div className={`p-4 rounded-xl bg-black border ${item.interviewDistinction.biEncoder.border} space-y-2.5 flex flex-col justify-between`}>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h5 className={`text-xs font-bold font-mono ${item.interviewDistinction.biEncoder.accent}`}>
+                                {item.interviewDistinction.biEncoder.title}
+                              </h5>
+                              <span className="text-[11px] font-mono text-zinc-400 block">
+                                {item.interviewDistinction.biEncoder.subtitle}
+                              </span>
+                            </div>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-blue-300 border border-blue-900/60 font-semibold">
+                              {item.interviewDistinction.biEncoder.badge}
+                            </span>
+                          </div>
+                          <ul className="space-y-1.5 text-xs text-zinc-300 font-sans pt-1">
+                            {item.interviewDistinction.biEncoder.points.map((pt, pIdx) => (
+                              <li key={pIdx} className="flex items-start gap-2">
+                                <span className="text-blue-400 shrink-0 mt-0.5">•</span>
+                                <span>{pt}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+
+                      {/* Cross-Encoder */}
+                      <div className={`p-4 rounded-xl bg-black border ${item.interviewDistinction.crossEncoder.border} space-y-2.5 flex flex-col justify-between`}>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h5 className={`text-xs font-bold font-mono ${item.interviewDistinction.crossEncoder.accent}`}>
+                                {item.interviewDistinction.crossEncoder.title}
+                              </h5>
+                              <span className="text-[11px] font-mono text-zinc-400 block">
+                                {item.interviewDistinction.crossEncoder.subtitle}
+                              </span>
+                            </div>
+                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-amber-300 border border-amber-900/60 font-semibold">
+                              {item.interviewDistinction.crossEncoder.badge}
+                            </span>
+                          </div>
+                          <ul className="space-y-1.5 text-xs text-zinc-300 font-sans pt-1">
+                            {item.interviewDistinction.crossEncoder.points.map((pt, pIdx) => (
+                              <li key={pIdx} className="flex items-start gap-2">
+                                <span className="text-amber-400 shrink-0 mt-0.5">•</span>
+                                <span>{pt}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Remember Alert */}
+                    <div className="p-3 rounded-xl bg-black border border-emerald-800/40 font-mono text-xs text-emerald-300 flex items-start gap-2">
+                      <Sparkles className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <span>
+                        <strong className="text-emerald-400 font-bold uppercase">Remember: </strong>
+                        {item.interviewDistinction.remember}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Comparison Table */}
                 {item.comparisonTable && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Bi-Encoder (Retriever) vs. Cross-Encoder (Reranker)</span>
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Bi-Encoder vs. Cross-Encoder Feature Matrix</span>
                       </h4>
                       <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                        Architectural Tradeoffs
+                        Quick Comparison
                       </span>
                     </div>
 
@@ -22612,9 +24654,9 @@ export default function AllDefinitionsPage() {
                       <table className="w-full text-left text-xs font-sans">
                         <thead className="bg-zinc-900 border-b border-zinc-800 font-mono text-[11px] text-zinc-300">
                           <tr>
-                            <th className="py-2.5 px-3.5">Architectural Dimension</th>
-                            <th className="py-2.5 px-3.5 text-blue-400">Bi-Encoder (Dense Retrieval)</th>
-                            <th className="py-2.5 px-3.5 text-amber-400">Cross-Encoder (Reranker)</th>
+                            <th className="py-2.5 px-3.5">Feature</th>
+                            <th className="py-2.5 px-3.5 text-blue-400">Bi-Encoder</th>
+                            <th className="py-2.5 px-3.5 text-amber-400">Cross-Encoder</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
@@ -22637,32 +24679,98 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 3. Two-Stage RAG Pipeline Flow */}
-                {item.twoStagePipeline && (
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                      <Terminal className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Two-Stage RAG Retrieval Pipeline</span>
-                    </h4>
+                {/* 4. Typical Pipeline Flow */}
+                {item.typicalPipeline && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Workflow className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Typical Cross-Encoder Reranking Pipeline</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-400 border border-zinc-700">
+                        Step-by-Step
+                      </span>
+                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {item.twoStagePipeline.map((pipe, pIdx) => (
-                        <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between">
-                          <div className="space-y-1">
-                            <div className="flex items-center justify-between">
-                              <h5 className={`text-xs font-bold font-mono ${pipe.accent}`}>{pipe.stage}</h5>
-                              <code className="text-[10px] font-mono text-zinc-400 bg-zinc-900 px-1.5 py-0.5 rounded border border-zinc-800">{pipe.latency}</code>
-                            </div>
-                            <div className="text-xs font-bold text-white font-mono">{pipe.tool}</div>
-                            <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">{pipe.throughput}</p>
-                          </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+                      {item.typicalPipeline.map((stepText, sIdx) => (
+                        <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800/80 space-y-1.5 flex items-start gap-3">
+                          <span className="w-6 h-6 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/60 font-mono text-xs font-bold flex items-center justify-center shrink-0">
+                            {sIdx + 1}
+                          </span>
+                          <p className="text-xs text-zinc-300 leading-relaxed font-sans pt-0.5">
+                            {stepText}
+                          </p>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* 4. Interactive Python Code Box */}
+                {/* 5. Where does it fit into a RAG system? */}
+                {item.ragFit && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Where does it fit into a RAG system?</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Two-Stage RAG Flow
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5 pt-1">
+                      {item.ragFit.map((rf, rIdx) => (
+                        <div key={rIdx} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
+                          <span className="text-[11px] font-mono font-bold text-amber-400">
+                            {rf.step}
+                          </span>
+                          <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
+                            {rf.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. When should you use one? */}
+                {item.whenToUse && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.whenToUse.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Production Decision
+                      </span>
+                    </div>
+
+                    <div className="space-y-3 pt-1">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {item.whenToUse.reasons.map((r, rIdx) => (
+                          <div key={rIdx} className="p-3 rounded-xl bg-black border border-zinc-800 flex items-start gap-2.5">
+                            <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                            <span className="text-xs text-zinc-200 leading-relaxed">{r}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Warning */}
+                      <div className="p-3.5 rounded-xl bg-black border border-rose-900/40 text-xs text-rose-300 flex items-start gap-2.5 leading-relaxed font-sans">
+                        <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                        <span>
+                          <strong className="text-rose-400 font-mono uppercase">Caution: </strong>
+                          {item.whenToUse.warning}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Interactive Python Code Box */}
                 {item.codeExample && (
                   <div className="space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
@@ -22697,7 +24805,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 5. Takeaway Banner */}
+                {/* 8. Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}
@@ -26364,24 +28472,202 @@ export default function AllDefinitionsPage() {
                   <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
                       <Terminal className="w-4 h-4 text-amber-400" />
-                      <span>Computer Vision Tasks Standardized by COCO</span>
+                      <span>{item.tasksSupportedHeading || "It supports several computer-vision tasks:"}</span>
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                       {item.tasksSupported.map((task, tIdx) => (
-                        <div key={tIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
-                          <span className="text-xs font-bold font-mono text-white block">
-                            {task.task}
-                          </span>
-                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                            <strong className="text-zinc-500 font-mono">Output: </strong>
-                            {task.output}
-                          </p>
-                          <div className="pt-1 text-[11px] font-mono text-amber-400">
-                            <strong>Standard Metric: </strong>
-                            <span>{task.primaryMetric}</span>
+                        <div key={tIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
+                          <div className="flex items-center justify-between">
+                            <span className={`text-xs font-bold font-mono ${task.accent || 'text-white'} block`}>
+                              {task.task}
+                            </span>
+                            {task.badge && (
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {task.badge}
+                              </span>
+                            )}
                           </div>
+                          {task.desc && (
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {task.desc}
+                            </p>
+                          )}
+                          {task.output && (
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              <strong className="text-zinc-500 font-mono">Output: </strong>
+                              {task.output}
+                            </p>
+                          )}
+                          {task.primaryMetric && (
+                            <div className="pt-1 text-[11px] font-mono text-amber-400">
+                              <strong>Standard Metric: </strong>
+                              <span>{task.primaryMetric}</span>
+                            </div>
+                          )}
                         </div>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Inspecting Annotations with pycocotools */}
+                {item.pycocoCode && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.pycocoCode.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        pycocotools API
+                      </span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>{item.pycocoCode.filename || "inspect_coco.py"}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-coco-inspect', item.pycocoCode.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-coco-inspect' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.pycocoCode.code} />
+                    </div>
+                  </div>
+                )}
+
+                {/* How is COCO used to train an object detector? */}
+                {item.trainingWorkflow && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                          <Sliders className="w-4 h-4 text-amber-400 shrink-0" />
+                          <span>{item.trainingWorkflow.title}</span>
+                        </h4>
+                        <p className="text-xs text-zinc-300 font-sans mt-0.5">
+                          {item.trainingWorkflow.subtitle}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 self-start sm:self-auto">
+                        Training Pipeline
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.trainingWorkflow.steps.map((st, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className="p-3.5 rounded-xl bg-black border border-zinc-800 hover:border-amber-900/50 transition flex flex-col justify-between space-y-2"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-xs font-bold font-mono text-amber-300 block">
+                                {st.step}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {st.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {st.desc}
+                            </p>
+                          </div>
+                          <span className="text-[9px] font-mono text-zinc-500 self-end">
+                            0{sIdx + 1}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* COCO evaluation: mAP */}
+                {item.cocoEvaluation && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-emerald-900/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <div>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-emerald-400" />
+                          <span>{item.cocoEvaluation.title}</span>
+                        </h4>
+                        <p className="text-xs text-zinc-300 font-sans mt-0.5">
+                          {item.cocoEvaluation.intro}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Detection Metrics
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.cocoEvaluation.metrics.map((m, mIdx) => (
+                        <div key={mIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1 hover:border-emerald-800/50 transition">
+                          <span className={`text-xs font-bold font-mono ${m.accent || 'text-emerald-300'} block`}>
+                            • {m.name}
+                          </span>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {m.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* COCO vs. ImageNet */}
+                {item.cocoVsImageNet && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-cyan-900/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-4 h-4 text-cyan-400" />
+                        <span>{item.cocoVsImageNet.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Dataset Benchmark Comparison
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono text-[11px] uppercase">
+                            <th className="py-2.5 px-3 font-semibold text-zinc-400 w-1/4">Feature</th>
+                            <th className="py-2.5 px-3 font-semibold text-amber-400 w-3/8">COCO</th>
+                            <th className="py-2.5 px-3 font-semibold text-cyan-400 w-3/8">ImageNet</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900">
+                          {item.cocoVsImageNet.comparison.map((comp, cIdx) => (
+                            <tr key={cIdx} className="hover:bg-zinc-900/30 transition">
+                              <td className="py-2.5 px-3 font-mono text-zinc-300 font-semibold text-[11px]">
+                                {comp.feature}
+                              </td>
+                              <td className="py-2.5 px-3 text-amber-200/90 font-sans">
+                                {comp.coco}
+                              </td>
+                              <td className="py-2.5 px-3 text-cyan-200/90 font-sans">
+                                {comp.imageNet}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 )}
@@ -28035,9 +30321,220 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                
-                {/* Design "ChatGPT" (When viewing design-chatgpt directly) */}
-                {item.id !== 'chatbot-architecture' && item.designChatGptArchitecture && (
+                {/* Dedicated Design "ChatGPT" View */}
+                {item.id === 'design-chatgpt' && (
+                  <div className="space-y-6 mb-6">
+                    {/* Header Banner */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                          <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>Enterprise Conversational AI System Design</span>
+                        </h4>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 border border-cyan-800">
+                          ChatGPT • Microservices Architecture
+                        </span>
+                      </div>
+
+                      <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-cyan-900/40 shadow-xl space-y-2">
+                        <p className="text-xs sm:text-sm text-cyan-200 font-sans leading-relaxed font-semibold">
+                          {item.summary}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 1. High-Level Architecture (4 Core Layers) */}
+                    {item.highLevelArchitecture && (
+                      <div className="space-y-3 p-5 rounded-2xl bg-[#09090d] border border-cyan-500/40 shadow-2xl">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                          <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                            <Layers className="w-4 h-4 text-cyan-400 shrink-0" />
+                            <span>{item.highLevelArchitecture.title}</span>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 font-semibold">
+                            {item.highLevelArchitecture.badge}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1">
+                          {item.highLevelArchitecture.layers.map((layer) => (
+                            <div key={layer.step} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 flex flex-col justify-between space-y-3 hover:border-cyan-500/40 transition">
+                              <div className="space-y-2">
+                                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                                  LAYER {layer.step}
+                                </span>
+                                <h5 className="text-xs font-bold text-zinc-100 font-mono pt-1">
+                                  {layer.name}
+                                </h5>
+                                <div className="flex flex-wrap gap-1">
+                                  {layer.tools.map((t, tIdx) => (
+                                    <span key={tIdx} className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-black text-cyan-400 border border-zinc-800">
+                                      {t}
+                                    </span>
+                                  ))}
+                                </div>
+                                <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                                  {layer.desc}
+                                </p>
+                              </div>
+
+                              {layer.subComponents && (
+                                <div className="space-y-1.5 pt-2 border-t border-zinc-900">
+                                  <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
+                                    Sub-Components:
+                                  </span>
+                                  <div className="space-y-1">
+                                    {layer.subComponents.map((sub, sIdx) => (
+                                      <div key={sIdx} className="p-1.5 rounded bg-black/60 border border-zinc-900 text-[10px] font-sans">
+                                        <strong className="text-cyan-300 font-mono">{sub.name}: </strong>
+                                        <span className="text-zinc-400">{sub.role}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+
+                        {item.highLevelArchitecture.note && (
+                          <div className="p-3 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-400 font-sans italic flex items-center gap-2">
+                            <span className="text-cyan-400 font-mono not-italic text-sm">ℹ️</span>
+                            <span>{item.highLevelArchitecture.note}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 2. What Each Component Does */}
+                    {item.componentBreakdown && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                            <Sliders className="w-3.5 h-3.5 text-amber-400" />
+                            <span>What Each Component Does</span>
+                          </h4>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                            6 System Services
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                          {item.componentBreakdown.map((comp, cIdx) => (
+                            <div key={cIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-amber-500/40 transition space-y-2 flex flex-col justify-between">
+                              <div className="space-y-1.5">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-900">
+                                    {comp.tag}
+                                  </span>
+                                </div>
+                                <h5 className="text-xs font-bold text-zinc-200 font-mono">
+                                  {comp.name}
+                                </h5>
+                                <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                                  {comp.desc}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 3. Request Lifecycle: What happens when a user sends a message? */}
+                    {item.requestLifecycle && (
+                      <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-emerald-500/40 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                          <div className="flex items-center gap-2 text-emerald-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                            <span>{item.requestLifecycle.title}</span>
+                          </div>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                            7 Sequential Steps
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2.5 pt-1">
+                          {item.requestLifecycle.steps.map((st) => (
+                            <div key={st.step} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between hover:border-emerald-500/40 transition">
+                              <div className="space-y-1">
+                                <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                                  STEP {st.step}
+                                </span>
+                                <h5 className="text-xs font-bold text-zinc-200 font-mono pt-1">
+                                  {st.name}
+                                </h5>
+                                <p className="text-[10px] text-zinc-400 font-sans leading-relaxed">
+                                  {st.desc}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {item.requestLifecycle.streamingInsight && (
+                          <div className="p-3.5 rounded-xl bg-black/90 border border-amber-800/40 text-xs text-amber-200 font-sans leading-relaxed">
+                            <strong className="text-amber-400 font-mono uppercase">Key Production Detail: </strong>
+                            {item.requestLifecycle.streamingInsight}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 4. Production Considerations */}
+                    {item.productionConsiderations && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                            <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                            <span>Production Architectural Considerations</span>
+                          </h4>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950/70 text-rose-300 border border-rose-800">
+                            Hardened Checklist
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {item.productionConsiderations.map((cons, cIdx) => (
+                            <div key={cIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1 flex items-start gap-2.5 hover:border-rose-500/40 transition">
+                              <span className="text-rose-400 font-mono font-bold text-xs mt-0.5">#{cIdx + 1}</span>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                {cons}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 5. Context Window Exhaustion Strategies */}
+                    {item.contextExhaustionStrategies && (
+                      <div className="space-y-3 p-4 rounded-xl bg-black/90 border border-amber-500/30">
+                        <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                          <Terminal className="w-4 h-4 text-amber-400" />
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">
+                            How to Handle Conversations That Exceed Context Window Limits
+                          </h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          {item.contextExhaustionStrategies.map((strat, sIdx) => (
+                            <div key={sIdx} className="p-3.5 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1.5">
+                              <h5 className="text-xs font-bold text-white font-mono text-cyan-300">{strat.strategy}</h5>
+                              <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{strat.howItWorks}</p>
+                              <div className="text-[10px] font-mono text-amber-300/90 pt-1 border-t border-zinc-900 leading-relaxed">
+                                <strong className="text-amber-400 uppercase">Trade-off: </strong>
+                                {strat.tradeoff}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Design "ChatGPT" (When viewing design-chatgpt directly or nested) */}
+                {item.id !== 'chatbot-architecture' && item.id !== 'design-chatgpt' && item.designChatGptArchitecture && (
                   <div className="space-y-5 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-cyan-500/40 shadow-2xl mb-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
                       <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
@@ -28144,14 +30641,16 @@ export default function AllDefinitionsPage() {
                 )}
 
                 {/* Bulleted Detail Points */}
-                <ul className="space-y-2.5 pt-2 border-t border-zinc-800/80">
-                  {item.details.map((detail, dIdx) => (
-                    <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
-                      <span className="text-cyan-400 font-bold mt-0.5 text-base leading-none">•</span>
-                      <span>{detail}</span>
-                    </li>
-                  ))}
-                </ul>
+                {item.id !== 'crud-api' && item.id !== 'coding-best-practices' && item.id !== 'data-cleaning' && item.id !== 'debugging' && item.id !== 'diffusion-model' && (
+                  <ul className="space-y-2.5 pt-2 border-t border-zinc-800/80">
+                    {item.details.map((detail, dIdx) => (
+                      <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
+                        <span className="text-cyan-400 font-bold mt-0.5 text-base leading-none">•</span>
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
                 {/* Target Interview Questions & Answers */}
                 {item.interviewAnswers && item.id !== 'chatbot-architecture' && item.id !== 'rag' && (
@@ -28181,7 +30680,7 @@ export default function AllDefinitionsPage() {
                 )}
 
                 {/* Python Implementation Box with Copy Button */}
-                {item.code && (
+                {item.code && item.id !== 'crud-api' && item.id !== 'coding-best-practices' && item.id !== 'data-cleaning' && item.id !== 'debugging' && item.id !== 'diffusion-model' && (
                   <div className="mt-3 pt-3 border-t border-zinc-800/80 space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400">
