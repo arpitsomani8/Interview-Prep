@@ -27,6 +27,7 @@ export default function ProgramsPage() {
   const [approachIndices, setApproachIndices] = useState({
     'top-two-max': 0,
     'reverse-array': 0,
+    'first-non-repeating-char': 0,
   });
   const [searchQuery, setSearchQuery] = useState('');
 

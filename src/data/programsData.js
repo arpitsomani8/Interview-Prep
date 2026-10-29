@@ -413,4 +413,202 @@ print("arr.reverse() in-place:", arr)`,
       },
     ],
   },
+  {
+    id: 'first-non-repeating-char',
+    title: 'First Non-Repeating Character in a String',
+    category: 'String / Hash Map / Frequency Count',
+    difficulty: 'Easy / Foundational',
+    sourceUrl: 'https://leetcode.com/problems/first-unique-character-in-a-string/',
+    sourceLabel: 'LeetCode 387 / Interview Classic: First Unique Character in String',
+    summary:
+      'Given a string (e.g., "aabbcdde"), find and return the first non-repeating character (in this case, "c"). Canonical software engineering and data science interview problem requiring optimal O(n) linear runtime and O(1) auxiliary space without quadratic nested scanning.',
+    keyTakeaway:
+      'A naive nested search using s.count() inside a loop runs in O(n²) quadratic time. In contrast, a two-pass frequency count (via collections.Counter or an insertion-ordered dict) achieves optimal O(n) time and O(1) auxiliary space bounded by the finite alphabet size (<= 256 for ASCII).',
+    approaches: [
+      {
+        id: 'two-pass-counter',
+        name: 'Approach 1: Optimal Two-Pass Hash Map (collections.Counter)',
+        filename: 'first_unique_char_counter.py',
+        complexity: {
+          time: 'O(n)',
+          space: 'O(1)',
+          timeExplanation: 'Pass 1 builds frequency counts in O(n); Pass 2 identifies the first character with count == 1 in O(n). Total runtime = O(2n) = O(n).',
+          spaceExplanation: 'Auxiliary space is bounded by the alphabet size (at most 26 lowercase English letters or 256 ASCII), which is strictly O(1) constant memory.',
+        },
+        description:
+          'Canonical optimal interview solution: Uses Python’s `collections.Counter` to construct a frequency map in Pass 1, then iterates sequentially through the original string in Pass 2 to return the first character with a count of 1.',
+        code: `# ==============================================================================
+# APPROACH 1: OPTIMAL TWO-PASS FREQUENCY MAP (COLLECTIONS.COUNTER)
+# Time Complexity: O(n) | Auxiliary Space: O(1) bounded by alphabet (<= 256)
+# ==============================================================================
+from collections import Counter
+from typing import Optional
+
+def first_non_repeating_char(s: str) -> Optional[str]:
+    """
+    Finds the first character in string 's' that does not repeat.
+    
+    Time Complexity:  O(n) - Two linear passes over length n
+    Space Complexity: O(1) - Hash map bounded by character set size (<= 256)
+    """
+    if not s:
+        return None
+        
+    # Pass 1: Build frequency table in O(n)
+    char_counts = Counter(s)
+    
+    # Pass 2: Identify the first character with frequency == 1 in original order
+    for char in s:
+        if char_counts[char] == 1:
+            return char
+            
+    return None  # All characters repeat
+
+if __name__ == "__main__":
+    test_cases = [
+        ("aabbcdde", "c"),
+        ("loveleetcode", "v"),
+        ("aabb", None),
+        ("z", "z"),
+        ("", None),
+    ]
+    
+    for string_input, expected in test_cases:
+        result = first_non_repeating_char(string_input)
+        status = "PASSED" if result == expected else "FAILED"
+        print(f"Input: '{string_input}' -> First unique: {result!r} ({status})")`,
+        terminal: {
+          command: 'python first_unique_char_counter.py',
+          inputs: [],
+          output: [
+            "Input: 'aabbcdde' -> First unique: 'c' (PASSED)",
+            "Input: 'loveleetcode' -> First unique: 'v' (PASSED)",
+            "Input: 'aabb' -> First unique: None (PASSED)",
+            "Input: 'z' -> First unique: 'z' (PASSED)",
+            "Input: '' -> First unique: None (PASSED)",
+          ],
+        },
+      },
+      {
+        id: 'ordered-dict',
+        name: 'Approach 2: Single-Pass String Ingestion + Ordered Dict Scan',
+        filename: 'first_unique_char_dict.py',
+        complexity: {
+          time: 'O(n)',
+          space: 'O(1)',
+          timeExplanation: 'Pass 1 scans string and populates dict in O(n). Pass 2 scans at most 26/256 unique keys in the dict (O(1)).',
+          spaceExplanation: 'Dictionary holds at most unique characters (bounded alphabet <= 256).',
+        },
+        description:
+          'Single pass over the input string: Builds a frequency dictionary. Since Python 3.7+, standard dict preserves insertion order, so Pass 2 only iterates over unique keys rather than re-scanning the string!',
+        code: `# ==============================================================================
+# APPROACH 2: SINGLE PASS OVER STRING + ORDERED DICT KEY SCAN
+# Time Complexity: O(n) | Auxiliary Space: O(1)
+# ==============================================================================
+from typing import Optional
+
+def first_non_repeating_dict(s: str) -> Optional[str]:
+    """
+    Ingests string once into Python's insertion-ordered dictionary.
+    Second iteration only inspects unique keys (at most 26 in English).
+    """
+    if not s:
+        return None
+        
+    counts = {}
+    # Pass 1: Count frequencies while preserving first-seen insertion order
+    for char in s:
+        counts[char] = counts.get(char, 0) + 1
+        
+    # Pass 2: Iterate over unique keys (at most 26 iterations, independent of n)
+    for char, count in counts.items():
+        if count == 1:
+            return char
+            
+    return None
+
+if __name__ == "__main__":
+    sample = "swiss"
+    print(f"Input: '{sample}'")
+    unique_char = first_non_repeating_dict(sample)
+    print(f"First non-repeating character: {unique_char!r}")`,
+        terminal: {
+          command: 'python first_unique_char_dict.py',
+          inputs: [],
+          output: [
+            "Input: 'swiss'",
+            "First non-repeating character: 'w'",
+          ],
+        },
+      },
+      {
+        id: 'brute-force',
+        name: 'Approach 3: Brute Force Nested Loop / s.count() (What to Avoid)',
+        filename: 'first_unique_char_bruteforce.py',
+        complexity: {
+          time: 'O(n²)',
+          space: 'O(1)',
+          timeExplanation: 'For each of the n characters, scans the entire string again: n × n = n² operations.',
+          spaceExplanation: 'Zero extra memory structures allocated.',
+        },
+        description:
+          'Naive baseline: Explains why interviewers penalize quadratic solutions. Using `s.count(char)` inside a loop or nested loops creates an O(n²) quadratic bottleneck that times out on large inputs.',
+        code: `# ==============================================================================
+# APPROACH 3: BRUTE FORCE / S.COUNT() (NAIVE O(n^2) COMPLEXITY - AVOID!)
+# ==============================================================================
+
+def first_non_repeating_naive(s: str):
+    """
+    Caution: s.count(char) internally scans the whole string of length n.
+    Calling it inside a loop of length n results in O(n^2) quadratic runtime!
+    """
+    for char in s:
+        # Pitfall: s.count() takes O(n) time for EACH iteration!
+        if s.count(char) == 1:
+            return char
+    return None
+
+if __name__ == "__main__":
+    word = "aabbcdde"
+    print("Result:", first_non_repeating_naive(word))
+    print("Explanation: Fails on 100,000 character inputs due to 10^10 operations (Time Limit Exceeded).")`,
+        terminal: {
+          command: 'python first_unique_char_bruteforce.py',
+          inputs: [],
+          output: [
+            'Result: c',
+            'Explanation: Fails on 100,000 character inputs due to 10^10 operations (Time Limit Exceeded).',
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: 'Empty String',
+        example: '""',
+        handling: 'Guarded with `if not s: return None` at the start to immediately return None without unnecessary hash allocations.',
+      },
+      {
+        scenario: 'All Characters Repeat',
+        example: '"aabbcc"',
+        handling: 'All frequency counts in the hash map are >= 2. The loop finishes without finding any count == 1 and cleanly returns None.',
+      },
+      {
+        scenario: 'Single Character String',
+        example: '"z"',
+        handling: 'Loop iterates once; frequency is 1; immediately returns "z" in O(1) steps.',
+      },
+      {
+        scenario: 'Case Sensitivity',
+        example: '"Aa"',
+        handling: 'In standard ASCII, "A" (ASCII 65) and "a" (ASCII 97) are distinct characters. Discuss with interviewer if normalization (`s.lower()`) is required.',
+      },
+      {
+        scenario: 'Extremely Large String (10^7 characters)',
+        example: 'DNA sequence or streaming logs',
+        handling: 'Never use `s.count()` (O(n²)). The two-pass hash map runs in 20M operations (under 0.2s in Python) with constant memory O(1).',
+      },
+    ],
+  },
 ];
+

@@ -38,6 +38,7 @@ import {
   Key,
   Code,
   ExternalLink,
+  HelpCircle,
   X
 } from 'lucide-react';
 
@@ -139,7 +140,8 @@ export default function AllDefinitionsPage() {
 
     const getInitial = (str) => {
       if (!str) return '#';
-      const ch = str.trim().charAt(0).toUpperCase();
+      const cleaned = str.trim().replace(/^[\d.\s-]+/, '');
+      const ch = (cleaned || str).trim().charAt(0).toUpperCase();
       return /[A-Z]/.test(ch) ? ch : '#';
     };
 
@@ -3438,81 +3440,127 @@ export default function AllDefinitionsPage() {
             {/* Item 13: Embedding & Query Pipeline */}
             {item.id === 'embedding' && (
               <div className="space-y-5 text-xs sm:text-sm text-zinc-300">
-                {/* 4 Query Steps */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
-                    Query Pipeline Lifecycle
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {item.querySteps.map((step, qIdx) => (
-                      <div key={qIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
-                        {step}
+                {/* 1. How Embeddings Work in RAG (Replaces Query Pipeline Lifecycle) */}
+                {item.howEmbeddingsWorkInRag && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                          <Workflow className="w-4 h-4 text-cyan-400" />
+                          <span>{item.howEmbeddingsWorkInRag.title}</span>
+                        </h4>
+                        <p className="text-xs text-zinc-400 mt-0.5">
+                          Dual-stage architecture powering production Retrieval-Augmented Generation
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Main Code Block */}
-                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                  <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                    <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
-                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>main.py (FastAPI Endpoint + ChromaDB Query + GPT Response)</span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold shrink-0">
+                        Indexing & Query Stages
+                      </span>
                     </div>
-                    <button
-                      onClick={() => handleCopyCode('code-rag-main', item.mainCode)}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                    >
-                      {copiedId === 'code-rag-main' ? (
-                        <>
-                          <Check className="w-3 h-3 text-emerald-400" />
-                          <span>Copied!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3 h-3" />
-                          <span>Copy Code</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                  <CodeHighlight code={item.mainCode} />
-                </div>
 
-                {/* Run Command & Source Citations Note */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-3.5 rounded-xl bg-black border border-zinc-800 flex items-center gap-3 font-mono text-xs text-emerald-400">
-                    <Terminal className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>{item.runCommand}</span>
-                  </div>
-                  <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
-                    <strong className="text-amber-400 font-mono uppercase">Production Metadata: </strong>
-                    {item.sourceCitationNote}
-                  </div>
-                </div>
+                    {/* Two Separate Stages */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.howEmbeddingsWorkInRag.twoStages.map((stg, sIdx) => (
+                        <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-cyan-900/50 space-y-1">
+                          <span className="text-xs font-bold font-mono text-cyan-300 uppercase">
+                            {stg.stage}
+                          </span>
+                          <p className="text-xs text-zinc-300 leading-relaxed">
+                            {stg.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
 
-                {/* Request Trace Breakdown */}
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
-                    Tracing a Single Request Through the Pipeline
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-                    {item.traceRequest.map((tr, trIdx) => (
-                      <div key={trIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800">
-                        <div className="text-xs font-bold text-white mb-1">{tr.step}</div>
-                        <div className="text-[11px] text-zinc-400 leading-relaxed">{tr.desc}</div>
+                    {/* Visual Flow: Stage 1 Indexing Time */}
+                    <div className="space-y-2 pt-2">
+                      <div className="text-[11px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
+                        Stage 1: Indexing Flow (Offline / Ingestion)
                       </div>
-                    ))}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {item.howEmbeddingsWorkInRag.indexingSteps.map((step, idx) => (
+                          <div key={idx} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1 flex flex-col justify-between">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-white font-mono">{step.component}</span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-cyan-400 border border-zinc-800">
+                                {step.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-400">{step.action}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Visual Flow: Stage 2 Query Time */}
+                    <div className="space-y-2 pt-1">
+                      <div className="text-[11px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
+                        Stage 2: Query Flow (Online / Runtime)
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {item.howEmbeddingsWorkInRag.querySteps.map((step, idx) => (
+                          <div key={idx} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1 flex flex-col justify-between">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-white font-mono">{step.component}</span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-emerald-400 border border-zinc-800">
+                                {step.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-400">{step.action}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                {/* Two Model Takeaway */}
-                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed">
-                  <strong className="text-cyan-400 font-mono uppercase">Two-Model Architecture Takeaway: </strong>
-                  {item.twoModelTakeaway}
-                </div>
+                {/* 2. Measuring Similarity Between Embeddings */}
+                {item.similarityMetrics && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="space-y-1">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Zap className="w-4 h-4 text-cyan-400" />
+                        <span>{item.similarityMetrics.title}</span>
+                      </h4>
+                      <p className="text-xs text-zinc-300">
+                        {item.similarityMetrics.subtitle}
+                      </p>
+                    </div>
 
-                {/* How Embeddings are Created */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                      {item.similarityMetrics.metrics.map((metric, mIdx) => (
+                        <div key={mIdx} className={`p-4 rounded-xl bg-black border ${metric.border} space-y-3 flex flex-col justify-between`}>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${metric.accent}`}>
+                                {metric.name}
+                              </span>
+                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                Choice {metric.letter}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300">
+                              {metric.desc}
+                            </p>
+                            <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800/80 font-mono text-[11px] text-zinc-200">
+                              {metric.formula}
+                            </div>
+                          </div>
+                          <div className="text-[11px] text-zinc-400 border-t border-zinc-900 pt-2 leading-relaxed">
+                            {metric.useCase}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed font-sans">
+                      <strong className="text-amber-400 font-mono uppercase">Critical Metric Reality: </strong>
+                      {item.similarityMetrics.importantCaution}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. How Embeddings Are Actually Created */}
                 {item.creationWorkflow && (
                   <div className="space-y-3 pt-2 border-t border-zinc-800">
                     <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
@@ -3535,7 +3583,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* Different Types of Embeddings Table */}
+                {/* 4. Different Types of Embeddings Table */}
                 {item.typesOfEmbeddings && (
                   <div className="space-y-3 pt-2 border-t border-zinc-800">
                     <div className="space-y-1">
@@ -3575,7 +3623,7 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* Sentence Transformers & Cosine Similarity Code Example */}
+                {/* 5. Sentence Transformers & Cosine Similarity Code Example */}
                 {item.sentenceTransformersExample && (
                   <div className="space-y-3 pt-2 border-t border-zinc-800">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -3614,18 +3662,160 @@ export default function AllDefinitionsPage() {
                       <CodeHighlight code={item.sentenceTransformersExample.code} />
                     </div>
 
+                    {/* What the code does */}
                     <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
                       <h5 className="text-xs font-bold text-white font-mono uppercase tracking-wide">
-                        What happens here?
+                        What the code does:
                       </h5>
                       <ul className="space-y-1.5">
-                        {item.sentenceTransformersExample.explanation.map((exp, eIdx) => (
+                        {item.sentenceTransformersExample.whatCodeDoes?.map((exp, eIdx) => (
+                          <li key={eIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                            <span className="text-cyan-400 mt-0.5">•</span>
+                            <span>{exp}</span>
+                          </li>
+                        )) || item.sentenceTransformersExample.explanation?.map((exp, eIdx) => (
                           <li key={eIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
                             <span className="text-cyan-400 mt-0.5">•</span>
                             <span>{exp}</span>
                           </li>
                         ))}
                       </ul>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. OpenAI Embedding API Example */}
+                {item.openAiEmbeddingExample && (
+                  <div className="space-y-3 pt-2 border-t border-zinc-800">
+                    <div className="space-y-1">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                        {item.openAiEmbeddingExample.title}
+                      </h4>
+                      <p className="text-xs text-zinc-400">
+                        {item.openAiEmbeddingExample.subtitle}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>openai_embedding_api.py (Hosted Embedding Service)</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-openai-embed', item.openAiEmbeddingExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-openai-embed' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.openAiEmbeddingExample.code} />
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                      {item.openAiEmbeddingExample.notes.map((note, nIdx) => (
+                        <p key={nIdx} className="text-xs text-zinc-300 leading-relaxed flex items-start gap-2">
+                          <span className="text-cyan-400 mt-0.5">•</span>
+                          <span>{note}</span>
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Important Embedding Best Practices */}
+                {item.bestPractices && (
+                  <div className="space-y-4 pt-2 border-t border-zinc-800">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.bestPractices.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-emerald-400 border border-emerald-800/50">
+                        Production Guidelines
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.bestPractices.items.map((bp, bIdx) => (
+                        <div key={bIdx} className={`p-3.5 rounded-xl bg-black border ${bp.border} space-y-1.5 flex flex-col justify-between shadow-md`}>
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${bp.accent}`}>
+                                {bp.title}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                {bp.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed">
+                              {bp.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 8. Full Production Reference (FastAPI + ChromaDB Endpoint) */}
+                {item.mainCode && (
+                  <div className="space-y-3 pt-3 border-t border-zinc-800">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>End-to-End Production Reference (FastAPI + ChromaDB)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Complete Microservice
+                      </span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>main.py (FastAPI Endpoint + ChromaDB Query + GPT Response)</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-rag-main', item.mainCode)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-rag-main' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.mainCode} />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-3.5 rounded-xl bg-black border border-zinc-800 flex items-center gap-3 font-mono text-xs text-emerald-400">
+                        <Terminal className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>{item.runCommand}</span>
+                      </div>
+                      <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 leading-relaxed">
+                        <strong className="text-amber-400 font-mono uppercase">Production Metadata: </strong>
+                        {item.sourceCitationNote}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -9969,8 +10159,8 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 54: Edge Cases & Resilient System Design */}
-            {item.id === 'edge-cases' && (
+            {/* Item 54: Edge Cases & Resilient System Design (Fashion AI) */}
+            {item.id === 'fashion-ai-edge-cases' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
                 {/* Core Definition Banner */}
                 <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
@@ -19296,7 +19486,163 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 4. Takeaway Banner */}
+                {/* 4. Complete Design Patterns Summary Table (All 6 Patterns) */}
+                {item.patternOverviewTable && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Core Design Patterns in AI/ML & GenAI</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        6 Essential Patterns
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950/80">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b border-zinc-800 bg-black/60 text-zinc-400 font-mono uppercase text-[10px]">
+                            <th className="py-2.5 px-4 font-semibold">Pattern</th>
+                            <th className="py-2.5 px-4 font-semibold">Category</th>
+                            <th className="py-2.5 px-4 font-semibold">Main Idea</th>
+                            <th className="py-2.5 px-4 font-semibold">Typical AI/GenAI Use</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 font-sans">
+                          {item.patternOverviewTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-4 font-mono font-bold text-white">
+                                <span className={row.accent}>{row.pattern}</span>
+                              </td>
+                              <td className="py-2.5 px-4">
+                                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                                  {row.badge}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-4 text-zinc-300 font-medium">
+                                {row.mainIdea}
+                              </td>
+                              <td className="py-2.5 px-4 text-zinc-400 font-mono text-[11px]">
+                                {row.typicalUse}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Additional Executable Python Code Examples for All 6 Patterns */}
+                {item.allPatternsCodeExamples && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Targeted GenAI Implementations (All 6 Patterns)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-emerald-400 border border-emerald-800/50">
+                        Modular Code Examples
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {item.allPatternsCodeExamples.map((ex, eIdx) => (
+                        <div key={eIdx} className={`rounded-2xl overflow-hidden border ${ex.border} bg-zinc-950 flex flex-col justify-between shadow-xl`}>
+                          <div>
+                            <div className="flex items-center justify-between px-3.5 py-2.5 bg-black border-b border-zinc-800">
+                              <div className="flex items-center gap-2 truncate">
+                                <span className={`font-mono text-xs font-bold ${ex.accent}`}>
+                                  {ex.name}
+                                </span>
+                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                  {ex.badge}
+                                </span>
+                              </div>
+                              <button
+                                onClick={() => handleCopyCode(ex.id, ex.code)}
+                                className="flex items-center gap-1 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] text-zinc-300 border border-zinc-700 transition cursor-pointer shrink-0"
+                              >
+                                {copiedId === ex.id ? (
+                                  <>
+                                    <Check className="w-3 h-3 text-emerald-400" />
+                                    <span>Copied!</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy className="w-3 h-3" />
+                                    <span>Copy</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                            <div className="px-3.5 py-2 bg-zinc-950/90 border-b border-zinc-800/60 flex items-center justify-between text-[11px] text-zinc-400 font-sans">
+                              <span><strong>Main Idea:</strong> {ex.mainIdea}</span>
+                              <span className="text-zinc-500 font-mono text-[10px]">Use: {ex.typicalUse}</span>
+                            </div>
+                            <CodeHighlight code={ex.code} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. How These Patterns Fit into a GenAI Application (Architecture Flow) */}
+                {item.genAiApplicationFit && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-xl">
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                          <Workflow className="w-4 h-4 text-cyan-400" />
+                          <span>End-to-End GenAI Architecture Fit</span>
+                        </span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                          FastAPI + LangGraph + RAG
+                        </span>
+                      </div>
+                      <h4 className="text-sm sm:text-base font-bold text-white font-mono">
+                        {item.genAiApplicationFit.title}
+                      </h4>
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.genAiApplicationFit.subtitle}
+                      </p>
+                    </div>
+
+                    {/* Step-by-Step Flow Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-2">
+                      {item.genAiApplicationFit.pipeline.map((st, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className={`p-3.5 rounded-xl bg-black border ${st.border} space-y-2 flex flex-col justify-between shadow-md relative`}
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                Step {sIdx + 1}
+                              </span>
+                              <span className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-cyan-300 border border-zinc-800 truncate">
+                                {st.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${st.accent}`}>
+                              {st.step}
+                            </h5>
+                            <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
+                              {st.action}
+                            </p>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-900 text-[10px] font-mono text-zinc-500">
+                            Pattern: <span className="text-zinc-300">{st.role}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}
@@ -20435,7 +20781,7 @@ export default function AllDefinitionsPage() {
 
             {/* Item 113: Early Stopping */}
             {item.id === 'early-stopping' && (
-              <div className="space-y-6">
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
                 {/* 1. Core Definition Header Banner */}
                 <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
                   <div className="flex items-center justify-between">
@@ -20455,65 +20801,20 @@ export default function AllDefinitionsPage() {
                   </p>
                 </div>
 
-                {/* 2. Three Hyperparameter Pillars */}
-                {item.coreParameters && (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {item.coreParameters.map((param, pIdx) => (
-                      <div key={pIdx} className="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-2 hover:border-zinc-700 transition flex flex-col justify-between shadow-xl">
-                        <div className="space-y-1">
-                          <span className="text-[10px] font-mono font-bold uppercase text-zinc-400 block">
-                            {param.name}
-                          </span>
-                          <span className={`text-xs font-mono font-bold ${param.accent} block`}>
-                            {param.param}
-                          </span>
-                        </div>
-                        <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-2 border-t border-zinc-900">
-                          {param.desc}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* 3. Regularization Dynamics Breakdown */}
-                {item.regularizationMechanism && (
-                  <div className="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-purple-400" />
-                        <span>{item.regularizationMechanism.headline}</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
-                        Generalization Curve
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      {item.regularizationMechanism.points.map((pt, pIdx) => (
-                        <div key={pIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-zinc-700 transition">
-                          <h5 className="text-xs font-bold font-mono text-cyan-400">
-                            {pt.phase}
-                          </h5>
-                          <span className="text-[10px] font-mono text-amber-300 block">
-                            Trend: {pt.trend}
-                          </span>
-                          <p className="text-[11px] text-zinc-300 font-sans leading-relaxed pt-1">
-                            {pt.action}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. Interactive TensorFlow Code Box */}
+                {/* 2. Interactive TensorFlow Code Box */}
                 {item.codeExample && (
                   <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>{item.codeExample.title}</span>
-                    </h4>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.codeExample.title}</span>
+                      </h4>
+                      {item.codeExample.verboseNote && (
+                        <span className="text-[11px] font-mono text-amber-300 bg-amber-950/30 px-2.5 py-0.5 rounded border border-amber-800/50">
+                          {item.codeExample.verboseNote}
+                        </span>
+                      )}
+                    </div>
                     <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                       <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
                         <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
@@ -20542,7 +20843,145 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 5. Takeaway Banner */}
+                {/* 3. Core Parameter Breakdown (1 to 4) */}
+                {item.coreParameters && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Key Parameters & Configuration</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.coreParameters.map((param, pIdx) => (
+                        <div key={pIdx} className={`p-4 rounded-2xl bg-zinc-950 border ${param.border || 'border-zinc-800'} space-y-2.5 flex flex-col justify-between shadow-xl`}>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-mono font-bold uppercase text-white">
+                                {param.num}. {param.name}
+                              </span>
+                              <span className={`text-xs font-mono font-bold ${param.accent}`}>
+                                {param.param}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {param.summary}
+                            </p>
+                          </div>
+                          {param.options && (
+                            <div className="space-y-1.5 pt-2 border-t border-zinc-900 font-sans">
+                              {param.options.map((opt, oIdx) => (
+                                <div key={oIdx} className="text-[11px] text-zinc-400 flex items-start gap-1.5">
+                                  <span className="text-cyan-400 font-mono shrink-0">•</span>
+                                  <span>
+                                    <strong className="text-zinc-200 font-mono">{opt.metric}: </strong>
+                                    {opt.desc}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. How Early Stopping Works (4 Stages + Nuance) */}
+                {item.howItWorks && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl space-y-4">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-purple-400" />
+                        <span>3. {item.howItWorks.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Execution Lifecycle
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.howItWorks.stages.map((stg, sIdx) => (
+                        <div key={sIdx} className={`p-3.5 rounded-xl bg-black border ${stg.border || 'border-zinc-800'} space-y-2 flex flex-col justify-between`}>
+                          <div className="space-y-1">
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 w-fit block">
+                              {stg.badge}
+                            </span>
+                            <h5 className={`text-xs font-bold font-mono ${stg.accent}`}>
+                              {stg.stage}
+                            </h5>
+                          </div>
+                          <p className="text-[11px] text-zinc-300 font-sans leading-relaxed pt-1 border-t border-zinc-900">
+                            {stg.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {item.howItWorks.nuance && (
+                      <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-sans">
+                        <strong className="text-cyan-400 font-mono uppercase">One Nuance: </strong>
+                        {item.howItWorks.nuance}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 5. Two Optional Improvements */}
+                {item.optionalImprovements && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                      <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>{item.optionalImprovements.title}</span>
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {item.optionalImprovements.items.map((opt, oIdx) => (
+                        <div key={oIdx} className={`p-4 rounded-xl bg-black border ${opt.border || 'border-zinc-800'} space-y-1.5 shadow-md`}>
+                          <div className={`text-xs font-mono font-bold ${opt.accent}`}>
+                            {opt.param}
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {opt.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Comparison With Related Techniques Table */}
+                {item.comparisonWithRelatedTechniques && (
+                  <div className="space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.comparisonWithRelatedTechniques.title}</span>
+                      </h4>
+                      <span className="text-[11px] text-zinc-400 font-sans">
+                        {item.comparisonWithRelatedTechniques.note}
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border border-zinc-800 rounded-xl overflow-hidden">
+                        <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase">
+                          <tr>
+                            <th className="p-3 border-b border-zinc-800 w-1/3">Technique</th>
+                            <th className="p-3 border-b border-zinc-800 text-cyan-400 font-bold w-2/3">Purpose</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 bg-black/60 font-sans">
+                          {item.comparisonWithRelatedTechniques.table.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-semibold text-white font-mono">{row.technique}</td>
+                              <td className="p-3 text-zinc-300 leading-relaxed">{row.purpose}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Architecture Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}
@@ -22112,14 +22551,19 @@ export default function AllDefinitionsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       {item.methodComparison.map((m, mIdx) => (
                         <div key={mIdx} className={`p-4 rounded-xl bg-black border ${m.border} space-y-2.5 flex flex-col justify-between hover:border-zinc-700 transition`}>
-                          <div className="space-y-1.5">
+                          <div className="space-y-2">
                             <h5 className={`text-xs font-bold font-mono ${m.accent}`}>
                               {m.name}
                             </h5>
                             <div className="p-1 rounded bg-zinc-950 border border-zinc-800 font-mono text-[11px] text-zinc-400">
                               Penalty: {m.penalty}
                             </div>
-                            <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                            {m.regularizationPrinciple && (
+                              <p className="text-xs text-amber-300 font-medium font-sans leading-relaxed p-2 rounded-lg bg-zinc-950/80 border border-amber-900/30">
+                                {m.regularizationPrinciple}
+                              </p>
+                            )}
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
                               {m.handlingCorrelated}
                             </p>
                           </div>
@@ -22129,6 +22573,45 @@ export default function AllDefinitionsPage() {
                           </div>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4b. Comparison Table: Elastic Net vs Ridge vs Lasso */}
+                {item.comparisonTable && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-purple-400" />
+                        <span>{item.comparisonTable.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        {item.comparisonTable.badge}
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-zinc-900/90 border-b border-zinc-800 font-mono text-[11px] text-zinc-400">
+                            {item.comparisonTable.headers.map((h, hIdx) => (
+                              <th key={hIdx} className={`p-3 font-semibold ${h === 'Elastic Net' ? 'text-emerald-400 bg-emerald-950/30' : ''}`}>
+                                {h}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-850">
+                          {item.comparisonTable.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-medium text-zinc-300 font-sans">{row.property}</td>
+                              <td className="p-3 font-mono text-blue-300">{row.ridge}</td>
+                              <td className="p-3 font-mono text-rose-300">{row.lasso}</td>
+                              <td className="p-3 font-mono text-emerald-300 font-bold bg-emerald-950/20">{row.elasticNet}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 )}
@@ -22165,6 +22648,27 @@ export default function AllDefinitionsPage() {
                       </div>
                       <CodeHighlight code={item.codeExample.code} />
                     </div>
+
+                    {/* What each part does explanation box */}
+                    {item.codeExample.explanation && (
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                        <h5 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.codeExample.explanationHeading || "What each part does"}</span>
+                        </h5>
+                        <ul className="space-y-1.5 pt-1">
+                          {item.codeExample.explanation.map((exp, eIdx) => (
+                            <li key={eIdx} className="flex items-start gap-2 text-xs leading-relaxed">
+                              <span className="text-cyan-400 font-bold mt-0.5">•</span>
+                              <div>
+                                <strong className="font-mono text-cyan-300 font-semibold">{exp.component}</strong>
+                                <span className="text-zinc-300 font-sans"> — {exp.desc}</span>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -22176,34 +22680,254 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 119: Entropy */}
-            {item.id === 'entropy' && (
+            {/* Item EDA: 13-Step Core Pipeline & 5-Stage Architecture */}
+            {item.id === 'eda' && (
               <div className="space-y-6">
                 {/* 1. Core Definition Header Banner */}
-                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                <div className="p-4 sm:p-5 rounded-xl bg-black border border-cyan-800/50 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
                       <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Information Theory & Label Purity</span>
+                      <span>Data Understanding & Discovery</span>
                     </span>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                      Shannon Entropy
+                      {item.badge}
                     </span>
                   </div>
                   <h3 className="text-sm sm:text-base font-bold text-white font-mono">
-                    Entropy
+                    Exploratory Data Analysis (EDA)
                   </h3>
                   <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
                     {item.coreDefinition}
                   </p>
                 </div>
 
-                {/* 2. Binary Dataset Scenarios (Email Spam Example) */}
+                {/* 2. Critical EDA Principle Alert Banner */}
+                {item.importantAlert && (
+                  <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/60 flex items-start gap-3 shadow-lg">
+                    <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <span className="text-xs font-bold font-mono uppercase text-amber-400 tracking-wider block">
+                        Critical EDA Principle
+                      </span>
+                      <p className="text-xs sm:text-sm text-amber-200/90 font-sans leading-relaxed">
+                        {item.importantAlert}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. The 13-Step EDA Pipeline */}
+                {item.thirteenSteps && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-cyan-400" />
+                        <span>The 13-Step EDA Pipeline</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        13 Steps
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 pt-1">
+                      {item.thirteenSteps.map((st) => (
+                        <div
+                          key={st.step}
+                          className={`p-3.5 rounded-xl bg-black border ${st.border || 'border-zinc-800'} space-y-2 hover:border-zinc-700 transition flex flex-col justify-between`}
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                                Step {st.step}
+                              </span>
+                              <span className={`text-xs font-bold font-mono ${st.accent}`}>
+                                {st.name}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {st.desc}
+                            </p>
+                          </div>
+                          {st.code && (
+                            <div className="pt-2 border-t border-zinc-900">
+                              <code className="text-[11px] font-mono text-cyan-300 font-semibold bg-zinc-950 p-1.5 rounded block overflow-x-auto whitespace-pre-wrap border border-zinc-850">
+                                {st.code}
+                              </code>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. The 5-Stage Core Architecture (Kept Separately) */}
+                {item.fiveStages && (
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Workflow className="w-4 h-4 text-purple-400" />
+                        <span>Core End-to-End EDA Workflow (5 Stages)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Architecture Stages
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 pt-1">
+                      {item.fiveStages.map((stage) => (
+                        <div
+                          key={stage.stage}
+                          className={`p-4 rounded-xl bg-black border ${stage.border || 'border-zinc-800'} space-y-2.5 flex flex-col justify-between hover:border-zinc-700 transition`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${stage.bgBadge} border`}>
+                                Stage {stage.stage}
+                              </span>
+                            </div>
+                            <h5 className={`text-xs font-bold font-mono ${stage.accent}`}>
+                              {stage.name.replace(/Stage \d+ — /, '')}
+                            </h5>
+                            {stage.studyHeadline && (
+                              <p className="text-[11px] text-amber-300/90 font-medium font-sans">
+                                {stage.studyHeadline}
+                              </p>
+                            )}
+                            <ul className="space-y-1 text-xs text-zinc-300 font-sans leading-relaxed">
+                              {stage.bullets.map((b, bIdx) => (
+                                <li key={bIdx} className="flex items-start gap-1.5">
+                                  <span className="text-zinc-500 font-bold mt-0.5">•</span>
+                                  <span>{b}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Python Example — A Practical EDA Starter */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.codeExample.title}</span>
+                    </h4>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.codeExample.filename || 'eda_starter.py'}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-eda-starter', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-eda-starter' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.codeExample.code} />
+                      {item.codeExample.note && (
+                        <div className="px-4 py-2 bg-zinc-950/80 border-t border-zinc-850 text-[11px] font-mono text-zinc-400">
+                          <span className="text-amber-400 font-bold">Note: </span>
+                          {item.codeExample.note}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Important Exam Concepts Table */}
+                {item.examConceptsTable && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-emerald-800/40 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.examConceptsTable.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        {item.examConceptsTable.badge}
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-zinc-900/90 border-b border-zinc-800 font-mono text-[11px] text-zinc-400">
+                            {item.examConceptsTable.headers.map((h, hIdx) => (
+                              <th key={hIdx} className={`p-3 font-semibold ${hIdx === 0 ? 'w-1/3 text-emerald-400' : 'text-zinc-300'}`}>
+                                {h}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-850">
+                          {item.examConceptsTable.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-mono text-cyan-300 font-semibold">{row.func}</td>
+                              <td className="p-3 font-sans text-zinc-300">{row.desc}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Item 119: Entropy */}
+            {item.id === 'entropy' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-black border border-cyan-800/50 space-y-3.5 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Information Theory & Label Purity</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Shannon Entropy
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                      {item.title || "Entropy"}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans mt-1">
+                      {item.coreDefinition}
+                    </p>
+                  </div>
+
+                  {item.importantCriterionNote && (
+                    <div className="p-3 rounded-xl bg-cyan-950/20 border border-cyan-800/50 text-xs text-cyan-200/90 leading-relaxed font-sans">
+                      <strong className="text-cyan-400 font-mono uppercase block mb-0.5">Scikit-Learn Splitting Criterion:</strong>
+                      {item.importantCriterionNote}
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Binary Dataset Scenarios (Email Spam vs Normal Example) */}
                 <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
-                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
                       <Terminal className="w-3.5 h-3.5 text-amber-400" />
-                      <span>{item.binaryExamplesHeading}</span>
+                      <span>{item.binaryExamplesHeading || "For a binary dataset:"}</span>
                     </h4>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
                       Spam vs. Normal
@@ -22211,7 +22935,7 @@ export default function AllDefinitionsPage() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    {item.binaryScenarios.map((sc, scIdx) => (
+                    {item.binaryScenarios?.map((sc, scIdx) => (
                       <div key={scIdx} className={`p-4 rounded-xl bg-black border ${sc.border} space-y-2.5 flex flex-col justify-between hover:border-zinc-700 transition`}>
                         <div className="space-y-1.5">
                           <span className={`text-xs font-bold font-mono ${sc.accent} block`}>
@@ -22237,92 +22961,22 @@ export default function AllDefinitionsPage() {
                   </div>
                 </div>
 
-                {/* 3. Mathematical Formula & Information Gain */}
-                {item.formulaSection && (
-                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 shadow-xl">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Shannon Entropy & Decision Tree Splitting</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                        H(S) in Bits
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div className="p-3 rounded-xl bg-black border border-cyan-800/40 space-y-1">
-                        <span className="text-[10px] font-mono uppercase text-zinc-400 block">
-                          Shannon Formula
-                        </span>
-                        <code className="text-xs sm:text-sm font-mono text-cyan-300 font-bold block">
-                          {item.formulaSection.formula}
-                        </code>
-                      </div>
-                      <div className="p-3 rounded-xl bg-black border border-purple-800/40 space-y-1">
-                        <span className="text-[10px] font-mono uppercase text-zinc-400 block">
-                          Information Gain
-                        </span>
-                        <code className="text-xs font-mono text-purple-300 block">
-                          {item.formulaSection.decisionTreeGain}
-                        </code>
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-zinc-400 font-sans">
-                      {item.formulaSection.definition}
-                    </p>
-                  </div>
-                )}
-
-                {/* 4. Entropy vs Gini Impurity Comparison */}
-                {item.entropyVsGini && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-purple-400" />
-                        <span>Shannon Entropy vs. Gini Impurity</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
-                        Tree Metrics
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {item.entropyVsGini.map((eg, egIdx) => (
-                        <div key={egIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
-                          <div className="flex items-center justify-between">
-                            <h5 className={`text-xs font-bold font-mono ${eg.accent}`}>
-                              {eg.metric}
-                            </h5>
-                            <span className="text-[10px] font-mono text-zinc-400">
-                              Range: {eg.range}
-                            </span>
-                          </div>
-                          <div className="p-1.5 rounded bg-zinc-950 border border-zinc-800 font-mono text-xs text-white">
-                            {eg.formula}
-                          </div>
-                          <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
-                            {eg.nature}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 5. Interactive Python Code Box */}
+                {/* 3. Interactive Python Code Box (scikit-learn Decision Tree with Entropy) */}
                 {item.codeExample && (
                   <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>{item.codeExample.title}</span>
-                    </h4>
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.codeExample.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono text-zinc-400">scikit-learn Tree</span>
+                    </div>
+
                     <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                       <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
                         <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
                           <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>entropy_calculation.py</span>
+                          <span>{item.codeExample.filename || 'decision_tree_entropy.py'}</span>
                         </div>
                         <button
                           onClick={() => handleCopyCode('code-entropy', item.codeExample.code)}
@@ -22343,10 +22997,145 @@ export default function AllDefinitionsPage() {
                       </div>
                       <CodeHighlight code={item.codeExample.code} />
                     </div>
+
+                    {item.codeExample.guidance && (
+                      <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
+                        <strong className="text-amber-400 font-mono uppercase block mb-0.5">Hyperparameter Tuning:</strong>
+                        {item.codeExample.guidance}
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {/* 6. Takeaway Banner */}
+                {/* 4. Shannon Entropy & Decision Tree Splitting (Formulas & Concepts) */}
+                {item.decisionTreeSplitting && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.decisionTreeSplitting.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        {item.decisionTreeSplitting.badge}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {/* Part 1: Shannon Entropy */}
+                      <div className="p-4 rounded-xl bg-black border border-cyan-800/40 space-y-2.5 flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <h5 className="text-xs font-bold font-mono text-cyan-300">
+                            {item.decisionTreeSplitting.shannonEntropy.title}
+                          </h5>
+                          <p className="text-xs text-zinc-300 font-sans">
+                            {item.decisionTreeSplitting.shannonEntropy.description}
+                          </p>
+                          <div className="p-2 rounded bg-zinc-950 border border-zinc-800 font-mono text-xs font-bold text-cyan-300">
+                            <code>{item.decisionTreeSplitting.shannonEntropy.formula}</code>
+                          </div>
+                        </div>
+                        <ul className="space-y-1 text-xs text-zinc-400 font-sans pt-1">
+                          {item.decisionTreeSplitting.shannonEntropy.bullets?.map((b, bIdx) => (
+                            <li key={bIdx} className="flex items-start gap-1.5">
+                              <span className="text-cyan-400 font-bold">•</span>
+                              <span>{b}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Part 2: Information Gain */}
+                      <div className="p-4 rounded-xl bg-black border border-purple-800/40 space-y-2.5 flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <h5 className="text-xs font-bold font-mono text-purple-300">
+                            {item.decisionTreeSplitting.informationGain.title}
+                          </h5>
+                          <p className="text-xs text-zinc-300 font-sans">
+                            {item.decisionTreeSplitting.informationGain.description}
+                          </p>
+                          <div className="p-2 rounded bg-zinc-950 border border-zinc-800 font-mono text-xs font-bold text-purple-300">
+                            <code>{item.decisionTreeSplitting.informationGain.formula}</code>
+                          </div>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
+                          <strong className="text-purple-400 font-mono block mb-0.5">Splitting Preference:</strong>
+                          {item.decisionTreeSplitting.informationGain.preference}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Shannon Entropy vs. Gini Impurity Comparison Table */}
+                {item.entropyVsGini && (
+                  <div className="space-y-3.5">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-purple-400" />
+                        <span>{item.entropyVsGini.title || "Shannon Entropy vs. Gini Impurity"}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
+                        {item.entropyVsGini.badge || "Tree Metrics"}
+                      </span>
+                    </div>
+
+                    {/* Table View */}
+                    {item.entropyVsGini.rows && (
+                      <div className="overflow-x-auto rounded-xl border border-zinc-800 shadow-xl">
+                        <table className="w-full text-xs text-left">
+                          <thead className="bg-zinc-950 border-b border-zinc-800 text-zinc-400 font-mono uppercase text-[11px]">
+                            <tr>
+                              <th className="p-3 font-bold text-zinc-300 w-1/3">Property</th>
+                              <th className="p-3 font-bold text-cyan-400 w-1/3">Shannon Entropy</th>
+                              <th className="p-3 font-bold text-amber-400 w-1/3">Gini Impurity</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 bg-black font-sans">
+                            {item.entropyVsGini.rows.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-zinc-950/60 transition">
+                                <td className="p-3 font-mono font-bold text-zinc-200">
+                                  {row.property}
+                                </td>
+                                <td className="p-3 text-cyan-200 font-mono">
+                                  {row.entropy}
+                                </td>
+                                <td className="p-3 text-amber-200 font-mono">
+                                  {row.gini}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    {/* Key Properties Grid */}
+                    {item.entropyVsGini.keyProperties && (
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                        {item.entropyVsGini.keyProperties.map((kp, kpIdx) => (
+                          <div key={kpIdx} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1">
+                            <span className="text-[10px] font-mono font-bold uppercase text-zinc-400 block">
+                              {kp.label}
+                            </span>
+                            <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                              {kp.detail}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Interview Takeaway Box */}
+                    {item.entropyVsGini.interviewTakeaway && (
+                      <div className="p-3.5 rounded-xl bg-zinc-950 border border-purple-800/40 text-xs text-purple-200/90 font-sans leading-relaxed shadow-md">
+                        <strong className="text-purple-400 font-mono uppercase block mb-0.5">Interview Takeaway:</strong>
+                        {item.entropyVsGini.interviewTakeaway.replace(/^Interview takeaway:\s*/i, '')}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 6. Architecture Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}
@@ -22357,80 +23146,794 @@ export default function AllDefinitionsPage() {
             {/* Item: ETL (Extract, Transform, Load) */}
             {item.id === 'etl' && (
               <div className="space-y-6">
-                {/* 1. Core Definition Header Banner */}
-                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
-                  <div className="flex items-center justify-between">
+                {/* 1. What Is ETL? */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-black border border-cyan-800/50 space-y-4 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
                     <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
                       <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Data Pipeline Architecture</span>
+                      <span>1. What Is ETL?</span>
                     </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
                       Core Pipeline Pattern
                     </span>
                   </div>
-                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
-                    ETL (Extract, Transform, Load) & Modern Data Engineering
-                  </h3>
-                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
-                    {item.coreDefinition}
-                  </p>
+
+                  <div>
+                    <h3 className="text-base sm:text-lg font-bold text-white font-mono">
+                      Extract, Transform, Load (ETL)
+                    </h3>
+                    <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans mt-1.5">
+                      {item.coreDefinition}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/90 space-y-1">
+                      <span className="text-[10px] font-mono uppercase text-zinc-400 font-bold block">
+                        Common Sources
+                      </span>
+                      <p className="text-xs text-zinc-200 font-sans">
+                        Databases, APIs, files, and event streams.
+                      </p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/90 space-y-1">
+                      <span className="text-[10px] font-mono uppercase text-zinc-400 font-bold block">
+                        Common Destinations
+                      </span>
+                      <p className="text-xs text-zinc-200 font-sans">
+                        Data warehouses, data lakes, and ML feature stores.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-cyan-950/20 border border-cyan-800/40 flex items-center justify-between flex-wrap gap-2">
+                    <span className="text-xs font-mono font-bold text-cyan-300 uppercase tracking-wide">
+                      The Core Pipeline:
+                    </span>
+                    <div className="flex items-center gap-2 font-mono text-xs font-bold">
+                      <span className="px-2.5 py-1 rounded bg-cyan-900/60 text-cyan-200 border border-cyan-700">Extract</span>
+                      <span className="text-zinc-500">→</span>
+                      <span className="px-2.5 py-1 rounded bg-purple-900/60 text-purple-200 border border-purple-700">Transform</span>
+                      <span className="text-zinc-500">→</span>
+                      <span className="px-2.5 py-1 rounded bg-emerald-900/60 text-emerald-200 border border-emerald-700">Load</span>
+                    </div>
+                  </div>
                 </div>
 
-                {/* 2. The 3 Pipeline Stages: Extract, Transform, Load */}
-                {item.stages && (
-                  <div className="space-y-3">
+                {/* 2, 3, 4. Stages: Extract, Transform, Load */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                      <Workflow className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Pipeline Stages (Extract → Transform → Load)</span>
+                    </h4>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-400 border border-zinc-700">
+                      Stages 2, 3 & 4
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-1">
+                    {/* Stage 2: Extract */}
+                    <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/60 space-y-4 hover:border-zinc-600 transition flex flex-col justify-between shadow-lg">
+                      <div className="space-y-3.5">
+                        <div className="flex items-start justify-between gap-2 border-b border-zinc-800/80 pb-2.5">
+                          <div>
+                            <h5 className="text-sm font-bold font-mono text-cyan-400">
+                              2. Extract — Collect the Data
+                            </h5>
+                            <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
+                              Purpose: Retrieve data from source systems.
+                            </span>
+                          </div>
+                          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-cyan-400">
+                            E
+                          </span>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <span className="text-[10px] font-bold font-mono uppercase text-zinc-400 block">
+                            Common Sources and Tools
+                          </span>
+                          <div className="space-y-1 text-xs font-sans">
+                            <div className="p-1.5 rounded bg-black/70 border border-zinc-900 text-zinc-300">
+                              <strong className="text-cyan-300 font-mono text-[11px]">Databases:</strong> PostgreSQL, MySQL
+                            </div>
+                            <div className="p-1.5 rounded bg-black/70 border border-zinc-900 text-zinc-300">
+                              <strong className="text-cyan-300 font-mono text-[11px]">APIs:</strong> REST APIs and webhooks
+                            </div>
+                            <div className="p-1.5 rounded bg-black/70 border border-zinc-900 text-zinc-300">
+                              <strong className="text-cyan-300 font-mono text-[11px]">Event streams:</strong> Apache Kafka
+                            </div>
+                            <div className="p-1.5 rounded bg-black/70 border border-zinc-900 text-zinc-300">
+                              <strong className="text-cyan-300 font-mono text-[11px]">Cloud storage:</strong> Amazon S3
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <span className="text-[10px] font-bold font-mono uppercase text-zinc-400 block">
+                            How It Works
+                          </span>
+                          <ul className="space-y-1 text-xs text-zinc-300 font-sans">
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-cyan-400 font-bold">•</span>
+                              <span><strong>Full extraction:</strong> Retrieve the complete dataset.</span>
+                            </li>
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-cyan-400 font-bold">•</span>
+                              <span><strong>Incremental extraction:</strong> Retrieve only new or changed records.</span>
+                            </li>
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-cyan-400 font-bold">•</span>
+                              <span><strong>Change Data Capture (CDC):</strong> Capture database changes using transaction logs, timestamps, or other tracking mechanisms.</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div className="pt-2.5 border-t border-zinc-800/80">
+                        <span className="text-[10px] font-bold font-mono uppercase text-emerald-400 block mb-1">
+                          Production Best Practice
+                        </span>
+                        <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
+                          Use read replicas or CDC tools such as Debezium when appropriate to reduce the workload on production databases.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Stage 3: Transform */}
+                    <div className="p-5 rounded-2xl bg-zinc-950 border border-purple-800/60 space-y-4 hover:border-zinc-600 transition flex flex-col justify-between shadow-lg">
+                      <div className="space-y-3.5">
+                        <div className="flex items-start justify-between gap-2 border-b border-zinc-800/80 pb-2.5">
+                          <div>
+                            <h5 className="text-sm font-bold font-mono text-purple-400">
+                              3. Transform — Clean & Process
+                            </h5>
+                            <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
+                              Purpose: Convert raw data into a consistent, validated format.
+                            </span>
+                          </div>
+                          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-purple-400">
+                            T
+                          </span>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <span className="text-[10px] font-bold font-mono uppercase text-zinc-400 block">
+                            Common Tools
+                          </span>
+                          <div className="p-2 rounded bg-black/70 border border-zinc-900 text-xs font-mono text-zinc-300 space-y-0.5">
+                            <div>• Pandas & Polars (DataFrame processing)</div>
+                            <div>• Apache Spark (Distributed data processing)</div>
+                            <div>• DuckDB (Analytical SQL workloads)</div>
+                            <div>• dbt (SQL-based transformations)</div>
+                            <div>• Pydantic & Great Expectations (Validation)</div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <span className="text-[10px] font-bold font-mono uppercase text-zinc-400 block">
+                            Common Operations
+                          </span>
+                          <ul className="space-y-1 text-xs text-zinc-300 font-sans">
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-purple-400 font-bold">•</span>
+                              <span>Remove duplicates and handle missing values.</span>
+                            </li>
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-purple-400 font-bold">•</span>
+                              <span>Convert data types and standardize dates.</span>
+                            </li>
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-purple-400 font-bold">•</span>
+                              <span>Validate required fields and business rules.</span>
+                            </li>
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-purple-400 font-bold">•</span>
+                              <span>Join tables and calculate aggregates.</span>
+                            </li>
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-purple-400 font-bold">•</span>
+                              <span>Mask sensitive information where appropriate.</span>
+                            </li>
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-purple-400 font-bold">•</span>
+                              <span>Create features for machine learning models.</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div className="pt-2.5 border-t border-zinc-800/80">
+                        <span className="text-[10px] font-bold font-mono uppercase text-emerald-400 block mb-1">
+                          Production Best Practice
+                        </span>
+                        <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
+                          Define clear schema and data-quality rules. Send invalid records to a Dead Letter Queue (DLQ) for investigation instead of allowing bad records to silently corrupt downstream data.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Stage 4: Load */}
+                    <div className="p-5 rounded-2xl bg-zinc-950 border border-emerald-800/60 space-y-4 hover:border-zinc-600 transition flex flex-col justify-between shadow-lg">
+                      <div className="space-y-3.5">
+                        <div className="flex items-start justify-between gap-2 border-b border-zinc-800/80 pb-2.5">
+                          <div>
+                            <h5 className="text-sm font-bold font-mono text-emerald-400">
+                              4. Load — Store the Processed Data
+                            </h5>
+                            <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
+                              Purpose: Write processed records to a destination.
+                            </span>
+                          </div>
+                          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-emerald-400">
+                            L
+                          </span>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <span className="text-[10px] font-bold font-mono uppercase text-zinc-400 block">
+                            Common Destinations
+                          </span>
+                          <div className="space-y-1 text-xs font-sans">
+                            <div className="p-1.5 rounded bg-black/70 border border-zinc-900 text-zinc-300">
+                              <strong className="text-emerald-300 font-mono text-[11px]">Data warehouses:</strong> Snowflake, BigQuery
+                            </div>
+                            <div className="p-1.5 rounded bg-black/70 border border-zinc-900 text-zinc-300">
+                              <strong className="text-emerald-300 font-mono text-[11px]">Data platforms:</strong> Databricks Delta Lake, Apache Iceberg
+                            </div>
+                            <div className="p-1.5 rounded bg-black/70 border border-zinc-900 text-zinc-300">
+                              <strong className="text-emerald-300 font-mono text-[11px]">ML feature stores:</strong> Feast and other systems
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <span className="text-[10px] font-bold font-mono uppercase text-zinc-400 block">
+                            Loading Strategies & SCD
+                          </span>
+                          <ul className="space-y-1 text-xs text-zinc-300 font-sans">
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-emerald-400 font-bold">•</span>
+                              <span><strong>Append:</strong> Add new records.</span>
+                            </li>
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-emerald-400 font-bold">•</span>
+                              <span><strong>Upsert/Merge:</strong> Insert new records or update existing ones.</span>
+                            </li>
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-emerald-400 font-bold">•</span>
+                              <span><strong>Partition replacement:</strong> Replace a specific partition safely and atomically.</span>
+                            </li>
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-emerald-400 font-bold">•</span>
+                              <span><strong>SCD Type 1:</strong> Overwrite the old value.</span>
+                            </li>
+                            <li className="flex items-start gap-1.5">
+                              <span className="text-emerald-400 font-bold">•</span>
+                              <span><strong>SCD Type 2:</strong> Preserve historical versions of a record.</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div className="pt-2.5 border-t border-zinc-800/80">
+                        <span className="text-[10px] font-bold font-mono uppercase text-emerald-400 block mb-1">
+                          Production Best Practice
+                        </span>
+                        <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
+                          Make loading idempotent wherever possible. Re-running a job with the same input should not create duplicate records or unintended changes.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5. ETL vs. ELT */}
+                {item.etlVsElt && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
-                        <Workflow className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>The 3 Core Pipeline Stages</span>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.etlVsElt.title || "5. ETL vs. ELT"}</span>
                       </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-400 border border-zinc-700">
-                        E → T → L Execution Flow
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Cloud vs. On-Prem
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-1">
-                      {item.stages.map((stg, stgIdx) => (
-                        <div
-                          key={stgIdx}
-                          className={`p-5 rounded-2xl bg-zinc-950 border ${stg.border} space-y-3.5 hover:border-zinc-600 transition flex flex-col justify-between shadow-lg`}
-                        >
-                          <div className="space-y-3">
-                            <div className="flex items-start justify-between gap-2 border-b border-zinc-800/80 pb-2.5">
-                              <div>
-                                <h5 className={`text-sm font-bold font-mono ${stg.accent}`}>
-                                  {stg.stage}
-                                </h5>
-                                <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
-                                  Stage {stgIdx + 1} of 3
-                                </span>
-                              </div>
-                              <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 ${stg.accent}`}>
-                                {stg.acronym}
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs font-sans">
+                        <thead className="bg-zinc-900/90 text-zinc-300 border-b border-zinc-800 uppercase tracking-wider text-[11px] font-mono">
+                          <tr>
+                            <th className="p-3 font-semibold text-zinc-400 w-1/4">Feature</th>
+                            <th className="p-3 font-semibold text-purple-400 w-3/8">ETL</th>
+                            <th className="p-3 font-semibold text-emerald-400 w-3/8">ELT</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/70">
+                          {item.etlVsElt.rows?.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="p-3 font-bold font-mono text-zinc-300 whitespace-nowrap bg-zinc-950/40">
+                                {row.feature}
+                              </td>
+                              <td className="p-3 text-purple-200/90 leading-relaxed">
+                                {row.etl}
+                              </td>
+                              <td className="p-3 text-emerald-200/90 leading-relaxed font-medium">
+                                {row.elt}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {item.etlVsElt.interviewTakeaway && (
+                      <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-sans mt-2">
+                        <strong className="text-cyan-400 font-mono uppercase block mb-0.5">Interview Takeaway:</strong>
+                        {item.etlVsElt.interviewTakeaway.replace(/^Interview takeaway:\s*/i, '')}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 6. Batch vs. Streaming Pipelines */}
+                {item.batchVsStreaming && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.batchVsStreaming.title || "6. Batch vs. Streaming Pipelines"}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
+                        Execution Frequency
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Batch */}
+                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 hover:border-zinc-700 transition flex flex-col justify-between">
+                        <div className="space-y-2.5">
+                          <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                            <h5 className="text-sm font-bold font-mono text-cyan-400">
+                              {item.batchVsStreaming.batch?.title || "Batch Processing"}
+                            </h5>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                              Scheduled
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {item.batchVsStreaming.batch?.schedule}
+                          </p>
+                          <div className="p-2.5 rounded bg-black/60 border border-zinc-900 text-xs text-zinc-300 space-y-1">
+                            <strong className="text-zinc-400 font-mono text-[10px] uppercase block">Examples:</strong>
+                            <p className="text-zinc-200">{item.batchVsStreaming.batch?.examples}</p>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 border-t border-zinc-900">
+                          <strong className="text-zinc-400 font-mono text-[10px] uppercase block mb-1">Common Tools:</strong>
+                          <p className="text-xs font-mono text-cyan-300 bg-zinc-900/60 p-2 rounded border border-zinc-800">
+                            {item.batchVsStreaming.batch?.tools}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Streaming */}
+                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 hover:border-zinc-700 transition flex flex-col justify-between">
+                        <div className="space-y-2.5">
+                          <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                            <h5 className="text-sm font-bold font-mono text-emerald-400">
+                              {item.batchVsStreaming.streaming?.title || "Streaming Processing"}
+                            </h5>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                              Low Latency
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {item.batchVsStreaming.streaming?.schedule}
+                          </p>
+                          <div className="p-2.5 rounded bg-black/60 border border-zinc-900 text-xs text-zinc-300 space-y-1">
+                            <strong className="text-zinc-400 font-mono text-[10px] uppercase block">Examples:</strong>
+                            <p className="text-zinc-200">{item.batchVsStreaming.streaming?.examples}</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 pt-2 border-t border-zinc-900">
+                          <div>
+                            <strong className="text-zinc-400 font-mono text-[10px] uppercase block mb-1">Common Tools:</strong>
+                            <p className="text-xs font-mono text-emerald-300 bg-zinc-900/60 p-2 rounded border border-zinc-800">
+                              {item.batchVsStreaming.streaming?.tools}
+                            </p>
+                          </div>
+                          {item.batchVsStreaming.streaming?.latencyNote && (
+                            <p className="text-[11px] text-zinc-400 italic">
+                              {item.batchVsStreaming.streaming.latencyNote}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Common Production Problems (A to E) */}
+                {item.productionProblems && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 shadow-lg">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.productionProblems.title || "7. Common Production Problems"}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Pitfalls & Fixes
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+                      {item.productionProblems.problems?.map((prob, pIdx) => (
+                        <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 hover:border-zinc-700 transition flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <h5 className="text-xs font-bold font-mono text-rose-400 flex items-start gap-1.5">
+                              <span className="px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 text-[10px] shrink-0">
+                                {prob.code}
                               </span>
-                            </div>
-
-                            <div className="space-y-1">
-                              <span className="text-[10px] font-bold font-mono uppercase text-zinc-400">Sources / Engines</span>
-                              <p className="text-xs text-zinc-300 leading-relaxed font-mono bg-black/60 p-2 rounded border border-zinc-900">
-                                {stg.sources}
-                              </p>
-                            </div>
-
-                            <div className="space-y-1">
-                              <span className="text-[10px] font-bold font-mono uppercase text-zinc-400">Mechanism & Processing</span>
-                              <p className="text-xs text-zinc-300 leading-relaxed font-sans">
-                                {stg.mechanism}
-                              </p>
+                              <span>{prob.title}</span>
+                            </h5>
+                            <div className="p-2 rounded bg-zinc-950 border border-zinc-900 text-xs text-zinc-300 font-sans leading-relaxed">
+                              <strong className="text-zinc-400 text-[10px] uppercase font-mono block mb-0.5">Problem:</strong>
+                              {prob.problem}
                             </div>
                           </div>
 
-                          <div className="pt-2 border-t border-zinc-800/80">
-                            <span className="text-[10px] font-bold font-mono uppercase text-emerald-400 block mb-1">
-                              Production Best Practice
-                            </span>
-                            <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
-                              {stg.bestPractice}
+                          <div className="p-2.5 rounded bg-emerald-950/30 border border-emerald-900/50 text-xs font-sans text-emerald-300">
+                            <strong className="block text-emerald-400 text-[10px] uppercase font-mono mb-0.5">Solution:</strong>
+                            {prob.solution}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 8. Python ETL Example */}
+                {item.pythonExample && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.pythonExample.title || "8. Python ETL Example"}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono text-zinc-400">Pandas Pipeline</span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.pythonExample.filename || "orders_etl.py"}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-etl-python', item.pythonExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-etl-python' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.pythonExample.code} />
+                    </div>
+
+                    {item.pythonExample.note && (
+                      <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
+                        <strong className="text-amber-400 font-mono uppercase block mb-0.5">Production Architecture Note:</strong>
+                        {item.pythonExample.note}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 9. Key Interview Questions */}
+                {item.interviewQuestions && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <HelpCircle className="w-3.5 h-3.5 text-purple-400" />
+                        <span>{item.interviewQuestions.title || "9. Key Interview Questions"}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Q1 – Q6
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                      {item.interviewQuestions.questions?.map((qa, qIdx) => (
+                        <div key={qIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
+                          <h5 className="text-xs font-bold font-mono text-cyan-300">
+                            {qa.q}
+                          </h5>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {qa.a}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 10. Final Takeaway Banner */}
+                <div className="p-4.5 rounded-2xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-sans shadow-lg">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <strong className="text-emerald-400 uppercase font-mono text-xs">10. Final Takeaway:</strong>
+                  </div>
+                  <p className="leading-relaxed">
+                    {item.takeaway}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Item: Expectation — Expected Value, Linearity & Long-Run Averages */}
+            {item.id === 'expectation' && (
+              <div className="space-y-6">
+                {/* 1. What Is Expectation? */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-black border border-cyan-800/50 space-y-4 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>1. What Is Expectation?</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Probability Theory & Statistics
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-base sm:text-lg font-bold text-white font-mono">
+                      Expectation (Expected Value & Long-Run Averages)
+                    </h3>
+                    <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans mt-1.5">
+                      {item.coreDefinition}
+                    </p>
+                  </div>
+
+                  {/* Example: Rolling a Fair Die */}
+                  {item.dieExample && (
+                    <div className="p-4 sm:p-5 rounded-xl bg-zinc-950 border border-zinc-800/90 space-y-3">
+                      <div className="flex items-center justify-between border-b border-zinc-800/70 pb-2">
+                        <span className="text-xs font-bold font-mono text-cyan-300 flex items-center gap-2">
+                          <Activity className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.dieExample.title}</span>
+                        </span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
+                          Fair 6-Sided Die
+                        </span>
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-black/70 border border-cyan-900/40 text-center font-mono text-sm sm:text-base text-cyan-300 font-semibold tracking-wide">
+                        {item.dieExample.formula}
+                      </div>
+
+                      <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                        {item.dieExample.explanation}
+                      </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                        {item.dieExample.otherExamples?.map((ex, exIdx) => (
+                          <div key={exIdx} className="p-2.5 rounded-lg bg-black/60 border border-zinc-800/80 flex flex-col justify-between">
+                            <span className="text-[11px] text-zinc-400">{ex.label}</span>
+                            <span className="text-xs font-mono font-bold text-amber-300 mt-1">{ex.val}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="p-2.5 rounded-lg bg-cyan-950/40 border border-cyan-800/40 text-xs font-medium text-cyan-200">
+                        {item.dieExample.takeaway}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Mathematical Definitions & LOTUS */}
+                {item.mathDefinitions && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-purple-400" />
+                        <span>{item.mathDefinitions.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Discrete & Continuous
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Discrete */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 hover:border-zinc-700 transition">
+                        <div className="flex items-center justify-between">
+                          <h5 className="text-xs font-bold font-mono text-cyan-400">
+                            {item.mathDefinitions.discrete.title}
+                          </h5>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            Summation (Countable)
+                          </span>
+                        </div>
+                        <div className="p-2.5 rounded bg-zinc-950 border border-cyan-950 text-center font-mono text-xs sm:text-sm text-cyan-300 font-bold">
+                          {item.mathDefinitions.discrete.formula}
+                        </div>
+                        <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                          {item.mathDefinitions.discrete.explanation}
+                        </p>
+                      </div>
+
+                      {/* Continuous */}
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 hover:border-zinc-700 transition">
+                        <div className="flex items-center justify-between">
+                          <h5 className="text-xs font-bold font-mono text-emerald-400">
+                            {item.mathDefinitions.continuous.title}
+                          </h5>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                            Integration (Density f(x))
+                          </span>
+                        </div>
+                        <div className="p-2.5 rounded bg-zinc-950 border border-emerald-950 text-center font-mono text-xs sm:text-sm text-emerald-300 font-bold">
+                          {item.mathDefinitions.continuous.formula}
+                        </div>
+                        <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                          {item.mathDefinitions.continuous.explanation}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* LOTUS */}
+                    {item.mathDefinitions.lotus && (
+                      <div className="p-4.5 rounded-xl bg-black border border-amber-800/40 space-y-3">
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                          <span className="text-xs font-bold font-mono text-amber-300 flex items-center gap-2">
+                            <Zap className="w-3.5 h-3.5 text-amber-400" />
+                            <span>{item.mathDefinitions.lotus.title}</span>
+                          </span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                            No Derivation Needed
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                          {item.mathDefinitions.lotus.explanation}
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                          <div className="p-2.5 rounded bg-zinc-950 border border-zinc-800 text-center font-mono text-xs text-amber-300">
+                            <span className="text-[10px] uppercase text-zinc-400 block mb-1">Discrete LOTUS:</span>
+                            {item.mathDefinitions.lotus.discreteFormula}
+                          </div>
+                          <div className="p-2.5 rounded bg-zinc-950 border border-zinc-800 text-center font-mono text-xs text-amber-300">
+                            <span className="text-[10px] uppercase text-zinc-400 block mb-1">Continuous LOTUS:</span>
+                            {item.mathDefinitions.lotus.continuousFormula}
+                          </div>
+                        </div>
+                        <p className="text-xs text-zinc-400 italic font-sans pt-1">
+                          💡 {item.mathDefinitions.lotus.example}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 3. Core Properties of Expectation */}
+                {item.coreProperties && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>3. Core Properties of Expectation</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Linearity, Product, Constant, Variance
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.coreProperties.map((prop) => (
+                        <div key={prop.code} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono text-white flex items-center gap-2">
+                                <span className="w-5 h-5 rounded bg-zinc-900 border border-zinc-700 flex items-center justify-center text-[10px] text-cyan-300 font-mono">
+                                  {prop.code}
+                                </span>
+                                <span>{prop.name}</span>
+                              </span>
+                            </div>
+                            <div className="p-2 rounded bg-zinc-950 border border-cyan-950 text-xs sm:text-sm font-mono font-bold text-cyan-300">
+                              {prop.formula}
+                            </div>
+                            <p className="text-xs text-zinc-300 font-medium leading-relaxed font-sans">
+                              {prop.highlight}
+                            </p>
+                          </div>
+                          <div className="p-2 rounded bg-zinc-950/80 border border-zinc-800/80 text-[11px] font-mono text-zinc-400">
+                            {prop.example}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Law of Large Numbers (LLN) */}
+                {item.lln && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Activity className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.lln.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Convergence to True Mean
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-black border border-emerald-900/40 text-center font-mono text-xs sm:text-sm text-emerald-300 font-bold">
+                      {item.lln.formula}
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                      {item.lln.explanation}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                      <div className="p-3 rounded-lg bg-black border border-zinc-800 text-xs text-zinc-300">
+                        <strong className="text-cyan-400 font-mono block mb-1">Example:</strong>
+                        {item.lln.dieExample}
+                      </div>
+                      <div className="p-3 rounded-lg bg-black border border-zinc-800 text-xs text-zinc-400">
+                        <strong className="text-amber-400 font-mono block mb-1">Important Nuance:</strong>
+                        {item.lln.nuance}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Expectation in Machine Learning */}
+                {item.mlApplications && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5 text-amber-400" />
+                        <span>5. Expectation in Machine Learning</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        ERM, RL & VAEs
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.mlApplications.map((ml) => (
+                        <div key={ml.letter} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 hover:border-zinc-700 transition flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="w-5 h-5 rounded bg-zinc-900 border border-amber-800/60 flex items-center justify-center text-[10px] text-amber-300 font-mono">
+                                {ml.letter}
+                              </span>
+                              <h5 className="text-xs font-bold font-mono text-white">
+                                {ml.title}
+                              </h5>
+                            </div>
+                            <div className="p-2 rounded bg-zinc-950 border border-amber-950 text-[11px] font-mono text-amber-300">
+                              {ml.formula}
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {ml.desc}
                             </p>
                           </div>
                         </div>
@@ -22439,34 +23942,210 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 3. ETL vs ELT Comparison Table */}
-                {item.etlVsEltComparison && (
+                {/* 6. Verify Expectation Using Python */}
+                {item.pythonExample && (
                   <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                        <Table className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Architectural Paradigm Shift: ETL vs. ELT</span>
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.pythonExample.title}</span>
                       </h4>
                       <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                        Modern Cloud Data
+                        NumPy Simulation
                       </span>
                     </div>
 
-                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
-                      <table className="w-full text-left text-xs font-mono">
-                        <thead className="bg-zinc-900/90 text-zinc-300 border-b border-zinc-800 uppercase tracking-wider text-[11px]">
-                          <tr>
-                            <th className="p-3 font-semibold text-zinc-400">Dimension</th>
-                            <th className="p-3 font-semibold text-purple-400">Traditional ETL</th>
-                            <th className="p-3 font-semibold text-emerald-400">Modern ELT (Cloud Warehouses + dbt)</th>
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.pythonExample.filename || "verify_expectation.py"}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-expectation-python', item.pythonExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-expectation-python' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.pythonExample.code} />
+                    </div>
+
+                    {item.pythonExample.note && (
+                      <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
+                        <strong className="text-cyan-400 font-mono uppercase block mb-0.5">Simulation Result Note:</strong>
+                        {item.pythonExample.note}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 7. Interview Quick Revision */}
+                {item.quickRevision && (
+                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <HelpCircle className="w-3.5 h-3.5 text-purple-400" />
+                        <span>7. Interview Quick Revision</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Q1 – Q6 Rapid Recall
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                      {item.quickRevision.map((qa, qIdx) => (
+                        <div key={qIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
+                          <h5 className="text-xs font-bold font-mono text-cyan-300">
+                            {qa.q}
+                          </h5>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {qa.a}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Final Takeaway Banner */}
+                <div className="p-4.5 rounded-2xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-sans shadow-lg">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <strong className="text-emerald-400 uppercase font-mono text-xs">Final Takeaway:</strong>
+                  </div>
+                  <p className="leading-relaxed">
+                    {item.takeaway}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Item: 69. Edge Cases & Production Resilience */}
+            {item.id === 'edge-cases' && (
+              <div className="space-y-6">
+                {/* 1. What Is an Edge Case? */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-black border border-cyan-800/50 space-y-4 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>1. What Is an Edge Case?</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Production Resilience & Reliability
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-base sm:text-lg font-bold text-white font-mono">
+                      Defensive Engineering & Boundary Failures
+                    </h3>
+                    <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans mt-1.5">
+                      {item.coreDefinition}
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200 font-sans leading-relaxed">
+                    <strong className="text-cyan-300 font-mono block mb-1">Production Impact:</strong>
+                    {item.impactNote}
+                  </div>
+                </div>
+
+                {/* 2. Common Types of Edge Cases */}
+                {item.commonTypes && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                        <span>2. Common Types of Edge Cases</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-semibold">
+                        7 Core Boundary Categories
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.commonTypes.map((type, idx) => (
+                        <div key={idx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800/90 space-y-2.5 flex flex-col justify-between hover:border-zinc-700 transition-all">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono text-zinc-100 flex items-center gap-2">
+                                <span className="w-5 h-5 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-[10px] text-zinc-300 font-mono">
+                                  {type.num}
+                                </span>
+                                <span>{type.title}</span>
+                              </span>
+                              <span className={`text-[9px] font-mono px-2 py-0.5 rounded border font-semibold ${type.badgeColor || 'text-zinc-400 bg-zinc-900 border-zinc-800'}`}>
+                                {type.badge}
+                              </span>
+                            </div>
+
+                            <div className="p-2 rounded-lg bg-black/70 border border-zinc-800/80 font-mono text-[11px] text-zinc-300">
+                              <span className="text-zinc-500 block text-[10px] uppercase font-sans mb-0.5 font-bold">Examples:</span>
+                              <code>{type.examples}</code>
+                            </div>
+
+                            <div className="text-xs text-rose-300/90 font-sans leading-relaxed">
+                              <strong className="text-rose-400 font-mono font-semibold">Risk: </strong>
+                              {type.risk}
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t border-zinc-800/80 text-xs text-emerald-300/90 font-sans leading-relaxed">
+                            <strong className="text-emerald-400 font-mono font-semibold">Solution: </strong>
+                            {type.solution}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Production Infrastructure Failure Modes */}
+                {item.infraFailures && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-purple-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Server className="w-3.5 h-3.5 text-purple-400" />
+                        <span>3. Production Infrastructure Failure Modes</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
+                        System Level Faults
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono bg-zinc-950/60">
+                            <th className="py-2.5 px-3 font-semibold text-purple-300">Failure Mode</th>
+                            <th className="py-2.5 px-3 font-semibold text-rose-300">Operational Risk</th>
+                            <th className="py-2.5 px-3 font-semibold text-emerald-300">Engineering Solution</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-zinc-800/70">
-                          {item.etlVsEltComparison.map((row, rIdx) => (
-                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
-                              <td className="p-3 font-bold text-zinc-300 whitespace-nowrap bg-zinc-950/40">{row.dimension}</td>
-                              <td className="p-3 text-purple-200/90">{row.etl}</td>
-                              <td className="p-3 text-emerald-200/90 font-medium">{row.elt}</td>
+                        <tbody className="divide-y divide-zinc-800/60 font-sans">
+                          {item.infraFailures.map((row, idx) => (
+                            <tr key={idx} className="hover:bg-zinc-950/40 transition-colors">
+                              <td className="py-3 px-3 font-mono font-bold text-zinc-200 whitespace-nowrap">
+                                <span className="inline-block w-2 h-2 rounded-full bg-purple-500 mr-2"></span>
+                                {row.failure}
+                              </td>
+                              <td className="py-3 px-3 text-zinc-300 leading-relaxed">
+                                {row.risk}
+                              </td>
+                              <td className="py-3 px-3 text-emerald-300/90 leading-relaxed font-medium">
+                                {row.solution}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -22475,40 +24154,313 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 4. Batch vs Streaming ETL */}
-                {item.batchVsStreaming && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Execution Paradigm: Batch vs. Streaming ETL</span>
+                {/* 4. Edge Cases in AI/ML Systems */}
+                {item.aiMlEdgeCases && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-blue-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-blue-400 font-mono flex items-center gap-2">
+                        <Cpu className="w-3.5 h-3.5 text-blue-400" />
+                        <span>4. Edge Cases in AI/ML Systems</span>
                       </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700">
-                        Latency & Throughput
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 font-semibold">
+                        Classical ML, LLM/RAG & Pipelines
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {item.batchVsStreaming.map((bs, bsIdx) => (
-                        <div key={bsIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 hover:border-zinc-700 transition">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {/* Classical Machine Learning */}
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-blue-900/40 space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <span className="text-xs font-bold font-mono text-blue-300 block border-b border-zinc-800/80 pb-1.5">
+                            {item.aiMlEdgeCases.classicalMl.title}
+                          </span>
+                          <ul className="space-y-1.5 text-xs text-zinc-400 font-sans">
+                            {item.aiMlEdgeCases.classicalMl.bullets.map((b, bIdx) => (
+                              <li key={bIdx} className="flex items-start gap-1.5">
+                                <span className="text-blue-400 font-bold">•</span>
+                                <span>{b}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="pt-2 border-t border-zinc-800/80 text-xs text-blue-200/90 font-sans">
+                          <strong className="text-blue-400 font-mono font-semibold block mb-0.5">Solution:</strong>
+                          {item.aiMlEdgeCases.classicalMl.solution}
+                        </div>
+                      </div>
+
+                      {/* LLM & RAG Systems */}
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-cyan-900/40 space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <span className="text-xs font-bold font-mono text-cyan-300 block border-b border-zinc-800/80 pb-1.5">
+                            {item.aiMlEdgeCases.llmRag.title}
+                          </span>
+                          <ul className="space-y-1.5 text-xs text-zinc-400 font-sans">
+                            {item.aiMlEdgeCases.llmRag.bullets.map((b, bIdx) => (
+                              <li key={bIdx} className="flex items-start gap-1.5">
+                                <span className="text-cyan-400 font-bold">•</span>
+                                <span>{b}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="pt-2 border-t border-zinc-800/80 text-xs text-cyan-200/90 font-sans">
+                          <strong className="text-cyan-400 font-mono font-semibold block mb-0.5">Solution:</strong>
+                          {item.aiMlEdgeCases.llmRag.solution}
+                        </div>
+                      </div>
+
+                      {/* Data Pipelines */}
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-amber-900/40 space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <span className="text-xs font-bold font-mono text-amber-300 block border-b border-zinc-800/80 pb-1.5">
+                            {item.aiMlEdgeCases.dataPipelines.title}
+                          </span>
+                          <ul className="space-y-1.5 text-xs text-zinc-400 font-sans">
+                            {item.aiMlEdgeCases.dataPipelines.bullets.map((b, bIdx) => (
+                              <li key={bIdx} className="flex items-start gap-1.5">
+                                <span className="text-amber-400 font-bold">•</span>
+                                <span>{b}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="pt-2 border-t border-zinc-800/80 text-xs text-amber-200/90 font-sans">
+                          <strong className="text-amber-400 font-mono font-semibold block mb-0.5">Solution:</strong>
+                          {item.aiMlEdgeCases.dataPipelines.solution}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Systematic Debugging Approach */}
+                {item.debuggingSteps && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-emerald-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Bug className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>5. Systematic Debugging Approach</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold">
+                        7-Step Root Cause Workflow
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 font-sans">
+                      When a system produces an incorrect result, identify <strong className="text-white">where the failure originated</strong> instead of changing code or prompts blindly:
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2.5">
+                      {item.debuggingSteps.map((step, idx) => (
+                        <div key={idx} className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/90 space-y-1.5 flex flex-col justify-start">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-5 h-5 rounded-full bg-emerald-950 border border-emerald-700 flex items-center justify-center text-[10px] text-emerald-300 font-mono font-bold">
+                              {step.step}
+                            </span>
+                            <span className="text-xs font-bold font-mono text-zinc-100">{step.name}</span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-tight">
+                            {step.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {item.debuggingTools && (
+                      <div className="p-3 rounded-lg bg-zinc-950 border border-emerald-900/40 text-xs text-zinc-300 font-sans">
+                        <strong className="text-emerald-400 font-mono">Recommended Tooling: </strong>
+                        <span>{item.debuggingTools}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 6. Python Example */}
+                {item.pythonExample && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-cyan-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.pythonExample.title}</span>
+                      </h4>
+                      <button
+                        onClick={() => handleCopyCode('edge-cases-code', item.pythonExample.code)}
+                        className="px-2.5 py-1 text-xs font-mono rounded bg-cyan-950 border border-cyan-800 text-cyan-300 hover:bg-cyan-900 transition flex items-center gap-1.5"
+                      >
+                        {copiedId === 'edge-cases-code' ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800">
+                      <div className="px-4 py-2 bg-zinc-950 border-b border-zinc-800 text-xs font-mono text-zinc-400 flex items-center justify-between">
+                        <span>{item.pythonExample.filename}</span>
+                        <span className="text-[10px] text-cyan-400">ZeroDivisionError & Type Guarding</span>
+                      </div>
+                      <CodeHighlight code={item.pythonExample.code} language="python" />
+                    </div>
+
+                    <div className="p-3.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
+                      <strong className="text-cyan-400 font-mono block mb-0.5">Why This Matters:</strong>
+                      {item.pythonExample.explanation}
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Best Practices Checklist */}
+                {item.bestPractices && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-200 font-mono flex items-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>7. Production Resilience Best Practices</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-semibold">
+                        Checklist
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.bestPractices.map((practice, idx) => (
+                        <div key={idx} className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-start gap-2.5">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                          <span className="text-xs text-zinc-300 font-sans leading-relaxed">{practice}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 8. Interview-Ready Answer & Takeaway */}
+                {item.interviewAnswer && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-amber-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
+                        <span>8. Interview-Ready Spoken Answer</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-semibold">
+                        System Design & Reliability
+                      </span>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800/90 space-y-3">
+                      <div className="text-xs font-bold font-mono text-amber-300">
+                        Q: {item.interviewAnswer.question}
+                      </div>
+                      <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed pl-3 border-l-2 border-amber-500/60 italic">
+                        "{item.interviewAnswer.answer}"
+                      </p>
+                    </div>
+
+                    {item.takeaway && (
+                      <div className="p-4 rounded-xl bg-gradient-to-r from-amber-950/40 via-cyan-950/30 to-black border border-amber-600/40 text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed flex items-start gap-3">
+                        <Sparkles className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                        <div>
+                          <strong className="text-amber-300 font-mono block mb-1">Key Takeaway:</strong>
+                          <span>{item.takeaway}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Item: Fine-Tuning (LLMs, Classical ML & PEFT/LoRA) */}
+            {item.id === 'fine-tuning' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-black border border-cyan-800/50 space-y-4 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>1. What Is Fine-Tuning?</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Weight Adaptation & Transfer Learning
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-base sm:text-lg font-bold text-white font-mono">
+                      Domain Adaptation & Behavioral Alignment
+                    </h3>
+                    <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans mt-1.5">
+                      {item.coreDefinition}
+                    </p>
+                  </div>
+
+                  {/* Dual Paradigm: LLM vs Classical ML */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-2">
+                    {/* LLM Fine-Tuning */}
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-cyan-900/40 space-y-2.5">
+                      <div className="flex items-center gap-2 text-xs font-mono font-bold text-cyan-300">
+                        <Cpu className="w-4 h-4 text-cyan-400" />
+                        <span>{item.llmFineTuning?.title}</span>
+                      </div>
+                      <div className="space-y-1.5 text-xs text-zinc-300 font-sans">
+                        {item.llmFineTuning?.steps.map((st, sIdx) => (
+                          <div key={sIdx} className="flex items-start gap-2">
+                            <span className="text-cyan-400 font-mono font-bold mt-0.5">→</span>
+                            <span className="leading-relaxed">{st}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Classical ML Fine-Tuning */}
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-indigo-900/40 space-y-2.5">
+                      <div className="flex items-center gap-2 text-xs font-mono font-bold text-indigo-300">
+                        <Sliders className="w-4 h-4 text-indigo-400" />
+                        <span>{item.classicalFineTuning?.title}</span>
+                      </div>
+                      <div className="space-y-1.5 text-xs text-zinc-300 font-sans">
+                        {item.classicalFineTuning?.steps.map((st, sIdx) => (
+                          <div key={sIdx} className="flex items-start gap-2">
+                            <span className="text-indigo-400 font-mono font-bold mt-0.5">→</span>
+                            <span className="leading-relaxed">{st}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Why Do We Use Fine-Tuning? (5 Core Reasons) */}
+                {item.whyFineTune && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5 text-amber-400" />
+                        <span>2. Why Do We Use Fine-Tuning?</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-semibold">
+                        5 Strategic Drivers
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.whyFineTune.map((r, rIdx) => (
+                        <div key={rIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/90 space-y-1.5 hover:border-zinc-700 transition">
                           <div className="flex items-center justify-between">
-                            <h5 className="text-xs font-bold font-mono text-cyan-400">
-                              {bs.type}
-                            </h5>
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
-                              {bs.latency}
+                            <span className="text-xs font-bold font-mono text-zinc-200">{r.reason}</span>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-amber-400 font-semibold">
+                              {r.badge}
                             </span>
                           </div>
-                          <div className="text-[11px] font-mono text-amber-300 bg-zinc-950 p-2 rounded border border-zinc-900">
-                            <strong>Frequency:</strong> {bs.frequency}
-                          </div>
-                          <div className="text-xs text-zinc-300 font-sans leading-relaxed">
-                            <strong className="text-zinc-400 font-mono text-[11px] block">Standard Tool Ecosystem:</strong>
-                            {bs.tools}
-                          </div>
-                          <p className="text-xs text-zinc-400 font-sans leading-relaxed pt-1 border-t border-zinc-900">
-                            <strong className="text-emerald-400 text-[10px] font-mono uppercase block">Primary Use Case:</strong>
-                            {bs.useCase}
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {r.desc}
                           </p>
                         </div>
                       ))}
@@ -22516,34 +24468,450 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 5. Critical Production Pitfalls & Solutions */}
-                {item.productionPitfalls && (
-                  <div className="space-y-3 p-5 rounded-2xl bg-zinc-950 border border-amber-800/40 shadow-lg">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                        <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Critical Production Engineering Pitfalls</span>
+                {/* 3. The Triad: Prompt Engineering vs. RAG vs. Fine-Tuning */}
+                {item.triadComparison && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-purple-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <GitBranch className="w-3.5 h-3.5 text-purple-400" />
+                        <span>3. Prompt Engineering vs. RAG vs. Fine-Tuning</span>
                       </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
-                        Interview Focus
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
+                        Core System Design Trade-off
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
-                      {item.productionPitfalls.map((pt, pIdx) => (
-                        <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition flex flex-col justify-between">
-                          <div className="space-y-1.5">
-                            <h5 className="text-xs font-bold font-mono text-rose-400 flex items-center gap-1.5">
-                              <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                              <span>{pt.title}</span>
-                            </h5>
-                            <p className="text-xs text-zinc-400 leading-relaxed font-sans">
-                              {pt.hazard}
-                            </p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.triadComparison.map((col, cIdx) => (
+                        <div key={cIdx} className={`p-4 rounded-xl bg-zinc-950 border ${col.border} space-y-3 flex flex-col justify-between`}>
+                          <div className="space-y-2">
+                            <span className={`text-xs font-bold font-mono ${col.accent} block border-b border-zinc-800/80 pb-1.5`}>
+                              {col.technique}
+                            </span>
+                            <div className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              <strong className="text-zinc-400 font-mono block text-[10px] uppercase">Mechanism:</strong>
+                              {col.mechanism}
+                            </div>
+                            <div className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              <strong className="text-zinc-400 font-mono block text-[10px] uppercase">Best When:</strong>
+                              {col.bestWhen}
+                            </div>
                           </div>
-                          <div className="p-2.5 rounded bg-emerald-950/30 border border-emerald-900/50 text-[11px] font-mono text-emerald-300 mt-2">
-                            <strong className="block text-emerald-400 text-[10px] uppercase mb-0.5">Production Solution:</strong>
-                            {pt.solution}
+                          <div className="pt-2 border-t border-zinc-800/80 text-[11px] text-zinc-400 font-mono bg-black/60 p-2 rounded-lg border border-zinc-900">
+                            <span className="text-zinc-500 block text-[9px] uppercase font-sans font-bold">Example:</span>
+                            <span>{col.example}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Decision Matrix Table */}
+                    {item.decisionMatrix && (
+                      <div className="pt-3 border-t border-zinc-800">
+                        <h5 className="text-xs font-bold font-mono text-zinc-300 mb-2.5 flex items-center gap-1.5">
+                          <Table className="w-3.5 h-3.5 text-purple-400" />
+                          <span>Enterprise Selection Matrix</span>
+                        </h5>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left text-xs border-collapse">
+                            <thead>
+                              <tr className="border-b border-zinc-800 text-zinc-400 font-mono bg-zinc-950/60">
+                                <th className="py-2 px-3 font-semibold text-purple-300">Requirement / Scenario</th>
+                                <th className="py-2 px-3 font-semibold text-emerald-300">Best Starting Point</th>
+                                <th className="py-2 px-3 font-semibold text-cyan-300">Strategic Advantage</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800/60 font-sans">
+                              {item.decisionMatrix.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-zinc-950/40 transition">
+                                  <td className="py-2.5 px-3 text-zinc-200 font-medium">
+                                    {row.requirement}
+                                  </td>
+                                  <td className="py-2.5 px-3 font-mono font-bold text-emerald-400 whitespace-nowrap">
+                                    {row.startingPoint}
+                                  </td>
+                                  <td className="py-2.5 px-3 font-mono text-cyan-300/90 text-[11px]">
+                                    {row.badge}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 4. How Does Fine-Tuning Work? (7-Step Workflow) */}
+                {item.workflowSteps && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-emerald-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Workflow className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>4. How Does Fine-Tuning Work?</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold">
+                        7-Step Pipeline
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2.5">
+                      {item.workflowSteps.map((st, idx) => (
+                        <div key={idx} className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/90 space-y-1.5 flex flex-col justify-start hover:border-emerald-700/60 transition">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-5 h-5 rounded-full bg-emerald-950 border border-emerald-700 flex items-center justify-center text-[10px] text-emerald-300 font-mono font-bold">
+                              {st.step}
+                            </span>
+                            <span className="text-xs font-bold font-mono text-zinc-100">{st.name}</span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-tight">
+                            {st.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. What is SFT (Supervised Fine-Tuning)? */}
+                {item.sftSection && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-blue-800/50 space-y-3.5 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-blue-400 font-mono flex items-center gap-2">
+                        <Bot className="w-3.5 h-3.5 text-blue-400" />
+                        <span>{item.sftSection.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 font-semibold">
+                        Curated Demonstrations (x, y)
+                      </span>
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed">
+                      {item.sftSection.definition}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                      {item.sftSection.useCases.map((uc, uIdx) => (
+                        <div key={uIdx} className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 flex items-start gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
+                          <span className="text-xs text-zinc-300 font-sans leading-relaxed">{uc}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Full Fine-Tuning vs. PEFT (LoRA) */}
+                {item.fullVsPeft && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-cyan-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>6. Full Fine-Tuning vs. Parameter-Efficient Fine-Tuning (PEFT / LoRA)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                        VRAM & Weight Footprint
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {/* Full Fine-Tuning */}
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
+                        <div>
+                          <span className="text-xs font-bold font-mono text-zinc-200 block">{item.fullVsPeft.full.title}</span>
+                          <p className="text-xs text-zinc-400 mt-1">{item.fullVsPeft.full.desc}</p>
+                        </div>
+                        <div className="space-y-1 text-xs">
+                          <strong className="text-emerald-400 font-mono block text-[10px] uppercase">Advantages:</strong>
+                          {item.fullVsPeft.full.pros.map((p, pIdx) => (
+                            <div key={pIdx} className="text-zinc-300 flex items-start gap-1.5">
+                              <span className="text-emerald-400 font-bold">•</span>
+                              <span>{p}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="space-y-1 text-xs pt-1 border-t border-zinc-800/80">
+                          <strong className="text-rose-400 font-mono block text-[10px] uppercase">Constraints:</strong>
+                          {item.fullVsPeft.full.cons.map((c, cIdx) => (
+                            <div key={cIdx} className="text-zinc-400 flex items-start gap-1.5">
+                              <span className="text-rose-400 font-bold">•</span>
+                              <span>{c}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* PEFT / LoRA */}
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-cyan-900/50 space-y-3">
+                        <div>
+                          <span className="text-xs font-bold font-mono text-cyan-300 block">{item.fullVsPeft.peft.title}</span>
+                          <p className="text-xs text-zinc-400 mt-1">{item.fullVsPeft.peft.desc}</p>
+                        </div>
+                        <div className="space-y-1 text-xs">
+                          <strong className="text-cyan-400 font-mono block text-[10px] uppercase">Advantages:</strong>
+                          {item.fullVsPeft.peft.pros.map((p, pIdx) => (
+                            <div key={pIdx} className="text-zinc-200 flex items-start gap-1.5">
+                              <span className="text-cyan-400 font-bold">•</span>
+                              <span>{p}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="space-y-1 text-xs pt-1 border-t border-zinc-800/80">
+                          <strong className="text-amber-400 font-mono block text-[10px] uppercase">Trade-off:</strong>
+                          {item.fullVsPeft.peft.cons.map((c, cIdx) => (
+                            <div key={cIdx} className="text-zinc-400 flex items-start gap-1.5">
+                              <span className="text-amber-400 font-bold">•</span>
+                              <span>{c}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Preparing High-Quality Training Data */}
+                {item.dataQualityPillars && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>7. Preparing High-Quality Fine-Tuning Data</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-semibold">
+                        Quality Over Raw Quantity
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                      {item.dataQualityPillars.map((dp, dpIdx) => (
+                        <div key={dpIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 space-y-1 hover:border-emerald-700/50 transition">
+                          <span className="text-xs font-bold font-mono text-emerald-400 block">{dp.pillar}</span>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">{dp.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 8. Evaluation Matrix & Overfitting Prevention */}
+                {item.evaluationMatrix && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-indigo-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-400 font-mono flex items-center gap-2">
+                        <Activity className="w-3.5 h-3.5 text-indigo-400" />
+                        <span>8. How Do You Evaluate a Fine-Tuned Model?</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800 font-semibold">
+                        Multi-Dimensional Validation
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono bg-zinc-950/60">
+                            <th className="py-2 px-3 font-semibold text-indigo-300">Evaluation Area</th>
+                            <th className="py-2 px-3 font-semibold text-cyan-300">Production Benchmark Measurement</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 font-sans">
+                          {item.evaluationMatrix.map((ev, evIdx) => (
+                            <tr key={evIdx} className="hover:bg-zinc-950/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-bold text-zinc-200">
+                                {ev.area}
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-300 leading-relaxed font-sans">
+                                {ev.metric}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 font-sans flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                      <span>
+                        <strong className="text-amber-300 font-mono">Overfitting Watch: </strong>
+                        Never equate lower training loss with superior production quality. Always evaluate on held-out test datasets and monitor out-of-domain regression.
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 9. Common Fine-Tuning Mistakes */}
+                {item.commonMistakes && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-rose-900/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                        <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                        <span>9. Common Fine-Tuning Mistakes & Production Pitfalls</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-semibold">
+                        Failure Modes
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.commonMistakes.map((m, mIdx) => (
+                        <div key={mIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 space-y-1.5 flex flex-col justify-between">
+                          <span className="text-xs font-bold font-mono text-rose-300 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                            <span>{m.mistake}</span>
+                          </span>
+                          <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                            <strong className="text-emerald-400 font-mono">Fix: </strong>
+                            {m.fix}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 10. Interview-Ready Defense Answer */}
+                {item.interviewAnswer && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-amber-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
+                        <span>10. Interview-Ready Spoken Answer</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-semibold">
+                        Executive System Design Defense
+                      </span>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800/90 space-y-3">
+                      <div className="text-xs font-bold font-mono text-amber-300">
+                        Q: {item.interviewAnswer.question}
+                      </div>
+                      <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed pl-3 border-l-2 border-amber-500/60 italic">
+                        "{item.interviewAnswer.answer}"
+                      </p>
+                    </div>
+
+                    {item.takeaway && (
+                      <div className="p-4 rounded-xl bg-gradient-to-r from-amber-950/40 via-cyan-950/30 to-black border border-amber-600/40 text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed flex items-start gap-3">
+                        <Sparkles className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                        <div>
+                          <strong className="text-amber-300 font-mono block mb-1">Key Takeaway:</strong>
+                          <span>{item.takeaway}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Item: F1-Score (Precision, Recall & Harmonic Mean) */}
+            {item.id === 'f1-score' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-black border border-cyan-800/50 space-y-4 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>1. What Is F1-Score?</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Harmonic Mean Optimization
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-base sm:text-lg font-bold text-white font-mono">
+                      Precision-Recall Equilibrium
+                    </h3>
+                    <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans mt-1.5">
+                      {item.coreDefinition}
+                    </p>
+                  </div>
+
+                  {item.formula && (
+                    <div className="p-3.5 rounded-xl bg-zinc-950 border border-cyan-900/40 flex items-center justify-between">
+                      <span className="text-xs font-mono font-bold text-zinc-400 uppercase">Core Mathematical Formula:</span>
+                      <code className="text-xs sm:text-sm font-mono font-bold text-cyan-300 bg-black/60 px-3 py-1 rounded-lg border border-cyan-800/50">
+                        {item.formula}
+                      </code>
+                    </div>
+                  )}
+
+                  {/* Precision vs. Recall Core Definitions */}
+                  {item.precisionRecallDefinitions && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                      {/* Precision */}
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-cyan-900/40 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold font-mono text-cyan-300">
+                            {item.precisionRecallDefinitions.precision.title}
+                          </span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300">
+                            {item.precisionRecallDefinitions.precision.formula}
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          <strong className="text-cyan-400 font-mono">Tells us: </strong>
+                          {item.precisionRecallDefinitions.precision.question}
+                        </p>
+                        <div className="text-[11px] text-zinc-400 font-sans pt-1 border-t border-zinc-800/80">
+                          <span className="text-zinc-500 uppercase font-mono text-[10px] mr-1 font-bold">Helps Reduce:</span>
+                          <span className="text-cyan-300 font-medium">{item.precisionRecallDefinitions.precision.reduces}</span>
+                        </div>
+                      </div>
+
+                      {/* Recall */}
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-amber-900/40 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold font-mono text-amber-300">
+                            {item.precisionRecallDefinitions.recall.title}
+                          </span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300">
+                            {item.precisionRecallDefinitions.recall.formula}
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          <strong className="text-amber-400 font-mono">Tells us: </strong>
+                          {item.precisionRecallDefinitions.recall.question}
+                        </p>
+                        <div className="text-[11px] text-zinc-400 font-sans pt-1 border-t border-zinc-800/80">
+                          <span className="text-zinc-500 uppercase font-mono text-[10px] mr-1 font-bold">Helps Reduce:</span>
+                          <span className="text-amber-300 font-medium">{item.precisionRecallDefinitions.recall.reduces}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Confusion Matrix Spam Filter Example */}
+                {item.confusionMatrixEmailExample && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>2. Real-World Confusion Matrix: Email Spam Classifier</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-semibold">
+                        4 Operational Outcomes
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.confusionMatrixEmailExample.map((cm, cIdx) => (
+                        <div key={cIdx} className={`p-4 rounded-xl bg-zinc-950 border ${cm.border} space-y-2 hover:border-zinc-700 transition flex flex-col justify-between`}>
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${cm.accent}`}>{cm.term}</span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-black/60 border border-zinc-800 text-zinc-300">
+                                {cm.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                              {cm.meaning}
+                            </p>
                           </div>
                         </div>
                       ))}
@@ -22551,31 +24919,488 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
-                {/* 6. Production Python Implementation Box with Copy Button */}
-                {item.code && (
-                  <div className="mt-3 pt-3 border-t border-zinc-800/80 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400">
-                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Production Python ETL Pipeline (Extract, Cleanse, PII Mask, DLQ & Upsert):</span>
-                      </div>
-                      <button
-                        onClick={() => handleCopyCode(item.id, item.code)}
-                        className="text-[10px] font-mono text-zinc-400 hover:text-cyan-300 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 flex items-center gap-1 transition cursor-pointer"
-                      >
-                        {copiedId === item.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                        <span>{copiedId === item.id ? 'Copied' : 'Copy Code'}</span>
-                      </button>
+                {/* 3. Why Harmonic Mean Over Arithmetic Mean? */}
+                {item.harmonicMeanInsight && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-purple-800/50 space-y-3.5 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5 text-purple-400" />
+                        <span>3. Why Harmonic Mean Over Arithmetic Mean?</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
+                        Imbalance Penalty
+                      </span>
                     </div>
-                    <CodeHighlight code={item.code} />
+
+                    <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed">
+                      {item.harmonicMeanInsight.answer}
+                    </p>
+
+                    <div className="p-3.5 rounded-xl bg-zinc-950 border border-purple-900/40 space-y-1.5 text-xs text-zinc-300 font-sans">
+                      <strong className="text-purple-300 font-mono text-[11px] uppercase block">Critical Nuances to Defend in an Interview:</strong>
+                      <ul className="space-y-1 pl-1">
+                        {item.harmonicMeanInsight.caveats.map((cav, cavIdx) => (
+                          <li key={cavIdx} className="flex items-start gap-2">
+                            <span className="text-purple-400 font-bold">•</span>
+                            <span>{cav}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 )}
 
-                {/* 7. Architecture Takeaway Banner */}
-                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
-                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
-                  {item.takeaway}
+                {/* 4. Comparison Table: Precision vs Recall vs F1 */}
+                {item.comparisonTable && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>4. Metric Comparison Summary</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                        Diagnostic Focus
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono bg-zinc-950/60">
+                            <th className="py-2.5 px-3 font-semibold text-cyan-300">Metric</th>
+                            <th className="py-2.5 px-3 font-semibold text-zinc-300">Main Question It Answers</th>
+                            <th className="py-2.5 px-3 font-semibold text-emerald-300">What It Helps Reduce</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 font-sans">
+                          {item.comparisonTable.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-950/40 transition">
+                              <td className="py-3 px-3 font-mono font-bold text-cyan-300 whitespace-nowrap">
+                                {row.metric}
+                              </td>
+                              <td className="py-3 px-3 text-zinc-300 leading-relaxed font-medium">
+                                {row.question}
+                              </td>
+                              <td className="py-3 px-3 text-emerald-300/90 font-mono">
+                                {row.helpsReduce}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Python Implementation Box */}
+                {item.pythonCode && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-cyan-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>5. Python Scikit-Learn Implementation</span>
+                      </h4>
+                      <button
+                        onClick={() => handleCopyCode('f1-score-code', item.pythonCode.code)}
+                        className="px-2.5 py-1 text-xs font-mono rounded bg-cyan-950 border border-cyan-800 text-cyan-300 hover:bg-cyan-900 transition flex items-center gap-1.5"
+                      >
+                        {copiedId === 'f1-score-code' ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800">
+                      <div className="px-4 py-2 bg-zinc-950 border-b border-zinc-800 text-xs font-mono text-zinc-400 flex items-center justify-between">
+                        <span>{item.pythonCode.filename}</span>
+                        <span className="text-[10px] text-cyan-400">sklearn.metrics</span>
+                      </div>
+                      <CodeHighlight code={item.pythonCode.code} language="python" />
+                    </div>
+
+                    <div className="space-y-2 pt-1">
+                      <strong className="text-xs font-mono text-zinc-300 block uppercase">What Each Line Does:</strong>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                        {item.pythonCode.lineExplanations.map((le, lIdx) => (
+                          <div key={lIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs space-y-1">
+                            <code className="text-cyan-400 font-mono text-[11px] block">{le.line}</code>
+                            <p className="text-zinc-400 font-sans leading-relaxed">{le.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Multi-Class Averaging Strategies */}
+                {item.averagingStrategies && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-indigo-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-400 font-mono flex items-center gap-2">
+                        <Workflow className="w-3.5 h-3.5 text-indigo-400" />
+                        <span>6. Multi-Class F1 Averaging Strategies (`average=...`)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800 font-semibold">
+                        4 Averaging Modes
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {item.averagingStrategies.map((avg, aIdx) => (
+                        <div key={aIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 hover:border-indigo-700/60 transition">
+                          <div className="flex items-center justify-between">
+                            <code className="text-xs font-bold font-mono text-indigo-300">{avg.strategy}</code>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400">
+                              {avg.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                            {avg.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {item.imbalanceWarning && (
+                      <div className="p-3.5 rounded-xl bg-amber-950/25 border border-amber-800/50 text-xs text-amber-200/90 font-sans flex items-start gap-2.5 mt-2">
+                        <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                        <span>{item.imbalanceWarning}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 7. Final Takeaway */}
+                {item.takeaway && (
+                  <div className="p-4.5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-cyan-950/30 to-black border border-amber-600/40 text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed flex items-start gap-3 shadow-xl">
+                    <Sparkles className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-amber-300 font-mono block mb-1">Key Takeaway:</strong>
+                      <span>{item.takeaway}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Item: FAISS (Facebook AI Similarity Search) */}
+            {item.id === 'faiss' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-black border border-cyan-800/50 space-y-4 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>1. What Is FAISS?</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Meta AI Dense Vector Search
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-base sm:text-lg font-bold text-white font-mono">
+                      High-Performance In-Memory Vector Search
+                    </h3>
+                    <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans mt-1.5">
+                      {item.coreDefinition}
+                    </p>
+                  </div>
+
+                  {item.importantNote && (
+                    <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200 font-sans leading-relaxed flex items-start gap-2.5">
+                      <AlertTriangle className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-cyan-300 font-mono block mb-0.5 uppercase">Critical Scope Distinction:</strong>
+                        <span>{item.importantNote}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
+
+                {/* 2. How FAISS Works (5-Stage Vector Search Workflow) */}
+                {item.workflowStages && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-emerald-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Workflow className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>2. How FAISS Works (5-Stage Vector Search Workflow)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold">
+                        End-to-End Pipeline
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                      {item.workflowStages.map((st, sIdx) => (
+                        <div key={sIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/90 space-y-2 flex flex-col justify-between hover:border-emerald-700/60 transition">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono text-zinc-200">{st.stage}</span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-emerald-400">
+                                {st.badge}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                              {st.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. FAISS Index Types — Exact vs. ANN */}
+                {item.indexTypes && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-purple-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-purple-400" />
+                        <span>3. FAISS Index Types — Exact vs. Approximate (ANN)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
+                        Speed vs Memory vs Recall
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                      {item.indexTypes.map((idx, iIdx) => (
+                        <div key={iIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3 flex flex-col justify-between hover:border-zinc-700 transition">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                              <span className={`text-xs font-bold font-mono ${idx.accent}`}>{idx.name}</span>
+                              <span className="text-[10px] font-mono text-zinc-400 px-1.5 py-0.5 rounded bg-black border border-zinc-800">
+                                {idx.complexity}
+                              </span>
+                            </div>
+                            <div className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              <strong className="text-zinc-400 font-mono text-[10px] uppercase block">How It Works:</strong>
+                              {idx.how}
+                            </div>
+                            <div className="text-xs text-emerald-300/90 font-sans leading-relaxed">
+                              <strong className="text-emerald-400 font-mono text-[10px] uppercase block">Advantage:</strong>
+                              {idx.advantage}
+                            </div>
+                            <div className="text-xs text-rose-300/90 font-sans leading-relaxed">
+                              <strong className="text-rose-400 font-mono text-[10px] uppercase block">Trade-off:</strong>
+                              {idx.tradeoff}
+                            </div>
+                          </div>
+                          <div className="pt-2 border-t border-zinc-800/80 text-[11px] text-zinc-400 font-sans">
+                            <strong className="text-cyan-400 font-mono block text-[10px] uppercase">Best Suited For:</strong>
+                            {idx.bestSuited}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Exact vs ANN Comparison Table & Interview Details */}
+                    {item.exactVsAnn && (
+                      <div className="pt-3 border-t border-zinc-800 space-y-3">
+                        <h5 className="text-xs font-bold font-mono text-zinc-300 flex items-center gap-1.5">
+                          <Table className="w-3.5 h-3.5 text-purple-400" />
+                          <span>Exact Search vs. Approximate Search (ANN)</span>
+                        </h5>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left text-xs border-collapse">
+                            <thead>
+                              <tr className="border-b border-zinc-800 text-zinc-400 font-mono bg-zinc-950/60">
+                                <th className="py-2 px-3 font-semibold text-purple-300">Aspect</th>
+                                <th className="py-2 px-3 font-semibold text-emerald-300">Exact Search (Flat)</th>
+                                <th className="py-2 px-3 font-semibold text-cyan-300">ANN Search (IVF / HNSW / PQ)</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800/60 font-sans">
+                              {item.exactVsAnn.table.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-zinc-950/40 transition">
+                                  <td className="py-2.5 px-3 font-mono font-bold text-zinc-200">{row.aspect}</td>
+                                  <td className="py-2.5 px-3 text-zinc-300">{row.exact}</td>
+                                  <td className="py-2.5 px-3 text-cyan-300 font-medium">{row.ann}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                          {item.exactVsAnn.interviewDetails.map((dt, dIdx) => (
+                            <div key={dIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-purple-900/40 space-y-1">
+                              <span className="text-xs font-bold font-mono text-purple-300 block">{dt.title}</span>
+                              <p className="text-xs text-zinc-400 font-sans leading-relaxed">{dt.desc}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 4. FAISS in a RAG Pipeline */}
+                {item.ragPipeline && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-blue-800/50 space-y-3.5 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-blue-400 font-mono flex items-center gap-2">
+                        <Bot className="w-3.5 h-3.5 text-blue-400" />
+                        <span>4. FAISS in a Production RAG Pipeline</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 font-semibold">
+                        Two-Stage Decoupling
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                        <span className="text-xs font-bold font-mono text-cyan-300 uppercase block">Stage 1: Indexing Phase</span>
+                        <div className="p-2.5 rounded-lg bg-black/70 border border-zinc-800/80 font-mono text-xs text-cyan-200">
+                          {item.ragPipeline.indexing}
+                        </div>
+                      </div>
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                        <span className="text-xs font-bold font-mono text-emerald-300 uppercase block">Stage 2: Runtime Query Phase</span>
+                        <div className="p-2.5 rounded-lg bg-black/70 border border-zinc-800/80 font-mono text-xs text-emerald-200">
+                          {item.ragPipeline.query}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. FAISS vs. ChromaDB vs. Pinecone */}
+                {item.databaseComparison && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Database className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>5. FAISS vs. ChromaDB vs. Pinecone</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-semibold">
+                        Library vs Embedded vs Managed Cloud
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono bg-zinc-950/60">
+                            <th className="py-2.5 px-3 font-semibold text-zinc-300">Feature</th>
+                            <th className="py-2.5 px-3 font-semibold text-cyan-400">FAISS</th>
+                            <th className="py-2.5 px-3 font-semibold text-emerald-400">ChromaDB</th>
+                            <th className="py-2.5 px-3 font-semibold text-purple-400">Pinecone</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/60 font-sans">
+                          {item.databaseComparison.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-950/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-bold text-zinc-200 whitespace-nowrap">
+                                {row.feature}
+                              </td>
+                              <td className="py-2.5 px-3 text-cyan-300/90 leading-relaxed font-medium">
+                                {row.faiss}
+                              </td>
+                              <td className="py-2.5 px-3 text-emerald-300/90 leading-relaxed">
+                                {row.chromadb}
+                              </td>
+                              <td className="py-2.5 px-3 text-purple-300/90 leading-relaxed">
+                                {row.pinecone}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-400 font-sans">
+                      <strong className="text-zinc-300 font-mono">System Design Note: </strong>
+                      FAISS is an algorithmic computation library, not a full database replacement. In custom production stacks, you must build external metadata storage, persistence, access control, and sharding around it.
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Python Scikit/FAISS Code Snippet */}
+                {item.code && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-cyan-800/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>6. Python Implementation: Cosine Similarity Vector Search with FAISS</span>
+                      </h4>
+                      <button
+                        onClick={() => handleCopyCode('faiss-code', item.code)}
+                        className="px-2.5 py-1 text-xs font-mono rounded bg-cyan-950 border border-cyan-800 text-cyan-300 hover:bg-cyan-900 transition flex items-center gap-1.5"
+                      >
+                        {copiedId === 'faiss-code' ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy Code</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800">
+                      <div className="px-4 py-2 bg-zinc-950 border-b border-zinc-800 text-xs font-mono text-zinc-400 flex items-center justify-between">
+                        <span>faiss_vector_search.py</span>
+                        <span className="text-[10px] text-cyan-400">pip install faiss-cpu numpy</span>
+                      </div>
+                      <CodeHighlight code={item.code} language="python" />
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Common Mistakes & Failure Modes */}
+                {item.commonMistakes && (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-black border border-rose-900/50 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
+                        <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                        <span>7. Common FAISS Mistakes & Production Traps</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-semibold">
+                        6 Pitfalls
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.commonMistakes.map((m, mIdx) => (
+                        <div key={mIdx} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 space-y-1.5 flex flex-col justify-between">
+                          <span className="text-xs font-bold font-mono text-rose-300 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                            <span>{m.mistake}</span>
+                          </span>
+                          <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                            <strong className="text-emerald-400 font-mono">Fix: </strong>
+                            {m.fix}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 8. Final Takeaway */}
+                {item.takeaway && (
+                  <div className="p-4.5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-cyan-950/30 to-black border border-amber-600/40 text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed flex items-start gap-3 shadow-xl">
+                    <Sparkles className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-amber-300 font-mono block mb-1">Key Takeaway:</strong>
+                      <span>{item.takeaway}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -23516,10 +26341,10 @@ export default function AllDefinitionsPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
                       <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Feature Engineering & Interactions</span>
+                      <span>Feature Engineering & Interaction Terms</span>
                     </span>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                      Interaction Terms
+                      Non-Linear Representation
                     </span>
                   </div>
                   <h3 className="text-sm sm:text-base font-bold text-white font-mono">
@@ -23530,119 +26355,201 @@ export default function AllDefinitionsPage() {
                   </p>
                 </div>
 
-                {/* 2. Features (X) vs Label (y) Formulation Card */}
-                {item.featuresVsLabel && (
+                {/* 2. Machine Learning Problem Formulation (Features X vs Label y) */}
+                {item.problemFormulation && (
                   <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
                         <span>Machine Learning Problem Formulation</span>
                       </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
                         Inputs vs Output
                       </span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {/* Features (X) */}
-                      <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2.5 flex flex-col justify-between">
+                      <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3 flex flex-col justify-between">
                         <div className="space-y-1.5">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-bold font-mono text-cyan-400">
-                              {item.featuresVsLabel.features.symbol}
+                              {item.problemFormulation.features.title}
                             </span>
-                            <span className="text-[10px] font-mono text-zinc-500 uppercase">Input Vectors</span>
+                            <span className="text-[10px] font-mono text-cyan-300/80 uppercase bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-900/50">
+                              Inputs
+                            </span>
                           </div>
                           <p className="text-xs text-zinc-200 font-sans leading-relaxed">
-                            {item.featuresVsLabel.features.definition}
+                            {item.problemFormulation.features.definition}
                           </p>
                         </div>
                         <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-cyan-300 font-mono">
-                          <span className="text-zinc-500 uppercase block font-bold text-[9px]">Selection Rule:</span>
-                          {item.featuresVsLabel.features.selectionRule}
+                          <span className="text-zinc-500 uppercase block font-bold text-[9px] mb-0.5">Selection Rule:</span>
+                          {item.problemFormulation.features.selectionRule}
                         </div>
                       </div>
 
                       {/* Label (y) */}
-                      <div className="p-4 rounded-xl bg-black border border-purple-800/50 space-y-2.5 flex flex-col justify-between">
+                      <div className="p-4 rounded-xl bg-black border border-purple-800/50 space-y-3 flex flex-col justify-between">
                         <div className="space-y-1.5">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-bold font-mono text-purple-400">
-                              {item.featuresVsLabel.label.symbol}
+                              {item.problemFormulation.label.title}
                             </span>
-                            <span className="text-[10px] font-mono text-zinc-500 uppercase">Target Outcome</span>
+                            <span className="text-[10px] font-mono text-purple-300/80 uppercase bg-purple-950/60 px-1.5 py-0.5 rounded border border-purple-900/50">
+                              Target
+                            </span>
                           </div>
                           <p className="text-xs text-zinc-200 font-sans leading-relaxed">
-                            {item.featuresVsLabel.label.definition}
+                            {item.problemFormulation.label.definition}
                           </p>
                         </div>
                         <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-purple-300 font-mono">
-                          <span className="text-zinc-500 uppercase block font-bold text-[9px]">Selection Rule:</span>
-                          {item.featuresVsLabel.label.selectionRule}
+                          <span className="text-zinc-500 uppercase block font-bold text-[9px] mb-0.5">Selection Rule:</span>
+                          {item.problemFormulation.label.selectionRule}
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* 3. Prediction-Time Validity Rule Callout */}
-                {item.predictionTimeValidity && (
-                  <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/50 space-y-2">
-                    <span className="text-xs font-bold font-mono text-amber-400 uppercase flex items-center gap-2">
-                      <Terminal className="w-3.5 h-3.5 text-amber-400" />
-                      <span>{item.predictionTimeValidity.headline}</span>
-                    </span>
-                    <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                      {item.predictionTimeValidity.rule}
-                    </p>
-                  </div>
-                )}
-
-                {/* 4. Common Feature Interaction Types Grid */}
-                {item.interactionTypes && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Common Feature Cross Archetypes</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                        Cross Strategies
+                {/* 3. Why Do We Need Feature Crosses? */}
+                {item.whyCrossExample && (
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-850 pb-2">
+                      <span className="text-xs font-bold font-mono text-indigo-400 uppercase flex items-center gap-2">
+                        <HelpCircle className="w-3.5 h-3.5 text-indigo-400" />
+                        <span>{item.whyCrossExample.headline}</span>
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800">
+                        Interaction Intuition
                       </span>
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      {item.interactionTypes.map((it, iIdx) => (
-                        <div key={iIdx} className={`p-4 rounded-xl bg-black border ${it.border} space-y-2 hover:border-zinc-700 transition flex flex-col justify-between`}>
-                          <div className="space-y-1.5">
-                            <h5 className={`text-xs font-bold font-mono ${it.accent}`}>
-                              {it.name}
-                            </h5>
-                            <code className="text-[10px] font-mono text-zinc-300 bg-zinc-950 px-1.5 py-0.5 rounded border border-zinc-800 block overflow-x-auto">
-                              {it.example}
-                            </code>
-                          </div>
-                          <p className="text-[11px] text-zinc-400 font-sans leading-tight pt-2 border-t border-zinc-900">
-                            {it.benefit}
-                          </p>
+                    <p className="text-xs text-zinc-300 font-medium">
+                      {item.whyCrossExample.scenario}
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                      {item.whyCrossExample.points.map((pt, pIdx) => (
+                        <div key={pIdx} className="p-3 rounded-lg bg-black border border-zinc-800/80 text-xs text-zinc-300 flex items-start gap-2">
+                          <span className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${pIdx === 2 ? 'bg-cyan-400' : 'bg-zinc-600'}`} />
+                          <span className={pIdx === 2 ? 'text-cyan-300 font-semibold' : 'text-zinc-400'}>{pt}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* 5. Interactive Python Code Box */}
+                {/* 4. Golden Rule: Prevent Data Leakage */}
+                {item.leakagePrevention && (
+                  <div className="p-5 rounded-2xl bg-amber-950/20 border border-amber-800/60 space-y-3 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-amber-900/40 pb-2">
+                      <span className="text-xs font-bold font-mono text-amber-400 uppercase flex items-center gap-2">
+                        <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.leakagePrevention.headline}</span>
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-bold">
+                        Production Safe
+                      </span>
+                    </div>
+                    
+                    <p className="text-xs text-amber-200/90 font-medium leading-relaxed">
+                      {item.leakagePrevention.rule}
+                    </p>
+
+                    <div className="p-3.5 rounded-xl bg-black/80 border border-zinc-800 space-y-2.5">
+                      <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold block">
+                        Case Study: {item.leakagePrevention.scenario}
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
+                        <div className="space-y-1.5 p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-900/40">
+                          <span className="text-[10px] font-bold uppercase text-emerald-400 flex items-center gap-1.5">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                            Valid Features (At Dispatch):
+                          </span>
+                          {item.leakagePrevention.valid.map((vf, vIdx) => (
+                            <div key={vIdx} className="text-emerald-300/90 text-[11px] pl-4">
+                              • {vf}
+                            </div>
+                          ))}
+                        </div>
+                        <div className="space-y-1.5 p-2.5 rounded-lg bg-rose-950/30 border border-rose-900/40">
+                          <span className="text-[10px] font-bold uppercase text-rose-400 flex items-center gap-1.5">
+                            <X className="w-3 h-3 text-rose-400" />
+                            Invalid Features (Target Leakage):
+                          </span>
+                          {item.leakagePrevention.invalid.map((ivf, iIdx) => (
+                            <div key={iIdx} className="text-rose-300/90 text-[11px] pl-4">
+                              • {ivf}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg bg-black/60 border border-amber-900/40 text-[11px] text-amber-300/90 font-mono">
+                      ⚠️ <strong className="text-amber-400">Target Leakage Warning: </strong>
+                      {item.leakagePrevention.warning}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Common Feature Cross Types */}
+                {item.crossTypes && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Common Feature Cross Types</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Interaction Strategies
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {item.crossTypes.map((ct, ctIdx) => (
+                        <div key={ctIdx} className={`p-4 rounded-xl bg-black border ${ct.border} space-y-3 hover:border-zinc-700 transition flex flex-col justify-between`}>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <h5 className={`text-xs font-bold font-mono ${ct.accent}`}>
+                                {ct.type}
+                              </h5>
+                            </div>
+                            <code className="text-[10px] font-mono text-zinc-300 bg-zinc-950 px-2 py-1 rounded border border-zinc-800 block overflow-x-auto">
+                              {ct.example}
+                            </code>
+                            <div className="text-[11px] text-zinc-300 font-medium">
+                              <span className="text-zinc-500 font-mono block text-[9px] uppercase font-bold">Why use it?</span>
+                              {ct.why}
+                            </div>
+                          </div>
+                          <div className="p-2.5 rounded-lg bg-zinc-950/80 border border-zinc-900 text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            <span className="text-cyan-400 font-mono font-bold text-[9px] uppercase block mb-0.5">Simply Explained:</span>
+                            {ct.explanation}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Python Implementation Code Block */}
                 {item.codeExample && (
                   <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>{item.codeExample.title}</span>
-                    </h4>
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Production Implementation (Categorical, Binned & Scikit-Learn Polynomial)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono text-zinc-500">pandas + scikit-learn</span>
+                    </div>
+                    
                     <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                       <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
                         <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
                           <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>feature_crosses.py</span>
+                          <span>{item.codeExample.filename || 'feature_crosses.py'}</span>
                         </div>
                         <button
                           onClick={() => handleCopyCode('code-cross', item.codeExample.code)}
@@ -23663,12 +26570,470 @@ export default function AllDefinitionsPage() {
                       </div>
                       <CodeHighlight code={item.codeExample.code} />
                     </div>
+
+                    {/* Concept Deep Dive: interaction_only=True */}
+                    {item.codeExample.concept && (
+                      <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-sans space-y-1">
+                        <span className="font-mono font-bold text-cyan-400 text-xs uppercase block flex items-center gap-1.5">
+                          <Sparkles className="w-3 h-3 text-cyan-400" />
+                          One Important Concept: interaction_only=True
+                        </span>
+                        <p>{item.codeExample.concept}</p>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {/* 6. Takeaway Banner */}
+                {/* 7. Advantages, Limitations & Best Practices */}
+                {item.tradeoffs && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Engineering Tradeoffs & Best Practices</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Production Considerations
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {/* Advantages */}
+                      <div className="p-3.5 rounded-xl bg-black border border-emerald-900/50 space-y-2">
+                        <span className="text-[11px] font-mono font-bold text-emerald-400 uppercase flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                          Advantages
+                        </span>
+                        <ul className="space-y-1.5 text-xs text-zinc-300 font-sans">
+                          {item.tradeoffs.advantages.map((adv, aIdx) => (
+                            <li key={aIdx} className="flex items-start gap-1.5">
+                              <span className="text-emerald-400 font-bold">•</span>
+                              <span>{adv}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Limitations */}
+                      <div className="p-3.5 rounded-xl bg-black border border-rose-900/50 space-y-2">
+                        <span className="text-[11px] font-mono font-bold text-rose-400 uppercase flex items-center gap-1.5">
+                          <AlertTriangle className="w-3 h-3 text-rose-400" />
+                          Limitations
+                        </span>
+                        <ul className="space-y-1.5 text-xs text-zinc-300 font-sans">
+                          {item.tradeoffs.limitations.map((lim, lIdx) => (
+                            <li key={lIdx} className="flex items-start gap-1.5">
+                              <span className="text-rose-400 font-bold">•</span>
+                              <span>{lim}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Best Practices */}
+                      <div className="p-3.5 rounded-xl bg-black border border-amber-900/50 space-y-2">
+                        <span className="text-[11px] font-mono font-bold text-amber-400 uppercase flex items-center gap-1.5">
+                          <ShieldCheck className="w-3 h-3 text-amber-400" />
+                          Best Practices
+                        </span>
+                        <ul className="space-y-1.5 text-xs text-zinc-300 font-sans">
+                          {item.tradeoffs.bestPractices.map((bp, bIdx) => (
+                            <li key={bIdx} className="flex items-start gap-1.5">
+                              <span className="text-amber-400 font-bold">•</span>
+                              <span>{bp}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 8. Architecture Takeaway Banner */}
                 <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
-                  <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                  <strong className="text-emerald-400 uppercase">Interview Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item: Feature Engineering (The 6 Pillars & Model Suitability) */}
+            {item.id === 'feature-engineering' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Machine Learning Foundations</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Representation Learning
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Feature Engineering
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                </div>
+
+                {/* 2. The 6 Pillars of Feature Engineering */}
+                {item.pillars && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>The 6 Pillars of Feature Engineering</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                        Core Taxonomy
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.pillars.map((pillar) => (
+                        <div
+                          key={pillar.num}
+                          className={`p-4 rounded-xl bg-black border ${pillar.border} space-y-3 hover:border-zinc-700 transition flex flex-col justify-between`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 font-bold">
+                                Pillar {pillar.num}
+                              </span>
+                              <span className={`text-[10px] font-mono font-semibold ${pillar.accent}`}>
+                                {pillar.badge}
+                              </span>
+                            </div>
+                            <h5 className={`text-sm font-bold font-mono ${pillar.accent}`}>
+                              {pillar.num}. {pillar.name}
+                            </h5>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {pillar.desc}
+                            </p>
+                          </div>
+
+                          <div className="p-2.5 rounded-lg bg-zinc-950/90 border border-zinc-900 text-[11px] font-sans">
+                            <span className="text-zinc-500 font-mono uppercase font-bold text-[9px] block mb-0.5">Example:</span>
+                            <span className="text-zinc-300">{pillar.example}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Production Python Code Example */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Python Feature Engineering Pipeline</span>
+                      </h4>
+                      <span className="text-[10px] font-mono text-zinc-500">Creation → Encoding → Scaling</span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.codeExample.filename || 'feature_engineering_pipeline.py'}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-feat-eng', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-feat-eng' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.codeExample.code} />
+                    </div>
+
+                    {item.codeExample.explanation && (
+                      <div className="p-3 rounded-lg bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-400 font-sans leading-relaxed">
+                        <span className="text-cyan-400 font-mono font-bold text-[10px] uppercase block mb-0.5">Pipeline Flow:</span>
+                        {item.codeExample.explanation}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 4. Model Suitability Matrix */}
+                {item.modelSuitability && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Which Models Need Which Techniques?</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Model Compatibility
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.modelSuitability.map((itemRow, rIdx) => (
+                        <div
+                          key={rIdx}
+                          className="p-3.5 rounded-xl bg-black border border-zinc-850 space-y-2 flex flex-col justify-between"
+                        >
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${itemRow.accent}`}>
+                                {itemRow.technique}
+                              </span>
+                            </div>
+                            <div className="text-xs font-semibold text-white font-mono bg-zinc-950 px-2 py-1 rounded border border-zinc-800">
+                              {itemRow.models}
+                            </div>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-1 border-t border-zinc-900">
+                            {itemRow.reason}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Tree-Based Models Special Architecture Rule */}
+                {item.treeInsight && (
+                  <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-800/50 space-y-2">
+                    <span className="text-xs font-bold font-mono text-emerald-400 uppercase flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Interview Highlight: Tree-Based Models & Scale Invariance</span>
+                    </span>
+                    <p className="text-xs text-emerald-200/90 font-sans leading-relaxed">
+                      {item.treeInsight}
+                    </p>
+                  </div>
+                )}
+
+                {/* 6. Architecture Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Interview Takeaway: </strong>
+                  {item.takeaway}
+                </div>
+              </div>
+            )}
+
+            {/* Item: Flagging (Indicator Features & Binary Signals) */}
+            {item.id === 'flagging' && (
+              <div className="space-y-6">
+                {/* 1. Core Definition Header Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Binary Signals & Representation</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Indicator Features
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    Flagging (Indicator Features)
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
+                    {item.coreDefinition}
+                  </p>
+                  {item.binaryState && (
+                    <div className="flex flex-wrap items-center gap-3 pt-1">
+                      <span className="px-2.5 py-1 rounded bg-emerald-950/60 border border-emerald-800 text-xs font-mono text-emerald-300 font-semibold flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        {item.binaryState.trueValue}
+                      </span>
+                      <span className="px-2.5 py-1 rounded bg-rose-950/60 border border-rose-800 text-xs font-mono text-rose-300 font-semibold flex items-center gap-1.5">
+                        <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                        {item.binaryState.falseValue}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Common Types of Indicator Features */}
+                {item.types && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Common Types of Indicator Features</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        5 Primary Patterns
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.types.map((typeObj, tIdx) => (
+                        <div
+                          key={tIdx}
+                          className={`p-4 rounded-xl bg-black border ${typeObj.border} space-y-2.5 flex flex-col justify-between hover:border-zinc-700 transition`}
+                        >
+                          <div className="space-y-1.5">
+                            <span className={`text-xs font-bold font-mono ${typeObj.accent}`}>
+                              {typeObj.type}
+                            </span>
+                            <div className="p-2 rounded bg-zinc-950 border border-zinc-900 font-mono text-xs text-white">
+                              <code>{typeObj.example}</code>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              <strong className="text-zinc-400 font-mono text-[10px] uppercase block">Meaning:</strong>
+                              {typeObj.meaning}
+                            </p>
+                          </div>
+                          {typeObj.useCase && (
+                            <div className="pt-2 border-t border-zinc-900 text-[11px] text-zinc-400 font-sans">
+                              <span className="text-zinc-500 font-mono uppercase text-[9px] block">Use Case:</span>
+                              {typeObj.useCase}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Production Python Code Example */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Python Indicator Features Implementation</span>
+                      </h4>
+                      <span className="text-[10px] font-mono text-zinc-500">Threshold • Missingness • Category</span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.codeExample.filename || 'indicator_features.py'}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-flagging', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-flagging' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.codeExample.code} />
+                    </div>
+
+                    {item.codeExample.explanation && (
+                      <div className="p-3 rounded-lg bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-400 font-sans leading-relaxed">
+                        <span className="text-cyan-400 font-mono font-bold text-[10px] uppercase block mb-0.5">Implementation Breakdown:</span>
+                        {item.codeExample.explanation}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 4. Why are Indicator Features Useful? */}
+                {item.whyUseful && (
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Why are Indicator Features Useful?</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Key Value Drivers
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {item.whyUseful.map((val, vIdx) => (
+                        <div key={vIdx} className="p-3.5 rounded-xl bg-black border border-zinc-900 space-y-1.5">
+                          <h5 className="text-xs font-bold text-white font-mono flex items-center gap-2">
+                            <span className="text-cyan-400 font-bold">•</span>
+                            <span>{val.title}</span>
+                          </h5>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed pl-4">
+                            {val.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Indicator Features vs. One-Hot Encoding */}
+                {item.indicatorVsOneHot && (
+                  <div className="p-5 rounded-2xl bg-black border border-zinc-800 space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-amber-400" />
+                        <span>{item.indicatorVsOneHot.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Conceptual Comparison
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-400 font-sans">
+                      {item.indicatorVsOneHot.concept}
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-cyan-900/50 space-y-2">
+                        <span className="text-xs font-mono font-bold text-cyan-400 uppercase flex items-center gap-1.5">
+                          <Sliders className="w-3.5 h-3.5 text-cyan-400" />
+                          {item.indicatorVsOneHot.indicatorFeature.title}
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {item.indicatorVsOneHot.indicatorFeature.definition}
+                        </p>
+                        <div className="text-[11px] font-mono text-cyan-300/80 pt-1 border-t border-zinc-900">
+                          <span className="text-zinc-500 uppercase text-[9px] block">Scope:</span>
+                          {item.indicatorVsOneHot.indicatorFeature.scope}
+                        </div>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-zinc-950 border border-purple-900/50 space-y-2">
+                        <span className="text-xs font-mono font-bold text-purple-400 uppercase flex items-center gap-1.5">
+                          <Layers className="w-3.5 h-3.5 text-purple-400" />
+                          {item.indicatorVsOneHot.oneHotEncoding.title}
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {item.indicatorVsOneHot.oneHotEncoding.definition}
+                        </p>
+                        <div className="text-[11px] font-mono text-purple-300/80 pt-1 border-t border-zinc-900">
+                          <span className="text-zinc-500 uppercase text-[9px] block">Scope:</span>
+                          {item.indicatorVsOneHot.oneHotEncoding.scope}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Architecture Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                  <strong className="text-emerald-400 uppercase">Interview Takeaway: </strong>
                   {item.takeaway}
                 </div>
               </div>
@@ -24169,30 +27534,35 @@ export default function AllDefinitionsPage() {
             {item.id === 'eigenvector-pca' && (
               <div className="space-y-6">
                 {/* 1. Core Definitions Header Banner */}
-                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
-                  <div className="flex items-center justify-between">
+                <div className="p-4 sm:p-5 rounded-2xl bg-black border border-cyan-800/50 space-y-4 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
                     <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
                       <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                       <span>Linear Algebra & Dimensionality Reduction</span>
                     </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                      Spectral Decomposition
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      Spectral Decomposition & SVD
                     </span>
                   </div>
+
                   <h3 className="text-sm sm:text-base font-bold text-white font-mono">
                     Eigenvectors, Eigenvalues & PCA
                   </h3>
                   
                   {item.coreDefinitions && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                      <div className="p-3 rounded-lg bg-zinc-950 border border-amber-800/40 space-y-1">
-                        <span className="text-xs font-bold font-mono text-amber-400 uppercase block">Eigenvector</span>
+                      <div className="p-3.5 rounded-xl bg-zinc-950 border border-amber-800/50 space-y-1.5 shadow-md">
+                        <span className="text-xs font-bold font-mono text-amber-400 uppercase block flex items-center gap-1.5">
+                          <span>Eigenvector</span>
+                        </span>
                         <p className="text-xs text-zinc-200 font-sans leading-relaxed">
                           {item.coreDefinitions.eigenvector}
                         </p>
                       </div>
-                      <div className="p-3 rounded-lg bg-zinc-950 border border-cyan-800/40 space-y-1">
-                        <span className="text-xs font-bold font-mono text-cyan-400 uppercase block">Eigenvalue</span>
+                      <div className="p-3.5 rounded-xl bg-zinc-950 border border-cyan-800/50 space-y-1.5 shadow-md">
+                        <span className="text-xs font-bold font-mono text-cyan-400 uppercase block flex items-center gap-1.5">
+                          <span>Eigenvalue</span>
+                        </span>
                         <p className="text-xs text-zinc-200 font-sans leading-relaxed">
                           {item.coreDefinitions.eigenvalue}
                         </p>
@@ -24200,85 +27570,120 @@ export default function AllDefinitionsPage() {
                     </div>
                   )}
 
-                  {item.coreDefinitions?.pcaApplication && (
-                    <div className="p-3 rounded-lg bg-emerald-950/20 border border-emerald-800/40 font-sans text-xs text-zinc-200 leading-relaxed">
-                      <strong className="text-emerald-400 font-mono uppercase block mb-0.5">PCA Application:</strong>
-                      {item.coreDefinitions.pcaApplication}
+                  {/* PCA Application & Foundation Highlights */}
+                  {item.coreDefinitions && (
+                    <div className="space-y-2 pt-1">
+                      {item.coreDefinitions.pcaApplication && (
+                        <div className="p-3 rounded-xl bg-emerald-950/20 border border-emerald-800/40 text-xs text-zinc-200 leading-relaxed font-sans">
+                          <strong className="text-emerald-400 font-mono uppercase block mb-1">PCA Application:</strong>
+                          {item.coreDefinitions.pcaApplication}
+                        </div>
+                      )}
+                      {item.coreDefinitions.foundation && (
+                        <div className="p-3 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs text-zinc-300 leading-relaxed font-sans">
+                          <strong className="text-purple-300 font-mono uppercase block mb-1">Mathematical Foundation:</strong>
+                          {item.coreDefinitions.foundation}
+                        </div>
+                      )}
+                      {item.coreDefinitions.covarianceNote && (
+                        <div className="p-3 rounded-xl bg-blue-950/20 border border-blue-800/40 text-xs text-zinc-300 leading-relaxed font-sans">
+                          <strong className="text-blue-300 font-mono uppercase block mb-1">Covariance Matrix in PCA:</strong>
+                          {item.coreDefinitions.covarianceNote}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
 
                 {/* 2. Mathematical Foundation Card */}
                 {item.mathFoundation && (
-                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 shadow-xl">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                  <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3.5 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
                         <Layers className="w-3.5 h-3.5 text-purple-400" />
                         <span>Linear Transformation Equation</span>
                       </h4>
-                      <code className="text-sm font-mono font-bold text-amber-300 bg-black px-2.5 py-1 rounded border border-zinc-800">
+                      <code className="text-sm font-mono font-bold text-amber-300 bg-black px-3 py-1 rounded-lg border border-zinc-800 shadow-inner">
                         {item.mathFoundation.formula}
                       </code>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono text-zinc-300">
-                      <div className="p-2.5 rounded-lg bg-black border border-zinc-800">
-                        <span className="text-amber-400 block font-bold mb-0.5">Eigenvector (v):</span>
-                        {item.mathFoundation.vMeaning}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-mono text-zinc-300">
+                      <div className="p-3 rounded-xl bg-black border border-zinc-800/90 space-y-1">
+                        <span className="text-amber-400 block font-bold">Eigenvector (v):</span>
+                        <p className="text-zinc-300 font-sans text-xs">{item.mathFoundation.vMeaning}</p>
                       </div>
-                      <div className="p-2.5 rounded-lg bg-black border border-zinc-800">
-                        <span className="text-cyan-400 block font-bold mb-0.5">Eigenvalue (λ):</span>
-                        {item.mathFoundation.lambdaMeaning}
+                      <div className="p-3 rounded-xl bg-black border border-zinc-800/90 space-y-1">
+                        <span className="text-cyan-400 block font-bold">Eigenvalue (λ):</span>
+                        <p className="text-zinc-300 font-sans text-xs">{item.mathFoundation.lambdaMeaning}</p>
                       </div>
                     </div>
 
-                    <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                    <div className="p-3 rounded-xl bg-black/60 border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
+                      <strong className="text-zinc-200 font-mono block mb-0.5">Connection to PCA Covariance:</strong>
                       {item.mathFoundation.pcaConnection}
-                    </p>
+                    </div>
                   </div>
                 )}
 
-                {/* 3. PCA 4-Step Pipeline Grid */}
-                {item.pcaSteps && (
+                {/* 3. How PCA Works — Step by Step (6 Stages) */}
+                {item.howPcaWorks && (
                   <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                      <Layers className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>PCA Algorithmic Pipeline</span>
-                    </h4>
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Workflow className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>How PCA Works — Step by Step</span>
+                      </h4>
+                      <span className="text-[10px] font-mono text-zinc-400">6 Sequential Stages</span>
+                    </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-                      {item.pcaSteps.map((s, sIdx) => (
-                        <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5 flex flex-col justify-between">
-                          <span className="text-xs font-bold font-mono text-cyan-300 block">
-                            {s.step}
-                          </span>
-                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
-                            {s.desc}
-                          </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.howPcaWorks.map((s) => (
+                        <div key={s.step} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 flex flex-col justify-between hover:border-cyan-500/30 transition">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-white">
+                                Stage {s.step}
+                              </span>
+                              <span className={`text-[9px] font-mono uppercase ${s.accent}`}>
+                                {s.badge}
+                              </span>
+                            </div>
+                            <h5 className="text-xs font-bold text-zinc-100 font-mono pt-1">
+                              {s.name}
+                            </h5>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {s.desc}
+                            </p>
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* 4. Interactive Python Code Box */}
+                {/* 4. Python Example — PCA Using Scikit-Learn (Iris Dataset) */}
                 {item.codeExample && (
                   <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                      <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>{item.codeExample.title}</span>
-                    </h4>
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.codeExample.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono text-zinc-400">Iris Dataset</span>
+                    </div>
+
                     <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                       <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
                         <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
                           <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>pca_reduction.py</span>
+                          <span>{item.codeExample.filename || 'pca_iris.py'}</span>
                         </div>
                         <button
-                          onClick={() => handleCopyCode('code-pca', item.codeExample.code)}
+                          onClick={() => handleCopyCode('code-pca-iris', item.codeExample.code)}
                           className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
                         >
-                          {copiedId === 'code-pca' ? (
+                          {copiedId === 'code-pca-iris' ? (
                             <>
                               <Check className="w-3 h-3 text-emerald-400" />
                               <span>Copied!</span>
@@ -24293,11 +27698,171 @@ export default function AllDefinitionsPage() {
                       </div>
                       <CodeHighlight code={item.codeExample.code} />
                     </div>
+
+                    {/* Expected Shapes Grid */}
+                    {item.codeExample.expectedShapes && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        {item.codeExample.expectedShapes.map((shapeItem, sIdx) => (
+                          <div key={sIdx} className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-between gap-3">
+                            <div>
+                              <span className="text-[10px] font-mono text-zinc-400 uppercase block">{shapeItem.label}</span>
+                              <p className="text-xs text-zinc-300 font-sans mt-0.5">{shapeItem.desc}</p>
+                            </div>
+                            <code className="text-xs font-mono font-bold text-cyan-400 bg-black px-2.5 py-1 rounded border border-zinc-700 shrink-0">
+                              {shapeItem.value}
+                            </code>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Note on transformed features */}
+                    {item.codeExample.note && (
+                      <div className="p-3 rounded-xl bg-black border border-zinc-800/80 text-xs text-zinc-300 font-sans leading-relaxed">
+                        <strong className="text-zinc-200 font-mono block mb-0.5">Feature Representation:</strong>
+                        {item.codeExample.note}
+                      </div>
+                    )}
+
+                    {/* Critical Data Leakage Rule Alert */}
+                    {item.codeExample.dataLeakageRule && (
+                      <div className="p-3.5 rounded-xl bg-amber-950/30 border border-amber-600/50 flex items-start gap-2.5 shadow-md">
+                        <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                        <div className="text-xs text-amber-200/95 leading-relaxed font-sans">
+                          <strong className="text-amber-300 font-mono uppercase block mb-0.5">Critical Machine Learning Rule:</strong>
+                          {item.codeExample.dataLeakageRule}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {/* 5. Takeaway Banner */}
-                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                {/* 5. Choosing the Number of Components (95% Variance) */}
+                {item.choosingComponents && (
+                  <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.choosingComponents.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold">
+                        95% Threshold
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 font-sans">
+                      {item.choosingComponents.desc}
+                    </p>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.choosingComponents.filename}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-pca-variance', item.choosingComponents.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-pca-variance' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.choosingComponents.code} />
+                    </div>
+
+                    {item.choosingComponents.productionAdvice && (
+                      <div className="p-3 rounded-xl bg-black border border-emerald-900/40 text-xs text-emerald-300/90 font-sans leading-relaxed">
+                        <strong className="text-emerald-400 font-mono uppercase block mb-0.5">Production Pipeline Strategy:</strong>
+                        {item.choosingComponents.productionAdvice}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 6. Advantages and Limitations Table */}
+                {item.advantagesLimitations && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Table className="w-3.5 h-3.5 text-purple-400" />
+                        <span>{item.advantagesLimitations.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">
+                        {item.advantagesLimitations.badge}
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 shadow-xl">
+                      <table className="w-full text-xs text-left">
+                        <thead className="bg-zinc-950 border-b border-zinc-800 text-zinc-400 font-mono uppercase text-[11px]">
+                          <tr>
+                            <th className="p-3.5 font-bold text-emerald-400 w-1/2">Advantages</th>
+                            <th className="p-3.5 font-bold text-rose-400 w-1/2">Limitations</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-800/80 bg-black">
+                          {item.advantagesLimitations.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-950/60 transition">
+                              <td className="p-3.5 text-zinc-200 font-sans leading-relaxed">
+                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 mr-2" />
+                                {row.advantage}
+                              </td>
+                              <td className="p-3.5 text-zinc-300 font-sans leading-relaxed">
+                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-rose-400 mr-2" />
+                                {row.limitation}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {item.advantagesLimitations.unsupervisedNote && (
+                      <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
+                        <strong className="text-cyan-400 font-mono uppercase block mb-0.5">Unsupervised Nature:</strong>
+                        {item.advantagesLimitations.unsupervisedNote}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 7. Common Interview Questions (Q1 to Q4) */}
+                {item.interviewQuestions && (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">
+                        Common Interview Questions & Exact Answers
+                      </h4>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {item.interviewQuestions.map((qa, qIdx) => (
+                        <div key={qIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800/90 space-y-1.5 hover:border-amber-500/40 transition shadow-md">
+                          <h5 className="text-xs font-bold text-amber-300 font-mono">
+                            {qa.q}
+                          </h5>
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                            {qa.a}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 8. Architecture Takeaway Banner */}
+                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono shadow-lg">
                   <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
                   {item.takeaway}
                 </div>
@@ -27709,150 +31274,6 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 149: Flip-Flop vs. Latch */}
-            {item.id === 'flip-flop-latch' && (
-              <div className="space-y-6">
-                {/* 1. Core Header Banner */}
-                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Digital Sequential Logic & Clock Triggering</span>
-                    </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                      Edge vs. Level
-                    </span>
-                  </div>
-                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
-                    Flip-Flop vs. Latch
-                  </h3>
-                  <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-100 font-medium font-sans leading-relaxed">
-                    <strong>Fundamental Law: </strong>{item.coreDefinition}
-                  </div>
-                </div>
-
-                {/* 2. Verbatim Definitions: Flip-Flop vs Latch */}
-                {item.verbatimCore && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                        <Terminal className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Core Behavioral Distinctions</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
-                        Storage Mechanics
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                      {item.verbatimCore.map((elem, eIdx) => (
-                        <div key={eIdx} className={`p-4 rounded-xl bg-black border ${elem.border} space-y-2.5 flex flex-col justify-between hover:border-cyan-500/30 transition`}>
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className={`text-xs font-bold font-mono ${elem.accent} uppercase block`}>
-                                {elem.term}
-                              </span>
-                              <span className="text-[10px] font-mono text-zinc-400 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800">
-                                {elem.trigger}
-                              </span>
-                            </div>
-                            <p className="text-xs text-white font-medium font-sans leading-relaxed">
-                              {elem.definition}
-                            </p>
-                            <p className="text-[11px] text-zinc-300 font-sans leading-relaxed pt-1 border-t border-zinc-900">
-                              <strong className="text-zinc-400 font-mono">Sampling Action: </strong>
-                              {elem.behavior}
-                            </p>
-                          </div>
-                          <div className="pt-2 border-t border-zinc-900 text-[10px] font-mono text-zinc-400 flex items-center justify-between">
-                            <span className="text-zinc-500 uppercase">Transparency:</span>
-                            <span className="text-zinc-300 font-semibold">{elem.transparency}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 3. Detailed Parameter Comparison Matrix */}
-                {item.comparisonTable && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Architectural Comparison Matrix</span>
-                      </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                        Hardware Trade-offs
-                      </span>
-                    </div>
-
-                    <div className="overflow-x-auto rounded-xl border border-zinc-800">
-                      <table className="w-full text-left text-xs">
-                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono text-[11px] border-b border-zinc-800 uppercase">
-                          <tr>
-                            <th className="py-2.5 px-3">Parameter</th>
-                            <th className="py-2.5 px-3 text-amber-400">Flip-Flop (Edge-Triggered)</th>
-                            <th className="py-2.5 px-3 text-cyan-400">Latch (Level-Sensitive)</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-zinc-900 font-sans text-zinc-300 bg-black">
-                          {item.comparisonTable.map((row, rIdx) => (
-                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
-                              <td className="py-2.5 px-3 font-mono font-semibold text-white whitespace-nowrap">{row.parameter}</td>
-                              <td className="py-2.5 px-3 text-zinc-300">{row.flipFlop}</td>
-                              <td className="py-2.5 px-3 text-zinc-300">{row.latch}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. Interactive Verilog HDL Code Box */}
-                {item.codeExample && (
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
-                      <Code2 className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>{item.codeExample.title}</span>
-                    </h4>
-                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
-                          <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>flipflop_vs_latch.v</span>
-                        </div>
-                        <button
-                          onClick={() => handleCopyCode('code-flip-flop-latch', item.codeExample.code)}
-                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                        >
-                          {copiedId === 'code-flip-flop-latch' ? (
-                            <>
-                              <Check className="w-3 h-3 text-emerald-400" />
-                              <span>Copied!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3 h-3" />
-                              <span>Copy Code</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                      <CodeHighlight code={item.codeExample.code} />
-                    </div>
-                  </div>
-                )}
-
-                {/* 5. Takeaway Banner */}
-                <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
-                  <strong className="text-emerald-400 uppercase">Hardware Takeaway: </strong>
-                  {item.takeaway}
-                </div>
-              </div>
-            )}
-
             {/* Item 150: Underfitting vs. Overfitting */}
             {item.id === 'underfitting-overfitting' && (
               <div className="space-y-6">
@@ -28682,26 +32103,86 @@ export default function AllDefinitionsPage() {
             {/* Item 155: Frontier LLMs */}
             {item.id === 'frontier-llms' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-200/90 leading-relaxed font-mono">
-                  <strong className="text-cyan-400 uppercase font-sans font-bold">Frontier Ecosystem: </strong>
-                  {item.coreDefinition}
+                {/* 1. Core Header Definition Banner */}
+                <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Frontier Foundation Models</span>
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                      OpenAI • Anthropic • Google
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                    What is a Frontier LLM?
+                  </h3>
+                  <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs sm:text-sm text-cyan-100 font-medium font-sans leading-relaxed">
+                    <strong>Core Definition: </strong>{item.coreDefinition}
+                  </div>
                 </div>
 
+                {/* 2. The Three Major Model Families */}
+                {item.threeMajorFamilies && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>The Three Major Frontier Model Families</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
+                        Tier-1 Commercial Labs
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {item.threeMajorFamilies.map((fam, fIdx) => (
+                        <div key={fIdx} className={`p-4 rounded-xl bg-black border ${fam.border} space-y-3 flex flex-col justify-between hover:border-cyan-500/30 transition`}>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold font-mono ${fam.accent} uppercase`}>
+                                {fam.provider}
+                              </span>
+                              <span className={`text-[10px] font-mono px-2 py-0.5 rounded border font-semibold ${fam.badgeBg}`}>
+                                {fam.family}
+                              </span>
+                            </div>
+                            <div className="text-[11px] font-mono text-zinc-400 bg-zinc-950 px-2 py-1 rounded border border-zinc-900">
+                              <span className="text-zinc-500">Models: </span>
+                              <strong className="text-zinc-200">{fam.models}</strong>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                              {fam.sweetSpot}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Detailed Architectural Comparison Matrix */}
                 {item.comparisonMatrix && (
-                  <div className="space-y-2">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>OpenAI vs. Anthropic (Claude) vs. Google (Gemini)</span>
-                    </h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>OpenAI vs. Anthropic (Claude) vs. Google (Gemini)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Feature Benchmark
+                      </span>
+                    </div>
+
                     <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse text-xs">
                           <thead>
-                            <tr className="bg-zinc-900 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                            <tr className="bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
                               <th className="p-3 w-1/5">Dimension</th>
-                              <th className="p-3 w-4/15 text-emerald-400">OpenAI</th>
-                              <th className="p-3 w-4/15 text-amber-400">Anthropic Claude</th>
-                              <th className="p-3 w-4/15 text-blue-400">Google Gemini</th>
+                              <th className="p-3 w-4/15 text-emerald-400 font-bold">OpenAI</th>
+                              <th className="p-3 w-4/15 text-amber-400 font-bold">Anthropic Claude</th>
+                              <th className="p-3 w-4/15 text-blue-400 font-bold">Google Gemini</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-zinc-800/80 font-sans">
@@ -28716,7 +32197,7 @@ export default function AllDefinitionsPage() {
                                 <td className="p-3 text-amber-200/90 text-[11px] leading-relaxed">
                                   {row.claude}
                                 </td>
-                                <td className="p-3 text-blue-200/90 text-[11px] leading-relaxed font-semibold">
+                                <td className="p-3 text-blue-200/90 text-[11px] leading-relaxed">
                                   {row.gemini}
                                 </td>
                               </tr>
@@ -28728,6 +32209,201 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* 4. Model Comparison: 9 Critical Evaluation Factors */}
+                {item.nineEvaluationFactors && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Sliders className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Model Comparison: How to Think About It (9 Factors)</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                        Production Checklist
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-zinc-900/90 text-zinc-400 font-mono text-[11px] border-b border-zinc-800 uppercase">
+                          <tr>
+                            <th className="py-2.5 px-3 w-1/4">Factor</th>
+                            <th className="py-2.5 px-3 w-1/2 text-white">What to Check</th>
+                            <th className="py-2.5 px-3 w-1/4 text-zinc-400">Evaluation Tip</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900 font-sans text-zinc-300">
+                          {item.nineEvaluationFactors.map((f, idx) => (
+                            <tr key={idx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-2.5 px-3 font-mono font-semibold text-cyan-300 whitespace-nowrap">
+                                {f.factor}
+                              </td>
+                              <td className="py-2.5 px-3 text-zinc-200 font-medium">
+                                {f.check}
+                              </td>
+                              <td className="py-2.5 px-3 text-[11px] text-zinc-400 font-mono">
+                                {f.tip}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Which Model Should You Choose? (Task-Driven Selection) */}
+                {item.taskSelectionGuide && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Which Model Should You Choose?</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Task Guided, Not Brand Driven
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-sans">
+                      <strong className="text-emerald-400 font-mono uppercase">Golden Rule: </strong>
+                      Use the task to guide your choice—not brand popularity.
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {item.taskSelectionGuide.map((guide, gIdx) => (
+                        <div key={gIdx} className={`p-4 rounded-xl border ${guide.color} space-y-2.5 flex flex-col justify-between hover:border-emerald-500/40 transition`}>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <h5 className="text-xs font-bold font-mono text-white">
+                                {guide.scenario}
+                              </h5>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black/60 border border-zinc-700/60 text-zinc-300">
+                                {guide.tag}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {guide.strategy}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. How to Evaluate Frontier LLMs Properly (6-Step Pipeline) */}
+                {item.evaluationProcess && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                        <Workflow className="w-3.5 h-3.5 text-purple-400" />
+                        <span>{item.evaluationProcess.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                        Quantitative Rigor
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs text-purple-200/90 leading-relaxed font-sans">
+                      <strong className="text-purple-400 font-mono uppercase">Scenario: </strong>
+                      {item.evaluationProcess.warning}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {item.evaluationProcess.steps.map((st, sIdx) => (
+                        <div key={sIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-purple-500/40 transition">
+                          <div className="flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-full bg-purple-950 text-purple-300 border border-purple-800 flex items-center justify-center font-mono text-[11px] font-bold">
+                              {st.step}
+                            </span>
+                            <span className="text-xs font-bold font-mono text-white leading-tight">
+                              {st.title}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
+                            {st.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Switching Models Without Rebuilding (Model Abstraction Layer) */}
+                {item.abstractionLayer && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.abstractionLayer.headline}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                        Gateway Architecture
+                      </span>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-2">
+                      <div className="text-xs sm:text-sm font-semibold text-white font-sans">
+                        <strong className="text-cyan-400 font-mono">{item.abstractionLayer.answer}</strong> {item.abstractionLayer.explanation}
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed font-sans">
+                      <strong className="text-amber-400 font-mono uppercase mr-1">{item.abstractionLayer.cautionHeadline}</strong>
+                      {item.abstractionLayer.caution}
+                    </div>
+                  </div>
+                )}
+
+                {/* 8. Interactive Python Code Box (FastAPI Model Gateway) */}
+                {item.codeExample && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{item.codeExample.title}</span>
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                        Python 3.11+ / FastAPI
+                      </span>
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                          <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>{item.codeExample.filename}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode('code-frontier-llms', item.codeExample.code)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                        >
+                          {copiedId === 'code-frontier-llms' ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.codeExample.code} />
+                    </div>
+
+                    {item.codeExample.concept && (
+                      <div className="p-3.5 rounded-xl bg-zinc-950/70 border border-zinc-800/80 text-xs text-zinc-300 font-sans leading-relaxed">
+                        <strong className="text-emerald-400 font-mono">Gateway Pattern Note: </strong>
+                        {item.codeExample.concept}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 9. Key Architectural Takeaway */}
                 <div className="p-4 rounded-xl bg-black border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
                   <strong className="text-cyan-400 uppercase">Architecture Selection Strategy: </strong>
                   {item.takeaway}
@@ -29864,7 +33540,7 @@ export default function AllDefinitionsPage() {
             )}
 
             {/* Universal EDA & Technical Definition Card Renderer for items with details/code */}
-            {item.details && !['confidence-score', 'vector-database', 'quantization', 'chroma-db', 'class-imbalance', 'caching', 'cardinality'].includes(item.id) && (
+            {item.details && !['eda', 'confidence-score', 'vector-database', 'quantization', 'chroma-db', 'class-imbalance', 'caching', 'cardinality'].includes(item.id) && (
               <div className="space-y-4 pt-1">
                 {/* 5-Stage Core Pipeline Overview (for EDA Master Blueprint) */}
                 {item.pipelineOverview && (
