@@ -380,10 +380,6 @@ export const definitionBookmarks = [
     "label": "LangChain / LangGraph"
   },
   {
-    "id": "langgraph-summarizer",
-    "label": "LangGraph Summarizer Agent & Loop Prevention"
-  },
-  {
     "id": "learning-rate-epochs",
     "label": "Learning Rate & Epochs"
   },
@@ -4845,7 +4841,105 @@ export const definitionsData = [
         "question": "How would you improve performance?",
         "answer": "Measure retrieval latency and model latency separately, reduce unnecessary LLM calls, parallelize independent database reads where safe, cache suitable results, and evaluate smaller models for simpler tasks.\n\nAlso monitor retrieval quality and response accuracy so that performance improvements do not reduce recommendation quality."
       }
-    ]
+    ],
+    "summarizerAgent": {
+      "title": "LangGraph Summarizer Agent — Stateful Workflow, Reflection & Loop Prevention",
+      "badge": "Stateful Reflection & Agentic Loops",
+      "summary": "A LangGraph summarizer agent uses multiple steps to create, review, and improve a summary. It maintains state throughout the workflow and uses conditional transitions to decide whether to refine the summary or finish.",
+      "inSimpleTerms": {
+        "problem": "A single LLM prompt may generate a generic or lengthy summary and miss important facts.",
+        "analogy": "A LangGraph summarizer agent works like a writer and an editor:",
+        "steps": [
+          {
+            "step": "Draft Node",
+            "desc": "Creates the initial summary."
+          },
+          {
+            "step": "Critique Node",
+            "desc": "Checks whether the summary is factual, concise, and complete."
+          },
+          {
+            "step": "Refine Node",
+            "desc": "Improves the summary based on the critique."
+          },
+          {
+            "step": "Iteration Loop",
+            "desc": "The workflow repeats until the summary is approved or reaches its iteration limit."
+          }
+        ],
+        "reflectionNote": "This process is called reflection because the model reviews and improves its own output."
+      },
+      "coreStateGraphStructure": {
+        "title": "Core StateGraph Structure",
+        "components": [
+          {
+            "name": "State",
+            "desc": "A typed dictionary that stores original_text, current_summary, critique, iteration, and is_approved."
+          },
+          {
+            "name": "Draft Node",
+            "desc": "Creates the initial summary."
+          },
+          {
+            "name": "Critique Node",
+            "desc": "Evaluates the summary against the original document."
+          },
+          {
+            "name": "Refine Node",
+            "desc": "Fixes the issues identified by the critic."
+          },
+          {
+            "name": "Conditional Edge",
+            "desc": "Decides whether to end the workflow or send the summary for refinement."
+          }
+        ]
+      },
+      "toolCallingMechanism": {
+        "title": "How AI Agents Decide When to Call External Tools",
+        "intro": "In LangChain and LangGraph agent workflows, tools are defined using a name, description, and input schema. For example, a model may receive the request: “Check the database inventory.”",
+        "steps": [
+          "The model decides whether an external tool is needed.",
+          "It returns a structured tool call containing the tool name and arguments.",
+          "The orchestrator executes the corresponding Python function.",
+          "The tool result is returned to the model.",
+          "The model uses the result to continue its response."
+        ],
+        "important": "Important: The LLM requests the tool; the application or agent executes it. The model does not directly run Python code or access the database."
+      },
+      "loopPrevention": {
+        "title": "How to Prevent Infinite Loops in Production Agents",
+        "intro": "A workflow with conditional edges can keep repeating if its stopping conditions are not properly defined. Common safeguards include:",
+        "safeguards": [
+          {
+            "name": "Hard Iteration Limit",
+            "desc": "Stop after a fixed number of refinement attempts, such as three."
+          },
+          {
+            "name": "Recursion Limit",
+            "desc": "Configure a maximum number of graph steps to prevent excessive execution."
+          },
+          {
+            "name": "Similarity Check",
+            "desc": "Compare consecutive drafts using text or embedding similarity. If the new draft is almost identical to the previous one, stop refining."
+          },
+          {
+            "name": "Token or Cost Budget",
+            "desc": "Stop execution when the workflow reaches its allowed token or cost budget."
+          },
+          {
+            "name": "Approval Condition",
+            "desc": "End the workflow as soon as the summary meets the required quality criteria."
+          }
+        ],
+        "takeaway": "These safeguards help control execution time, cost, and reliability."
+      },
+      "interviewAnswer": "“I built a summarizer workflow in LangGraph using a drafting node, a critique node, and a refinement node. The workflow maintains state and uses conditional routing to decide whether the summary needs further improvement. To prevent infinite loops, we enforce a maximum iteration budget, configure a recursion limit, and stop refinement when the output has plateaued based on a similarity check.”",
+      "code": "from typing import TypedDict, Literal\nfrom langgraph.graph import StateGraph, START, END\n\n\n# 1. Define Typed State\nclass AgentState(TypedDict):\n    original_text: str\n    current_summary: str\n    critique: str\n    iteration: int\n    is_approved: bool\n\n\nMAX_ITERATIONS = 3\n\n\n# 2. Define Stateful Nodes\ndef draft_node(state: AgentState) -> dict:\n    # Generates the initial summary\n    draft = summarize_text(state[\"original_text\"])\n\n    return {\n        \"current_summary\": draft,\n        \"iteration\": 1\n    }\n\n\ndef critique_node(state: AgentState) -> dict:\n    # Evaluates the summary against the original text\n    critique, approved = evaluate_summary(\n        state[\"original_text\"],\n        state[\"current_summary\"]\n    )\n\n    return {\n        \"critique\": critique,\n        \"is_approved\": approved\n    }\n\n\ndef refine_node(state: AgentState) -> dict:\n    new_iter = state[\"iteration\"] + 1\n\n    refined = refine_summary(\n        state[\"original_text\"],\n        state[\"current_summary\"],\n        state[\"critique\"]\n    )\n\n    return {\n        \"current_summary\": refined,\n        \"iteration\": new_iter\n    }\n\n\n# 3. Conditional Edge with Loop Prevention\ndef router(\n    state: AgentState\n) -> Literal[\"refine_node\", \"__end__\"]:\n\n    # Stop if the summary is approved\n    if state[\"is_approved\"]:\n        return \"__end__\"\n\n    # Stop if the iteration budget is reached\n    if state[\"iteration\"] >= MAX_ITERATIONS:\n        return \"__end__\"\n\n    return \"refine_node\"\n\n\n# 4. Graph Assembly\nworkflow = StateGraph(AgentState)\n\nworkflow.add_node(\"draft_node\", draft_node)\nworkflow.add_node(\"critique_node\", critique_node)\nworkflow.add_node(\"refine_node\", refine_node)\n\nworkflow.add_edge(START, \"draft_node\")\nworkflow.add_edge(\"draft_node\", \"critique_node\")\n\nworkflow.add_conditional_edges(\n    \"critique_node\",\n    router\n)\n\nworkflow.add_edge(\"refine_node\", \"critique_node\")\nworkflow.add_edge(\"critique_node\", END) if False else None\n\napp = workflow.compile()\n\n\n# 5. Execute with a Recursion Limit\nresult = app.invoke(\n    {\n        \"original_text\": \"Your source document...\",\n        \"current_summary\": \"\",\n        \"critique\": \"\",\n        \"iteration\": 0,\n        \"is_approved\": False\n    },\n    config={\"recursion_limit\": 10}\n)",
+      "implementationNotes": [
+        "summarize_text(), evaluate_summary(), and refine_summary() represent application-specific LLM functions. The graph structure shows how the workflow is controlled; these functions must be implemented using your configured model.",
+        "The iteration budget limits refinement attempts. The recursion limit is a separate safety mechanism that limits graph execution steps. They should be configured together."
+      ]
+    }
   },
   {
     "id": "normalization-scaling",
@@ -12302,59 +12396,62 @@ export const definitionsData = [
   {
     "id": "labeled-unlabeled-data",
     "title": "Labeled vs. Unlabeled Data & Strategies for Unlabeled Datasets",
-    "badge": "Data Annotation, Active Learning & Weak Supervision",
-    "summary": "Labeled data contains inputs plus the correct target or answer. Unlabeled data contains inputs without the target answer. What if you have a lot of unlabeled data? Possible approaches include: Manual labeling (Have people annotate a sample), Semi-supervised learning (Combine a small labeled dataset with a larger unlabeled dataset), Self-supervised learning (Learn representations from the structure of the data itself, as many foundation models do during pretraining), Active learning (Select the examples that would be most useful for a human to label next), and Weak supervision (Generate approximate labels from rules or other labeling functions, then validate their quality).",
-    "coreDefinition": "Labeled data contains inputs plus the correct target or answer. Unlabeled data contains inputs without the target answer.",
+    "badge": "Data Engineering & Supervision Taxonomy",
+    "summary": "Labeled data contains inputs along with the correct target or answer. Unlabeled data contains inputs without a target answer. When large amounts of unlabeled data are available, several approaches can help use it effectively: Manual Labeling, Semi-Supervised Learning, Self-Supervised Learning, Active Learning, and Weak Supervision.",
+    "coreDefinition": "Labeled data contains inputs along with the correct target or answer. Unlabeled data contains inputs without a known target or answer.",
     "unlabeledStrategiesHeadline": "What if you have a lot of unlabeled data?",
     "unlabeledIntro": "Possible approaches include:",
     "strategies": [
       {
-        "name": "Manual labeling",
+        "name": "Manual Labeling",
+        "badge": "Golden Ground Truth",
         "definition": "Have people annotate a sample.",
-        "detail": "Domain experts or crowd-workers hand-annotate a golden sample. Highest accuracy but slowest and most expensive.",
+        "detail": "Domain experts or crowd-workers manually label examples to create a trusted dataset, often called a golden sample. This can provide high-quality labels, but it is usually slow and expensive.",
         "accent": "text-amber-400",
-        "border": "border-amber-800/50",
-        "badge": "Golden Ground Truth"
+        "border": "border-amber-800/50"
       },
       {
-        "name": "Semi-supervised learning",
+        "name": "Semi-Supervised Learning",
+        "badge": "Seed Propagation",
         "definition": "Combine a small labeled dataset with a larger unlabeled dataset.",
-        "detail": "Leverages pseudo-labeling, consistency regularization, or graph-based label propagation to propagate knowledge from labeled seeds.",
+        "detail": "The model learns from labeled examples and uses the unlabeled data to improve learning. Common methods include pseudo-labeling, consistency regularization, and graph-based label propagation.",
         "accent": "text-blue-400",
-        "border": "border-blue-800/50",
-        "badge": "Seed Propagation"
+        "border": "border-blue-800/50"
       },
       {
-        "name": "Self-supervised learning",
+        "name": "Self-Supervised Learning",
+        "badge": "Foundation Model Pretraining",
         "definition": "Learn representations from the structure of the data itself, as many foundation models do during pretraining.",
-        "detail": "Engineers pretext tasks (masked language modeling, next-token prediction, contrastive image crops) to build deep latent representations without manual labels.",
+        "detail": "The model learns by solving tasks created from the data itself, such as masked language modeling, next-token prediction, or contrastive learning with image crops. This helps it learn useful representations without manually assigned labels.",
         "accent": "text-purple-400",
-        "border": "border-purple-800/50",
-        "badge": "Foundation Model Pretraining"
+        "border": "border-purple-800/50"
       },
       {
-        "name": "Active learning",
+        "name": "Active Learning",
+        "badge": "Human-in-the-Loop ROI",
         "definition": "Select the examples that would be most useful for a human to label next.",
-        "detail": "Uses model uncertainty (prediction entropy, margin sampling) to send only the most ambiguous or informative edge-cases to human annotators.",
+        "detail": "The model identifies uncertain or informative examples and sends them to human annotators. Common methods include prediction entropy and margin sampling. This helps focus labeling effort on examples that may improve the model most.",
         "accent": "text-cyan-400",
-        "border": "border-cyan-800/50",
-        "badge": "Human-in-the-Loop ROI"
+        "border": "border-cyan-800/50"
       },
       {
-        "name": "Weak supervision",
+        "name": "Weak Supervision",
+        "badge": "Programmatic Heuristics",
         "definition": "Generate approximate labels from rules or other labeling functions, then validate their quality.",
-        "detail": "Uses programmatic heuristics, regex pattern matching, knowledge bases, or small LLMs (via frameworks like Snorkel) to auto-label massive datasets at near-zero marginal cost.",
+        "detail": "Uses programmatic rules, regex patterns, knowledge bases, or small LLMs to generate labels at scale. Frameworks such as Snorkel can combine multiple labeling functions. Since these labels may be noisy, their quality should be checked.",
         "accent": "text-emerald-400",
-        "border": "border-emerald-800/50",
-        "badge": "Programmatic Heuristics"
+        "border": "border-emerald-800/50"
       }
     ],
     "codeExample": {
       "title": "Active Learning Uncertainty Sampling (Entropy Scoring in Python)",
+      "filename": "active_learning_entropy.py",
       "language": "python",
-      "code": "import numpy as np\n\ndef select_most_informative_for_human_labeling(model, unlabeled_pool, top_n=100):\n    \"\"\"\n    Active Learning: Finds unlabeled samples with highest prediction entropy (highest uncertainty).\n    These samples yield the maximum learning gain when human-annotated.\n    \"\"\"\n    probabilities = model.predict_proba(unlabeled_pool)  # Shape: (N, num_classes)\n    \n    # Calculate Shannon Entropy: H(x) = - sum(p * log(p))\n    epsilon = 1e-10  # Prevent log(0)\n    entropy = -np.sum(probabilities * np.log(probabilities + epsilon), axis=1)\n    \n    # Select top N most uncertain examples for manual review\n    uncertain_indices = np.argsort(entropy)[-top_n:]\n    return unlabeled_pool[uncertain_indices]"
+      "code": "import numpy as np\n\n\ndef select_most_informative_for_human_labeling(\n    model,\n    unlabeled_pool,\n    top_n=100\n):\n    \"\"\"\n    Active Learning: Selects unlabeled samples with the highest\n    prediction entropy (highest uncertainty).\n\n    These samples are sent for human labeling.\n    \"\"\"\n\n    probabilities = model.predict_proba(unlabeled_pool)\n    # Shape: (N, num_classes)\n\n    # Calculate Shannon entropy: H(x) = -sum(p * log(p))\n    epsilon = 1e-10  # Prevent log(0)\n\n    entropy = -np.sum(\n        probabilities * np.log(probabilities + epsilon),\n        axis=1\n    )\n\n    # Select the top N most uncertain examples\n    uncertain_indices = np.argsort(entropy)[-top_n:]\n\n    return unlabeled_pool[uncertain_indices]"
     },
-    "takeaway": "In enterprise AI, raw data is abundant but labels are scarce and expensive. Modern practitioners rarely rely solely on manual labeling; instead, they bootstrap from raw data using Self-Supervised pretraining, amplify small labeled seeds through Weak Supervision (Snorkel), and direct human attention strictly where the model is most uncertain via Active Learning."
+    "takeaway": "In enterprise AI, raw data is abundant, but reliable labels can be scarce and expensive. Instead of relying only on manual labeling, teams can use self-supervised pretraining to learn from raw data, weak supervision to generate approximate labels, and active learning to direct human attention toward the most uncertain examples. These approaches can be combined depending on the dataset and the task.",
+    "labeledDef": "Labeled data contains inputs along with the correct target or answer.",
+    "unlabeledDef": "Unlabeled data contains inputs without a known target or answer."
   },
   {
     "id": "early-stopping",
@@ -17021,45 +17118,49 @@ export const definitionsData = [
     "id": "learning-rate-epochs",
     "title": "Learning Rate, Epochs, Batch Size & Iterations",
     "badge": "Hyperparameter Optimization, Gradient Step Size & Training Dynamics",
-    "summary": "The core hyperparameters that dictate model training convergence: Learning Rate controls the step size in parameter updates; Epochs define complete passes through the dataset; Batch Size defines samples processed before weight updates; and Iterations count total gradient steps.",
-    "coreDefinition": "Learning Rate is the step size hyperparameter used in gradient descent to determine how aggressively model weights are updated with respect to the loss gradient; an Epoch represents one complete forward and backward pass through the entire training dataset.",
+    "summary": "These are the core hyperparameters that control model training. Learning Rate determines the size of each parameter update; Epochs define complete passes through the dataset; Batch Size determines how many samples are processed before updating weights; and Iterations count the total number of parameter updates.",
+    "coreDefinition": "Learning Rate controls how much model weights change during gradient descent. An Epoch represents one complete pass through the training dataset, including the forward and backward passes required during training.",
     "parameterGrid": [
       {
         "parameter": "Learning Rate (η / alpha)",
-        "definition": "Step size multiplier scaling gradient updates: θ_{t+1} = θ_t - η · ∇L(θ).",
-        "impact": "Too high causes gradient explosion or divergence; too low causes agonizingly slow training or getting trapped in suboptimal local minima.",
+        "definition": "The step-size multiplier used to scale gradient updates:",
+        "formula": "θ_{t+1} = θ_t - η · ∇L(θ)",
+        "impact": "A learning rate that is too high can cause unstable updates or divergence. A learning rate that is too low can make training very slow and may prevent the model from reaching a good solution within the available training time.",
         "accent": "text-amber-400"
       },
       {
         "parameter": "Epoch",
-        "definition": "One complete pass of the entire training dataset through the neural network.",
-        "impact": "Too few epochs cause underfitting; too many epochs lead to overfitting (mitigated with Early Stopping).",
+        "definition": "One complete pass through the entire training dataset.",
+        "formula": null,
+        "impact": "Too few epochs may cause underfitting because the model has not learned enough. Too many epochs may cause overfitting, which can be reduced using techniques such as Early Stopping.",
         "accent": "text-cyan-400"
       },
       {
         "parameter": "Batch Size",
-        "definition": "The number of training samples processed before the model updates its internal weights.",
-        "impact": "Small batches (e.g., 32) introduce helpful gradient noise that escapes saddle points; large batches (e.g., 512+) maximize GPU tensor core utilization.",
+        "definition": "The number of training samples processed before the model updates its weights.",
+        "formula": null,
+        "impact": "Small batches (e.g., 32) introduce more noise into gradient updates, which can sometimes help training escape saddle points or reach better solutions. Large batches (e.g., 512+) can improve GPU efficiency and make better use of parallel processing, but they require more memory and may affect generalization.",
         "accent": "text-emerald-400"
       },
       {
         "parameter": "Iteration (Step)",
-        "definition": "One single gradient calculation and weight update. Iterations = (Total Samples / Batch Size) × Epochs.",
-        "impact": "In LLM pre-training, budgets are measured in steps/tokens rather than epochs (often single-epoch training on trillions of tokens).",
+        "definition": "One training step in which a batch is processed, gradients are calculated, and model weights are updated.",
+        "formula": "Iterations/Epoch = ⌈Total Samples / Batch Size⌉ | Total = Iterations/Epoch × Epochs",
+        "impact": "In LLM pre-training, training budgets are often measured in steps or tokens rather than epochs. Since datasets can contain trillions of tokens, training may use a single pass or a defined number of token-based training steps.",
         "accent": "text-purple-400"
       }
     ],
     "modernLRSchedules": [
       {
         "schedule": "Linear Warmup + Cosine Decay",
-        "desc": "Starts with a small learning rate for the first 5-10% of steps to stabilize initial gradient updates, then decays smoothly following a cosine curve to zero."
+        "desc": "Starts with a small learning rate and gradually increases it during the warmup phase, often over the first 5–10% of training steps. After warmup, the learning rate gradually decreases following a cosine curve. Warmup helps stabilize early training updates, while cosine decay helps the model make smaller updates as training progresses."
       },
       {
         "schedule": "ReduceLROnPlateau",
-        "desc": "Monitors validation loss; if loss fails to improve for a patience window of N epochs, scales down learning rate by a factor (e.g., 0.5× or 0.1×)."
+        "desc": "Monitors a metric such as validation loss. If the metric does not improve for a specified number of epochs (called the patience window), the learning rate is reduced by a chosen factor, such as 0.5 or 0.1."
       }
     ],
-    "takeaway": "Learning rate is consistently the single most impactful hyperparameter in deep learning. Modern training workflows stabilize convergence by pairing AdamW optimizer with a linear warmup followed by cosine annealing decay."
+    "takeaway": "The learning rate is one of the most important hyperparameters in deep learning. Modern training workflows often use the AdamW optimizer with a learning-rate schedule such as linear warmup followed by cosine decay to support stable and efficient training."
   },
   {
     "id": "kubernetes",
@@ -19042,38 +19143,121 @@ export const definitionsData = [
   },
   {
     "id": "latency-metrics-ttft-tpot",
-    "title": "Latency Metrics — Time To First Token (TTFT), TPOT & P99 Tail Latency",
+    "title": "Latency Metrics (TTFT, TPOT & P99 Tail Latency)",
     "badge": "Production Performance & LLM Telemetry",
-    "summary": "The industry-standard latency taxonomy for Generative AI and LLM serving: Time To First Token (TTFT), Time Per Output Token (TPOT), Inter-Token Latency (ITL), End-to-End Latency, and tail latency percentiles (P95/P99).",
+    "summary": "Latency measures how long a system takes to respond to a request. In AI applications, it helps evaluate how quickly a model or service returns results.",
     "details": [
-      "In Simple Terms: When using ChatGPT, TTFT is the delay before the first word appears on your screen (how fast it starts thinking). TPOT is how fast subsequent words stream across the screen (reading speed). Total latency is the time until the full answer finishes.",
-      "1. Time To First Token (TTFT / Prefill Latency): The duration from when a user clicks 'Send' until the first token streams back. Measures how fast the model processes the prompt. It is compute-bound, heavily influenced by prompt length, embedding lookup, and prefill batch size. Target: < 300ms for chat, < 800ms for heavy RAG.",
-      "2. Time Per Output Token (TPOT / Decode Latency): The average generation time per subsequent token: (Total Time - TTFT) / (Generated Tokens - 1). Measures decoding speed. It is memory-bound (limited by GPU VRAM bandwidth as weights are reloaded for every single token). Target: 15–30ms per token (equivalent to 33–66 tokens/sec, faster than human reading speed of ~10 tokens/sec).",
-      "3. Inter-Token Latency (ITL) & Jitter: The time delta between consecutive streaming tokens. High ITL variance causes stuttering, frustrating users even if average TPOT is acceptable.",
-      "4. P95 & P99 Tail Latencies: Averages are dangerous in production because a single 10,000-token prompt can stall an entire batch. P99 measures the latency experienced by the slowest 1% of users. Defending P99 requires Chunked Prefill (splitting massive prompts into chunks so ongoing decodes aren't blocked) and request prioritization.",
-      "Interview Answer: 'We split our latency SLAs into TTFT and TPOT. For interactive chat, TTFT directly impacts perceived responsiveness, so we set a p95 SLA of < 250ms using KV prefix caching and chunked prefill. For TPOT, our SLA is < 25ms/token on vLLM. By monitoring P99 latency via Prometheus, we spotted and resolved prefill starvation under burst traffic.'"
+      "1. What is Latency: The time between sending a request and receiving a response. Low latency is critical for chatbots, voice assistants, and real-time AI systems.",
+      "2. Common Latency Metrics: End-to-End Latency, Time to First Token (TTFT), Inter-Token Latency (ITL), and Time Per Output Token (TPOT = Generation time after first token / (Tokens - 1)).",
+      "3. Latency vs Throughput: Latency measures time to complete a single request; throughput measures capacity in requests or tokens processed per second.",
+      "4. Percentiles: Averages hide tail spikes. Track P50 (median), P90, P95, and P99 to capture the experience of the slowest users under load.",
+      "5. Mitigation: Profile bottlenecks, use smaller models, optimize retrieval/vector DB queries, apply prompt caching, and stream tokens via SSE."
     ],
-    "code": "import time\nimport httpx\nimport numpy as np\n\nasync def benchmark_streaming_llm(endpoint_url: str, prompt: str):\n    start_time = time.perf_counter()\n    first_token_time = None\n    token_timestamps = []\n    \n    async with httpx.AsyncClient() as client:\n        async with client.stream(\"POST\", endpoint_url, json={\"prompt\": prompt}) as response:\n            async for chunk in response.aiter_lines():\n                now = time.perf_counter()\n                if first_token_time is None:\n                    first_token_time = now # TTFT Recorded\n                token_timestamps.append(now)\n                \n    total_time = time.perf_counter() - start_time\n    ttft = (first_token_time - start_time) * 1000 # in ms\n    generated_tokens = len(token_timestamps)\n    \n    # Time Per Output Token (TPOT)\n    decode_time = (total_time - (first_token_time - start_time))\n    tpot = (decode_time / (generated_tokens - 1) * 1000) if generated_tokens > 1 else 0\n    \n    # Inter-Token Latencies\n    itls = [np.diff(token_timestamps) * 1000] if len(token_timestamps) > 1 else [0]\n    \n    return {\n        \"TTFT_ms\": round(ttft, 2),\n        \"TPOT_ms\": round(tpot, 2),\n        \"Tokens_Per_Sec\": round(generated_tokens / decode_time, 2) if decode_time > 0 else 0,\n        \"Total_Latency_ms\": round(total_time * 1000, 2),\n        \"Total_Tokens\": generated_tokens\n    }\n\n# Example simulated printout:\n# {\"TTFT_ms\": 184.2, \"TPOT_ms\": 22.4, \"Tokens_Per_Sec\": 44.6, \"Total_Latency_ms\": 1140.5, \"Total_Tokens\": 43}",
+    "code": "import time\nimport httpx\nimport numpy as np\n\nasync def benchmark_streaming_llm(endpoint_url: str, prompt: str):\n    \"\"\"Measures TTFT, TPOT, ITL, and total latency for an LLM streaming response.\"\"\"\n    start_time = time.perf_counter()\n    first_token_time = None\n    token_timestamps = []\n    \n    async with httpx.AsyncClient() as client:\n        async with client.stream(\"POST\", endpoint_url, json={\"prompt\": prompt}) as response:\n            async for chunk in response.aiter_lines():\n                now = time.perf_counter()\n                if first_token_time is None:\n                    first_token_time = now # TTFT Recorded\n                token_timestamps.append(now)\n                \n    total_time = time.perf_counter() - start_time\n    ttft = (first_token_time - start_time) * 1000 # in ms\n    generated_tokens = len(token_timestamps)\n    \n    # Time Per Output Token (TPOT)\n    decode_time = (total_time - (first_token_time - start_time))\n    tpot = (decode_time / (generated_tokens - 1) * 1000) if generated_tokens > 1 else 0\n    \n    return {\n        \"TTFT_ms\": round(ttft, 2),\n        \"TPOT_ms\": round(tpot, 2),\n        \"Tokens_Per_Sec\": round(generated_tokens / decode_time, 2) if decode_time > 0 else 0,\n        \"Total_Latency_ms\": round(total_time * 1000, 2),\n        \"Total_Tokens\": generated_tokens\n    }",
     "interviewAnswers": [
       {
         "question": "How would you optimise latency, token usage, and inference costs?",
         "answer": "1) Latency: Stream tokens over SSE (sub-300ms perceived TTFT), use L2-normalized dot-product HNSW search, and quantize models to AWQ 4-bit (W4A16). 2) Token Usage: Replace 50-page context stuffing with structured RAG (saving 95% of tokens), apply LLMLingua compression, and use sliding-window chat history. 3) Cost: Implement semantic Redis caching, prompt caching for static instructions, and route simple intent triage to lightweight self-hosted 8B models."
       }
-    ]
-  },
-  {
-    "id": "langgraph-summarizer",
-    "title": "LangGraph Summarizer Agent — Stateful Workflow, Reflection & Loop Prevention",
-    "badge": "Agentic AI & Stateful Workflows",
-    "summary": "A production-ready multi-step summarizer agent built with LangGraph featuring stateful revision loops, LLM critique, and strict deterministic safeguards against infinite execution loops.",
-    "details": [
-      "In Simple Terms: A single LLM prompt often writes a generic, bloated summary that misses key facts. A LangGraph summarizer agent acts like a writer and an editor: Node 1 drafts a summary, Node 2 critiques it against the original document, and if quality is below threshold, it loops back to refine. Safeguards prevent the agent from looping endlessly.",
-      "Core StateGraph Structure: 1. 'State' (a typed dictionary storing original_text, current_summary, critique, iteration_count, is_approved), 2. 'draft_node' (produces initial concise summary), 3. 'critique_node' (checks if summary is factual, concise, and complete), 4. 'refine_node' (fixes issues identified by the critic).",
-      "How AI Agents Decide When to Call External Tools: In LangGraph / ReAct architectures, tools are defined with JSON function calling schemas (name, description, parameters). When the model encounters a prompt requiring external data (e.g., 'check database inventory'), its decoder outputs a structured tool_call token instead of natural text. The orchestrator intercepts the tool call, executes the Python function, and injects the result back as an observation token.",
-      "How to Prevent Infinite Loops in Production Agents: 1. Hard Recursion Limits ('recursion_limit=5' in compile config), 2. Explicit State Iteration Counters ('state[\"iteration\"] >= MAX_ITER' forces immediate routing to END), 3. Levenshtein / Embedding Similarity Checks (if consecutive drafts have >98% similarity, the agent has plateaued; stop looping), 4. Monotonic Cost Budgeting (abort if total tokens exceed budget).",
-      "Interview Answer: 'I built our summarizer agent in LangGraph using a drafting node, a critique node, and a refinement node. To guarantee safety and prevent infinite loops, we enforce three layers: a hard state iteration budget (max 3 loops), a compile-level recursion limit, and a similarity check that halts refinement if the new draft has plateaued.'"
     ],
-    "code": "from typing import TypedDict, Literal\n# from langgraph.graph import StateGraph, END\n\n# 1. Define Typed State\nclass AgentState(TypedDict):\n    original_text: str\n    current_summary: str\n    critique: str\n    iteration: int\n    is_approved: bool\n\nMAX_ITERATIONS = 3 # Hard Loop Prevention Budget\n\n# 2. Define Stateful Nodes\ndef draft_node(state: AgentState) -> dict:\n    # Generates initial draft summary\n    draft = f\"Draft 1: Summary of '{state['original_text'][:40]}...'\"\n    return {\"current_summary\": draft, \"iteration\": 1}\n\ndef critique_node(state: AgentState) -> dict:\n    # Evaluator node acts as strict editor\n    if state[\"iteration\"] >= 2 or \"actionable\" in state[\"current_summary\"].lower():\n        return {\"critique\": \"Approved! Clear and factual.\", \"is_approved\": True}\n    return {\"critique\": \"Needs more concise numerical points.\", \"is_approved\": False}\n\ndef refine_node(state: AgentState) -> dict:\n    new_iter = state[\"iteration\"] + 1\n    refined = f\"{state['current_summary']} + Actionable metrics added [v{new_iter}]\"\n    return {\"current_summary\": refined, \"iteration\": new_iter}\n\n# 3. Conditional Edge with Loop Prevention\ndef router(state: AgentState) -> Literal[\"refine_node\", \"__end__\"]:\n    # Loop Guard 1: Quality Approval\n    if state[\"is_approved\"]:\n        return \"__end__\"\n    # Loop Guard 2: Strict Iteration Budget (Zero Infinite Loops)\n    if state[\"iteration\"] >= MAX_ITERATIONS:\n        print(f\"Safety Triggered: Reached max iteration limit ({MAX_ITERATIONS}). Ending loop.\")\n        return \"__end__\"\n    return \"refine_node\"\n\n# 4. Graph Assembly\n\"\"\"\nworkflow = StateGraph(AgentState)\nworkflow.add_node(\"draft_node\", draft_node)\nworkflow.add_node(\"critique_node\", critique_node)\nworkflow.add_node(\"refine_node\", refine_node)\n\nworkflow.set_entry_point(\"draft_node\")\nworkflow.add_edge(\"draft_node\", \"critique_node\")\nworkflow.add_conditional_edges(\"critique_node\", router)\nworkflow.add_edge(\"refine_node\", \"critique_node\")\napp = workflow.compile()\n\"\"\""
+    "whatIsLatency": {
+      "definition": "Latency is the time between sending a request and receiving a response.",
+      "example": "For example, if a user asks a question and the AI responds after 2 seconds, the response latency is 2 seconds.",
+      "importance": "Low latency is important for interactive applications such as chatbots, voice assistants, and real-time AI systems."
+    },
+    "commonMetrics": [
+      {
+        "name": "End-to-End Latency",
+        "badge": "Total Duration",
+        "desc": "The total time taken from receiving a user request to returning the final response.",
+        "components": [
+          "Request processing",
+          "Database or vector search",
+          "Model inference",
+          "Post-processing",
+          "Network communication"
+        ]
+      },
+      {
+        "name": "Time to First Token (TTFT)",
+        "badge": "Perceived Latency",
+        "desc": "The time taken by an LLM to generate its first output token after receiving a request. A lower TTFT makes streaming applications feel more responsive."
+      },
+      {
+        "name": "Inter-Token Latency (ITL)",
+        "badge": "Stream Smoothness",
+        "desc": "The time between generating consecutive tokens. Lower ITL generally makes streamed responses appear smoother. High variation in ITL can make the response feel uneven."
+      },
+      {
+        "name": "Time Per Output Token (TPOT)",
+        "badge": "Decode Speed",
+        "desc": "The average time taken to generate each output token after the first token. For many LLM systems, TPOT is closely related to inter-token latency.",
+        "formula": "TPOT = (Generation time after first token) / (Number of output tokens - 1)",
+        "note": "ITL measures the gap between individual consecutive tokens, while TPOT is an average across the generated output."
+      }
+    ],
+    "latencyVsThroughput": {
+      "title": "3. Latency vs Throughput",
+      "rows": [
+        {
+          "aspect": "Definition",
+          "latency": "Time taken to complete a request",
+          "throughput": "Number of requests or tokens processed per unit of time"
+        },
+        {
+          "aspect": "Units",
+          "latency": "Measured in milliseconds (ms) or seconds (s)",
+          "throughput": "Measured in requests/sec or tokens/sec"
+        },
+        {
+          "aspect": "Core Focus",
+          "latency": "Focuses on responsiveness",
+          "throughput": "Focuses on processing capacity"
+        }
+      ],
+      "takeaway": "A system may have high throughput while individual requests still experience high latency."
+    },
+    "percentileLatency": {
+      "title": "4. Percentile Latency",
+      "intro": "Average latency alone may hide slow requests.",
+      "percentiles": [
+        {
+          "name": "P50",
+          "label": "Median",
+          "desc": "50% of requests complete within this time. Represents the median."
+        },
+        {
+          "name": "P90",
+          "label": "90th Percentile",
+          "desc": "90% of requests complete within this time."
+        },
+        {
+          "name": "P95",
+          "label": "Tail Latency",
+          "desc": "95% of requests complete within this time."
+        },
+        {
+          "name": "P99",
+          "label": "Worst 1%",
+          "desc": "99% of requests complete within this time."
+        }
+      ],
+      "note": "P95 and P99 are useful for understanding the slower user experiences, especially under heavy load."
+    },
+    "howToReduce": {
+      "title": "5. How to Reduce Latency",
+      "strategies": [
+        "Use smaller or faster models when quality requirements allow.",
+        "Reduce unnecessary LLM calls.",
+        "Optimize database and vector search queries.",
+        "Cache frequently requested results.",
+        "Use streaming to return output as it is generated.",
+        "Parallelize independent operations where safe.",
+        "Monitor each stage separately to identify bottlenecks."
+      ],
+      "streamingNote": "Important: Streaming can reduce the time users wait to see the first part of a response, but it does not necessarily reduce the total time required to generate the complete response."
+    },
+    "interviewAnswer": "“Latency measures how long a system takes to respond. For LLM applications, I monitor end-to-end latency, time to first token, and time per output token. I also track P95 and P99 latency because averages can hide slow requests. To improve latency, I profile individual stages, optimize retrieval and database queries, reduce unnecessary model calls, and use streaming or caching where appropriate.”"
   },
   {
     "id": "python-memory-concurrency",

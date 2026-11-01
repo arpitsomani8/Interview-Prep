@@ -27,6 +27,7 @@ import {
   GitBranch,
   Network,
   Table,
+  BarChart3,
   Bot,
   DollarSign,
   Activity,
@@ -7696,7 +7697,180 @@ export default function AllDefinitionsPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              
+                {/* 9. LangGraph Summarizer Agent — Stateful Workflow, Reflection & Loop Prevention */}
+                {item.summarizerAgent && (
+                  <div className="space-y-6 p-5 rounded-2xl bg-zinc-950/90 border border-purple-800/40 shadow-xl">
+                    {/* Header */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Workflow className="w-4 h-4 text-purple-400" />
+                        <h4 className="text-sm sm:text-base font-bold text-white tracking-tight font-mono">
+                          {item.summarizerAgent.title}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800">
+                        {item.summarizerAgent.badge}
+                      </span>
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-purple-200/90 leading-relaxed font-sans bg-purple-950/20 p-3.5 rounded-xl border border-purple-800/30">
+                      {item.summarizerAgent.summary}
+                    </p>
+
+                    {/* In Simple Terms (Writer & Editor Analogy) */}
+                    {item.summarizerAgent.inSimpleTerms && (
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                        <span className="text-xs font-mono font-bold text-amber-400 uppercase flex items-center gap-2">
+                          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                          <span>In Simple Terms</span>
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {item.summarizerAgent.inSimpleTerms.problem}
+                        </p>
+                        <span className="text-xs font-mono text-zinc-400 block font-semibold">
+                          {item.summarizerAgent.inSimpleTerms.analogy}
+                        </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                          {item.summarizerAgent.inSimpleTerms.steps.map((st, sIdx) => (
+                            <div key={sIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs space-y-1">
+                              <span className="font-mono text-cyan-300 font-bold block">{sIdx + 1}. {st.step}</span>
+                              <span className="text-zinc-400 font-sans leading-relaxed block">{st.desc}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-zinc-950 border border-purple-900/40 text-xs text-purple-200 font-sans">
+                          💡 <strong className="font-mono text-purple-400">Reflection Pattern: </strong>
+                          {item.summarizerAgent.inSimpleTerms.reflectionNote}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Core StateGraph Structure */}
+                    {item.summarizerAgent.coreStateGraphStructure && (
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                        <span className="text-xs font-mono font-bold text-cyan-400 uppercase flex items-center gap-2">
+                          <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.summarizerAgent.coreStateGraphStructure.title}</span>
+                        </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                          {item.summarizerAgent.coreStateGraphStructure.components.map((comp, cIdx) => (
+                            <div key={cIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+                              <span className="text-xs font-mono font-bold text-cyan-300 block">• {comp.name}</span>
+                              <span className="text-xs text-zinc-400 font-sans leading-relaxed block">{comp.desc}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Tool Calling Decision Flow */}
+                    {item.summarizerAgent.toolCallingMechanism && (
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                        <span className="text-xs font-mono font-bold text-emerald-400 uppercase flex items-center gap-2">
+                          <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>{item.summarizerAgent.toolCallingMechanism.title}</span>
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {item.summarizerAgent.toolCallingMechanism.intro}
+                        </p>
+                        <div className="space-y-1.5">
+                          {item.summarizerAgent.toolCallingMechanism.steps.map((st, sIdx) => (
+                            <div key={sIdx} className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800/80 text-xs text-zinc-300 flex items-start gap-2">
+                              <span className="font-mono text-emerald-400 font-bold shrink-0">{sIdx + 1}.</span>
+                              <span className="font-sans">{st}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="p-3 rounded-lg bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 font-mono leading-relaxed">
+                          ⚠️ {item.summarizerAgent.toolCallingMechanism.important}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Loop Prevention Safeguards */}
+                    {item.summarizerAgent.loopPrevention && (
+                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                        <span className="text-xs font-mono font-bold text-rose-400 uppercase flex items-center gap-2">
+                          <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                          <span>{item.summarizerAgent.loopPrevention.title}</span>
+                        </span>
+                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                          {item.summarizerAgent.loopPrevention.intro}
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                          {item.summarizerAgent.loopPrevention.safeguards.map((sg, sgIdx) => (
+                            <div key={sgIdx} className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
+                              <span className="text-xs font-mono font-bold text-rose-300 block">{sgIdx + 1}. {sg.name}</span>
+                              <span className="text-xs text-zinc-400 font-sans leading-relaxed block">{sg.desc}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs text-zinc-400 font-sans italic border-t border-zinc-900 pt-2">
+                          💡 {item.summarizerAgent.loopPrevention.takeaway}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Interview Answer */}
+                    {item.summarizerAgent.interviewAnswer && (
+                      <div className="p-4 rounded-xl bg-black border border-purple-800/40 space-y-2">
+                        <span className="text-xs font-bold uppercase font-mono text-purple-400 flex items-center gap-2">
+                          <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                          <span>Interview Answer</span>
+                        </span>
+                        <blockquote className="p-3 rounded-lg bg-zinc-950 border-l-2 border-purple-400 text-xs text-zinc-300 font-sans leading-relaxed italic">
+                          {item.summarizerAgent.interviewAnswer}
+                        </blockquote>
+                      </div>
+                    )}
+
+                    {/* Python Implementation Code */}
+                    {item.summarizerAgent.code && (
+                      <div className="space-y-2">
+                        <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                          <div className="bg-zinc-900/80 px-4 py-2 border-b border-zinc-800 flex items-center justify-between text-xs font-mono text-zinc-400">
+                            <span>Python LangGraph Summarizer Agent (Reflection & Loop Prevention)</span>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(item.summarizerAgent.code);
+                                setCopiedId('summarizer-agent-code');
+                                setTimeout(() => setCopiedId(null), 2000);
+                              }}
+                              className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition cursor-pointer"
+                            >
+                              {copiedId === 'summarizer-agent-code' ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                  <span>Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3.5 h-3.5" />
+                                  <span>Copy Code</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                          <CodeHighlight code={item.summarizerAgent.code} language="python" />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Implementation Notes */}
+                    {item.summarizerAgent.implementationNotes && (
+                      <div className="space-y-1.5 p-3 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-400 font-sans leading-relaxed">
+                        {item.summarizerAgent.implementationNotes.map((note, nIdx) => (
+                          <p key={nIdx} className="flex items-start gap-2">
+                            <span className="text-cyan-400 font-mono font-bold">•</span>
+                            <span>{note}</span>
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+</div>
             )}
 
             {/* Item 39: Normalization / Scaling */}
@@ -15201,6 +15375,269 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
+                        {/* Item: Latency Metrics (TTFT, TPOT & P99 Tail Latency) */}
+            {item.id === 'latency-metrics-ttft-tpot' && (
+              <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                {/* 1. Header & What is Latency */}
+                <div className="p-5 rounded-2xl bg-zinc-950/90 border border-cyan-800/40 shadow-xl space-y-3.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-cyan-400" />
+                      <h3 className="text-base sm:text-lg font-bold text-white font-mono">
+                        {item.title}
+                      </h3>
+                    </div>
+                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                      {item.badge}
+                    </span>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-cyan-200/90 leading-relaxed font-sans bg-cyan-950/20 p-3.5 rounded-xl border border-cyan-800/30">
+                    {item.summary}
+                  </p>
+
+                  {/* 1. What is Latency? */}
+                  {item.whatIsLatency && (
+                    <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                        <span>1. What is Latency?</span>
+                      </h4>
+                      <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                        {item.whatIsLatency.definition}
+                      </p>
+                      <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800/80 text-xs text-zinc-300 font-mono">
+                        💡 {item.whatIsLatency.example}
+                      </div>
+                      <p className="text-xs text-zinc-400 font-sans italic">
+                        {item.whatIsLatency.importance}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Common Latency Metrics */}
+                {item.commonMetrics && (
+                  <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <Activity className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono">
+                          2. Common Latency Metrics
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-400 uppercase bg-black/60 px-2.5 py-1 rounded border border-zinc-800">
+                        TTFT, ITL & TPOT
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.commonMetrics.map((met, mIdx) => (
+                        <div
+                          key={mIdx}
+                          className="p-4 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition flex flex-col justify-between space-y-3"
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <h5 className="text-xs font-bold text-white font-mono">
+                                • {met.name}
+                              </h5>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-cyan-300">
+                                {met.badge}
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                              {met.desc}
+                            </p>
+
+                            {/* Subcomponents for End-to-End Latency */}
+                            {met.components && (
+                              <div className="space-y-1 pt-1">
+                                <span className="text-[10px] font-mono text-zinc-500 uppercase block">May include:</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                                  {met.components.map((comp, cIdx) => (
+                                    <div key={cIdx} className="p-1.5 rounded bg-zinc-950 border border-zinc-800/80 text-[11px] text-zinc-400 flex items-center gap-1.5">
+                                      <CheckCircle2 className="w-3 h-3 text-cyan-400 shrink-0" />
+                                      <span>{comp}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Formula for TPOT */}
+                            {met.formula && (
+                              <div className="p-2.5 rounded-lg bg-zinc-950 border border-cyan-900/40 font-mono text-xs text-cyan-300 text-center font-bold">
+                                {met.formula}
+                              </div>
+                            )}
+                          </div>
+
+                          {met.note && (
+                            <p className="text-[11px] text-zinc-400 font-sans italic pt-2 border-t border-zinc-900">
+                              💡 <strong>Remember:</strong> {met.note}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Latency vs Throughput */}
+                {item.latencyVsThroughput && (
+                  <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Sliders className="w-4 h-4 text-emerald-400" />
+                        <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                          {item.latencyVsThroughput.title}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-500">Core Performance Tradeoff</span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b border-zinc-800 text-zinc-400 font-mono">
+                            <th className="py-2.5 px-3">Aspect</th>
+                            <th className="py-2.5 px-3 text-amber-300">Latency</th>
+                            <th className="py-2.5 px-3 text-cyan-300">Throughput</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-900 font-sans">
+                          {item.latencyVsThroughput.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                              <td className="py-3 px-3 font-mono font-bold text-zinc-400">
+                                {row.aspect}
+                              </td>
+                              <td className="py-3 px-3 text-zinc-300">
+                                {row.latency}
+                              </td>
+                              <td className="py-3 px-3 text-zinc-300">
+                                {row.throughput}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
+                      💡 {item.latencyVsThroughput.takeaway}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Percentile Latency */}
+                {item.percentileLatency && (
+                  <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <BarChart3 className="w-4 h-4 text-purple-400" />
+                        <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                          {item.percentileLatency.title}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-500">Tail Distribution</span>
+                    </div>
+
+                    <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                      {item.percentileLatency.intro}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {item.percentileLatency.percentiles.map((p, pIdx) => (
+                        <div key={pIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1 hover:border-purple-900/50 transition">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-mono font-bold text-purple-300">{p.name}</span>
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500">{p.label}</span>
+                          </div>
+                          <p className="text-xs text-zinc-400 font-sans leading-relaxed">{p.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <p className="text-xs text-zinc-400 font-sans italic border-t border-zinc-900 pt-2">
+                      💡 {item.percentileLatency.note}
+                    </p>
+                  </div>
+                )}
+
+                {/* 5. How to Reduce Latency */}
+                {item.howToReduce && (
+                  <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-emerald-400" />
+                      <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                        {item.howToReduce.title}
+                      </h4>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {item.howToReduce.strategies.map((strat, sIdx) => (
+                        <div key={sIdx} className="p-3 rounded-xl bg-black border border-zinc-800/80 text-xs text-zinc-300 flex items-start gap-2">
+                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                          <span className="font-sans leading-relaxed">{strat}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 font-sans leading-relaxed">
+                      <strong className="text-amber-400 font-mono uppercase block mb-0.5">⚠️ Important Streaming Tradeoff:</strong>
+                      {item.howToReduce.streamingNote}
+                    </div>
+                  </div>
+                )}
+
+                {/* Interview Answer */}
+                {item.interviewAnswer && (
+                  <div className="p-4 rounded-xl bg-black border border-purple-800/40 space-y-2">
+                    <span className="text-xs font-bold uppercase font-mono text-purple-400 flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                      <span>Interview Answer</span>
+                    </span>
+                    <blockquote className="p-3 rounded-lg bg-zinc-950 border-l-2 border-purple-400 text-xs text-zinc-300 font-sans leading-relaxed italic">
+                      {item.interviewAnswer}
+                    </blockquote>
+                  </div>
+                )}
+
+                {/* Python Benchmarking Code Box */}
+                {item.code && (
+                  <div className="space-y-2">
+                    <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                      <div className="bg-zinc-900/80 px-4 py-2 border-b border-zinc-800 flex items-center justify-between text-xs font-mono text-zinc-400">
+                        <span>Python Streaming Latency Benchmark (TTFT, TPOT & ITL)</span>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(item.code);
+                            setCopiedId('latency-code');
+                            setTimeout(() => setCopiedId(null), 2000);
+                          }}
+                          className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition cursor-pointer"
+                        >
+                          {copiedId === 'latency-code' ? (
+                            <>
+                              <Check className="w-3.5 h-3.5 text-emerald-400" />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3.5 h-3.5" />
+                              <span>Copy Code</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <CodeHighlight code={item.code} language="python" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Item 80: PagedAttention & vLLM */}
             {item.id === 'paged-attention' && (
               <div className="space-y-6">
@@ -21300,7 +21737,7 @@ export default function AllDefinitionsPage() {
                         Labeled Data
                       </span>
                       <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                        Labeled data contains inputs plus the correct target or answer.
+                        {item.labeledDef || "Labeled data contains inputs along with the correct target or answer."}
                       </p>
                     </div>
                     <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
@@ -21308,7 +21745,7 @@ export default function AllDefinitionsPage() {
                         Unlabeled Data
                       </span>
                       <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                        Unlabeled data contains inputs without the target answer.
+                        {item.unlabeledDef || "Unlabeled data contains inputs without a known target or answer."}
                       </p>
                     </div>
                   </div>
@@ -33376,14 +33813,21 @@ export default function AllDefinitionsPage() {
                 {item.parameterGrid && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     {item.parameterGrid.map((param, pIdx) => (
-                      <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-1.5 hover:border-amber-500/40 transition">
-                        <span className={`text-xs font-mono font-bold uppercase ${param.accent}`}>
-                          {param.parameter}
-                        </span>
-                        <p className="text-xs text-white font-medium font-sans leading-relaxed">
-                          {param.definition}
-                        </p>
-                        <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-1 border-t border-zinc-900">
+                      <div key={pIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-amber-500/40 transition flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <span className={`text-xs font-mono font-bold uppercase ${param.accent}`}>
+                            {param.parameter}
+                          </span>
+                          <p className="text-xs text-white font-medium font-sans leading-relaxed">
+                            {param.definition}
+                          </p>
+                          {param.formula && (
+                            <div className="p-2 rounded bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-cyan-300 font-semibold overflow-x-auto">
+                              {param.formula}
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pt-2 border-t border-zinc-900">
                           {param.impact}
                         </p>
                       </div>
