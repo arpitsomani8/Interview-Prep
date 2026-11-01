@@ -4646,57 +4646,57 @@ export const definitionsData = [
     "id": "langchain-langgraph",
     "title": "LangChain / LangGraph",
     "badge": "Framework & Stateful Orchestration",
-    "summary": "LangChain connects language models to prompts, retrievers, structured outputs, and tools. LangGraph orchestrates stateful, multi-step workflows as nodes and transitions with checkpoints and branching.",
-    "takeaway": "LangChain connects LLMs to tools and retrieval; LangGraph controls the steps of a workflow.",
+    "summary": "LangChain connects language models to prompts, retrievers, structured outputs, and tools. LangGraph manages stateful, multi-step workflows using nodes, transitions, branching, and checkpoints.",
+    "takeaway": "Simple difference: LangChain connects LLMs to tools and retrieval; LangGraph controls how the workflow moves from one step to another.",
     "ecosystemContext": "Diffusion models generate images; vision foundation models understand visual content; LangChain connects LLMs to tools and retrieval; LangGraph controls the steps of a workflow.",
     "frameworks": [
       {
         "name": "LangChain",
-        "role": "Framework for building applications around language models. It provides reusable building blocks for connecting an LLM to prompts, retrievers, structured outputs, and tools."
+        "role": "LangChain is a framework for building applications around language models. It provides reusable building blocks that connect an LLM to prompts, retrievers, structured outputs, and tools."
       },
       {
         "name": "LangGraph",
-        "role": "Framework for orchestrating stateful, multi-step workflows and agents. It represents a workflow as nodes and transitions. Nodes execute operations, while transitions decide what should happen next. Useful when the workflow needs branching, persistent state, retries, checkpoints, human approval, or the ability to resume after an interruption."
+        "role": "LangGraph is a framework for managing stateful, multi-step workflows and agents. It represents a workflow as nodes and transitions: LangGraph is useful when a workflow needs branching, persistent state, retries, checkpoints, human approval, or the ability to resume after an interruption."
       }
     ],
     "frameworksComparison": [
       {
         "name": "LangChain",
         "badge": "Integrations & Chains",
-        "role": "Components and integrations for document loading, retrieval, prompts, and model calls.",
-        "focus": "Prompt engineering, document loaders, vector store retrieval connectors, and external model integrations."
+        "role": "Provides reusable components and integrations for document loading, retrieval, prompts, and model calls.",
+        "focus": "Prompt engineering, document loaders, vector store retrieval, and external model integrations."
       },
       {
         "name": "LlamaIndex",
         "badge": "Ingestion & Indexing",
-        "role": "Document ingestion, indexing, retrieval, and data-connected LLM applications.",
-        "focus": "Connecting external structured/unstructured private data directly to LLM query engines."
+        "role": "Focuses on document ingestion, indexing, retrieval, and data-connected LLM applications.",
+        "focus": "Connecting external structured and unstructured private data to LLM query engines."
       },
       {
         "name": "LangGraph",
         "badge": "Stateful Workflows & Agents",
-        "role": "Stateful orchestration for multi-step and agentic workflows.",
+        "role": "Provides stateful orchestration for multi-step and agentic workflows.",
         "focus": "Cyclic state graphs, persistent checkpoints, human-in-the-loop approvals, and multi-agent systems."
       }
     ],
     "shoppingAssistantSteps": [
-      "1. Retrieve similar products using image or text embeddings.",
-      "2. Query the product database for price and inventory.",
-      "3. Ask an LLM to organize the results.",
-      "4. Return a structured response to the frontend."
+      "Retrieve similar products using image or text embeddings.",
+      "Query the product database to get prices and inventory.",
+      "Ask an LLM to organize the retrieved results into recommendations.",
+      "Return a structured response to the frontend."
     ],
     "productionArchitecture": [
       {
         "comp": "FastAPI",
-        "role": "Exposes /fashion-assistant endpoint to the frontend."
+        "role": "Exposes the /fashion-assistant endpoint to the frontend and receives user requests."
       },
       {
         "comp": "LangChain",
         "role": "Connects the language model to retrievers and approved tools."
       },
       {
-        "comp": "Vector database",
-        "role": "Retrieves similar products and fashion descriptions."
+        "comp": "Vector Database",
+        "role": "Retrieves similar products and fashion descriptions using embeddings."
       },
       {
         "comp": "PostgreSQL",
@@ -4704,29 +4704,146 @@ export const definitionsData = [
       },
       {
         "comp": "LangGraph",
-        "role": "Manages the multi-step workflow and its state."
+        "role": "Manages the multi-step workflow and its shared state."
       },
       {
         "comp": "Azure OpenAI / Supported Provider",
-        "role": "Interprets the request and produces the recommendation."
+        "role": "Understands the user's request and generates recommendations using the provided product information."
       }
     ],
-    "toolCode": "from langchain_core.tools import tool\nfrom langchain_openai import ChatOpenAI\n\n@tool\ndef search_fashion_products(query: str) -> str:\n    \"\"\"Search the product catalog for relevant fashion items.\"\"\"\n    return str(search_products(query))\n\nllm = ChatOpenAI(model=\"YOUR_SUPPORTED_MODEL\")\nllm_with_tools = llm.bind_tools([search_fashion_products])",
-    "graphCode": "from typing import TypedDict\nfrom langgraph.graph import StateGraph, START, END\n\nclass FashionState(TypedDict):\n    question: str\n    products: list\n    answer: str\n\ndef retrieve_products(state: FashionState):\n    products = search_products(state[\"question\"])\n    return {\"products\": products}\n\ndef generate_answer(state: FashionState):\n    # A real implementation calls the configured LLM\n    # with the question and retrieved product evidence.\n    answer = create_recommendation(\n        state[\"question\"],\n        state[\"products\"]\n    )\n    return {\"answer\": answer}\n\ngraph_builder = StateGraph(FashionState)\n\ngraph_builder.add_node(\"retrieve\", retrieve_products)\ngraph_builder.add_node(\"recommend\", generate_answer)\n\ngraph_builder.add_edge(START, \"retrieve\")\ngraph_builder.add_edge(\"retrieve\", \"recommend\")\ngraph_builder.add_edge(\"recommend\", END)\n\nfashion_graph = graph_builder.compile()",
+    "toolCode": "from langchain_core.tools import tool\nfrom langchain_openai import ChatOpenAI\n\n\n@tool\ndef search_fashion_products(query: str) -> str:\n    \"\"\"Search the product catalog for relevant fashion items.\"\"\"\n    return str(search_products(query))\n\n\nllm = ChatOpenAI(model=\"YOUR_SUPPORTED_MODEL\")\n\nllm_with_tools = llm.bind_tools([\n    search_fashion_products\n])",
+    "graphCode": "from typing import TypedDict\nfrom langgraph.graph import StateGraph, START, END\n\n\nclass FashionState(TypedDict):\n    question: str\n    products: list\n    answer: str\n\n\ndef retrieve_products(state: FashionState):\n    products = search_products(state[\"question\"])\n    return {\"products\": products}\n\n\ndef generate_answer(state: FashionState):\n    # A real implementation calls the configured LLM\n    # with the question and retrieved product evidence.\n    answer = create_recommendation(\n        state[\"question\"],\n        state[\"products\"]\n    )\n    return {\"answer\": answer}\n\n\ngraph_builder = StateGraph(FashionState)\n\ngraph_builder.add_node(\"retrieve\", retrieve_products)\ngraph_builder.add_node(\"recommend\", generate_answer)\n\ngraph_builder.add_edge(START, \"retrieve\")\ngraph_builder.add_edge(\"retrieve\", \"recommend\")\ngraph_builder.add_edge(\"recommend\", END)\n\nfashion_graph = graph_builder.compile()",
     "qaItems": [
       {
         "question": "How do you prevent hallucinated product details?",
-        "answer": "Retrieve actual catalog records, obtain prices and stock from authoritative systems, validate the model's output, and avoid allowing the LLM to invent business facts."
+        "answer": "Retrieve actual catalog records, get prices and stock information from authoritative systems, validate the model's output, and avoid allowing the LLM to invent business facts.\n\nFor important details such as price and availability, use the database as the source of truth instead of relying on the model's generated response."
       },
       {
         "question": "How would you improve performance?",
-        "answer": "Measure retrieval and model latency separately, reduce unnecessary LLM calls, parallelize independent reads where safe, cache appropriate results, and evaluate smaller models for simpler tasks."
+        "answer": "Measure retrieval latency and model latency separately, reduce unnecessary LLM calls, parallelize independent database reads where safe, cache suitable results, and evaluate smaller models for simpler tasks.\n\nAlso monitor retrieval quality and response accuracy so that performance improvements do not reduce recommendation quality."
       }
     ],
     "interviewAnswers": [
       {
         "question": "How would you manage state, memory, and conditional routing in LangGraph?",
         "answer": "1) State: Define a central TypedDict or Pydantic model with operator reducers (e.g. Annotated[list, operator.add]) so node updates append to messages without overwriting history. 2) Memory: Use Checkpointers (MemorySaver for dev, PostgresSaver/RedisSaver for production) keyed by thread_id for multi-turn persistence, time-travel debugging, and human-in-the-loop pauses (interrupt_before). 3) Conditional Routing: Use add_conditional_edges with router functions inspecting state values to route dynamically to tool nodes, human approval, or END, enforcing strict iteration caps (max 5) to kill infinite loops."
+      }
+    ],
+    "simpleDifference": "Simple difference: LangChain connects LLMs to tools and retrieval; LangGraph controls how the workflow moves from one step to another.",
+    "ecosystemComparison": "Diffusion models generate images; vision foundation models understand visual content; LangChain connects LLMs to tools and retrieval; LangGraph controls the steps of a workflow.",
+    "frameworkRoles": [
+      {
+        "name": "LangChain",
+        "badge": "Integrations & Chains",
+        "desc": "Provides reusable components and integrations for document loading, retrieval, prompts, and model calls.",
+        "scope": "Prompt engineering, document loaders, vector store retrieval, and external model integrations."
+      },
+      {
+        "name": "LlamaIndex",
+        "badge": "Ingestion & Indexing",
+        "desc": "Focuses on document ingestion, indexing, retrieval, and data-connected LLM applications.",
+        "scope": "Connecting external structured and unstructured private data to LLM query engines."
+      },
+      {
+        "name": "LangGraph",
+        "badge": "Stateful Workflows & Agents",
+        "desc": "Provides stateful orchestration for multi-step and agentic workflows.",
+        "scope": "Cyclic state graphs, persistent checkpoints, human-in-the-loop approvals, and multi-agent systems."
+      }
+    ],
+    "architectureDetails": {
+      "langchain": {
+        "title": "LangChain Architecture Details",
+        "desc": "LangChain is a framework for building applications around language models. It provides reusable building blocks that connect an LLM to prompts, retrievers, structured outputs, and tools."
+      },
+      "langgraph": {
+        "title": "LangGraph Architecture Details",
+        "desc": "LangGraph is a framework for managing stateful, multi-step workflows and agents. It represents a workflow as nodes and transitions:",
+        "components": [
+          {
+            "name": "Nodes",
+            "role": "Perform individual operations."
+          },
+          {
+            "name": "Transitions (edges)",
+            "role": "Decide which step should run next."
+          },
+          {
+            "name": "State",
+            "role": "Stores information shared between workflow steps."
+          },
+          {
+            "name": "Checkpoints",
+            "role": "Save the workflow state so execution can resume later."
+          }
+        ],
+        "useCase": "LangGraph is useful when a workflow needs branching, persistent state, retries, checkpoints, human approval, or the ability to resume after an interruption."
+      }
+    },
+    "shoppingAssistantExecution": [
+      "Retrieve similar products using image or text embeddings.",
+      "Query the product database to get prices and inventory.",
+      "Ask an LLM to organize the retrieved results into recommendations.",
+      "Return a structured response to the frontend."
+    ],
+    "productionComponents": [
+      {
+        "name": "FastAPI",
+        "role": "Exposes the /fashion-assistant endpoint to the frontend and receives user requests."
+      },
+      {
+        "name": "LangChain",
+        "role": "Connects the language model to retrievers and approved tools."
+      },
+      {
+        "name": "Vector Database",
+        "role": "Retrieves similar products and fashion descriptions using embeddings."
+      },
+      {
+        "name": "PostgreSQL",
+        "role": "Stores product details, prices, and inventory."
+      },
+      {
+        "name": "LangGraph",
+        "role": "Manages the multi-step workflow and its shared state."
+      },
+      {
+        "name": "Azure OpenAI / Supported Provider",
+        "role": "Understands the user's request and generates recommendations using the provided product information."
+      }
+    ],
+    "toolsCode": {
+      "filename": "tools.py (LangChain Tool Binding)",
+      "code": "from langchain_core.tools import tool\nfrom langchain_openai import ChatOpenAI\n\n\n@tool\ndef search_fashion_products(query: str) -> str:\n    \"\"\"Search the product catalog for relevant fashion items.\"\"\"\n    return str(search_products(query))\n\n\nllm = ChatOpenAI(model=\"YOUR_SUPPORTED_MODEL\")\n\nllm_with_tools = llm.bind_tools([\n    search_fashion_products\n])",
+      "howItWorks": [
+        "@tool makes the Python function available as an LLM tool.",
+        "bind_tools() provides the tool definition to the model.",
+        "The model can decide when to request the tool.",
+        "The application must execute the requested tool and return its result to the model."
+      ],
+      "important": "Important: Binding a tool does not automatically execute it. The application or agent must handle the tool call."
+    },
+    "workflowCode": {
+      "filename": "workflow.py (LangGraph StateGraph & State Transitions)",
+      "code": "from typing import TypedDict\nfrom langgraph.graph import StateGraph, START, END\n\n\nclass FashionState(TypedDict):\n    question: str\n    products: list\n    answer: str\n\n\ndef retrieve_products(state: FashionState):\n    products = search_products(state[\"question\"])\n    return {\"products\": products}\n\n\ndef generate_answer(state: FashionState):\n    # A real implementation calls the configured LLM\n    # with the question and retrieved product evidence.\n    answer = create_recommendation(\n        state[\"question\"],\n        state[\"products\"]\n    )\n    return {\"answer\": answer}\n\n\ngraph_builder = StateGraph(FashionState)\n\ngraph_builder.add_node(\"retrieve\", retrieve_products)\ngraph_builder.add_node(\"recommend\", generate_answer)\n\ngraph_builder.add_edge(START, \"retrieve\")\ngraph_builder.add_edge(\"retrieve\", \"recommend\")\ngraph_builder.add_edge(\"recommend\", END)\n\nfashion_graph = graph_builder.compile()",
+      "howItWorks": [
+        "FashionState defines the information shared between nodes.",
+        "retrieve_products() searches the product catalog.",
+        "generate_answer() uses the question and retrieved products to create a recommendation.",
+        "START defines the first step.",
+        "END marks the end of the workflow.",
+        "compile() builds the graph so it can be executed."
+      ],
+      "important": "Important: This example is a simple linear graph. LangGraph can also support conditional transitions, loops, and checkpointing when required."
+    },
+    "qa": [
+      {
+        "question": "How do you prevent hallucinated product details?",
+        "answer": "Retrieve actual catalog records, get prices and stock information from authoritative systems, validate the model's output, and avoid allowing the LLM to invent business facts.\n\nFor important details such as price and availability, use the database as the source of truth instead of relying on the model's generated response."
+      },
+      {
+        "question": "How would you improve performance?",
+        "answer": "Measure retrieval latency and model latency separately, reduce unnecessary LLM calls, parallelize independent database reads where safe, cache suitable results, and evaluate smaller models for simpler tasks.\n\nAlso monitor retrieval quality and response accuracy so that performance improvements do not reduce recommendation quality."
       }
     ]
   },
