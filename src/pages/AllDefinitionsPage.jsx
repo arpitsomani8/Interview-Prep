@@ -7699,7 +7699,7 @@ export default function AllDefinitionsPage() {
               </div>
             )}
 
-            {/* Item 39: Normalization / Scaling */}}
+            {/* Item 39: Normalization / Scaling */}
             {item.id === 'normalization-scaling' && (
               <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
                 {/* Core Distinction Callout */}
