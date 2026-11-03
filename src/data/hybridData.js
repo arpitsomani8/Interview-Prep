@@ -166,7 +166,10 @@ export const hybridData = {
   "executiveSections": [
     {
       "id": "overview",
-      "title": null,
+      "title": "Project Overview & Architecture Challenges",
+      "badge": "Multi-Tenant Enterprise Platform • Cold-Start Solution",
+      "accentColor": "text-indigo-400",
+      "bgBadge": "bg-indigo-950/70 text-indigo-300 border-indigo-800/60",
       "paragraphs": [
         "We built the **Hybrid AI Engine**, a multi-tenant enterprise decision platform designed to support organizations with different business domains, data structures, and decision-making requirements.",
         "The platform addresses two main challenges:\n\n1. **Tenant heterogeneity:** Different enterprise clients have different data schemas, business rules, and prediction requirements.\n2. **The Day-1 cold-start problem:** A new tenant may have very little historical data. Training a supervised ML model on a small dataset can lead to overfitting, but the tenant still needs immediate decision support based on its policies and operational guidelines."

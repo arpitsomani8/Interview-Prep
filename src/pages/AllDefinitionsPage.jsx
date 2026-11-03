@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { definitionBookmarks, definitionsData } from '../data/allDefinitionsData';
+import { definitionBookmarks, mostAskedBookmarks, definitionsData } from '../data/allDefinitionsData';
 import CodeHighlight from '../components/CodeHighlight';
 import {
   FileCode,
@@ -195,10 +195,65 @@ export default function AllDefinitionsPage() {
 
   return (
     <div className={`all-definitions-container text-zoom-${textZoom} w-full px-4 sm:px-8 lg:px-12 py-5 space-y-6`}>
-      {/* Bookmarks Bar on Top with A-Z Quick Jump Index & Column-Structured Rows */}
+      {/* Bookmarks Bar on Top with Most Asked & A-Z Quick Jump Index */}
       <div id="bookmarks-bar" className="space-y-4 pt-1">
+        {/* Most Asked Section */}
+        <div id="most-asked-section" className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-950/25 via-zinc-950 to-zinc-950 border border-amber-500/35 shadow-xl space-y-3.5">
+          <div className="flex items-center justify-between flex-wrap gap-2 border-b border-zinc-800/80 pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold shadow-sm shadow-amber-500/10">
+                <Sparkles className="w-4 h-4 text-amber-400" />
+              </div>
+              <div>
+                <h3 className="text-sm sm:text-base font-bold font-mono text-amber-300 uppercase tracking-wide flex items-center gap-2">
+                  <span>Most Asked</span>
+                </h3>
+                <p className="text-[11px] text-zinc-400 font-sans">
+                  High-frequency technical questions &amp; core concepts curated for Senior AI/ML &amp; Full-Stack loops
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-mono px-3 py-1 rounded-full bg-amber-950/80 text-amber-300 border border-amber-800/60 font-semibold shadow-sm">
+                {mostAskedBookmarks.length} High-Frequency Topics
+              </span>
+            </div>
+          </div>
+
+          {/* Bookmarks Grid / Flex */}
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-1">
+            {mostAskedBookmarks.map((item) => {
+              const effectiveId = getEffectiveId(item.id);
+              const isActive = activeBookmark === item.id || activeBookmark === effectiveId;
+              return (
+                <button
+                  key={`most-asked-${item.id}`}
+                  onClick={() => selectBookmark(item.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 border cursor-pointer ${isActive
+                    ? 'bg-amber-500/25 border-amber-400 text-amber-300 shadow-md shadow-amber-500/20 ring-1 ring-amber-400/40 font-bold'
+                    : 'bg-zinc-900/90 border-zinc-800/90 text-zinc-300 hover:border-amber-500/50 hover:bg-zinc-800 hover:text-white'
+                    }`}
+                  title={`Open Most Asked: ${item.label}`}
+                >
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Quick Alphabet Jump Index Ribbon (A B C D ... Z) */}
         <div className="flex items-center gap-1.5 flex-wrap p-2.5 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 shadow-md">
+          <button
+            onClick={() => {
+              const el = document.getElementById('most-asked-section');
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+            className="px-2.5 py-1 rounded-lg bg-amber-950/50 hover:bg-amber-900/60 text-amber-300 border border-amber-800/60 text-xs font-bold font-mono transition flex items-center gap-1 cursor-pointer shadow-sm select-none"
+            title="Jump to Most Asked section"
+          >
+            <span>★ Most Asked</span>
+          </button>
           <span className="text-[11px] font-mono uppercase tracking-wider text-cyan-400 font-bold px-2 select-none">
             A-Z Index:
           </span>
@@ -11257,12 +11312,12 @@ export default function AllDefinitionsPage() {
                               <div className="flex items-center justify-between gap-2 border-b border-zinc-900 pb-2">
                                 <h5 className="text-sm font-bold text-white font-mono">{triad.metric}</h5>
                                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-amber-300 border border-zinc-700">
-                                  {triad.tag}
+                                  {triad.tag || triad.unit}
                                 </span>
                               </div>
                               <p className="text-xs text-zinc-300 leading-relaxed font-sans">{triad.desc}</p>
                             </div>
-                            {triad.benchmarks && (
+                            {triad.benchmarks && Array.isArray(triad.benchmarks) && (
                               <div className="space-y-1.5 pt-2 border-t border-zinc-900">
                                 {triad.benchmarks.map((bm, bIdx) => (
                                   <div key={bIdx} className="text-[11px] text-zinc-400 flex items-start gap-1.5 leading-relaxed">
@@ -11285,9 +11340,14 @@ export default function AllDefinitionsPage() {
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                             {item.productionSolutions.strategies.map((strat, sIdx) => (
-                              <div key={sIdx} className="flex items-center gap-2.5 p-2.5 rounded-lg bg-black border border-zinc-800/80 text-xs text-zinc-300">
-                                <span className="text-cyan-400 font-mono text-[12px] font-bold">✓</span>
-                                <span>{strat}</span>
+                              <div key={sIdx} className="p-3 rounded-lg bg-black border border-zinc-800/80 text-xs text-zinc-300 space-y-1">
+                                <div className="flex items-center gap-2 font-mono font-bold text-cyan-400">
+                                  <span className="text-[12px]">✓</span>
+                                  <span>{typeof strat === 'string' ? strat : strat.title}</span>
+                                </div>
+                                {typeof strat === 'object' && strat.desc && (
+                                  <p className="text-[11px] text-zinc-400 font-sans leading-relaxed pl-5">{strat.desc}</p>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -11296,12 +11356,20 @@ export default function AllDefinitionsPage() {
                           {item.productionSolutions.hardwarePrimer && (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
                               <div className="p-3 rounded-xl bg-black border border-blue-900/40 space-y-1">
-                                <span className="text-[11px] font-mono font-bold text-blue-400 uppercase">CPU (Central Processing Unit)</span>
-                                <p className="text-[11px] text-zinc-300 leading-relaxed">{item.productionSolutions.hardwarePrimer.cpu}</p>
+                                <span className="text-[11px] font-mono font-bold text-blue-400 uppercase">
+                                  {typeof item.productionSolutions.hardwarePrimer.cpu === 'object' ? item.productionSolutions.hardwarePrimer.cpu.title : 'CPU (Central Processing Unit)'}
+                                </span>
+                                <p className="text-[11px] text-zinc-300 leading-relaxed">
+                                  {typeof item.productionSolutions.hardwarePrimer.cpu === 'object' ? item.productionSolutions.hardwarePrimer.cpu.desc : item.productionSolutions.hardwarePrimer.cpu}
+                                </p>
                               </div>
                               <div className="p-3 rounded-xl bg-black border border-emerald-900/40 space-y-1">
-                                <span className="text-[11px] font-mono font-bold text-emerald-400 uppercase">GPU (Graphics Processing Unit)</span>
-                                <p className="text-[11px] text-zinc-300 leading-relaxed">{item.productionSolutions.hardwarePrimer.gpu}</p>
+                                <span className="text-[11px] font-mono font-bold text-emerald-400 uppercase">
+                                  {typeof item.productionSolutions.hardwarePrimer.gpu === 'object' ? item.productionSolutions.hardwarePrimer.gpu.title : 'GPU (Graphics Processing Unit)'}
+                                </span>
+                                <p className="text-[11px] text-zinc-300 leading-relaxed">
+                                  {typeof item.productionSolutions.hardwarePrimer.gpu === 'object' ? item.productionSolutions.hardwarePrimer.gpu.desc : item.productionSolutions.hardwarePrimer.gpu}
+                                </p>
                               </div>
                             </div>
                           )}
@@ -11329,35 +11397,46 @@ export default function AllDefinitionsPage() {
                             <div className="space-y-2.5">
                               <div className="flex items-center justify-between">
                                 <h5 className="text-sm font-bold text-amber-300 font-mono uppercase tracking-wide">{mode.mode}</h5>
-                                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">Mode {mIdx + 1}</span>
+                                <div className="flex items-center gap-1.5">
+                                  {mode.sla && (
+                                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                                      {mode.sla}
+                                    </span>
+                                  )}
+                                  <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">Mode {mIdx + 1}</span>
+                                </div>
                               </div>
-                              <p className="text-xs text-zinc-200 leading-relaxed font-sans">{mode.definition}</p>
+                              <p className="text-xs text-zinc-200 leading-relaxed font-sans">{mode.definition || mode.desc}</p>
 
                               {/* Benefits */}
-                              <div className="space-y-1 pt-1.5 border-t border-zinc-900">
-                                <span className="text-[10px] font-mono text-emerald-400 uppercase font-bold tracking-wider">Benefits:</span>
-                                {mode.benefits.map((b, bIdx) => (
-                                  <div key={bIdx} className="text-[11px] text-zinc-300 flex items-start gap-1.5 leading-relaxed">
-                                    <span className="text-emerald-400 font-mono">✓</span>
-                                    <span>{b}</span>
-                                  </div>
-                                ))}
-                              </div>
+                              {mode.benefits && Array.isArray(mode.benefits) && mode.benefits.length > 0 && (
+                                <div className="space-y-1 pt-1.5 border-t border-zinc-900">
+                                  <span className="text-[10px] font-mono text-emerald-400 uppercase font-bold tracking-wider">Benefits:</span>
+                                  {mode.benefits.map((b, bIdx) => (
+                                    <div key={bIdx} className="text-[11px] text-zinc-300 flex items-start gap-1.5 leading-relaxed">
+                                      <span className="text-emerald-400 font-mono">✓</span>
+                                      <span>{b}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
 
                               {/* Trade-offs */}
-                              <div className="space-y-1 pt-1.5 border-t border-zinc-900">
-                                <span className="text-[10px] font-mono text-amber-400 uppercase font-bold tracking-wider">Trade-offs & Constraints:</span>
-                                {Array.isArray(mode.tradeoffs) ? (
-                                  mode.tradeoffs.map((t, tIdx) => (
-                                    <div key={tIdx} className="text-[11px] text-zinc-400 flex items-start gap-1.5 leading-relaxed">
-                                      <span className="text-amber-400 font-mono">•</span>
-                                      <span>{t}</span>
-                                    </div>
-                                  ))
-                                ) : (
-                                  <p className="text-[11px] text-zinc-400 leading-relaxed">{mode.tradeoffs}</p>
-                                )}
-                              </div>
+                              {mode.tradeoffs && (
+                                <div className="space-y-1 pt-1.5 border-t border-zinc-900">
+                                  <span className="text-[10px] font-mono text-amber-400 uppercase font-bold tracking-wider">Trade-offs & Constraints:</span>
+                                  {Array.isArray(mode.tradeoffs) ? (
+                                    mode.tradeoffs.map((t, tIdx) => (
+                                      <div key={tIdx} className="text-[11px] text-zinc-400 flex items-start gap-1.5 leading-relaxed">
+                                        <span className="text-amber-400 font-mono">•</span>
+                                        <span>{t}</span>
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <p className="text-[11px] text-zinc-400 leading-relaxed">{mode.tradeoffs}</p>
+                                  )}
+                                </div>
+                              )}
 
                               {/* Use cases / examples if present */}
                               {mode.useCases && (
@@ -11649,13 +11728,13 @@ export default function AllDefinitionsPage() {
                                     <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
                                       #{lev.number}
                                     </span>
-                                    <h5 className="text-xs font-bold text-white font-mono">{lev.name}</h5>
+                                    <h5 className="text-xs font-bold text-white font-mono">{lev.lever || lev.name}</h5>
                                   </div>
                                   <p className="text-xs text-zinc-300 leading-relaxed font-sans">{lev.desc}</p>
                                 </div>
-                                {lev.example && (
+                                {(lev.example || lev.impact) && (
                                   <div className="p-2 rounded bg-zinc-950 border border-zinc-850 text-[10px] font-mono text-cyan-300/90 leading-relaxed">
-                                    <strong className="text-zinc-400 uppercase">Example: </strong>{lev.example}
+                                    <strong className="text-zinc-400 uppercase">{lev.example ? 'Example: ' : 'Impact: '}</strong>{lev.example || lev.impact}
                                   </div>
                                 )}
                               </div>
@@ -20764,9 +20843,31 @@ export default function AllDefinitionsPage() {
                         {item.coreDefinition}
                       </p>
                       {item.exampleScenario && (
-                        <div className="p-3 rounded-xl bg-zinc-900/70 border border-zinc-800 text-[11px] text-zinc-300 leading-relaxed font-sans">
-                          <strong className="text-cyan-400 font-mono uppercase text-[10px] block mb-0.5">Classification Example:</strong>
-                          {item.exampleScenario}
+                        <div className="p-3.5 rounded-xl bg-zinc-900/70 border border-zinc-800 text-[11px] text-zinc-300 leading-relaxed font-sans space-y-2">
+                          <strong className="text-cyan-400 font-mono uppercase text-[10px] block mb-0.5">Classification Example & Query Walkthrough:</strong>
+                          {typeof item.exampleScenario === 'string' ? (
+                            <p>{item.exampleScenario}</p>
+                          ) : (
+                            <>
+                              <p className="text-zinc-200 font-medium">{item.exampleScenario.query}</p>
+                              {item.exampleScenario.neighbors && Array.isArray(item.exampleScenario.neighbors) && (
+                                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1">
+                                  {item.exampleScenario.neighbors.map((nb, nIdx) => (
+                                    <div key={nIdx} className="p-2 rounded bg-black border border-zinc-800 font-mono text-[10px] space-y-0.5">
+                                      <div className="text-zinc-500">Neighbor #{nb.id || nIdx + 1}</div>
+                                      <div className="text-cyan-300 font-bold">{nb.label}</div>
+                                      <div className="text-zinc-400">Dist: {nb.distance}</div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              {item.exampleScenario.prediction && (
+                                <div className="p-2 rounded bg-emerald-950/40 border border-emerald-800/40 text-emerald-300 font-mono text-xs font-semibold">
+                                  {item.exampleScenario.prediction}
+                                </div>
+                              )}
+                            </>
+                          )}
                         </div>
                       )}
                     </div>
@@ -20882,7 +20983,7 @@ export default function AllDefinitionsPage() {
                                 <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
                                   <td className="p-3 font-mono font-bold text-zinc-300">{row.dimension}</td>
                                   <td className="p-3 text-zinc-300">{row.knn}</td>
-                                  <td className="p-3 text-zinc-300">{row.vector}</td>
+                                  <td className="p-3 text-zinc-300">{row.vectorRetrieval || row.vector}</td>
                                 </tr>
                               ))}
                             </tbody>
@@ -21003,15 +21104,19 @@ export default function AllDefinitionsPage() {
                           <table className="w-full text-left text-xs font-sans">
                             <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] border-b border-zinc-800">
                               <tr>
-                                <th className="p-3 w-1/3">K Value</th>
-                                <th className="p-3 w-2/3">Typical Behavior</th>
+                                <th className="p-3">K Value</th>
+                                <th className="p-3 text-cyan-300">Bias</th>
+                                <th className="p-3 text-amber-300">Variance</th>
+                                <th className="p-3 text-rose-300">Generalization & Risk</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-850 bg-black/60">
                               {item.biasVarianceTradeoff.table.map((row, rIdx) => (
                                 <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
-                                  <td className="p-3 font-mono font-bold text-amber-300">{row.k}</td>
-                                  <td className="p-3 text-zinc-300">{row.behavior}</td>
+                                  <td className="p-3 font-mono font-bold text-amber-300">{row.kVal || row.k}</td>
+                                  <td className="p-3 text-cyan-200 font-mono">{row.bias}</td>
+                                  <td className="p-3 text-amber-200 font-mono">{row.variance}</td>
+                                  <td className="p-3 text-zinc-300 leading-relaxed">{row.risk || row.behavior}</td>
                                 </tr>
                               ))}
                             </tbody>
@@ -38566,10 +38671,11 @@ export default function AllDefinitionsPage() {
                         )}
                       </div>
                     )}
+                  </div>
+                )}
 
-
-                    {/* Dedicated Hyperparameters View (Item 109) */}
-                    {item.id === 'hyperparameters' && (
+                {/* Dedicated Hyperparameters View (Item 109) */}
+                {item.id === 'hyperparameters' && (
                       <div className="space-y-6 text-xs sm:text-sm text-zinc-300 mb-6">
                         {/* 1. Header Banner & Core Definition */}
                         <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-4 shadow-xl">
@@ -39082,11 +39188,11 @@ export default function AllDefinitionsPage() {
                             )}
                           </div>
                         )}
-                      </div>
-                    )}
+                  </div>
+                )}
 
-                    {/* Dedicated Hybrid Search View (BM25 + Vector Search + Reranking) */}
-                    {item.id === 'hybrid-search' && (
+                {/* Dedicated Hybrid Search View (BM25 + Vector Search + Reranking) */}
+                {item.id === 'hybrid-search' && (
                       <div className="space-y-6 text-xs sm:text-sm text-zinc-300 mb-6">
                         {/* Header Banner & Core Definition */}
                         <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-4 shadow-xl">
@@ -39488,11 +39594,11 @@ export default function AllDefinitionsPage() {
                             </div>
                           )}
                         </div>
-                      </div>
-                    )}
+                  </div>
+                )}
 
-                    {/* Dedicated Histogram View */}
-                    {item.id === 'histogram' && (
+                {/* Dedicated Histogram View */}
+                {item.id === 'histogram' && (
                       <div className="space-y-6 text-xs sm:text-sm text-zinc-300 mb-6">
                         {/* Header Banner & Core Definition */}
                         <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-4 shadow-xl">
@@ -39710,11 +39816,11 @@ export default function AllDefinitionsPage() {
                             </div>
                           </div>
                         )}
-                      </div>
-                    )}
+                  </div>
+                )}
 
-                    {/* Dedicated KDE View */}
-                    {item.id === 'kde' && (
+                {/* Dedicated KDE View */}
+                {item.id === 'kde' && (
                       <div className="space-y-6">
                         {/* 1. Core Header & Definition */}
                         <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-4">
@@ -40150,11 +40256,11 @@ export default function AllDefinitionsPage() {
                           <strong className="text-emerald-400 uppercase">Key Takeaway: </strong>
                           {item.takeaway}
                         </div>
-                      </div>
-                    )}
+                  </div>
+                )}
 
-                    {/* Dedicated Design "ChatGPT" View */}
-                    {item.id === 'design-chatgpt' && (
+                {/* Dedicated Design "ChatGPT" View */}
+                {item.id === 'design-chatgpt' && (
                       <div className="space-y-6 mb-6">
                         {/* Header Banner */}
                         <div className="space-y-3">
@@ -40511,8 +40617,8 @@ export default function AllDefinitionsPage() {
                       </div>
                     )}
 
-                    {/* Python Implementation Box with Copy Button */}
-                    {item.code && item.id !== 'crud-api' && item.id !== 'coding-best-practices' && item.id !== 'data-cleaning' && item.id !== 'debugging' && item.id !== 'diffusion-model' && item.id !== 'kubernetes' && item.id !== 'hyperparameters' && item.id !== 'hybrid-search' && item.id !== 'histogram' && item.id !== 'kde' && (
+                {/* Python Implementation Box with Copy Button */}
+                    {item.code && item.id !== 'crud-api' && item.id !== 'ragas' && item.id !== 'reactjs' && item.id !== 'hnsw' && item.id !== 'coding-best-practices' && item.id !== 'data-cleaning' && item.id !== 'debugging' && item.id !== 'diffusion-model' && item.id !== 'kubernetes' && item.id !== 'hyperparameters' && item.id !== 'hybrid-search' && item.id !== 'histogram' && item.id !== 'kde' && (
                       <div className="mt-3 pt-3 border-t border-zinc-800/80 space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400">
@@ -40530,6 +40636,1380 @@ export default function AllDefinitionsPage() {
                         <CodeHighlight code={item.code} />
                       </div>
                     )}
+
+
+                {/* Item: RAGAS & AI Evaluation */}
+                {item.id === 'ragas' && (
+                  <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                    {/* 1. What is RAGAS? */}
+                    {item.whatIsRagas && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-cyan-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.whatIsRagas.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            RAG Assessment Framework
+                          </span>
+                        </div>
+
+                        <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                          {item.whatIsRagas.desc}
+                        </p>
+
+                        {item.whatIsRagas.coreQuestions && (
+                          <div className="space-y-2 pt-1">
+                            <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider block font-semibold">
+                              Core Quality Questions Answered:
+                            </span>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                              {item.whatIsRagas.coreQuestions.map((q, qIdx) => (
+                                <div key={qIdx} className="p-3 rounded-xl bg-black border border-zinc-800 flex items-center gap-2.5">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+                                  <span className="text-xs text-zinc-200 font-sans">{q}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {item.whatIsRagas.workflowsNote && (
+                          <p className="text-xs text-zinc-400 italic bg-zinc-900/60 p-3 rounded-xl border border-zinc-800/80">
+                            💡 {item.whatIsRagas.workflowsNote}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 2. Four Important RAGAS Metrics */}
+                    {item.fourImportantMetrics && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-5 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Layers className="w-4 h-4 text-emerald-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.fourImportantMetrics.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+                            Core Metric Taxonomy
+                          </span>
+                        </div>
+
+                        {/* Summary Table */}
+                        {item.fourImportantMetrics.metrics && (
+                          <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                            <table className="w-full text-left text-xs font-sans">
+                              <thead className="bg-zinc-900 text-zinc-300 font-mono uppercase text-[11px] border-b border-zinc-800">
+                                <tr>
+                                  <th className="p-3 text-cyan-400 font-bold">Metric</th>
+                                  <th className="p-3 text-amber-300 font-bold">Pipeline Stage</th>
+                                  <th className="p-3">Target Assessment Objective & Description</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-zinc-800/70 bg-black/60">
+                                {item.fourImportantMetrics.metrics.map((row, rIdx) => (
+                                  <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                    <td className="p-3 font-mono font-semibold text-emerald-300">{row.name}</td>
+                                    <td className="p-3 font-mono text-amber-300 text-xs">{row.target || (row.evaluates ? `${row.evaluates} stage` : '')}</td>
+                                    <td className="p-3 text-zinc-200 leading-relaxed">{row.desc || row.measure || row.methodology}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+
+                        {/* Deep Dives into all 4 metrics */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                          {/* Faithfulness */}
+                          {item.fourImportantMetrics.faithfulness && (
+                            <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between">
+                              <div className="space-y-2">
+                                <span className="text-xs font-bold text-emerald-400 font-mono uppercase tracking-wider block">
+                                  {item.fourImportantMetrics.faithfulness.name}
+                                </span>
+                                <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                                  {item.fourImportantMetrics.faithfulness.desc}
+                                </p>
+                                {item.fourImportantMetrics.faithfulness.example && (
+                                  <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800 space-y-1 font-mono text-[11px]">
+                                    <div className="text-zinc-400"><strong className="text-zinc-300">Context:</strong> "{item.fourImportantMetrics.faithfulness.example.context}"</div>
+                                    <div className="text-rose-300"><strong className="text-rose-400">Generated:</strong> "{item.fourImportantMetrics.faithfulness.example.answer}"</div>
+                                    <div className="text-amber-400 text-[10px] pt-1">Verdict: {item.fourImportantMetrics.faithfulness.example.explanation}</div>
+                                  </div>
+                                )}
+                              </div>
+                              {item.fourImportantMetrics.faithfulness.formula && (
+                                <div className="p-2 rounded bg-zinc-950 border border-emerald-900/40 text-center font-mono text-xs text-emerald-300">
+                                  Formula: {item.fourImportantMetrics.faithfulness.formula}
+                                </div>
+                              )}
+                              {item.fourImportantMetrics.faithfulness.note && (
+                                <p className="text-[11px] text-zinc-400 font-sans italic">
+                                  {item.fourImportantMetrics.faithfulness.note}
+                                </p>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Answer Relevancy */}
+                          {item.fourImportantMetrics.answerRelevancy && (
+                            <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between">
+                              <div className="space-y-2">
+                                <span className="text-xs font-bold text-cyan-400 font-mono uppercase tracking-wider block">
+                                  {item.fourImportantMetrics.answerRelevancy.name}
+                                </span>
+                                <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                                  {item.fourImportantMetrics.answerRelevancy.desc}
+                                </p>
+                                {item.fourImportantMetrics.answerRelevancy.example && (
+                                  <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800 space-y-1 font-mono text-[11px]">
+                                    <div className="text-zinc-400"><strong className="text-zinc-300">Question:</strong> "{item.fourImportantMetrics.answerRelevancy.example.question}"</div>
+                                    <div className="text-amber-300"><strong className="text-amber-400">Answer:</strong> "{item.fourImportantMetrics.answerRelevancy.example.answer}"</div>
+                                    <div className="text-rose-400 text-[10px] pt-1">Verdict: {item.fourImportantMetrics.answerRelevancy.example.explanation}</div>
+                                  </div>
+                                )}
+                              </div>
+                              {item.fourImportantMetrics.answerRelevancy.distinction && (
+                                <div className="p-2 rounded bg-zinc-950 border border-cyan-900/40 text-[11px] text-cyan-300 font-sans whitespace-pre-line leading-relaxed">
+                                  {item.fourImportantMetrics.answerRelevancy.distinction}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Context Precision */}
+                          {item.fourImportantMetrics.contextPrecision && (
+                            <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between">
+                              <div className="space-y-2">
+                                <span className="text-xs font-bold text-amber-400 font-mono uppercase tracking-wider block">
+                                  {item.fourImportantMetrics.contextPrecision.name}
+                                </span>
+                                <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                                  {item.fourImportantMetrics.contextPrecision.desc}
+                                </p>
+                                {item.fourImportantMetrics.contextPrecision.table && (
+                                  <div className="overflow-x-auto rounded-lg border border-zinc-800">
+                                    <table className="w-full text-left text-[11px] font-sans">
+                                      <thead className="bg-zinc-900 text-zinc-400 font-mono">
+                                        <tr>
+                                          <th className="p-1.5 border-b border-zinc-800">Rank</th>
+                                          <th className="p-1.5 border-b border-zinc-800">Chunk</th>
+                                          <th className="p-1.5 border-b border-zinc-800">Relevance</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody className="divide-y divide-zinc-800/60">
+                                        {item.fourImportantMetrics.contextPrecision.table.map((row, rIdx) => (
+                                          <tr key={rIdx}>
+                                            <td className="p-1.5 font-mono text-amber-300">#{row.rank}</td>
+                                            <td className="p-1.5 text-zinc-300">{row.chunk}</td>
+                                            <td className={`p-1.5 font-semibold ${row.relevance === 'Relevant' ? 'text-emerald-400' : 'text-zinc-500'}`}>{row.relevance}</td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                )}
+                              </div>
+                              {item.fourImportantMetrics.contextPrecision.note && (
+                                <p className="text-[11px] text-zinc-400 font-sans italic">
+                                  {item.fourImportantMetrics.contextPrecision.note}
+                                </p>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Context Recall */}
+                          {item.fourImportantMetrics.contextRecall && (
+                            <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5 flex flex-col justify-between">
+                              <div className="space-y-2">
+                                <span className="text-xs font-bold text-purple-400 font-mono uppercase tracking-wider block">
+                                  {item.fourImportantMetrics.contextRecall.name}
+                                </span>
+                                <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                                  {item.fourImportantMetrics.contextRecall.desc}
+                                </p>
+                                {item.fourImportantMetrics.contextRecall.example && (
+                                  <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800 space-y-1 font-mono text-[11px]">
+                                    <div className="text-zinc-400"><strong className="text-zinc-300">Ground Truth Facts:</strong> {Array.isArray(item.fourImportantMetrics.contextRecall.example.reference) ? item.fourImportantMetrics.contextRecall.example.reference.join(', ') : item.fourImportantMetrics.contextRecall.example.reference}</div>
+                                    <div className="text-amber-300"><strong className="text-amber-400">Retrieved Facts:</strong> {Array.isArray(item.fourImportantMetrics.contextRecall.example.retrieved) ? item.fourImportantMetrics.contextRecall.example.retrieved.join(', ') : item.fourImportantMetrics.contextRecall.example.retrieved}</div>
+                                    <div className="text-rose-400 text-[10px] pt-1">Verdict: {item.fourImportantMetrics.contextRecall.example.explanation}</div>
+                                  </div>
+                                )}
+                              </div>
+                              {item.fourImportantMetrics.contextRecall.formula && (
+                                <div className="p-2 rounded bg-zinc-950 border border-purple-900/40 text-center font-mono text-xs text-purple-300">
+                                  Formula: {item.fourImportantMetrics.contextRecall.formula}
+                                </div>
+                              )}
+                              {item.fourImportantMetrics.contextRecall.note && (
+                                <p className="text-[11px] text-zinc-400 font-sans italic">
+                                  {item.fourImportantMetrics.contextRecall.note}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 3. Other AI / LLM Evaluation Techniques */}
+                    {item.otherEvaluationTechniques && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-5 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Activity className="w-4 h-4 text-cyan-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.otherEvaluationTechniques.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            ML &amp; LLM Evaluation
+                          </span>
+                        </div>
+
+                        {/* A. Traditional ML Metrics */}
+                        {item.otherEvaluationTechniques.traditionalMl && (
+                          <div className="p-4 rounded-xl bg-black border border-zinc-800/90 space-y-3">
+                            <span className="text-xs font-bold text-amber-300 font-mono uppercase tracking-wider block">
+                              {item.otherEvaluationTechniques.traditionalMl.name}
+                            </span>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {item.otherEvaluationTechniques.traditionalMl.desc}
+                            </p>
+                            {item.otherEvaluationTechniques.traditionalMl.metrics && (
+                              <div className="overflow-x-auto rounded-lg border border-zinc-800">
+                                <table className="w-full text-left text-xs font-sans">
+                                  <thead className="bg-zinc-900 text-zinc-300 font-mono uppercase text-[10px] border-b border-zinc-800">
+                                    <tr>
+                                      <th className="p-2.5 text-cyan-400 font-bold">Metric</th>
+                                      <th className="p-2.5 text-zinc-300">Common Use</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-zinc-800/60 bg-black/60">
+                                    {item.otherEvaluationTechniques.traditionalMl.metrics.map((m, mIdx) => (
+                                      <tr key={mIdx} className="hover:bg-zinc-900/30 transition">
+                                        <td className="p-2.5 font-mono font-semibold text-emerald-300">{m.metric}</td>
+                                        <td className="p-2.5 text-zinc-200">{m.use}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* B. LLM-as-a-Judge */}
+                        {item.otherEvaluationTechniques.llmAsAJudge && (
+                          <div className="p-4 rounded-xl bg-black border border-zinc-800/90 space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-emerald-400 font-mono uppercase tracking-wider block">
+                                {item.otherEvaluationTechniques.llmAsAJudge.name}
+                              </span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                                1 to 5 Rubric
+                              </span>
+                            </div>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {item.otherEvaluationTechniques.llmAsAJudge.desc}
+                            </p>
+                            {item.otherEvaluationTechniques.llmAsAJudge.criteria && (
+                              <div className="space-y-1.5">
+                                <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider font-semibold">
+                                  Evaluation Criteria Rubric:
+                                </span>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {item.otherEvaluationTechniques.llmAsAJudge.criteria.map((c, cIdx) => (
+                                    <span key={cIdx} className="px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-700 text-xs font-mono text-cyan-300 font-semibold">
+                                      ✓ {c}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            {item.otherEvaluationTechniques.llmAsAJudge.example && (
+                              <div className="p-3 rounded-lg bg-zinc-900/90 border border-zinc-800 space-y-1.5 font-sans text-xs">
+                                <div className="font-mono text-[11px] text-amber-300 font-semibold">
+                                  Example Prompt: "{item.otherEvaluationTechniques.llmAsAJudge.example.question}"
+                                </div>
+                                <div className="text-zinc-300 text-[11px]">
+                                  <strong>Expected Qualities:</strong>
+                                  <ul className="list-disc pl-4 pt-1 space-y-0.5 text-zinc-400">
+                                    {item.otherEvaluationTechniques.llmAsAJudge.example.expected.map((exp, eIdx) => (
+                                      <li key={eIdx}>{exp}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                                <div className="text-emerald-400 font-mono text-[11px] pt-1">
+                                  Verdict: {item.otherEvaluationTechniques.llmAsAJudge.example.evaluation}
+                                </div>
+                              </div>
+                            )}
+                            {item.otherEvaluationTechniques.llmAsAJudge.note && (
+                              <div className="p-2.5 rounded-lg bg-amber-950/30 border border-amber-800/60 text-[11px] text-amber-200 font-sans">
+                                ⚠️ {item.otherEvaluationTechniques.llmAsAJudge.note}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* C. Human Evaluation */}
+                        {item.otherEvaluationTechniques.humanEvaluation && (
+                          <div className="p-4 rounded-xl bg-black border border-zinc-800/90 space-y-3">
+                            <span className="text-xs font-bold text-purple-400 font-mono uppercase tracking-wider block">
+                              {item.otherEvaluationTechniques.humanEvaluation.name}
+                            </span>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {item.otherEvaluationTechniques.humanEvaluation.desc}
+                            </p>
+                            {item.otherEvaluationTechniques.humanEvaluation.usefulFor && (
+                              <div className="space-y-1.5">
+                                <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider font-semibold">
+                                  Particularly Useful For:
+                                </span>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                                  {item.otherEvaluationTechniques.humanEvaluation.usefulFor.map((uf, uIdx) => (
+                                    <div key={uIdx} className="p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center gap-2">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0" />
+                                      <span className="text-xs text-zinc-200 font-sans">{uf}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* D. Exact Match and Semantic Similarity */}
+                        {item.otherEvaluationTechniques.exactMatchAndSimilarity && (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Exact Match */}
+                            {item.otherEvaluationTechniques.exactMatchAndSimilarity.exactMatch && (
+                              <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
+                                <span className="text-xs font-bold text-rose-400 font-mono uppercase tracking-wider block">
+                                  {item.otherEvaluationTechniques.exactMatchAndSimilarity.exactMatch.title}
+                                </span>
+                                <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                  {item.otherEvaluationTechniques.exactMatchAndSimilarity.exactMatch.desc}
+                                </p>
+                                <div className="p-2.5 rounded-lg bg-zinc-900/90 border border-zinc-800 font-mono text-[11px] text-zinc-300 whitespace-pre-line leading-relaxed">
+                                  {item.otherEvaluationTechniques.exactMatchAndSimilarity.exactMatch.example}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Semantic Similarity */}
+                            {item.otherEvaluationTechniques.exactMatchAndSimilarity.semanticSimilarity && (
+                              <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
+                                <span className="text-xs font-bold text-cyan-400 font-mono uppercase tracking-wider block">
+                                  {item.otherEvaluationTechniques.exactMatchAndSimilarity.semanticSimilarity.title}
+                                </span>
+                                <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                  {item.otherEvaluationTechniques.exactMatchAndSimilarity.semanticSimilarity.desc}
+                                </p>
+                                <div className="p-2.5 rounded-lg bg-zinc-900/90 border border-zinc-800 font-mono text-[11px] text-zinc-300 leading-relaxed">
+                                  {item.otherEvaluationTechniques.exactMatchAndSimilarity.semanticSimilarity.example}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* E. BLEU and ROUGE */}
+                        {item.otherEvaluationTechniques.bleuRouge && (
+                          <div className="p-4 rounded-xl bg-black border border-zinc-800/90 space-y-3">
+                            <span className="text-xs font-bold text-indigo-400 font-mono uppercase tracking-wider block">
+                              {item.otherEvaluationTechniques.bleuRouge.name}
+                            </span>
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {item.otherEvaluationTechniques.bleuRouge.desc}
+                            </p>
+                            {item.otherEvaluationTechniques.bleuRouge.metrics && (
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                {item.otherEvaluationTechniques.bleuRouge.metrics.map((br, bIdx) => (
+                                  <div key={bIdx} className="p-3 rounded-lg bg-zinc-900 border border-zinc-800 space-y-1">
+                                    <div className="font-mono text-xs font-bold text-indigo-300">{br.name}</div>
+                                    <div className="text-xs text-zinc-300 font-sans">{br.desc}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            {item.otherEvaluationTechniques.bleuRouge.note && (
+                              <p className="text-[11px] text-zinc-400 italic bg-zinc-950 p-2.5 rounded border border-zinc-800">
+                                💡 {item.otherEvaluationTechniques.bleuRouge.note}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 4. Other Evaluation Frameworks */}
+                    {item.otherFrameworks && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Table className="w-4 h-4 text-blue-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.otherFrameworks.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-blue-950 text-blue-300 border border-blue-800">
+                            Tool Ecosystem
+                          </span>
+                        </div>
+
+                        {item.otherFrameworks.frameworks && (
+                          <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                            <table className="w-full text-left text-xs font-sans">
+                              <thead className="bg-zinc-900 text-zinc-300 font-mono uppercase text-[11px] border-b border-zinc-800">
+                                <tr>
+                                  <th className="p-3 text-cyan-400 font-bold">Framework</th>
+                                  <th className="p-3 text-amber-300 font-bold">Main Focus</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-zinc-800/70 bg-black/60">
+                                {item.otherFrameworks.frameworks.map((f, fIdx) => (
+                                  <tr key={fIdx} className="hover:bg-zinc-900/40 transition">
+                                    <td className="p-3 font-mono font-semibold text-white">{f.framework}</td>
+                                    <td className="p-3 text-zinc-200">{f.focus}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+
+                        {item.otherFrameworks.note && (
+                          <p className="text-xs text-zinc-400 italic bg-zinc-900/60 p-3 rounded-xl border border-zinc-800/80">
+                            💡 {item.otherFrameworks.note}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 5. RAG Evaluation Workflow */}
+                    {item.ragEvaluationWorkflow && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-5 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Workflow className="w-4 h-4 text-amber-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.ragEvaluationWorkflow.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
+                            Step-by-Step &amp; Diagnosis
+                          </span>
+                        </div>
+
+                        {item.ragEvaluationWorkflow.desc && (
+                          <p className="text-xs sm:text-sm text-zinc-200 font-sans">
+                            {item.ragEvaluationWorkflow.desc}
+                          </p>
+                        )}
+
+                        {/* 8-step Workflow */}
+                        {item.ragEvaluationWorkflow.steps && Array.isArray(item.ragEvaluationWorkflow.steps) && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            {item.ragEvaluationWorkflow.steps.map((st, sIdx) => (
+                              <div key={sIdx} className="p-3 rounded-xl bg-black border border-zinc-800 flex items-start gap-2.5">
+                                <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 font-mono text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                  {sIdx + 1}
+                                </span>
+                                <span className="text-xs text-zinc-200 font-sans leading-relaxed">
+                                  {typeof st === 'string' ? st.replace(/^[0-9]+\.\s*/, '') : st}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Example Diagnosis Matrix */}
+                        {item.ragEvaluationWorkflow.diagnosticTable && (
+                          <div className="space-y-2 pt-2 border-t border-zinc-900">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-mono text-amber-400 uppercase font-bold tracking-wider">
+                                {item.ragEvaluationWorkflow.diagnosticTitle || 'Example Diagnosis:'}
+                              </span>
+                            </div>
+                            <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                              <table className="w-full text-left text-xs font-sans">
+                                <thead className="bg-zinc-900 text-zinc-300 font-mono uppercase text-[11px] border-b border-zinc-800">
+                                  <tr>
+                                    <th className="p-3 text-rose-400 font-bold">Evaluation Result</th>
+                                    <th className="p-3 text-emerald-400 font-bold">Likely Area to Investigate</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-zinc-800/70 bg-black/60">
+                                  {item.ragEvaluationWorkflow.diagnosticTable.map((row, dIdx) => (
+                                    <tr key={dIdx} className="hover:bg-zinc-900/40 transition">
+                                      <td className="p-3 font-semibold text-rose-300 font-mono">{row.result}</td>
+                                      <td className="p-3 text-zinc-200">{row.investigate}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        )}
+
+                        {item.ragEvaluationWorkflow.diagnosticNote && (
+                          <p className="text-[11px] text-zinc-400 italic bg-zinc-950 p-2.5 rounded border border-zinc-800">
+                            💡 {item.ragEvaluationWorkflow.diagnosticNote}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 6. Important Interview Distinction */}
+                    {item.interviewDistinction && (
+                      <div className="p-5 rounded-2xl bg-gradient-to-r from-amber-950/30 via-zinc-950 to-zinc-950 border border-amber-500/40 space-y-4 shadow-xl">
+                        <div className="flex items-center gap-2 text-amber-400 font-mono font-bold text-xs uppercase border-b border-amber-900/40 pb-2">
+                          <Sparkles className="w-4 h-4" />
+                          <span>{typeof item.interviewDistinction === 'object' ? item.interviewDistinction.title : '6. Important Interview Distinction'}</span>
+                        </div>
+
+                        {typeof item.interviewDistinction === 'string' ? (
+                          <p className="text-xs sm:text-sm text-zinc-200 font-sans italic leading-relaxed">
+                            "{item.interviewDistinction}"
+                          </p>
+                        ) : (
+                          <div className="space-y-3">
+                            {item.interviewDistinction.topic && (
+                              <h5 className="text-xs font-bold font-mono text-amber-300 uppercase tracking-wide">
+                                {item.interviewDistinction.topic}
+                              </h5>
+                            )}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                              <div className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                                <div className="text-xs font-mono font-bold text-cyan-400">Offline Evaluation</div>
+                                <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                  {item.interviewDistinction.offline}
+                                </p>
+                              </div>
+                              <div className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
+                                <div className="text-xs font-mono font-bold text-emerald-400">Online Evaluation</div>
+                                <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                  {item.interviewDistinction.online}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 7. Interview Answer */}
+                    {item.interviewAnswer && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-cyan-500/40 space-y-3 shadow-xl">
+                        <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                          <Terminal className="w-4 h-4 text-cyan-400" />
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                            {item.interviewAnswer.title || '7. Interview Answer'}
+                          </h4>
+                        </div>
+                        <p className="text-xs font-bold text-white font-mono">
+                          Q: {item.interviewAnswer.question}
+                        </p>
+                        <blockquote className="p-3.5 rounded-xl bg-black border-l-2 border-cyan-400 text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans italic">
+                          "{item.interviewAnswer.answer}"
+                        </blockquote>
+
+                        {item.takeaway && (
+                          <div className="p-3 rounded-lg bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300 leading-relaxed flex items-center gap-2">
+                            <strong className="text-cyan-400 font-mono uppercase shrink-0">Key Takeaway:</strong>
+                            <span>{item.takeaway}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+
+                {item.id === 'reactjs' && (
+                  <div className="space-y-8 pt-4">
+                    {/* 1. Header Overview & Core Architecture */}
+                    <div className="p-6 rounded-2xl bg-gradient-to-br from-cyan-950/40 via-zinc-950 to-blue-950/30 border border-cyan-500/40 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <Code2 className="w-5 h-5 text-cyan-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-cyan-300">
+                            1. Core Philosophy, Virtual DOM & The Fiber Reconciler
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                          Declarative UI • Unidirectional Flow • Heuristic Diffing
+                        </span>
+                      </div>
+                      <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-sans">
+                        React is a declarative, component-driven frontend library developed by Meta. Instead of imperatively mutating browser DOM nodes (e.g. <code className="text-cyan-300 bg-zinc-900 px-1.5 py-0.5 rounded">document.getElementById()</code>), React renders UI as a pure function of state: <span className="font-mono text-cyan-300 font-bold">UI = f(state)</span>. When state changes, React recalculates the view and efficiently mutates the real DOM through its reconciliation engine.
+                      </p>
+
+                      {/* VDOM vs Real DOM vs Fiber Flow */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div className="p-4 rounded-xl bg-zinc-900/80 border border-cyan-500/30 space-y-2">
+                          <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-sm">
+                            <Cpu className="w-4 h-4" />
+                            <span>1. Virtual DOM (VDOM)</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            An in-memory JavaScript tree of lightweight objects (<code className="text-cyan-300">ReactElement</code>). It mirrors the real DOM structure but carries no direct browser rendering overhead or layout computation.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/80 border border-blue-500/30 space-y-2">
+                          <div className="flex items-center gap-2 text-blue-400 font-mono font-bold text-sm">
+                            <Activity className="w-4 h-4" />
+                            <span>2. Diffing Algorithm</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Compares previous and current VDOM trees. Uses an <span className="font-mono text-blue-300 font-semibold">O(n)</span> heuristic algorithm based on element types and stable <code className="text-blue-300">key</code> attributes rather than traditional <span className="font-mono text-rose-300">O(n³)</span> tree diffing.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/80 border border-emerald-500/30 space-y-2">
+                          <div className="flex items-center gap-2 text-emerald-400 font-mono font-bold text-sm">
+                            <Zap className="w-4 h-4" />
+                            <span>3. Fiber Engine (React 16+)</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Fiber replaced the synchronous stack reconciler. It introduces incremental rendering, priority lanes (time-slicing), interruptible units of work, and dual-buffering (<code className="text-emerald-300">current</code> vs <code className="text-emerald-300">workInProgress</code>).
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Heuristic Diffing Rules */}
+                      <div className="p-4 rounded-xl bg-black/60 border border-zinc-800 space-y-3 pt-3">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400 block">
+                          Three Core Heuristic Diffing Assumptions:
+                        </span>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 space-y-1">
+                            <span className="text-xs font-bold text-cyan-300 font-mono">1. Element Type Diff</span>
+                            <p className="text-xs text-zinc-400 leading-relaxed">
+                              Two elements of different types (e.g. &lt;div&gt; to &lt;p&gt;, or &lt;Header&gt; to &lt;Nav&gt;) produce completely different trees. React destroys the old subtree, unmounts all children, and builds from scratch.
+                            </p>
+                          </div>
+                          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 space-y-1">
+                            <span className="text-xs font-bold text-blue-300 font-mono">2. Same Type DOM Node</span>
+                            <p className="text-xs text-zinc-400 leading-relaxed">
+                              When comparing identical DOM element types, React keeps the underlying DOM node and only updates changed properties (e.g. mutating only <code className="text-blue-300">style.color</code> or <code className="text-blue-300">className</code>).
+                            </p>
+                          </div>
+                          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 space-y-1">
+                            <span className="text-xs font-bold text-amber-300 font-mono">3. Keys on Children</span>
+                            <p className="text-xs text-zinc-400 leading-relaxed">
+                              Keys give children identity across renders. Using stable unique IDs avoids re-mounting all elements when prepending or filtering items in a list. Never use array index as key for dynamic/reordered lists!
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 2. Props vs State & Component Paradigms */}
+                    <div className="p-6 rounded-2xl bg-zinc-950/70 border border-indigo-500/30 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <Sliders className="w-5 h-5 text-indigo-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-indigo-300">
+                            2. Component Paradigm: Props, State &amp; Controlled vs Uncontrolled
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800">
+                          Unidirectional Data Flow • Pure Components • React.memo
+                        </span>
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs sm:text-sm text-zinc-300 border-collapse border border-zinc-800 rounded-xl overflow-hidden">
+                          <thead className="bg-zinc-900/90 text-zinc-200 font-mono uppercase text-xs">
+                            <tr>
+                              <th className="p-3 border border-zinc-800 text-indigo-300">Aspect</th>
+                              <th className="p-3 border border-zinc-800 text-cyan-300">Props (Properties)</th>
+                              <th className="p-3 border border-zinc-800 text-emerald-300">State</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 font-sans">
+                            <tr className="hover:bg-zinc-900/40">
+                              <td className="p-3 border border-zinc-800 font-mono font-semibold text-zinc-200">Mutability</td>
+                              <td className="p-3 border border-zinc-800 text-cyan-200 font-medium">Immutable (read-only by the child)</td>
+                              <td className="p-3 border border-zinc-800 text-emerald-200 font-medium">Mutable via setter (<code className="text-emerald-300">setState</code>)</td>
+                            </tr>
+                            <tr className="hover:bg-zinc-900/40">
+                              <td className="p-3 border border-zinc-800 font-mono font-semibold text-zinc-200">Origin / Ownership</td>
+                              <td className="p-3 border border-zinc-800">Passed down from parent component</td>
+                              <td className="p-3 border border-zinc-800">Created and managed internally within component</td>
+                            </tr>
+                            <tr className="hover:bg-zinc-900/40">
+                              <td className="p-3 border border-zinc-800 font-mono font-semibold text-zinc-200">Re-render Trigger</td>
+                              <td className="p-3 border border-zinc-800">Parent re-render or prop value change re-renders child</td>
+                              <td className="p-3 border border-zinc-800">Calling setter (<code className="text-emerald-300">setCount</code>) schedules a re-render</td>
+                            </tr>
+                            <tr className="hover:bg-zinc-900/40">
+                              <td className="p-3 border border-zinc-800 font-mono font-semibold text-zinc-200">Usage</td>
+                              <td className="p-3 border border-zinc-800">Configuring components, callbacks, data passing</td>
+                              <td className="p-3 border border-zinc-800">User inputs, active tab, expanded accordion, fetched data</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="text-sm font-bold text-indigo-300 font-mono">Controlled Components</div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Form data is handled directly by React state (<code className="text-indigo-300">value={'{val}'} onChange={'{e => setVal(e.target.value)}'}</code>). React acts as the single source of truth, enabling immediate validation, masking, and conditional button disabling.
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="text-sm font-bold text-amber-300 font-mono">Uncontrolled Components (useRef)</div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Form data is handled by the browser DOM itself. Values are pulled on submission using a <code className="text-amber-300">useRef</code> (<code className="text-amber-300">ref.current.value</code>). Ideal for file uploads or integrating with non-React third-party DOM widgets.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 3. The Complete Hooks Masterclass */}
+                    <div className="p-6 rounded-2xl bg-zinc-950/70 border border-emerald-500/30 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <Terminal className="w-5 h-5 text-emerald-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-emerald-300">
+                            3. The Complete React Hooks Guide &amp; Execution Semantics
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+                          useState • useEffect • useRef • useMemo • useCallback • useReducer • useTransition
+                        </span>
+                      </div>
+
+                      <div className="space-y-4">
+                        {/* Hook Card 1: useState */}
+                        <div className="p-4 rounded-xl bg-zinc-900/70 border border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <span className="text-sm font-mono font-bold text-emerald-400">useState</span>
+                            <span className="text-xs font-mono text-zinc-400">Preserved state variable across renders</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Always use functional updates (<code className="text-emerald-300">setCount(prev =&gt; prev + 1)</code>) when new state depends on previous state to prevent stale closure bugs in async operations. In React 18, state updates are automatically batched across promises, timeouts, and event listeners.
+                          </p>
+                          <CodeHighlight
+                            code={`// Direct update vs Functional update:
+const [count, setCount] = useState(0);
+
+// Bad in async/closures (stale value):
+// setCount(count + 1);
+
+// Good (always operates on latest state):
+setCount(prev => prev + 1);`}
+                            filename="useStateExample.jsx"
+                            showHeader={true}
+                          />
+                        </div>
+
+                        {/* Hook Card 2: useEffect */}
+                        <div className="p-4 rounded-xl bg-zinc-900/70 border border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <span className="text-sm font-mono font-bold text-cyan-400">useEffect</span>
+                            <span className="text-xs font-mono text-zinc-400">Side effects after paint &amp; cleanup</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Executes side effects (API calls, subscriptions, timers) after DOM paint. Return a cleanup function to unsubscribe or clear intervals when the component unmounts or before the effect runs again.
+                          </p>
+                          <CodeHighlight
+                            code={`useEffect(() => {
+  const controller = new AbortController();
+  
+  async function fetchData() {
+    try {
+      const res = await fetch(\`/api/products?id=\${id}\`, { signal: controller.signal });
+      const data = await res.json();
+      setProduct(data);
+    } catch (err) {
+      if (err.name !== 'AbortError') setError(err);
+    }
+  }
+
+  fetchData();
+
+  // Cleanup function: aborts inflight request on unmount or id change
+  return () => controller.abort();
+}, [id]); // Only runs when 'id' changes`}
+                            filename="useEffectExample.jsx"
+                            showHeader={true}
+                          />
+                        </div>
+
+                        {/* Hook Card 3: useRef */}
+                        <div className="p-4 rounded-xl bg-zinc-900/70 border border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <span className="text-sm font-mono font-bold text-amber-400">useRef</span>
+                            <span className="text-xs font-mono text-zinc-400">Persistent mutable container without re-rendering</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Storing values in <code className="text-amber-300">ref.current</code> does <strong>NOT</strong> trigger a re-render. Perfect for holding interval timers, tracking previous values, or holding a direct reference to a real DOM element.
+                          </p>
+                          <CodeHighlight
+                            code={`const timerRef = useRef(null);
+const inputRef = useRef(null);
+
+const handleStart = () => {
+  timerRef.current = setInterval(() => setTicks(t => t + 1), 1000);
+};
+
+const handleStop = () => {
+  clearInterval(timerRef.current);
+  inputRef.current?.focus(); // Direct DOM node access
+};`}
+                            filename="useRefExample.jsx"
+                            showHeader={true}
+                          />
+                        </div>
+
+                        {/* Hook Card 4: useMemo & useCallback */}
+                        <div className="p-4 rounded-xl bg-zinc-900/70 border border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <span className="text-sm font-mono font-bold text-purple-400">useMemo &amp; useCallback</span>
+                            <span className="text-xs font-mono text-zinc-400">Memoizing calculations &amp; callback references</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            <span className="text-purple-300 font-semibold font-mono">useMemo</span> caches the <em>result</em> of an expensive function. <span className="text-purple-300 font-semibold font-mono">useCallback</span> caches the <em>function instance</em> itself so child components wrapped in <code className="text-purple-300">React.memo</code> don't re-render needlessly due to new function pointer references on every render.
+                          </p>
+                          <CodeHighlight
+                            code={`// Caches the computed array (runs only when products or filter changes):
+const filteredList = useMemo(() => {
+  return products.filter(p => p.price <= maxPrice && p.inStock);
+}, [products, maxPrice]);
+
+// Caches function reference (prevents child re-render):
+const handleSelect = useCallback((id) => {
+  dispatch({ type: 'SELECT_PRODUCT', payload: id });
+}, [dispatch]);`}
+                            filename="memoizationExample.jsx"
+                            showHeader={true}
+                          />
+                        </div>
+
+                        {/* Hook Card 5: React 18 Concurrent Hooks */}
+                        <div className="p-4 rounded-xl bg-zinc-900/70 border border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <span className="text-sm font-mono font-bold text-sky-400">useTransition &amp; useDeferredValue (React 18 Concurrent)</span>
+                            <span className="text-xs font-mono text-zinc-400">Non-blocking UI &amp; Priority Lanes</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Separates urgent updates (e.g. typing into an input field) from non-urgent transitions (e.g. filtering 10,000 table rows). The browser stays silky smooth with 60 FPS while heavy background rendering is calculated asynchronously.
+                          </p>
+                          <CodeHighlight
+                            code={`const [isPending, startTransition] = useTransition();
+const [query, setQuery] = useState('');
+const [filteredData, setFilteredData] = useState(largeDataset);
+
+const handleChange = (e) => {
+  // 1. Urgent update: input field updates immediately
+  setQuery(e.target.value);
+
+  // 2. Non-urgent update: deferred so it doesn't freeze the user's keystrokes
+  startTransition(() => {
+    setFilteredData(performExpensiveFilter(largeDataset, e.target.value));
+  });
+};`}
+                            filename="concurrentTransition.jsx"
+                            showHeader={true}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 4. State Management Spectrum */}
+                    <div className="p-6 rounded-2xl bg-zinc-950/70 border border-amber-500/30 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <Database className="w-5 h-5 text-amber-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-amber-300">
+                            4. Enterprise State Management Architecture
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
+                          Local • Context • Zustand / Redux • TanStack Query
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="text-sm font-bold text-cyan-400 font-mono">1. Local State (useState / useReducer)</div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Best for component-isolated state: dropdown toggles, modal open/close, multi-step form steps. Automatically cleans up when unmounted.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="text-sm font-bold text-indigo-400 font-mono">2. Context API (Low-Frequency Global)</div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Best for app-wide settings that change infrequently: authenticated user session, dark/light theme, language/locale. Avoid using for high-velocity streaming data because all consumers re-render.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="text-sm font-bold text-emerald-400 font-mono">3. Client State (Zustand / Redux Toolkit)</div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Best for complex multi-view client state: shopping cart, canvas editors, notification queues. Zustand provides selector-based subscriptions without provider boilerplate; RTK gives strict predictability and middleware.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="text-sm font-bold text-amber-400 font-mono">4. Server State (TanStack Query / SWR)</div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Best for async API data: handles caching, query deduping, background refetching (stale-while-revalidate), pagination, and optimistic updates. Replaces 90% of boilerplate useEffect data-fetching logic!
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 5. React in Modern AI & Full-Stack Applications */}
+                    <div className="p-6 rounded-2xl bg-zinc-950/70 border border-purple-500/30 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="w-5 h-5 text-purple-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-purple-300">
+                            5. React in Modern Generative AI &amp; Streaming Applications
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-purple-950 text-purple-300 border border-purple-800">
+                          Server-Sent Events (SSE) • Token Streaming • Optimistic AI UI • RSC
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <span className="text-xs font-bold text-purple-300 font-mono block">Streaming LLM Tokens (SSE)</span>
+                          <p className="text-xs text-zinc-300 leading-relaxed">
+                            Instead of awaiting a 15-second LLM response, React consumes a <code className="text-purple-300">ReadableStream</code> via <code className="text-purple-300">fetch()</code> and progressively streams tokens to UI state with sub-100ms time-to-first-token.
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <span className="text-xs font-bold text-cyan-300 font-mono block">Optimistic AI Updates</span>
+                          <p className="text-xs text-zinc-300 leading-relaxed">
+                            Immediately inserts user messages into conversation state with a glowing typing pulse before backend network roundtrip completes, creating instantaneous perceived responsiveness.
+                          </p>
+                        </div>
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <span className="text-xs font-bold text-emerald-300 font-mono block">React Server Components (RSC)</span>
+                          <p className="text-xs text-zinc-300 leading-relaxed">
+                            Components execute solely on the server, stream rendered HTML chunks to the browser, have direct access to vector databases &amp; AI APIs, and ship zero JavaScript client bundle!
+                          </p>
+                        </div>
+                      </div>
+
+                      <CodeHighlight
+                        code={`// Production Pattern: Streaming LLM chunks directly into React state
+async function streamAIResponse(prompt, setMessages) {
+  const response = await fetch('/api/chat/stream', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let accumulatedText = '';
+
+  // Add initial empty AI bubble:
+  setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value, { stream: true });
+    accumulatedText += chunk;
+
+    // Stream tokens progressively into UI:
+    setMessages(prev => {
+      const updated = [...prev];
+      updated[updated.length - 1] = { role: 'assistant', content: accumulatedText };
+      return updated;
+    });
+  }
+}`}
+                        filename="streamAIResponse.js"
+                        showHeader={true}
+                      />
+                    </div>
+
+                    {/* 6. Production Interview Traps & Defense Cheat Sheet */}
+                    <div className="p-6 rounded-2xl bg-zinc-950/70 border border-rose-500/30 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <ShieldCheck className="w-5 h-5 text-rose-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-rose-300">
+                            6. Production Interview Traps &amp; Defense Cheat Sheet
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-rose-950 text-rose-300 border border-rose-800">
+                          5 Critical Defense Answers
+                        </span>
+                      </div>
+
+                      <div className="space-y-3.5">
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <span className="text-sm font-bold text-cyan-300 font-mono block">
+                            Q1: Why is setState batched and asynchronous?
+                          </span>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                            If React re-rendered synchronously after every <code className="text-cyan-300">setState</code> call, an event handler with 3 state updates would trigger 3 full render passes, recalculating styles and painting the DOM 3 times. Batching combines multiple updates into a single re-render pass for optimal 60 FPS performance. In React 18, automatic batching applies everywhere (timeouts, promises, native events).
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <span className="text-sm font-bold text-amber-300 font-mono block">
+                            Q2: What is the difference between useEffect and useLayoutEffect?
+                          </span>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                            <code className="text-amber-300">useEffect</code> runs <strong>asynchronously AFTER</strong> the browser paints the screen, preventing render blocking. <code className="text-amber-300">useLayoutEffect</code> runs <strong>synchronously AFTER DOM mutations but BEFORE the browser paints</strong>. Use <code className="text-amber-300">useLayoutEffect</code> only when reading layout dimensions (e.g. measuring element height/width) or synchronizing scroll position to eliminate visual flickering.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <span className="text-sm font-bold text-emerald-300 font-mono block">
+                            Q3: What causes an infinite re-render loop and how do you prevent it?
+                          </span>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                            Updating state directly in the component body, or calling <code className="text-emerald-300">setState</code> inside a <code className="text-emerald-300">useEffect</code> whose dependency array includes the very state being updated (or an unstable object/function recreated on every render). Fix by using primitive dependencies, <code className="text-emerald-300">useCallback</code>/<code className="text-emerald-300">useMemo</code>, or functional state updates.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <span className="text-sm font-bold text-purple-300 font-mono block">
+                            Q4: What are the Rules of Hooks and why do they exist?
+                          </span>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                            <strong>Rule 1:</strong> Only call hooks at the top level (never inside loops, conditions, or nested functions).<br />
+                            <strong>Rule 2:</strong> Only call hooks from React function components or custom hooks.<br />
+                            <em>Why:</em> React does not track hooks by variable name; it uses an internal linked-list pointer on the fiber node. If a hook call is skipped due to an <code className="text-purple-300">if</code> statement, the sequence shifts, corrupting all downstream state and effect hooks.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <span className="text-sm font-bold text-rose-300 font-mono block">
+                            Q5: What is the difference between Real DOM, Virtual DOM, and Shadow DOM?
+                          </span>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                            <strong>Real DOM:</strong> The browser's actual element tree (expensive to manipulate directly).<br />
+                            <strong>Virtual DOM:</strong> React's lightweight JavaScript tree representation used to calculate minimal diffs.<br />
+                            <strong>Shadow DOM:</strong> A native browser Web Components standard used to encapsulate internal HTML/CSS so styles don't leak into the global document (completely unrelated to React's Virtual DOM).
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+
+                {/* HNSW (Hierarchical Navigable Small World) Deep-Dive Specification */}
+                {item.id === 'hnsw' && (
+                  <div className="space-y-8 pt-4">
+                    {/* 1. Header Overview & Intuitive Analogy */}
+                    <div className="p-6 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-zinc-950 to-teal-950/30 border border-emerald-500/40 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <Network className="w-5 h-5 text-emerald-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-emerald-300">
+                            1. What is HNSW? (Explained in Plain English)
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+                          Hierarchical Navigable Small World • Sub-5ms Vector Search
+                        </span>
+                      </div>
+
+                      <p className="text-sm sm:text-base text-zinc-200 leading-relaxed font-sans">
+                        <strong>HNSW</strong> (Hierarchical Navigable Small World) is the gold-standard algorithm used by vector databases like <strong className="text-emerald-300">ChromaDB, Pinecone, Qdrant, Milvus, and FAISS</strong>. It allows you to search through millions of high-dimensional vectors and find the most relevant matches in less than <strong className="text-emerald-300 font-mono">5 milliseconds</strong> without comparing your query against every single vector in the database.
+                      </p>
+
+                      {/* The Real-World Analogy Card */}
+                      <div className="p-4 sm:p-5 rounded-xl bg-black/60 border border-emerald-500/30 space-y-3">
+                        <div className="flex items-center gap-2 text-emerald-400 font-mono font-bold text-sm">
+                          <Sparkles className="w-4 h-4 text-emerald-400" />
+                          <span>The Travel Analogy: Express Flight vs. Walking</span>
+                        </div>
+                        <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                          Imagine you are in New York and want to find a specific small cafe in Tokyo:
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                          <div className="p-3.5 rounded-lg bg-zinc-900/70 border border-zinc-800 space-y-1.5">
+                            <span className="text-xs font-bold text-emerald-300 font-mono block">Top Layer (Flight)</span>
+                            <p className="text-xs text-zinc-400 leading-relaxed">
+                              You don't walk street by street across the ocean. You take a non-stop flight to Tokyo. This is the top layer of HNSW: very few vectors, huge long-distance jumps across vector space.
+                            </p>
+                          </div>
+                          <div className="p-3.5 rounded-lg bg-zinc-900/70 border border-zinc-800 space-y-1.5">
+                            <span className="text-xs font-bold text-teal-300 font-mono block">Middle Layer (Metro)</span>
+                            <p className="text-xs text-zinc-400 leading-relaxed">
+                              Once in Tokyo, you take a subway express line to the specific neighborhood district. HNSW drops down one layer to zoom closer to the target cluster.
+                            </p>
+                          </div>
+                          <div className="p-3.5 rounded-lg bg-zinc-900/70 border border-zinc-800 space-y-1.5">
+                            <span className="text-xs font-bold text-cyan-300 font-mono block">Bottom Layer 0 (Walking)</span>
+                            <p className="text-xs text-zinc-400 leading-relaxed">
+                              You walk the final 100 meters to the cafe door. Layer 0 contains <strong>every vector</strong> in the database, where HNSW finds the exact closest top matches.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 2. How the HNSW Multi-Layer Skip-List Works */}
+                    <div className="p-6 rounded-2xl bg-zinc-950/70 border border-teal-500/30 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <Layers className="w-5 h-5 text-teal-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-teal-300">
+                            2. How HNSW Works Internally (Step-by-Step)
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-teal-950 text-teal-300 border border-teal-800">
+                          Greedy Search • O(log N) Time Complexity
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 pt-1">
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="text-xs font-bold text-teal-400 font-mono">Step 1: Enter Top Layer</div>
+                          <p className="text-xs text-zinc-300 leading-relaxed">
+                            The search starts at a predefined entry point vector on the highest layer (which has very few nodes).
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="text-xs font-bold text-teal-400 font-mono">Step 2: Greedy Hop</div>
+                          <p className="text-xs text-zinc-300 leading-relaxed">
+                            Look at connected neighbors: "Is any neighbor closer to the user query than where I am?" If yes, jump to it. Repeat until no neighbor is closer.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="text-xs font-bold text-teal-400 font-mono">Step 3: Drop Down a Layer</div>
+                          <p className="text-xs text-zinc-300 leading-relaxed">
+                            Once stuck at the closest node in this layer, use it as the starting entry point and drop down into the denser layer below.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="text-xs font-bold text-teal-400 font-mono">Step 4: Return Top-K</div>
+                          <p className="text-xs text-zinc-300 leading-relaxed">
+                            Repeat until you reach Layer 0. Explore the local neighborhood and return the Top-K (e.g. Top-5) closest vector items.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800/80 space-y-2 text-xs sm:text-sm text-zinc-300">
+                        <span className="font-bold font-mono text-cyan-300 block">Why is it called "Small World"?</span>
+                        <p className="leading-relaxed font-sans">
+                          It comes from the <em>"Six Degrees of Separation"</em> concept in social networks: you can reach almost anyone in the world within 6 friend connections because people have both close local neighbors and far-away acquaintances. HNSW builds mathematical graphs with high local clustering (short hops) and long-distance shortcuts (big jumps).
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 3. The 3 Tuning Parameters (Simple Knobs) */}
+                    <div className="p-6 rounded-2xl bg-zinc-950/70 border border-cyan-500/30 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <Sliders className="w-5 h-5 text-cyan-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-cyan-300">
+                            3. The 3 Parameters You Need to Know (and How to Tune Them)
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                          M • efConstruction • efSearch
+                        </span>
+                      </div>
+
+                      <div className="space-y-3.5">
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <span className="text-sm font-mono font-bold text-cyan-300">1. M (Number of connections per node)</span>
+                            <span className="text-xs font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">Default: 16 to 64</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                            <strong>What it means in simple terms:</strong> How many neighbor links each vector keeps. <br />
+                            <strong>Rule of thumb:</strong> Higher <code className="text-cyan-300">M</code> (e.g. 32 or 64) gives higher recall and search accuracy for complex data, but uses more RAM memory and makes building the index slower. For most RAG apps, <code className="text-cyan-300">M = 16</code> or <code className="text-cyan-300">M = 32</code> is the sweet spot.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <span className="text-sm font-mono font-bold text-teal-300">2. efConstruction (Build Time Quality)</span>
+                            <span className="text-xs font-mono px-2 py-0.5 rounded bg-teal-950 text-teal-400 border border-teal-800">Default: 100 to 200</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                            <strong>What it means in simple terms:</strong> How thoroughly the algorithm searches when inserting a new vector into the graph during data ingestion. <br />
+                            <strong>Rule of thumb:</strong> Higher <code className="text-teal-300">efConstruction</code> makes inserting data slower, but builds a better-connected graph for faster queries later. It does not affect RAM at query time!
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <span className="text-sm font-mono font-bold text-emerald-300">3. efSearch (Query Time Search Depth)</span>
+                            <span className="text-xs font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">Default: 50 to 100</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                            <strong>What it means in simple terms:</strong> How many candidate neighbors are examined during search time when a user asks a question. <br />
+                            <strong>Rule of thumb:</strong> This is a runtime parameter! Increasing <code className="text-emerald-300">efSearch</code> gives higher recall (finding 99%+ of true closest items) at the cost of slightly higher search latency (e.g. 2ms vs 6ms).
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 4. Comparison Table: Flat vs IVF vs HNSW */}
+                    <div className="p-6 rounded-2xl bg-zinc-950/70 border border-amber-500/30 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <Table className="w-5 h-5 text-amber-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-amber-300">
+                            4. Comparison: Why Everyone Uses HNSW
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
+                          Brute Force vs IVF vs HNSW
+                        </span>
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs sm:text-sm text-zinc-300 border-collapse border border-zinc-800 rounded-xl overflow-hidden">
+                          <thead className="bg-zinc-900/90 text-zinc-200 font-mono uppercase text-xs">
+                            <tr>
+                              <th className="p-3 border border-zinc-800 text-amber-300">Index Type</th>
+                              <th className="p-3 border border-zinc-800 text-cyan-300">Search Speed</th>
+                              <th className="p-3 border border-zinc-800 text-emerald-300">Recall / Accuracy</th>
+                              <th className="p-3 border border-zinc-800 text-rose-300">RAM / Memory Cost</th>
+                              <th className="p-3 border border-zinc-800 text-purple-300">Best For</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800/80 font-sans">
+                            <tr className="hover:bg-zinc-900/40">
+                              <td className="p-3 border border-zinc-800 font-mono font-bold text-zinc-200">Flat (Exact Search)</td>
+                              <td className="p-3 border border-zinc-800 text-rose-400 font-mono">Slow: O(N)</td>
+                              <td className="p-3 border border-zinc-800 text-emerald-400 font-semibold">100% (Perfect)</td>
+                              <td className="p-3 border border-zinc-800 text-emerald-400">Lowest (raw vectors)</td>
+                              <td className="p-3 border border-zinc-800">&lt; 10,000 vectors where speed isn't critical</td>
+                            </tr>
+                            <tr className="hover:bg-zinc-900/40">
+                              <td className="p-3 border border-zinc-800 font-mono font-bold text-zinc-200">IVF (Inverted File)</td>
+                              <td className="p-3 border border-zinc-800 text-amber-300 font-mono">Medium: O(√N)</td>
+                              <td className="p-3 border border-zinc-800 text-amber-300">85% – 92%</td>
+                              <td className="p-3 border border-zinc-800 text-teal-400">Low to Moderate</td>
+                              <td className="p-3 border border-zinc-800">Huge datasets where RAM is strictly limited</td>
+                            </tr>
+                            <tr className="hover:bg-zinc-900/40 bg-emerald-950/20 border-emerald-500/40">
+                              <td className="p-3 border border-zinc-800 font-mono font-bold text-emerald-300">HNSW (Hierarchical Graph)</td>
+                              <td className="p-3 border border-zinc-800 text-emerald-300 font-mono font-bold">Sub-5ms: O(log N)</td>
+                              <td className="p-3 border border-zinc-800 text-emerald-300 font-bold">95% – 99%+</td>
+                              <td className="p-3 border border-zinc-800 text-rose-300">Higher (stores graph links)</td>
+                              <td className="p-3 border border-zinc-800 font-semibold text-emerald-200">Modern Production GenAI, RAG &amp; Chatbots</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* 5. Code Example in ChromaDB / Python */}
+                    <div className="p-6 rounded-2xl bg-zinc-950/70 border border-indigo-500/30 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <Code className="w-5 h-5 text-indigo-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-indigo-300">
+                            5. Code Implementation: Configuring HNSW in ChromaDB &amp; FAISS
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800">
+                          Python • ChromaDB • FAISS
+                        </span>
+                      </div>
+
+                      <CodeHighlight
+                        code={`# Configuring HNSW in ChromaDB (Python)
+import chromadb
+
+client = chromadb.PersistentClient(path="./chroma_db")
+
+# Create collection with custom HNSW parameters:
+collection = client.create_collection(
+    name="garment_embeddings",
+    metadata={
+        "hnsw:space": "cosine",            # Distance metric (cosine / l2 / ip)
+        "hnsw:construction_ef": 128,       # Build-time quality (default 100)
+        "hnsw:M": 32,                      # Number of neighbor edges (default 16)
+        "hnsw:search_ef": 64               # Search-time candidate depth
+    }
+)
+
+# Insert vectors and query in sub-5ms:
+collection.add(
+    ids=["item_101", "item_102"],
+    embeddings=[[0.05, -0.12, 0.45, ...], [-0.08, 0.22, 0.11, ...]],
+    documents=["Blue cotton shirt", "Green linen jacket"]
+)
+
+# Sub-5ms ANN search using HNSW:
+results = collection.query(
+    query_embeddings=[[0.04, -0.10, 0.40, ...]],
+    n_results=5
+)`}
+                        filename="hnsw_chromadb_config.py"
+                        showHeader={true}
+                      />
+                    </div>
+
+                    {/* 6. Simple Interview Q&A Card */}
+                    <div className="p-6 rounded-2xl bg-zinc-950/70 border border-rose-500/30 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <ShieldCheck className="w-5 h-5 text-rose-400" />
+                          <h4 className="text-lg sm:text-xl font-bold font-mono text-rose-300">
+                            6. Interview Defense: 3 Questions Asked in Every AI Interview
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono px-3 py-1 rounded-full bg-rose-950 text-rose-300 border border-rose-800">
+                          Fast &amp; Simple Answers
+                        </span>
+                      </div>
+
+                      <div className="space-y-3.5">
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-1.5">
+                          <span className="text-sm font-bold text-cyan-300 font-mono block">
+                            Q1: How does HNSW achieve sub-5ms search across millions of vectors?
+                          </span>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                            <strong>Answer:</strong> Instead of checking all vectors one-by-one ($O(N)$ linear scan), HNSW structures vectors into a multi-layer graph inspired by skip-lists. Top layers make large jumps across vector space to quickly locate the right cluster, and bottom layers do fine-grained local search. This reduces search time to logarithmic complexity <strong className="text-cyan-300 font-mono">$O(\log N)$</strong>.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-1.5">
+                          <span className="text-sm font-bold text-amber-300 font-mono block">
+                            Q2: What is the main downside or trade-off with HNSW?
+                          </span>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                            <strong>Answer:</strong> Memory (RAM) consumption. Because HNSW must store graph pointers (edges between vectors) in RAM alongside the vector embeddings, the index size is typically 1.5× to 2× larger than raw vector data.
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-1.5">
+                          <span className="text-sm font-bold text-emerald-300 font-mono block">
+                            Q3: If your vector search is missing relevant documents (low recall), which parameter would you increase?
+                          </span>
+                          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
+                            <strong>Answer:</strong> I would first increase <code className="text-emerald-300">efSearch</code> at runtime (e.g. from 50 to 100 or 150). This forces the algorithm to explore more candidate paths during query time without having to re-index the database. If that is still not enough, I would re-index with higher <code className="text-emerald-300">M</code> and <code className="text-emerald-300">efConstruction</code>.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
 

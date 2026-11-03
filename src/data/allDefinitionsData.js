@@ -316,6 +316,10 @@ export const definitionBookmarks = [
     "label": "Hybrid Search (BM25 + Vector Search + Reranking)"
   },
   {
+    "id": "hnsw",
+    "label": "HNSW (Vector Search Index)"
+  },
+  {
     "id": "histogram",
     "label": "Histogram (Frequency Distribution)"
   },
@@ -596,32 +600,291 @@ export const definitionBookmarks = [
     "label": "RAG Architectures (8 Patterns & Failure Symptoms Solved)"
   },
   {
-    "id": "ranking-reranking",
-    "label": "Ranking / Reranking"
+  "id": "ragas",
+  "title": "RAGAS & AI Evaluation",
+  "badge": "GenAI Evaluation Framework & LLM Quality Assessment",
+  "summary": "RAGAS (Retrieval-Augmented Generation Assessment) is an evaluation framework for measuring the quality of RAG systems and other LLM applications. It provides automated, reference-free and reference-based metrics to evaluate both retrieval and generation stages without relying solely on expensive human annotations.",
+  "whatIsRagas": {
+    "title": "1. What is RAGAS?",
+    "desc": "RAGAS (Retrieval-Augmented Generation Assessment) is an evaluation framework for measuring the quality of RAG systems and other LLM applications.",
+    "coreQuestions": [
+      "Did the retriever fetch the right information?",
+      "Is the generated answer supported by the retrieved context?",
+      "Does the answer actually address the user's question?",
+      "Is the answer factually correct?"
+    ],
+    "workflowsNote": "RAGAS includes metrics for retrieval, generation, and agentic workflows. Some metrics use an LLM as a judge, while others use embeddings or direct comparisons."
   },
-  {
-    "id": "ranking-and-reranking",
-    "label": "Ranking & Reranking"
+  "fourImportantMetrics": {
+    "title": "2. Four Important RAGAS Metrics",
+    "metrics": [
+      {
+        "name": "Faithfulness",
+        "target": "Generation stage",
+        "desc": "Is the answer supported by retrieved context?"
+      },
+      {
+        "name": "Answer Relevancy",
+        "target": "Generation stage",
+        "desc": "Does the answer address the user's question?"
+      },
+      {
+        "name": "Context Precision",
+        "target": "Retrieval stage",
+        "desc": "Are relevant chunks ranked near the top?"
+      },
+      {
+        "name": "Context Recall",
+        "target": "Retrieval stage",
+        "desc": "Did retrieval find the information needed to answer?"
+      }
+    ],
+    "faithfulness": {
+      "name": "A. Faithfulness",
+      "desc": "Measures whether the claims in the generated answer are supported by the retrieved context.",
+      "example": {
+        "context": "The product warranty is 2 years.",
+        "answer": "The product warranty is 5 years.",
+        "explanation": "The answer contradicts the context, so faithfulness should be low."
+      },
+      "formula": "Faithfulness = \\frac{\\text{Supported answer claims}}{\\text{Total answer claims}}",
+      "note": "A high score means the answer is well-grounded in the provided context. It does not guarantee that the context itself is true."
+    },
+    "answerRelevancy": {
+      "name": "B. Answer Relevancy",
+      "desc": "Measures whether the answer directly addresses the user's question.",
+      "example": {
+        "question": "What is the warranty period?",
+        "answer": "The product is available in three colors.",
+        "explanation": "The answer may be factually true, but it is irrelevant to the question."
+      },
+      "distinction": "Faithfulness and answer relevancy are different:\n• Faithfulness: Is the answer supported by the context?\n• Answer relevancy: Does the answer address the question?\nAn answer can be faithful but irrelevant."
+    },
+    "contextPrecision": {
+      "name": "C. Context Precision",
+      "desc": "Measures whether relevant retrieved chunks appear near the top of the ranked results.",
+      "table": [
+        {
+          "rank": "1",
+          "chunk": "Warranty policy",
+          "relevance": "Relevant"
+        },
+        {
+          "rank": "2",
+          "chunk": "Product pricing",
+          "relevance": "Irrelevant"
+        },
+        {
+          "rank": "3",
+          "chunk": "Warranty duration",
+          "relevance": "Relevant"
+        },
+        {
+          "rank": "4",
+          "chunk": "Shipping policy",
+          "relevance": "Irrelevant"
+        }
+      ],
+      "note": "A relevant chunk ranked first is generally more useful than the same chunk ranked near the bottom. Context precision is especially useful for evaluating retrieval ranking and reranking."
+    },
+    "contextRecall": {
+      "name": "D. Context Recall",
+      "desc": "Measures whether the retrieved context contains the information required to answer the question.",
+      "example": {
+        "reference": [
+          "Warranty duration",
+          "Warranty coverage",
+          "Warranty exclusions"
+        ],
+        "retrieved": [
+          "Warranty duration",
+          "Warranty coverage"
+        ],
+        "explanation": "The retriever missed the exclusions information."
+      },
+      "formula": "Context Recall = \\frac{\\text{Reference facts retrieved}}{\\text{Total reference facts}}",
+      "note": "High recall means the retrieved context covers more of the information needed for the answer."
+    }
   },
-  {
-    "id": "regularization",
-    "label": "Regularization"
+  "otherEvaluationTechniques": {
+    "title": "3. Other AI / LLM Evaluation Techniques",
+    "traditionalMl": {
+      "name": "A. Traditional ML Metrics",
+      "desc": "Used when the model produces predictions such as classes, probabilities, or numerical values. These are useful for classical ML models and for LLM tasks that have clearly defined labels.",
+      "metrics": [
+        {
+          "metric": "Accuracy",
+          "use": "Overall classification correctness"
+        },
+        {
+          "metric": "Precision",
+          "use": "How many predicted positives are correct"
+        },
+        {
+          "metric": "Recall",
+          "use": "How many actual positives are found"
+        },
+        {
+          "metric": "F1-score",
+          "use": "Balance between precision and recall"
+        },
+        {
+          "metric": "ROC-AUC",
+          "use": "Ability to rank positive examples above negative ones"
+        },
+        {
+          "metric": "MAE / RMSE",
+          "use": "Regression prediction error"
+        }
+      ]
+    },
+    "llmAsAJudge": {
+      "name": "B. LLM-as-a-Judge",
+      "desc": "An LLM evaluates another model's output using a rubric.",
+      "criteria": [
+        "Correctness",
+        "Relevance",
+        "Completeness",
+        "Clarity",
+        "Groundedness",
+        "Safety"
+      ],
+      "scoring": "A judge might return a score from 1 to 5 with a short explanation.",
+      "example": {
+        "question": "What is RAG?",
+        "expected": [
+          "Explains retrieval and generation.",
+          "Describes how retrieved context is supplied to the LLM.",
+          "Avoids unrelated information."
+        ],
+        "evaluation": "The judge scores the answer against these criteria."
+      },
+      "note": "Important: LLM judges can also make mistakes, so calibrate them against human-reviewed examples."
+    },
+    "humanEvaluation": {
+      "name": "C. Human Evaluation",
+      "desc": "Humans review model outputs for qualities that are difficult to measure automatically. Human evaluation is often used to validate automated evaluation metrics.",
+      "usefulFor": [
+        "Domain-specific correctness",
+        "Helpfulness",
+        "Tone and clarity",
+        "Ambiguous questions",
+        "Safety-sensitive answers"
+      ]
+    },
+    "exactMatchAndSimilarity": {
+      "name": "D. Exact Match and Semantic Similarity",
+      "exactMatch": {
+        "title": "Exact Match (EM)",
+        "desc": "The generated answer must match the reference answer exactly.",
+        "example": "Reference: Paris | Prediction: Paris -> Exact Match = 1.\nPrediction: The capital is Paris -> Exact Match = 0, even though the answer may be correct."
+      },
+      "semanticSimilarity": {
+        "title": "Semantic Similarity",
+        "desc": "Measures how close two answers are in meaning, often using embeddings.",
+        "example": "It can recognize that 'The capital of France is Paris' and 'Paris is France's capital' have similar meanings. However, semantic similarity does not always guarantee factual correctness."
+      }
+    },
+    "bleuRouge": {
+      "name": "E. BLEU and ROUGE",
+      "desc": "Commonly used for text-generation evaluation.",
+      "metrics": [
+        {
+          "name": "BLEU",
+          "desc": "Measures n-gram overlap, commonly used in machine translation."
+        },
+        {
+          "name": "ROUGE",
+          "desc": "Measures overlap with reference text, commonly used in summarization."
+        }
+      ],
+      "note": "They compare generated text with reference text, but may penalize valid answers that use different wording."
+    }
   },
-  {
-    "id": "r2-score",
-    "label": "R² Score"
+  "otherFrameworks": {
+    "title": "4. Other Evaluation Frameworks",
+    "note": "These frameworks overlap in capabilities. Choose based on the application, evaluation workflow, and integration requirements.",
+    "frameworks": [
+      {
+        "framework": "RAGAS",
+        "focus": "RAG and LLM application evaluation"
+      },
+      {
+        "framework": "DeepEval",
+        "focus": "Python-based LLM testing and evaluation"
+      },
+      {
+        "framework": "Promptfoo",
+        "focus": "Prompt/model comparisons, testing, and red teaming"
+      },
+      {
+        "framework": "Arize Phoenix",
+        "focus": "Tracing, observability, and evaluation"
+      },
+      {
+        "framework": "TruLens",
+        "focus": "Feedback-based evaluation of LLM and RAG applications"
+      },
+      {
+        "framework": "OpenAI Evals",
+        "focus": "Evaluation workflows for OpenAI models and applications"
+      }
+    ]
   },
-  {
-    "id": "random-forest",
-    "label": "Random Forest"
+  "ragEvaluationWorkflow": {
+    "title": "5. RAG Evaluation Workflow",
+    "desc": "A practical evaluation workflow:",
+    "steps": [
+      "1. Create a representative test dataset containing user questions and reference answers.",
+      "2. Run the RAG pipeline.",
+      "3. Capture retrieved chunks and generated answers.",
+      "4. Evaluate retrieval using context precision and context recall.",
+      "5. Evaluate generation using faithfulness, answer relevancy, and factual correctness.",
+      "6. Review low-scoring examples manually.",
+      "7. Identify whether the issue is in retrieval, reranking, prompt design, or generation.",
+      "8. Fix the relevant component and run the evaluation again."
+    ],
+    "diagnosticTitle": "Example Diagnosis Matrix",
+    "diagnosticTable": [
+      {
+        "result": "Low context recall",
+        "investigate": "Retrieval, chunking, embedding model"
+      },
+      {
+        "result": "Low context precision",
+        "investigate": "Ranking, reranking, retrieval filters"
+      },
+      {
+        "result": "Low faithfulness",
+        "investigate": "Prompt, model behavior, context quality"
+      },
+      {
+        "result": "Low answer relevancy",
+        "investigate": "Prompt design, answer generation"
+      },
+      {
+        "result": "High latency",
+        "investigate": "Retrieval, model calls, orchestration"
+      }
+    ],
+    "diagnosticNote": "These are diagnostic clues, not absolute rules."
   },
-  {
-    "id": "random-variable",
-    "label": "Random Variable"
+  "interviewDistinction": {
+    "title": "6. Important Interview Distinction",
+    "topic": "Offline evaluation vs. online evaluation",
+    "offline": "Offline evaluation: Tests the system against a curated dataset before deployment or after a change. Offline evaluation helps detect regressions before release.",
+    "online": "Online evaluation: Monitors actual production interactions, such as answer quality, latency, errors, user feedback, and safety. Online evaluation helps identify issues that appear with real users and real traffic."
   },
+  "interviewAnswer": {
+    "title": "7. Interview Answer",
+    "question": "How do you evaluate a RAG application?",
+    "answer": "I evaluate retrieval and generation separately. For retrieval, I use context precision and context recall to check whether the relevant information is retrieved and ranked properly. For generation, I use faithfulness to measure grounding and answer relevancy to check whether the response addresses the query. I can use RAGAS to automate these metrics, supplement them with LLM-as-a-judge and human evaluation, and maintain a representative evaluation dataset for regression testing."
+  },
+  "takeaway": "RAGAS helps evaluate RAG quality, but reliable AI evaluation requires multiple metrics, representative test data, and human validation."
+},
   {
-    "id": "react-pattern",
-    "label": "ReAct"
+    "id": "reactjs",
+    "label": "ReactJS"
   },
   {
     "id": "redis",
@@ -807,6 +1070,96 @@ export const definitionBookmarks = [
     "id": "zero-shot-few-shot",
     "label": "Zero-shot / Few-shot"
   }
+];
+
+export const mostAskedBookmarks = [
+  { id: 'agentic-ai-workflow', label: 'Agentic AI / Workflow' },
+  { id: 'aws-azure', label: 'AWS & Azure in AI/ML (Vision, OpenAI & Security)' },
+  { id: 'bias-weight', label: 'Bias & Weights' },
+  { id: 'bert', label: 'BERT' },
+  { id: 'bm25', label: 'BM25 (Best Matching 25 / Lexical Search Algorithm)' },
+  { id: 'box-cox', label: 'Box-Cox Transformation' },
+  { id: 'chatbot-architecture', label: 'Chatbot Architecture (Enterprise Multi-Agent Banking System)' },
+  { id: 'cicd', label: 'CI/CD' },
+  { id: 'chunking', label: 'Chunking' },
+  { id: 'confidence-score', label: 'Confidence Score' },
+  { id: 'classical-ml', label: 'Classical ML' },
+  { id: 'chroma-db', label: 'ChromaDB (Embedded & Open-Source Vector DB)' },
+  { id: 'class-imbalance', label: 'Class Imbalance' },
+  { id: 'clip', label: 'CLIP' },
+  { id: 'custom-model-fastapi', label: 'Custom Model with FastAPI' },
+  { id: 'connect-gpt-fastapi', label: 'Connect GPT to FastAPI' },
+  { id: 'connect-gpt-flask', label: 'Connect GPT to Flask' },
+  { id: 'crud-api', label: 'CRUD API' },
+  { id: 'docker', label: 'Docker' },
+  { id: 'denoising', label: 'Denoising' },
+  { id: 'data-cleaning', label: 'Data Cleaning & Preprocessing' },
+  { id: 'debugging', label: 'Debugging AI & Search Pipelines' },
+  { id: 'diffusion-model', label: 'Diffusion Model' },
+  { id: 'design-patterns', label: 'Design Patterns' },
+  { id: 'embedding', label: 'Embedding' },
+  { id: 'early-stopping', label: 'Early Stopping' },
+  { id: 'elastic-net', label: 'Elastic Net' },
+  { id: 'fine-tuning', label: 'Fine-Tuning' },
+  { id: 'f1-score', label: 'F1-Score' },
+  { id: 'gradient-descent', label: 'Gradient Descent' },
+  { id: 'gini-impurity', label: 'Gini Impurity' },
+  { id: 'gpt-llama', label: 'GPT / LLaMA' },
+  { id: 'git-github', label: 'Git / GitHub' },
+  { id: 'hallucination', label: 'Hallucination' },
+  { id: 'hyperparameters', label: 'Hyperparameters' },
+  { id: 'hybrid-search', label: 'Hybrid Search (BM25 + Vector Search + Reranking)' },
+  { id: 'hnsw', label: 'HNSW (Vector Search Index)' },
+  { id: 'llm', label: 'LLM' },
+  { id: 'llm-as-a-judge', label: 'LLM-as-a-Judge' },
+  { id: 'lora', label: 'LoRA' },
+  { id: 'langchain-langgraph', label: 'LangChain / LangGraph' },
+  { id: 'lexical-search', label: 'Lexical Search' },
+  { id: 'map-evaluation', label: 'mAP' },
+  { id: 'micro-macro-f1', label: 'Micro F1 vs. Macro F1 & Class Imbalance' },
+  { id: 'normalization-scaling', label: 'Normalization / Scaling' },
+  { id: 'nlp-general-flow', label: 'NLP General Flow' },
+  { id: 'ngram-bigram', label: 'n-gram / Bigram' },
+  { id: 'outlier-detection', label: 'Outlier Detection' },
+  { id: 'overfitting', label: 'Overfitting (High Variance)' },
+  { id: 'optimization', label: 'Optimization & Production Scaling' },
+  { id: 'ocr', label: 'OCR' },
+  { id: 'onnx', label: 'ONNX' },
+  { id: 'openai-vs-azure-ai', label: 'OpenAI vs Azure AI' },
+  { id: 'oop-concepts', label: 'OOP Concepts' },
+  { id: 'onion-architecture', label: 'Onion Architecture' },
+  { id: 'confusion-matrix-precision-recall', label: 'Precision, Recall & Accuracy' },
+  { id: 'pydantic', label: 'Pydantic' },
+  { id: 'pruning', label: 'Pruning' },
+  { id: 'powertransformer', label: 'PowerTransformer' },
+  { id: 'paged-attention', label: 'PagedAttention' },
+  { id: 'qlora', label: 'QLoRA' },
+  { id: 'rag', label: 'RAG' },
+  { id: 'rag-architectures', label: 'RAG Architectures' },
+  { id: 'ranking-and-reranking', label: 'Ranking & Reranking' },
+  { id: 'regression-vs-classification', label: 'Regression vs Classification' },
+  { id: 'reinforcement-learning', label: 'Reinforcement Learning' },
+  { id: 'retrieval-algorithms', label: 'Retrieval Algorithms' },
+  { id: 'roc-auc', label: 'ROC-AUC' },
+  { id: 'self-attention', label: 'Self-Attention' },
+  { id: 'similarity-semantic-search', label: 'Similarity / Semantic Search' },
+  { id: 'sft-peft', label: 'SFT / PEFT' },
+  { id: 'transformer', label: 'Transformer' },
+  { id: 'top-k-top-p', label: 'Top-K / Top-P' },
+  { id: 'tokenization', label: 'Tokenization' },
+  { id: 'tf-idf', label: 'TF-IDF' },
+  { id: 'trimming', label: 'Trimming vs Capping' },
+  { id: 'underfitting', label: 'Underfitting (High Bias)' },
+  { id: 'underfitting-overfitting', label: 'Underfitting & Overfitting' },
+  { id: 'uvicorn', label: 'Uvicorn' },
+  { id: 'update-deployed-model', label: 'Update a Deployed Model' },
+  { id: 'variance', label: 'Variance' },
+  { id: 'vector-database', label: 'Vector Database' },
+  { id: 'xgboost', label: 'XGBoost' },
+  { id: 'yeo-johnson', label: 'Yeo-Johnson Transformation' },
+  { id: 'yolo', label: 'YOLO' },
+  { id: 'z-score', label: 'Z-score' },
+  { id: 'zero-shot-few-shot', label: 'Zero-shot / Few-shot' }
 ];
 
 export const definitionsData = [
@@ -4968,9 +5321,18 @@ export const definitionsData = [
       "motivatingExample": {
         "title": "Why Feature Scaling Matters:",
         "features": [
-          { "name": "Age", "range": "18–60" },
-          { "name": "Salary", "range": "₹20,000–₹2,00,000" },
-          { "name": "Experience", "range": "0–20 years" }
+          {
+            "name": "Age",
+            "range": "18–60"
+          },
+          {
+            "name": "Salary",
+            "range": "₹20,000–₹2,00,000"
+          },
+          {
+            "name": "Experience",
+            "range": "0–20 years"
+          }
         ],
         "insight": "Salary has much larger numerical values. Distance-based algorithms may give it more influence simply because of its scale. Feature scaling helps reduce this problem."
       },
@@ -5005,15 +5367,60 @@ export const definitionsData = [
     "algorithmTable": {
       "title": "3. Which Algorithms Need Feature Scaling?",
       "rows": [
-        { "algorithm": "Logistic Regression", "needed": "Usually", "reason": "Regularization (L1/L2) penalizes weights unfairly if features have differing scales", "accent": "text-cyan-400" },
-        { "algorithm": "SVM", "needed": "Yes", "reason": "Relies on distance calculations between support vectors and decision boundary", "accent": "text-emerald-400" },
-        { "algorithm": "KNN", "needed": "Yes", "reason": "Euclidean distance calculations are easily dominated by large-scale features", "accent": "text-emerald-400" },
-        { "algorithm": "K-Means", "needed": "Yes", "reason": "Cluster centroid distance assignments are sensitive to numerical variance", "accent": "text-emerald-400" },
-        { "algorithm": "Neural Networks", "needed": "Often", "reason": "Speeds up gradient descent convergence and avoids exploding/vanishing activations", "accent": "text-cyan-400" },
-        { "algorithm": "PCA", "needed": "Yes", "reason": "Variance maximization projects onto largest numerical spread; unscaled features dominate components", "accent": "text-emerald-400" },
-        { "algorithm": "Decision Trees", "needed": "Usually not", "reason": "Split rules evaluate single feature monotonic thresholds (X >= threshold)", "accent": "text-zinc-400" },
-        { "algorithm": "Random Forest", "needed": "Usually not", "reason": "Ensemble of unscaled, scale-invariant decision trees", "accent": "text-zinc-400" },
-        { "algorithm": "Tree-based boosting", "needed": "Generally not", "reason": "Gradient boosted trees (XGBoost, LightGBM) split on rank orders/histograms", "accent": "text-zinc-400" }
+        {
+          "algorithm": "Logistic Regression",
+          "needed": "Usually",
+          "reason": "Regularization (L1/L2) penalizes weights unfairly if features have differing scales",
+          "accent": "text-cyan-400"
+        },
+        {
+          "algorithm": "SVM",
+          "needed": "Yes",
+          "reason": "Relies on distance calculations between support vectors and decision boundary",
+          "accent": "text-emerald-400"
+        },
+        {
+          "algorithm": "KNN",
+          "needed": "Yes",
+          "reason": "Euclidean distance calculations are easily dominated by large-scale features",
+          "accent": "text-emerald-400"
+        },
+        {
+          "algorithm": "K-Means",
+          "needed": "Yes",
+          "reason": "Cluster centroid distance assignments are sensitive to numerical variance",
+          "accent": "text-emerald-400"
+        },
+        {
+          "algorithm": "Neural Networks",
+          "needed": "Often",
+          "reason": "Speeds up gradient descent convergence and avoids exploding/vanishing activations",
+          "accent": "text-cyan-400"
+        },
+        {
+          "algorithm": "PCA",
+          "needed": "Yes",
+          "reason": "Variance maximization projects onto largest numerical spread; unscaled features dominate components",
+          "accent": "text-emerald-400"
+        },
+        {
+          "algorithm": "Decision Trees",
+          "needed": "Usually not",
+          "reason": "Split rules evaluate single feature monotonic thresholds (X >= threshold)",
+          "accent": "text-zinc-400"
+        },
+        {
+          "algorithm": "Random Forest",
+          "needed": "Usually not",
+          "reason": "Ensemble of unscaled, scale-invariant decision trees",
+          "accent": "text-zinc-400"
+        },
+        {
+          "algorithm": "Tree-based boosting",
+          "needed": "Generally not",
+          "reason": "Gradient boosted trees (XGBoost, LightGBM) split on rank orders/histograms",
+          "accent": "text-zinc-400"
+        }
       ],
       "rule": "Scaling is especially useful for algorithms that depend on distances, gradients, or feature magnitudes. Tree-based algorithms generally do not require scaling because their splits depend on feature thresholds rather than distances."
     },
@@ -5326,11 +5733,26 @@ export const definitionsData = [
     "decisionRules": {
       "title": "4. Architecture Decision Rules",
       "rules": [
-        { "requirement": "Predict a fixed label", "approach": "Supervised ML (TF-IDF + Logistic Regression baseline)" },
-        { "requirement": "Need stronger contextual classification", "approach": "Evaluate a Transformer classifier (e.g. BERT)" },
-        { "requirement": "Answer from company documents", "approach": "RAG with an LLM" },
-        { "requirement": "Need multi-step tool use or actions", "approach": "Consider an agentic workflow" },
-        { "requirement": "Need multiple capabilities", "approach": "Combine approaches only when evaluation shows a benefit" }
+        {
+          "requirement": "Predict a fixed label",
+          "approach": "Supervised ML (TF-IDF + Logistic Regression baseline)"
+        },
+        {
+          "requirement": "Need stronger contextual classification",
+          "approach": "Evaluate a Transformer classifier (e.g. BERT)"
+        },
+        {
+          "requirement": "Answer from company documents",
+          "approach": "RAG with an LLM"
+        },
+        {
+          "requirement": "Need multi-step tool use or actions",
+          "approach": "Consider an agentic workflow"
+        },
+        {
+          "requirement": "Need multiple capabilities",
+          "approach": "Combine approaches only when evaluation shows a benefit"
+        }
       ],
       "principle": "Engineering principle: Use the simplest architecture that meets the requirements."
     },
@@ -5370,12 +5792,30 @@ export const definitionsData = [
       "title": "8. Systematic Evaluation Matrix",
       "intro": "Evaluate different approaches on the same held-out test set.",
       "rows": [
-        { "area": "Precision per category", "why": "How many tickets assigned to a category actually belong there?" },
-        { "area": "Recall per category", "why": "How many actual tickets in that category did the model find?" },
-        { "area": "Macro F1", "why": "How well does it perform across categories, including rare ones?" },
-        { "area": "Latency", "why": "Can it meet real-time routing requirements?" },
-        { "area": "Cost", "why": "Does the improvement justify additional compute?" },
-        { "area": "Calibration", "why": "Are predicted probabilities reliable enough for threshold-based routing?" }
+        {
+          "area": "Precision per category",
+          "why": "How many tickets assigned to a category actually belong there?"
+        },
+        {
+          "area": "Recall per category",
+          "why": "How many actual tickets in that category did the model find?"
+        },
+        {
+          "area": "Macro F1",
+          "why": "How well does it perform across categories, including rare ones?"
+        },
+        {
+          "area": "Latency",
+          "why": "Can it meet real-time routing requirements?"
+        },
+        {
+          "area": "Cost",
+          "why": "Does the improvement justify additional compute?"
+        },
+        {
+          "area": "Calibration",
+          "why": "Are predicted probabilities reliable enough for threshold-based routing?"
+        }
       ],
       "imbalanceNote": "For imbalanced ticket categories, Macro F1 and per-class recall are particularly useful."
     },
@@ -6762,9 +7202,9 @@ export const definitionsData = [
   {
     "id": "inference",
     "title": "AI/ML Inference: Latency, Throughput, Prefill/Decode & Cost Optimization",
-    "badge": "Model Serving & High-Performance Inference Systems",
-    "summary": "The model processes the input and generates a response: that is inference. Master the core triad metrics (latency, throughput, concurrency), execution paradigms (batch, stream, cache), the two-phase anatomy of LLM generation (prefill vs decode), context windows, temperature controls, and cost optimization levers.",
-    "coreDefinition": "Inference means using a trained model to make predictions on new inputs. Inference latency is how long a model or service takes to return a result.",
+    "badge": "Real-Time Serving, TTFT/TPOT, Hardware Bottlenecks & GPU Economics",
+    "summary": "Inference is the execution phase where a trained model processes real-world inputs to generate predictions or generative tokens. In production, inference systems are governed by strict Service Level Objectives (SLOs) around Time-To-First-Token (TTFT), Time-Per-Output-Token (TPOT), concurrency, GPU memory bandwidth, and dollar-cost-per-million tokens.",
+    "coreDefinition": "Inference is the computational stage where a trained model processes unseen input data to make predictions or generate outputs. Unlike training, which computes gradients and updates weights via backpropagation, inference executes forward-passes only with frozen parameters under strict latency, throughput, and hardware efficiency constraints.",
     "staticVsDynamicInference": {
       "headline": "Static vs. Dynamic Inference & Execution",
       "coreDefinition": "Inference means using a trained model to make predictions on new inputs.",
@@ -6784,6 +7224,12 @@ export const definitionsData = [
           "detail": "Dynamically routes queries to different models (e.g., small vs. large LLMs), adjusts precision, or activates early-exit branches based on load or input difficulty."
         }
       ],
+      "dynamicInferenceExamples": [
+        "Query complexity classifier routing simple questions to GPT-4o-mini and multi-step reasoning to Claude 3.5 Sonnet / o1.",
+        "Cascaded search pipeline trying cached Redis embedding lookups before spinning up deep transformer encoders.",
+        "Dynamic early exit in vision networks terminating classification at intermediate heads when confidence exceeds 98%.",
+        "Adaptive batching windows expanding from 5ms to 50ms during high-load spikes to maximize GPU throughput."
+      ],
       "executionParadigms": [
         {
           "name": "Static execution",
@@ -6799,107 +7245,200 @@ export const definitionsData = [
           "desc": "Operations are executed as the program runs, with control flow that can vary by input.",
           "detail": "Runs operations eagerly line-by-line (e.g. standard PyTorch), allowing Python control flow (if/else, loops) and variable tensor shapes to vary dynamically per input."
         }
-      ]
+      ],
+      "conceptNote": "In modern production systems, static graph compilation delivers 2x-5x lower latency, but dynamic inference routing provides 10x economic savings by matching query complexity to compute footprint."
     },
     "coreTriad": [
       {
-        "metric": "Latency",
-        "desc": "How long one individual request takes from ingress to response egress (measured in p50, p95, and p99).",
-        "tag": "Time per Request"
+        "metric": "Latency (TTFT & TPOT)",
+        "unit": "Milliseconds / Seconds",
+        "desc": "Time-To-First-Token measures responsiveness (prefill); Time-Per-Output-Token measures generational fluidity (decode)."
       },
       {
-        "metric": "Throughput",
-        "desc": "How many requests or tokens the system can successfully process per second or minute (RPS / TPS).",
-        "tag": "System Capacity"
+        "metric": "Throughput (RPS / Tokens/sec)",
+        "unit": "Requests / Sec",
+        "desc": "The aggregate volume of tokens or inferences completed across all concurrent user streams."
       },
       {
-        "metric": "Concurrency",
-        "desc": "How many requests or computational workloads are in progress simultaneously at any given millisecond.",
-        "tag": "In-Flight Workloads"
+        "metric": "Unit Cost ($/1M Tokens)",
+        "unit": "Dollars",
+        "desc": "Amortized GPU compute, memory overhead, and network egress required to deliver user value."
       }
     ],
     "productionSolutions": {
       "strategies": [
-        "Dynamic micro-batching and continuous batching",
-        "Asynchronous non-blocking worker pools (FastAPI + AsyncIO / Celery / Ray)",
-        "Horizontal autoscaling across GPU/CPU worker nodes",
-        "Semantic vector and prompt response caching (Redis / in-memory)",
-        "Dedicated model-serving runtimes (vLLM, TensorRT-LLM, Triton Inference Server)"
+        {
+          "title": "Continuous Batching (vLLM / TGI)",
+          "desc": "Dynamically evicts finished requests and injects newly arrived prompts at every iteration step rather than waiting for batch completion."
+        },
+        {
+          "title": "PagedAttention & KV Cache Paging",
+          "desc": "Eliminates memory fragmentation by allocating non-contiguous virtual blocks for keys and values across GPU VRAM."
+        },
+        {
+          "title": "Speculative Decoding",
+          "desc": "A draft model rapidly proposes tokens while a target LLM verifies them in a single parallel step, boosting decode speed by 2x-3x."
+        }
       ],
-      "hardwareNote": "CPU stands for Central Processing Unit (versatile serial computation), and GPU stands for Graphics Processing Unit (massive parallel tensor matrix operations)."
+      "hardwarePrimer": {
+        "cpu": {
+          "title": "CPU Inference (Xeon / EPYC / Graviton)",
+          "desc": "Ideal for low concurrency, batch scoring, light embeddings, or quantized vision models (e.g. ONNX Runtime, DeepSparse)."
+        },
+        "gpu": {
+          "title": "GPU Inference (A10G / L4 / H100)",
+          "desc": "Essential for massive tensor parallelism, high-concurrency LLM serving, and memory-bandwidth bound decode phases."
+        }
+      }
     },
     "inferenceModes": [
       {
-        "mode": "Batch Inference",
-        "definition": "Processing several inputs together in parallel tensor batches.",
-        "benefits": [
-          "Better hardware utilization on GPUs",
-          "Significantly higher overall system throughput",
-          "Lower per-item compute overhead"
-        ],
-        "tradeoffs": "Larger batches require more GPU VRAM and increase waiting time for individual requests. In production, use small dynamic micro-batches for user search, and large offline batches for catalog ingestion."
+        "mode": "Real-Time / Synchronous",
+        "sla": "< 200ms",
+        "desc": "Direct HTTP/gRPC call waiting for immediate response (e.g., checkout fraud check, autocomplete)."
       },
       {
-        "mode": "Streaming Inference",
-        "definition": "Incrementally sending output tokens over Server-Sent Events (SSE) or WebSockets as they are generated.",
-        "benefits": [
-          "Dramatically reduces Time to First Token (TTFT)",
-          "Prevents client-side network timeouts on long generations",
-          "Creates responsive, perceived real-time user experiences"
-        ],
-        "tradeoffs": "Maintains open persistent network connections per client; requires stream-compatible client handlers."
+        "mode": "Streaming (SSE / WebSockets)",
+        "sla": "< 50ms TTFT",
+        "desc": "Generative token streaming providing immediate interactive perceived latency to human users."
       },
       {
-        "mode": "Inference Caching",
-        "definition": "Storing precomputed query embeddings or final LLM responses for frequent queries.",
-        "benefits": [
-          "Eliminates duplicate neural model execution",
-          "Reduces latency from hundreds of milliseconds to single-digit ms",
-          "Directly slashes LLM provider API costs to zero for cached hits"
-        ],
-        "tradeoffs": "Requires cache-invalidation strategies when catalog data or underlying business logic changes."
+        "mode": "Asynchronous / Batch",
+        "sla": "Minutes to Hours",
+        "desc": "Queue-backed processing (Celery, SQS, Kafka) for catalog re-indexing, offline analytics, or daily embeddings."
       }
     ],
-    "llmPhases": [
-      {
-        "phase": "1. Prefill Phase (Context Encoding)",
-        "bound": "Compute-Bound",
-        "desc": "The model processes the entire prompt in parallel, generating internal representations and populating the Key/Value (KV) cache for all attention heads.",
-        "example": "Processing a long fashion catalog description or conversational chat history."
+    "llmPhases": {
+      "headline": "LLM Inference Phases: Prefill vs. Decode",
+      "summary": "Large Language Model inference is uniquely divided into two fundamentally distinct computational phases with radically different hardware bottlenecks.",
+      "prefill": {
+        "title": "1. Prefill Phase (Context Encoding)",
+        "tag": "Compute-Bound (Parallel GEMM)",
+        "description": "The model processes all input prompt tokens in parallel in a single forward pass, populating the Key/Value (KV) cache for all attention heads across all layers.",
+        "characteristics": [
+          "High GPU compute core utilization (GEMM tensor operations)",
+          "Latency scales with input prompt token length (O(T_input))",
+          "Populates KV cache memory pointers for subsequent decode steps"
+        ],
+        "example": "Processing a 2,000-token fashion lookbook description or conversation history."
       },
-      {
-        "phase": "2. Decode Phase (Autoregressive Generation)",
-        "bound": "Memory-Bandwidth Bound",
-        "desc": "The model generates output tokens one by one sequentially. In each step, it attends to the KV cache without recomputing past token representations.",
-        "example": "Generating recommendation explanations or structured JSON attributes token by token."
-      }
-    ],
-    "hyperparameters": [
-      {
-        "param": "Context Window",
-        "role": "The maximum amount of tokenized information a model can attend to in a single interaction, subject to model-specific context limits.",
-        "note": "Exceeding the context window triggers truncation or memory overflow."
+      "decode": {
+        "title": "2. Decode Phase (Autoregressive Generation)",
+        "tag": "Memory-Bandwidth Bound (GEMV)",
+        "description": "The model generates output tokens sequentially one by one. In each step, the model reads the entire past KV cache from GPU VRAM to compute attention for a single new token.",
+        "characteristics": [
+          "Memory bandwidth bound (repeatedly streaming weights and KV cache from VRAM to SRAM)",
+          "Low GPU arithmetic intensity per token",
+          "Latency scales directly with output token length (O(T_output))"
+        ],
+        "example": "Generating 50 tokens of recommendations or structured JSON attributes word by word."
       },
-      {
-        "param": "Temperature",
-        "role": "Controls how sharply the model's next-token probability distribution is scaled during softmax sampling.",
-        "note": "Lower values (e.g. 0.0) yield predictable, deterministic outputs; higher values (e.g. 0.8) permit creative variability. Temperature does not guarantee factual correctness."
+      "comparisonTable": [
+        {
+          "dimension": "Primary Hardware Bottleneck",
+          "prefill": "Compute-Bound (FLOPs / Tensor Cores)",
+          "decode": "Memory-Bandwidth Bound (HBM / VRAM Bus)"
+        },
+        {
+          "dimension": "Parallelism Nature",
+          "prefill": "Fully parallel across all input prompt tokens",
+          "decode": "Sequential / autoregressive (1 token at a time)"
+        },
+        {
+          "dimension": "Key Latency Metric",
+          "prefill": "Time-To-First-Token (TTFT)",
+          "decode": "Time-Per-Output-Token (TPOT / Inter-token latency)"
+        },
+        {
+          "dimension": "Primary Optimization Lever",
+          "prefill": "FlashAttention, Prefix Caching, Chunked Prefill",
+          "decode": "PagedAttention, Weight Quantization (AWQ/FP8), Speculative Decoding"
+        }
+      ],
+      "tendencyNote": "Separating prefill and decode across dedicated worker pools (Split-Phase Serving) prevents long input prompts from starving real-time decode streams."
+    },
+    "hyperparameters": {
+      "contextWindow": {
+        "name": "Context Window (Token Budget)",
+        "definition": "The maximum number of tokens a model can process in a single inference interaction (e.g. 8k, 32k, 128k tokens).",
+        "includes": [
+          "System prompt and persona guardrails",
+          "Multi-turn conversation history and chat logs",
+          "Retrieved RAG context chunks from vector search",
+          "Generated response output tokens"
+        ],
+        "consequence": "Exceeding the context window causes truncation, loss of early context, or out-of-memory errors on GPU VRAM."
+      },
+      "temperature": {
+        "name": "Sampling Temperature (T)",
+        "definition": "Controls the sharpness of the probability distribution over candidate next-tokens during softmax sampling.",
+        "lowTemp": "T = 0.0 to 0.2: Highly deterministic, focused, reproducible responses (ideal for JSON extraction and SQL queries).",
+        "highTemp": "T = 0.7 to 1.0: Creative, diverse text generation with broader vocabulary exploration.",
+        "guardrail": "Temperature alters sampling distribution sharpness but does NOT guarantee factual accuracy."
       }
-    ],
-    "torchInferenceMode": {
-      "title": "PyTorch Inference Optimization Context Manager",
-      "codeSnippet": "with torch.inference_mode():",
-      "explanation": "This tells PyTorch not to track gradients for the operations inside the block. It reduces unnecessary inference overhead and memory usage. It does not train the model or change its learned weights.",
-      "keyBenefits": [
-        "Completely disables PyTorch autograd graph creation",
-        "Reduces memory consumption and peak GPU VRAM allocation",
-        "Offers higher runtime speed than torch.no_grad() by disabling view tracking",
-        "Guarantees model weights remain strictly frozen during execution"
+    },
+    "pytorchOptimization": {
+      "title": "PyTorch Inference Optimization Context Manager (torch.inference_mode)",
+      "code": "import torch\n\nmodel.eval()\nwith torch.inference_mode():\n    predictions = model(input_tensors)",
+      "explanation": "torch.inference_mode() completely disables PyTorch autograd tracking, avoids creating intermediate computation graph nodes, and bypasses view tracking for maximum memory savings and inference speed.",
+      "benefits": [
+        "Zero gradient tracking memory overhead",
+        "Faster than torch.no_grad() by disabling view tracking",
+        "Guarantees model weights remain strictly frozen",
+        "Reduces peak GPU VRAM allocation"
+      ],
+      "distinctions": [
+        "Disables autograd engine completely without maintaining version counters for tensor views",
+        "Yields 5-15% faster execution than torch.no_grad() for small to medium networks",
+        "Ensures zero risk of accidental weight updates in production microservices",
+        "Always combine with model.eval() to set Dropout and BatchNorm layers to evaluation mode"
       ]
     },
     "costOptimization": {
+      "headline": "Inference Cost Levers & Economic Optimization",
       "definition": "Inference cost is the cost of running a trained model to make predictions. It is separate from the cost of training the model.",
-      "overview": "Hosted model providers charge per input token, output token, or image; self-hosted inference requires dedicated compute, GPU VRAM, and cluster operational cost.",
+      "costModels": {
+        "hosted": "Pay-as-you-go pricing based on input tokens ($0.15 - $2.50 per 1M) and output tokens ($0.60 - $10.00 per 1M). Ideal for variable or spiky traffic.",
+        "selfHosted": "Fixed hardware costs (GPU instance reservation: e.g. A10G, L4, H100) + operational cluster maintenance. Ideal for continuous high RPS."
+      },
+      "sixLevers": [
+        {
+          "number": 1,
+          "lever": "Avoid unnecessary LLM calls",
+          "desc": "Use classical rules, SQL queries, or embeddings for deterministic tasks.",
+          "impact": "Highest ROI"
+        },
+        {
+          "number": 2,
+          "lever": "Cache repeated query embeddings",
+          "desc": "Save embeddings in Redis so identical searches skip model calls completely.",
+          "impact": "Zero-Latency Hit"
+        },
+        {
+          "number": 3,
+          "lever": "Send only top candidates to the LLM",
+          "desc": "Use FAISS/HNSW to filter 15,000 items down to 25 before prompting the LLM.",
+          "impact": "Context Reduction"
+        },
+        {
+          "number": 4,
+          "lever": "Limit generated output length",
+          "desc": "Set strict max_tokens limits and enforce structured schemas to curtail decode loops.",
+          "impact": "Lower Decode Cost"
+        },
+        {
+          "number": 5,
+          "lever": "Route to smaller models",
+          "desc": "Use gpt-4o-mini or small open-weights when reasoning requirements permit.",
+          "impact": "10x Cheaper"
+        },
+        {
+          "number": 6,
+          "lever": "Comprehensive telemetry",
+          "desc": "Monitor token counts, latency profiles, and cost-per-request in CloudWatch/Grafana.",
+          "impact": "Auditability"
+        }
+      ],
       "levers": [
         {
           "lever": "Avoid unnecessary LLM calls",
@@ -6928,42 +7467,71 @@ export const definitionsData = [
       ]
     },
     "qualityEvaluation": {
-      "headline": "How do we evaluate inference quality? A model returning an output quickly does not mean it is producing a good result.",
+      "headline": "Inference Quality & System Evaluation",
+      "premise": "Fast latency is meaningless if the model hallucinates, degrades under load, or produces out-of-stock garment recommendations.",
       "metrics": [
         {
           "metric": "Recall@25",
-          "target": "How many of the relevant designs appear among the top 25 retrieved results."
+          "meaning": "Percentage of relevant candidate garments present in the top 25 retrieved items."
         },
         {
           "metric": "Precision@25",
-          "target": "How many of those top 25 retrieved designs are genuinely relevant."
+          "meaning": "Percentage of items in the top 25 that strictly satisfy the user query criteria."
         },
         {
-          "metric": "Inference Latency",
-          "target": "End-to-end response time (p50, p95, p99 targets)."
+          "metric": "Inference Latency (TTFT & TPOT)",
+          "meaning": "Time to initial byte (<100ms) and inter-token generation speed (>40 tokens/s)."
         },
         {
-          "metric": "Error Rate",
-          "target": "Percentage of requests failing, timing out, or throwing 5xx errors."
+          "metric": "Error Rate & Fallbacks",
+          "meaning": "Percentage of requests failing, timing out, or triggering rule-based fallbacks."
         },
         {
           "metric": "Availability Accuracy",
-          "target": "Whether returned product recommendations are actively in-stock."
+          "meaning": "Ensuring 100% of LLM-recommended SKUs exist in active Postgres inventory."
         },
         {
-          "metric": "Cost per Search",
-          "target": "Average dollar cost of compute and model API invocations per search."
+          "metric": "Cost per Search Interaction",
+          "meaning": "Total amortized cloud compute and API token billing per user search transaction."
         }
+      ],
+      "contextNotes": [
+        "Benchmark retrieval quality with Recall@K and NDCG before optimizing downstream LLM prompts.",
+        "Profile TTFT vs TPOT separately: TTFT is solved by chunked prefill; TPOT is solved by quantization and faster memory bandwidth.",
+        "Implement circuit breakers that degrade to deterministic SQL filters when API rate limits or latency SLAs exceed 500ms."
       ]
     },
-    "productionChecklist": [
-      "Input Validation (sanitize text, reject prompt injections and empty payloads)",
-      "Network Timeouts (enforce strict request deadlines across all upstream calls)",
-      "Structured Output Validation (enforce Pydantic schemas / JSON mode)",
-      "Fallback & Circuit Breakers (graceful degradation when GPU workers spike)",
-      "Continuous Monitoring (track TTFT, token throughput, and drift over time)"
+    "productionHardeningChecklist": [
+      {
+        "item": "Liveness & Readiness Probes",
+        "desc": "Kubernetes probes verifying GPU VRAM availability before routing customer traffic."
+      },
+      {
+        "item": "Circuit Breakers & Retries",
+        "desc": "Automatic exponential backoff and fallback models when upstream LLMs time out."
+      },
+      {
+        "item": "Continuous Telemetry",
+        "desc": "Emit TTFT, TPOT, token consumption, and GPU utilization metrics to Prometheus."
+      },
+      {
+        "item": "Output Schema Validation",
+        "desc": "Pydantic / Instructor validation ensuring zero malformed JSON responses."
+      },
+      {
+        "item": "Rate Limiting & Tiered Queues",
+        "desc": "Redis token-bucket rate limiters prioritizing VIP and synchronous customer traffic."
+      },
+      {
+        "item": "Model Versioning & Rollback",
+        "desc": "Canary rollouts and blue-green deployments with instant rollback capability."
+      }
     ],
-    "takeaway": "Inference is where models meet production reality. Balancing latency, throughput, memory bounds (prefill vs decode), and cost safeguards distinguishes hobbyist prototypes from resilient enterprise AI platforms."
+    "interviewAnswer": {
+      "question": "How do you optimize LLM inference latency and cost in a production application?",
+      "answer": "In production, I separate LLM inference into two phases: Prefill (processing the prompt) which is compute-bound, and Decode (generating tokens) which is memory-bandwidth bound.\n\nTo optimize Prefill and TTFT, I use prefix caching for shared system prompts and chunked prefill so massive documents don't block new requests. For Decode, I implement continuous batching (via vLLM), PagedAttention to eliminate VRAM fragmentation, and 8-bit/4-bit weight quantization (AWQ/GPTQ) to maximize memory throughput.\n\nFrom a cost perspective, I avoid calling large LLMs for simple tasks by using dynamic model routing—sending straightforward queries to GPT-4o-mini or small open-source models, caching vector search results in Redis, and setting strict max_tokens boundaries with structured outputs."
+    },
+    "takeaway": "Inference optimization is an engineering discipline balancing TTFT, TPOT, VRAM bandwidth, and $/token. Treat prefill as a compute problem and decode as a memory-bandwidth problem."
   },
   {
     "id": "fashion-ai-edge-cases",
@@ -11141,7 +11709,12 @@ export const definitionsData = [
         "badge": "n = 1",
         "desc": "Considers individual words independently.",
         "exampleSentence": "“machine learning is powerful”",
-        "extractedFeatures": ["machine", "learning", "is", "powerful"],
+        "extractedFeatures": [
+          "machine",
+          "learning",
+          "is",
+          "powerful"
+        ],
         "advantages": [
           "Simple representation.",
           "Smaller feature space compared with higher-order n-grams.",
@@ -11156,8 +11729,16 @@ export const definitionsData = [
         "badge": "n = 2",
         "desc": "Considers two consecutive words.",
         "exampleSentence": "“machine learning is powerful”",
-        "extractedFeatures": ["machine learning", "learning is", "is powerful"],
-        "otherExamples": ["not good", "not happy", "very useful"],
+        "extractedFeatures": [
+          "machine learning",
+          "learning is",
+          "is powerful"
+        ],
+        "otherExamples": [
+          "not good",
+          "not happy",
+          "very useful"
+        ],
         "advantages": [
           "Captures common two-word phrases.",
           "Preserves local word order.",
@@ -11172,7 +11753,10 @@ export const definitionsData = [
         "badge": "n = 3",
         "desc": "Considers three consecutive words.",
         "exampleSentence": "“I love machine learning”",
-        "extractedFeatures": ["I love machine", "love machine learning"],
+        "extractedFeatures": [
+          "I love machine",
+          "love machine learning"
+        ],
         "advantages": [
           "Captures longer phrases.",
           "Can represent more specific expressions and terminology."
@@ -11186,7 +11770,11 @@ export const definitionsData = [
         "badge": "Subword",
         "desc": "Instead of extracting complete words, character n-grams extract consecutive character sequences.",
         "exampleSentence": "“learn” (Character 3-grams)",
-        "extractedFeatures": ["lea", "ear", "arn"],
+        "extractedFeatures": [
+          "lea",
+          "ear",
+          "arn"
+        ],
         "advantages": [
           "Spelling correction.",
           "Handling misspellings and typos.",
@@ -11214,27 +11802,64 @@ export const definitionsData = [
         "machine learning"
       ],
       "matrix": [
-        { "sentence": "I love machine learning", "row": "[0, 0, 1, 1, 0, 1, 1, 1]" },
-        { "sentence": "I love deep learning", "row": "[1, 1, 1, 1, 1, 0, 0, 0]" }
+        {
+          "sentence": "I love machine learning",
+          "row": "[0, 0, 1, 1, 0, 1, 1, 1]"
+        },
+        {
+          "sentence": "I love deep learning",
+          "row": "[1, 1, 1, 1, 1, 0, 0, 0]"
+        }
       ],
       "matrixExplanation": "Each row represents a sentence, and each column represents an extracted feature. For example, 'deep learning' and 'machine learning' get separate features. A value of 1 indicates that the feature appears once in that sentence.",
       "tokenPatternNote": "Important: By default, CountVectorizer ignores one-character tokens such as 'I' because of its default token pattern (token_pattern=r'(?u)\\b\\w\\w+\\b').",
       "ngramRangeSettings": [
-        { "setting": "(1, 1)", "features": "Unigrams only" },
-        { "setting": "(1, 2)", "features": "Unigrams and bigrams" },
-        { "setting": "(1, 3)", "features": "Unigrams, bigrams, and trigrams" },
-        { "setting": "(2, 2)", "features": "Bigrams only" },
-        { "setting": "(2, 3)", "features": "Bigrams and trigrams" }
+        {
+          "setting": "(1, 1)",
+          "features": "Unigrams only"
+        },
+        {
+          "setting": "(1, 2)",
+          "features": "Unigrams and bigrams"
+        },
+        {
+          "setting": "(1, 3)",
+          "features": "Unigrams, bigrams, and trigrams"
+        },
+        {
+          "setting": "(2, 2)",
+          "features": "Bigrams only"
+        },
+        {
+          "setting": "(2, 3)",
+          "features": "Bigrams and trigrams"
+        }
       ]
     },
     "countVsTfidf": {
       "title": "4. CountVectorizer vs TF-IDF Vectorizer",
       "desc": "Both can extract n-gram features, but they represent them differently.",
       "table": [
-        { "feature": "Representation", "count": "Raw word counts", "tfidf": "Weighted word importance" },
-        { "feature": "Frequency", "count": "Counts occurrences", "tfidf": "Uses term frequency and inverse document frequency" },
-        { "feature": "Common words", "count": "May receive high counts", "tfidf": "Usually receive lower weights if common across documents" },
-        { "feature": "Typical use", "count": "Count-based text features", "tfidf": "Text classification and information retrieval" }
+        {
+          "feature": "Representation",
+          "count": "Raw word counts",
+          "tfidf": "Weighted word importance"
+        },
+        {
+          "feature": "Frequency",
+          "count": "Counts occurrences",
+          "tfidf": "Uses term frequency and inverse document frequency"
+        },
+        {
+          "feature": "Common words",
+          "count": "May receive high counts",
+          "tfidf": "Usually receive lower weights if common across documents"
+        },
+        {
+          "feature": "Typical use",
+          "count": "Count-based text features",
+          "tfidf": "Text classification and information retrieval"
+        }
       ],
       "code": "from sklearn.feature_extraction.text import TfidfVectorizer\n\nvectorizer = TfidfVectorizer(ngram_range=(1, 2))\nX = vectorizer.fit_transform(sentences)",
       "note": "Both vectorizers support the exact same ngram_range parameter."
@@ -11274,12 +11899,36 @@ export const definitionsData = [
     "ngramVsTransformers": {
       "title": "6. n-grams vs Transformers",
       "table": [
-        { "dimension": "Context", "ngram": "Local word sequences", "transformer": "Contextual relationships across the input" },
-        { "dimension": "Word order", "ngram": "Captures consecutive sequences", "transformer": "Uses positional information and attention" },
-        { "dimension": "Representation", "ngram": "Usually sparse numerical features", "transformer": "Learned contextual representations" },
-        { "dimension": "Long-distance relationships", "ngram": "Limited", "transformer": "Better suited to capturing them" },
-        { "dimension": "Computation", "ngram": "Generally lightweight", "transformer": "Generally more computationally expensive" },
-        { "dimension": "Common use", "ngram": "TF-IDF, traditional NLP", "transformer": "Modern NLP and LLMs" }
+        {
+          "dimension": "Context",
+          "ngram": "Local word sequences",
+          "transformer": "Contextual relationships across the input"
+        },
+        {
+          "dimension": "Word order",
+          "ngram": "Captures consecutive sequences",
+          "transformer": "Uses positional information and attention"
+        },
+        {
+          "dimension": "Representation",
+          "ngram": "Usually sparse numerical features",
+          "transformer": "Learned contextual representations"
+        },
+        {
+          "dimension": "Long-distance relationships",
+          "ngram": "Limited",
+          "transformer": "Better suited to capturing them"
+        },
+        {
+          "dimension": "Computation",
+          "ngram": "Generally lightweight",
+          "transformer": "Generally more computationally expensive"
+        },
+        {
+          "dimension": "Common use",
+          "ngram": "TF-IDF, traditional NLP",
+          "transformer": "Modern NLP and LLMs"
+        }
       ]
     },
     "interviewAnswer": "“An n-gram is a sequence of n consecutive words or characters extracted from text. Unigrams represent individual words, bigrams represent two consecutive words, and trigrams represent three. They help traditional NLP models capture local context and multi-word expressions. I commonly use n-grams with CountVectorizer or TF-IDF for text classification. The main trade-off is that higher n-gram values increase dimensionality and sparsity, while still being limited in their ability to capture long-distance context compared with Transformers.”",
@@ -11684,87 +12333,179 @@ export const definitionsData = [
   {
     "id": "knn",
     "title": "KNN Algorithm (K-Nearest Neighbors)",
-    "badge": "Instance-Based Non-Parametric Learning, Metric Spaces & Lazy Learning",
-    "summary": "KNN predicts the class or value of a new data point by looking at its K nearest training examples. For example, suppose you want to classify an email as spam or normal. KNN looks for similar labeled emails and uses their labels to make a prediction. Advantages: Simple, intuitive, no explicit model-fitting optimization, and useful for small datasets. Limitations: Prediction can be expensive on large datasets; performance depends on distance choice, scaling, and the value of K. Irrelevant or high-dimensional features can make distances less meaningful.",
-    "coreDefinition": "KNN algorithm (K-Nearest Neighbors). KNN predicts the class or value of a new data point by looking at its K nearest training examples.",
-    "nnDefinition": "Nearest neighbor (NN) generally means finding the closest data point to a query according to a distance or similarity measure.",
-    "knnVotingRule": "K-nearest neighbors (KNN) considers the K closest data points. For classification, it can use majority voting; for regression, it can average their target values.",
-    "knnVsVectorRetrieval": {
-      "title": "KNN versus vector retrieval",
-      "points": [
+    "badge": "Instance-Based Non-Parametric Learning, Metric Spaces & ANN Scaling",
+    "summary": "K-Nearest Neighbors (KNN) is an intuitive, non-parametric, instance-based supervised learning algorithm. It makes predictions by locating the K closest training instances in feature space and taking a majority vote (classification) or mean average (regression). Because it defers all computation to query time, it is called a lazy learner.",
+    "coreDefinition": "KNN (K-Nearest Neighbors) is a supervised, instance-based learning algorithm that stores all available training cases and classifies new data points based on a similarity measure (e.g., Euclidean or Manhattan distance). It assumes that similar data points exist in close proximity in feature space.",
+    "exampleScenario": {
+      "query": "Predicting whether a garment is 'Casual' or 'Formal' based on fabric weight and stitch density.",
+      "neighbors": [
         {
-          "label": "KNN classification",
-          "desc": "KNN classification predicts a label using nearby labeled training examples."
+          "id": 1,
+          "distance": 0.12,
+          "label": "Casual"
         },
         {
-          "label": "Vector retrieval",
-          "desc": "Vector retrieval finds similar stored embeddings or records, often to supply candidates for a search or RAG system."
+          "id": 2,
+          "distance": 0.18,
+          "label": "Casual"
+        },
+        {
+          "id": 3,
+          "distance": 0.22,
+          "label": "Casual"
+        },
+        {
+          "id": 4,
+          "distance": 0.31,
+          "label": "Formal"
+        },
+        {
+          "id": 5,
+          "distance": 0.35,
+          "label": "Formal"
         }
-      ]
+      ],
+      "prediction": "Majority vote for K=5 yields 3 Casual vs 2 Formal → Predicted: Casual"
     },
-    "standardScalerRule": "StandardScaler transforms numerical features to have approximately zero mean and unit variance, based on the training data.",
-    "realWorldExample": {
-      "headline": "Intuitive Example",
-      "content": "For example, suppose you want to classify an email as spam or normal. KNN looks for similar labeled emails and uses their labels to make a prediction."
+    "coreConcepts": {
+      "headline": "Core Principles: Instance-Based Non-Parametric Learning",
+      "nn": {
+        "title": "Nearest Neighbor (NN, K=1)",
+        "desc": "Assigns the new sample the exact label of the single closest training instance in feature space. Sensitive to noise, outliers, and mislabeled points."
+      },
+      "knn": {
+        "title": "K-Nearest Neighbors (K ≥ 1)",
+        "classification": "Takes a majority vote (or distance-weighted vote) among the K nearest points to determine class membership.",
+        "regression": "Computes the arithmetic mean or distance-weighted average of the target values of the K nearest points."
+      },
+      "lazyLearner": "KNN is a lazy learner (instance-based learning): it has zero explicit training time (O(1)) because it builds no parametric mathematical model. All computation is deferred to query time, resulting in heavy inference cost (O(N · d))."
     },
-    "stepByStepAlgorithm": [
-      {
-        "step": "1. Choose K",
-        "desc": "Choose K, the number of neighbors to consider."
-      },
-      {
-        "step": "2. Calculate Distance",
-        "desc": "Calculate the distance between the new data point and each training example."
-      },
-      {
-        "step": "3. Sort & Select",
-        "desc": "Sort examples by distance and select the nearest K."
-      },
-      {
-        "step": "4. Classify or Regress",
-        "desc": "For classification, use the majority class among those neighbors. For regression, typically average their target values."
-      },
-      {
-        "step": "5. Return Prediction",
-        "desc": "Return the predicted class or value."
-      }
-    ],
-    "pseudocode": "INPUT: Training data X, labels y, new point x, number K\nFOR each training example:\n    Calculate distance from x to the example\nSort examples by distance\nSelect the K nearest examples\nIF classification:\n    Predict the majority label\nIF regression:\n    Predict the average target value\nRETURN prediction",
-    "codeExample": {
-      "title": "KNN Pipeline with StandardScaler in scikit-learn",
-      "language": "python",
-      "code": "from sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.neighbors import KNeighborsClassifier\n\nmodel = make_pipeline(\n    StandardScaler(),\n    KNeighborsClassifier(n_neighbors=5)\n)\n\nmodel.fit(X_train, y_train)\n\npredictions = model.predict(X_test)"
+    "stepByStepAlgorithm": {
+      "headline": "5-Stage End-to-End Execution Flow",
+      "steps": [
+        {
+          "step": "1. Choose K & Distance Metric",
+          "desc": "Select K (typically an odd integer to avoid ties) and choose a distance metric (Euclidean, Manhattan, Cosine)."
+        },
+        {
+          "step": "2. Compute Distances",
+          "desc": "Calculate the distance between the query point x_q and every training vector x_i in the dataset."
+        },
+        {
+          "step": "3. Sort & Select Top-K",
+          "desc": "Sort the calculated distances in ascending order and select the indices of the K smallest distances."
+        },
+        {
+          "step": "4. Aggregate Labels",
+          "desc": "For classification, count class frequencies among the K neighbors. For regression, average their values."
+        },
+        {
+          "step": "5. Return Prediction",
+          "desc": "Output the majority class label or continuous predicted numerical estimate."
+        }
+      ],
+      "pseudocode": "def knn_predict(X_train, y_train, x_query, k=5):\n    distances = [euclidean_distance(x_query, x_i) for x_i in X_train]\n    nearest_k_indices = np.argsort(distances)[:k]\n    nearest_labels = [y_train[i] for i in nearest_k_indices]\n    return mode(nearest_labels)"
+    },
+    "knnVsVectorRetrieval": {
+      "headline": "KNN Classification vs. Approximate Vector Retrieval (ANN)",
+      "comparisonTable": [
+        {
+          "dimension": "Primary Objective",
+          "knn": "Supervised classification or regression label prediction",
+          "vectorRetrieval": "Unsupervised similarity search (retrieving candidate IDs/embeddings)"
+        },
+        {
+          "dimension": "Training / Indexing",
+          "knn": "No training phase (just stores raw feature vectors)",
+          "vectorRetrieval": "Builds structured ANN graph/trees (e.g. HNSW, IVF-PQ) ahead of time"
+        },
+        {
+          "dimension": "Query Complexity",
+          "knn": "Brute-force: O(N · d) comparing against every sample",
+          "vectorRetrieval": "Logarithmic: O(log N · d) navigating graph edges"
+        },
+        {
+          "dimension": "Output",
+          "knn": "Single predicted label (e.g., 'Dress', 'Return Risk = 0.82')",
+          "vectorRetrieval": "Ranked list of top-K similar document/product IDs with distance scores"
+        }
+      ],
+      "note": "KNN is an ML prediction algorithm; Vector Retrieval (like HNSW in ChromaDB/Pinecone) is an index infrastructure technique for fast semantic candidate retrieval."
+    },
+    "featureScaling": {
+      "headline": "Why Feature Scaling is Mandatory for Distance-Based Models",
+      "desc": "Because KNN computes geometric distance between points, features with large numeric ranges dominate distance calculations and drown out features with smaller scales.",
+      "example": "Suppose feature 1 is Annual Income ($20,000 to $200,000) and feature 2 is Age (18 to 70). A $1,000 difference in income will completely overwhelm a 20-year difference in age unless normalized.",
+      "formula": "z = \\frac{x - \\mu}{\\sigma} \\quad \\text{(StandardScaler)} \\quad \\text{or} \\quad x_{\\text{norm}} = \\frac{x - x_{\\min}}{x_{\\max} - x_{\\min}} \\quad \\text{(MinMaxScaler)}",
+      "formulaDesc": "StandardScaler transforms features to zero mean and unit variance, ensuring all dimensions contribute equally to the Euclidean distance.",
+      "code": "from sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.neighbors import KNeighborsClassifier\n\n# Always encapsulate scaling and KNN inside a Pipeline to prevent data leakage\npipeline = Pipeline([\n    ('scaler', StandardScaler()),\n    ('knn', KNeighborsClassifier(n_neighbors=5, metric='euclidean'))\n])\n\npipeline.fit(X_train, y_train)\npredictions = pipeline.predict(X_test)",
+      "pipelineNote": "Always fit the scaler strictly on the training set (scaler.fit_transform) and only transform the test/query set (scaler.transform) to prevent lookahead data leakage."
     },
     "advantagesAndLimitations": {
       "advantages": [
-        "Simple, intuitive, and mathematically transparent.",
-        "No explicit model-fitting optimization phase (zero training time / lazy learning).",
-        "Useful for small datasets and rapid baseline benchmarking."
+        "Zero training time (O(1)): New training data can be added instantaneously without model retraining.",
+        "Intuitive & interpretable: Predictions can be explained directly by showing the K nearest reference examples.",
+        "Naturally non-linear: Capable of learning arbitrary complex, irregular decision boundaries without feature engineering.",
+        "Multi-class support: Handles multiple output classes seamlessly via majority voting."
       ],
       "limitations": [
-        "Prediction can be expensive on large datasets (calculates distances against all training points).",
-        "Performance depends on distance choice, scaling, and the value of K.",
-        "Irrelevant or high-dimensional features can make distances less meaningful (Curse of Dimensionality)."
+        "Heavy query-time latency (O(N · d)): Inference becomes sluggish as the training dataset grows into millions of rows.",
+        "Curse of Dimensionality: In high dimensions (d > 50), distance metrics lose discriminative power as all points become equidistant.",
+        "High memory consumption: Requires keeping the entire training dataset in memory for distance evaluations.",
+        "Sensitive to noisy labels & irrelevant features: Irrelevant features skew distance metrics unless carefully pruned or scaled."
       ]
     },
-    "engineeringInsights": [
-      {
-        "title": "Why Feature Scaling is Strictly Mandatory",
-        "desc": "Because KNN computes distances in geometric space (Euclidean ||x - y||_2), unscaled features with large numerical magnitudes (e.g. Salary in $100,000s) will completely dominate small features (e.g. Age in 10s). StandardScaler ensures equal feature weighting.",
-        "accent": "text-amber-400"
-      },
-      {
-        "title": "Choosing K: Bias-Variance Tradeoff",
-        "desc": "Small K (e.g. K=1) has low bias but high variance (extremely sensitive to noise). Large K has high bias but low variance (smoother decision boundaries, but can over-smooth distinct local clusters). Odd K avoids ties in binary classification.",
-        "accent": "text-cyan-400"
-      },
-      {
-        "title": "Production Scaling: KD-Trees & Ball-Trees",
-        "desc": "Brute-force O(N) search per query is unviable on large datasets. Production KNN uses spatial partitioning trees (KD-Trees, Ball-Trees) or approximate nearest neighbors (HNSW, FAISS) to prune distant space.",
-        "accent": "text-purple-400"
-      }
-    ],
-    "takeaway": "KNN is a non-parametric, instance-based lazy learner that predicts targets using majority vote or averaging across K nearest neighbors in a metric distance space. In production, feature normalization via StandardScaler is mandatory, and spatial indexing structures (KD-Trees, Ball-Trees) are required to accelerate query latency."
+    "biasVarianceTradeoff": {
+      "headline": "The Impact of K on Bias-Variance Tradeoff",
+      "table": [
+        {
+          "kVal": "Small K (e.g., K = 1 or K = 3)",
+          "bias": "Low Bias",
+          "variance": "High Variance",
+          "risk": "Overfitting: Model memorizes individual noise and outliers, creating highly jagged and complex decision boundaries."
+        },
+        {
+          "kVal": "Optimal K (e.g., K = 5 to 15)",
+          "bias": "Balanced Bias",
+          "variance": "Balanced Variance",
+          "risk": "Best Generalization: Smooths out local noise while capturing genuine underlying class boundaries (tuned via cross-validation)."
+        },
+        {
+          "kVal": "Large K (e.g., K = 50+ or K ≈ N)",
+          "bias": "High Bias",
+          "variance": "Low Variance",
+          "risk": "Underfitting: The decision boundary becomes overly simplistic, eventually predicting only the global majority class."
+        }
+      ],
+      "notes": [
+        "Always pick an odd number for K in binary classification to guarantee no tie votes (e.g., K = 3, 5, 7).",
+        "A common rule-of-thumb starting heuristic is K = sqrt(N), tuned with stratified 5-fold cross-validation."
+      ]
+    },
+    "productionScaling": {
+      "headline": "Computational Complexity & Production Scaling Bottlenecks",
+      "complexity": "Brute Force KNN requires O(N · d) operations per single query point, which becomes unacceptable for real-time web applications when N > 100,000.",
+      "methods": [
+        {
+          "name": "KD-Tree (K-Dimensional Tree)",
+          "desc": "Partitions space along orthogonal feature axes. Effective for low-dimensional data (d < 20), but degrades to O(N) in high dimensions."
+        },
+        {
+          "name": "Ball Tree",
+          "desc": "Partitions points into nested hyper-spheres. Performs better than KD-trees for medium-dimensional structured data (d < 50)."
+        },
+        {
+          "name": "HNSW (Hierarchical Navigable Small World)",
+          "desc": "Builds a multi-layer proximity graph for approximate nearest neighbors (ANN). Enables sub-5ms search over millions of vectors in high dimensions."
+        }
+      ],
+      "caveat": "In modern production AI systems (such as our Fashion AI Copilot and YOLO Defect Logging), high-dimensional embedding search is never performed with brute-force KNN—we use HNSW or IVF indexes inside vector databases."
+    },
+    "interviewAnswer": {
+      "headline": "Target Interview Defense: Explaining KNN in Production",
+      "answer": "K-Nearest Neighbors is an instance-based supervised algorithm that classifies new data points by finding the K closest training instances and taking a majority vote.\n\nTwo critical engineering realities govern KNN in production:\nFirst, feature scaling is strictly mandatory. Because KNN relies on distance metrics like Euclidean distance, features with larger scales will artificially dominate the metric unless normalized with StandardScaler or MinMaxScaler.\n\nSecond, KNN does not scale well to large datasets or high dimensions due to its O(N · d) query complexity and the Curse of Dimensionality. For low-dimensional tasks with under 50k rows, KD-Trees provide acceptable latency. For production semantic search and recommendation systems with thousands of dimensions, we transition to Approximate Nearest Neighbor (ANN) indexes like HNSW, which trade exactness for logarithmic sub-5ms retrieval."
+    },
+    "takeaway": "KNN is simple, non-parametric, and highly interpretable, but feature scaling is mandatory and query complexity scales linearly with dataset size. In production high-dimensional systems, replace brute-force KNN with ANN indexes like HNSW."
   },
   {
     "id": "random-forest",
@@ -14116,11 +14857,31 @@ export const definitionsData = [
     "outlierVsValidation": {
       "title": "6. Outlier Detection vs Traditional Input Validation",
       "table": [
-        { "feature": "Main purpose", "inputValidation": "Check predefined rules", "outlierDetection": "Identify unusual patterns" },
-        { "feature": "Approach", "inputValidation": "Rule-based", "outlierDetection": "Statistical or ML-based" },
-        { "feature": "Example", "inputValidation": "Weight cannot be negative", "outlierDetection": "Weight is unusually high compared with historical data" },
-        { "feature": "Requirements", "inputValidation": "Defined constraints", "outlierDetection": "Historical data or a learned normal pattern" },
-        { "feature": "Output", "inputValidation": "Valid or invalid", "outlierDetection": "Normal or potential anomaly" }
+        {
+          "feature": "Main purpose",
+          "inputValidation": "Check predefined rules",
+          "outlierDetection": "Identify unusual patterns"
+        },
+        {
+          "feature": "Approach",
+          "inputValidation": "Rule-based",
+          "outlierDetection": "Statistical or ML-based"
+        },
+        {
+          "feature": "Example",
+          "inputValidation": "Weight cannot be negative",
+          "outlierDetection": "Weight is unusually high compared with historical data"
+        },
+        {
+          "feature": "Requirements",
+          "inputValidation": "Defined constraints",
+          "outlierDetection": "Historical data or a learned normal pattern"
+        },
+        {
+          "feature": "Output",
+          "inputValidation": "Valid or invalid",
+          "outlierDetection": "Normal or potential anomaly"
+        }
       ],
       "note": "Both techniques can work together in an LLM application."
     },
@@ -17579,52 +18340,157 @@ export const definitionsData = [
     "importantFunctions": {
       "title": "4. Important NumPy Functions",
       "functions": [
-        { "func": "np.array()", "purpose": "Creates an array" },
-        { "func": "np.zeros()", "purpose": "Creates an array of zeros" },
-        { "func": "np.ones()", "purpose": "Creates an array of ones" },
-        { "func": "np.arange()", "purpose": "Generates values using a step size" },
-        { "func": "np.linspace()", "purpose": "Generates equally spaced values" },
-        { "func": "np.reshape()", "purpose": "Changes array shape" },
-        { "func": "np.transpose()", "purpose": "Changes dimension order" },
-        { "func": "np.sum()", "purpose": "Calculates the sum" },
-        { "func": "np.mean()", "purpose": "Calculates the mean" },
-        { "func": "np.std()", "purpose": "Calculates standard deviation" },
-        { "func": "np.dot()", "purpose": "Performs dot product or matrix multiplication for compatible inputs" },
-        { "func": "np.linalg.norm()", "purpose": "Calculates vector or matrix norms" },
-        { "func": "np.concatenate()", "purpose": "Joins arrays" }
+        {
+          "func": "np.array()",
+          "purpose": "Creates an array"
+        },
+        {
+          "func": "np.zeros()",
+          "purpose": "Creates an array of zeros"
+        },
+        {
+          "func": "np.ones()",
+          "purpose": "Creates an array of ones"
+        },
+        {
+          "func": "np.arange()",
+          "purpose": "Generates values using a step size"
+        },
+        {
+          "func": "np.linspace()",
+          "purpose": "Generates equally spaced values"
+        },
+        {
+          "func": "np.reshape()",
+          "purpose": "Changes array shape"
+        },
+        {
+          "func": "np.transpose()",
+          "purpose": "Changes dimension order"
+        },
+        {
+          "func": "np.sum()",
+          "purpose": "Calculates the sum"
+        },
+        {
+          "func": "np.mean()",
+          "purpose": "Calculates the mean"
+        },
+        {
+          "func": "np.std()",
+          "purpose": "Calculates standard deviation"
+        },
+        {
+          "func": "np.dot()",
+          "purpose": "Performs dot product or matrix multiplication for compatible inputs"
+        },
+        {
+          "func": "np.linalg.norm()",
+          "purpose": "Calculates vector or matrix norms"
+        },
+        {
+          "func": "np.concatenate()",
+          "purpose": "Joins arrays"
+        }
       ]
     },
     "whyImportantInMl": {
       "title": "5. Why NumPy Is Important in Machine Learning",
       "desc": "NumPy supports many numerical operations used throughout ML workflows:",
       "points": [
-        { "area": "Data preparation", "desc": "Convert data into numerical arrays." },
-        { "area": "Feature engineering", "desc": "Perform mathematical transformations." },
-        { "area": "Normalization", "desc": "Scale numerical features." },
-        { "area": "Linear algebra", "desc": "Perform matrix and vector operations." },
-        { "area": "Statistics", "desc": "Calculate mean, variance, and standard deviation." },
-        { "area": "Embeddings", "desc": "Normalize and compare vector representations." },
-        { "area": "Model computations", "desc": "Perform numerical operations on arrays." }
+        {
+          "area": "Data preparation",
+          "desc": "Convert data into numerical arrays."
+        },
+        {
+          "area": "Feature engineering",
+          "desc": "Perform mathematical transformations."
+        },
+        {
+          "area": "Normalization",
+          "desc": "Scale numerical features."
+        },
+        {
+          "area": "Linear algebra",
+          "desc": "Perform matrix and vector operations."
+        },
+        {
+          "area": "Statistics",
+          "desc": "Calculate mean, variance, and standard deviation."
+        },
+        {
+          "area": "Embeddings",
+          "desc": "Normalize and compare vector representations."
+        },
+        {
+          "area": "Model computations",
+          "desc": "Perform numerical operations on arrays."
+        }
       ]
     },
     "numpyVsLists": {
       "title": "6. NumPy vs Python Lists",
       "table": [
-        { "feature": "Data types", "pythonList": "Can contain mixed types", "numpy": "Usually homogeneous" },
-        { "feature": "Mathematical operations", "pythonList": "Often require loops", "numpy": "Supports vectorized operations" },
-        { "feature": "Performance", "pythonList": "More overhead for numerical workloads", "numpy": "Generally faster for numerical workloads" },
-        { "feature": "Multidimensional data", "pythonList": "Nested lists", "numpy": "Native multidimensional arrays" },
-        { "feature": "Memory", "pythonList": "Generally more per-element overhead", "numpy": "More efficient numerical storage" }
+        {
+          "feature": "Data types",
+          "pythonList": "Can contain mixed types",
+          "numpy": "Usually homogeneous"
+        },
+        {
+          "feature": "Mathematical operations",
+          "pythonList": "Often require loops",
+          "numpy": "Supports vectorized operations"
+        },
+        {
+          "feature": "Performance",
+          "pythonList": "More overhead for numerical workloads",
+          "numpy": "Generally faster for numerical workloads"
+        },
+        {
+          "feature": "Multidimensional data",
+          "pythonList": "Nested lists",
+          "numpy": "Native multidimensional arrays"
+        },
+        {
+          "feature": "Memory",
+          "pythonList": "Generally more per-element overhead",
+          "numpy": "More efficient numerical storage"
+        }
       ]
     },
     "numpyVsPandasVsPytorch": {
       "title": "7. NumPy vs Pandas vs PyTorch",
       "table": [
-        { "feature": "Main structure", "numpy": "ndarray", "pandas": "Series and DataFrame", "pytorch": "Tensor" },
-        { "feature": "Main purpose", "numpy": "Numerical computing", "pandas": "Data analysis", "pytorch": "Deep learning" },
-        { "feature": "GPU support", "numpy": "Primarily CPU-based", "pandas": "Primarily CPU-based", "pytorch": "Supports GPU acceleration" },
-        { "feature": "Automatic differentiation", "numpy": "No", "pandas": "No", "pytorch": "Yes" },
-        { "feature": "Typical use", "numpy": "Array and matrix operations", "pandas": "Tabular data processing", "pytorch": "Neural networks and tensor computations" }
+        {
+          "feature": "Main structure",
+          "numpy": "ndarray",
+          "pandas": "Series and DataFrame",
+          "pytorch": "Tensor"
+        },
+        {
+          "feature": "Main purpose",
+          "numpy": "Numerical computing",
+          "pandas": "Data analysis",
+          "pytorch": "Deep learning"
+        },
+        {
+          "feature": "GPU support",
+          "numpy": "Primarily CPU-based",
+          "pandas": "Primarily CPU-based",
+          "pytorch": "Supports GPU acceleration"
+        },
+        {
+          "feature": "Automatic differentiation",
+          "numpy": "No",
+          "pandas": "No",
+          "pytorch": "Yes"
+        },
+        {
+          "feature": "Typical use",
+          "numpy": "Array and matrix operations",
+          "pandas": "Tabular data processing",
+          "pytorch": "Neural networks and tensor computations"
+        }
       ]
     },
     "interviewAnswer": "\"NumPy is a foundational Python library for numerical computing. Its main data structure is the N-dimensional ndarray, which supports efficient vectorized operations, broadcasting, and matrix computations. Many operations are implemented using optimized compiled code, reducing Python-level loop overhead. I use NumPy for numerical data preparation, feature transformations, statistical calculations, and embedding normalization. It also integrates with libraries such as Pandas, Scikit-Learn, and PyTorch.\"",
@@ -17661,23 +18527,71 @@ export const definitionsData = [
       "title": "2. Key Differences",
       "note": "Remember: Seaborn uses Matplotlib underneath, so both libraries can work together.",
       "table": [
-        { "feature": "Main purpose", "matplotlib": "General-purpose plotting", "seaborn": "Statistical data visualization" },
-        { "feature": "Built on", "matplotlib": "Python plotting framework", "seaborn": "Matplotlib" },
-        { "feature": "Customization", "matplotlib": "Extensive, low-level control", "seaborn": "High-level, simpler interface" },
-        { "feature": "Default appearance", "matplotlib": "Basic", "seaborn": "More polished" },
-        { "feature": "Data handling", "matplotlib": "Often works with arrays and lists", "seaborn": "Works well with Pandas DataFrames" },
-        { "feature": "Best use", "matplotlib": "Custom charts and detailed control", "seaborn": "Statistical plots and quick EDA" }
+        {
+          "feature": "Main purpose",
+          "matplotlib": "General-purpose plotting",
+          "seaborn": "Statistical data visualization"
+        },
+        {
+          "feature": "Built on",
+          "matplotlib": "Python plotting framework",
+          "seaborn": "Matplotlib"
+        },
+        {
+          "feature": "Customization",
+          "matplotlib": "Extensive, low-level control",
+          "seaborn": "High-level, simpler interface"
+        },
+        {
+          "feature": "Default appearance",
+          "matplotlib": "Basic",
+          "seaborn": "More polished"
+        },
+        {
+          "feature": "Data handling",
+          "matplotlib": "Often works with arrays and lists",
+          "seaborn": "Works well with Pandas DataFrames"
+        },
+        {
+          "feature": "Best use",
+          "matplotlib": "Custom charts and detailed control",
+          "seaborn": "Statistical plots and quick EDA"
+        }
       ]
     },
     "commonCharts": {
       "title": "3. Common Charts and Their Uses",
       "charts": [
-        { "chart": "Line plot", "purpose": "Show trends over time", "badge": "Trends" },
-        { "chart": "Bar plot", "purpose": "Compare categories", "badge": "Categories" },
-        { "chart": "Histogram", "purpose": "Understand data distribution", "badge": "Distributions" },
-        { "chart": "Scatter plot", "purpose": "Examine relationships between two variables", "badge": "Relationships" },
-        { "chart": "Box plot", "purpose": "Identify spread and potential outliers", "badge": "Spread & Outliers" },
-        { "chart": "Heatmap", "purpose": "Show relationships or values using colors", "badge": "Correlation Matrix" }
+        {
+          "chart": "Line plot",
+          "purpose": "Show trends over time",
+          "badge": "Trends"
+        },
+        {
+          "chart": "Bar plot",
+          "purpose": "Compare categories",
+          "badge": "Categories"
+        },
+        {
+          "chart": "Histogram",
+          "purpose": "Understand data distribution",
+          "badge": "Distributions"
+        },
+        {
+          "chart": "Scatter plot",
+          "purpose": "Examine relationships between two variables",
+          "badge": "Relationships"
+        },
+        {
+          "chart": "Box plot",
+          "purpose": "Identify spread and potential outliers",
+          "badge": "Spread & Outliers"
+        },
+        {
+          "chart": "Heatmap",
+          "purpose": "Show relationships or values using colors",
+          "badge": "Correlation Matrix"
+        }
       ]
     },
     "matplotlibExample": {
@@ -17699,12 +18613,30 @@ export const definitionsData = [
     "commonSeabornFunctions": {
       "title": "6. Common Seaborn Functions",
       "functions": [
-        { "func": "sns.histplot()", "purpose": "Distribution of a variable" },
-        { "func": "sns.scatterplot()", "purpose": "Relationship between two variables" },
-        { "func": "sns.boxplot()", "purpose": "Spread and potential outliers" },
-        { "func": "sns.heatmap()", "purpose": "Visualize a matrix" },
-        { "func": "sns.countplot()", "purpose": "Count observations in categories" },
-        { "func": "sns.pairplot()", "purpose": "Explore relationships among multiple variables" }
+        {
+          "func": "sns.histplot()",
+          "purpose": "Distribution of a variable"
+        },
+        {
+          "func": "sns.scatterplot()",
+          "purpose": "Relationship between two variables"
+        },
+        {
+          "func": "sns.boxplot()",
+          "purpose": "Spread and potential outliers"
+        },
+        {
+          "func": "sns.heatmap()",
+          "purpose": "Visualize a matrix"
+        },
+        {
+          "func": "sns.countplot()",
+          "purpose": "Count observations in categories"
+        },
+        {
+          "func": "sns.pairplot()",
+          "purpose": "Explore relationships among multiple variables"
+        }
       ]
     },
     "howTheyAreUsedInML": {
@@ -19130,13 +20062,34 @@ export const definitionsData = [
     "remedies": {
       "title": "4. Remedies",
       "table": [
-        { "technique": "L1/L2 Regularization", "howItHelps": "Penalizes model complexity or large coefficients" },
-        { "technique": "Early Stopping", "howItHelps": "Stops training when validation performance starts degrading" },
-        { "technique": "Tree Pruning", "howItHelps": "Limits tree complexity using max_depth and min_samples_split" },
-        { "technique": "Dropout", "howItHelps": "Randomly disables neurons during neural network training" },
-        { "technique": "K-Fold Cross-Validation", "howItHelps": "Evaluates model stability across different data splits" },
-        { "technique": "Feature Selection", "howItHelps": "Removes irrelevant or noisy features" },
-        { "technique": "Data Augmentation", "howItHelps": "Increases training-data diversity" }
+        {
+          "technique": "L1/L2 Regularization",
+          "howItHelps": "Penalizes model complexity or large coefficients"
+        },
+        {
+          "technique": "Early Stopping",
+          "howItHelps": "Stops training when validation performance starts degrading"
+        },
+        {
+          "technique": "Tree Pruning",
+          "howItHelps": "Limits tree complexity using max_depth and min_samples_split"
+        },
+        {
+          "technique": "Dropout",
+          "howItHelps": "Randomly disables neurons during neural network training"
+        },
+        {
+          "technique": "K-Fold Cross-Validation",
+          "howItHelps": "Evaluates model stability across different data splits"
+        },
+        {
+          "technique": "Feature Selection",
+          "howItHelps": "Removes irrelevant or noisy features"
+        },
+        {
+          "technique": "Data Augmentation",
+          "howItHelps": "Increases training-data diversity"
+        }
       ]
     },
     "pythonImplementation": {
@@ -20915,5 +21868,461 @@ export const definitionsData = [
       }
     ],
     "code": "from fastapi import FastAPI\nfrom fastapi.responses import StreamingResponse\nfrom pydantic import BaseModel\nimport json\n\napp = FastAPI(title=\"ChatGPT SSE Streaming Gateway\")\n\nclass ChatRequest(BaseModel):\n    conversation_id: str\n    message: str\n\nasync def generate_tokens(message: str):\n    # Replace with an actual LLM streaming API (e.g. OpenAI, Anthropic, or vLLM)\n    sample_tokens = [\"Hello\", \", \", \"how \", \"can \", \"I \", \"help \", \"you \", \"today?\"]\n    for token in sample_tokens:\n        yield token\n\n@app.post(\"/chat\")\nasync def chat(request: ChatRequest):\n    async def event_stream():\n        try:\n            async for token in generate_tokens(request.message):\n                payload = json.dumps({\"token\": token})\n                yield f\"data: {payload}\\n\\n\"\n            yield \"data: [DONE]\\n\\n\"\n        except Exception:\n            # Log the detailed error securely on the server without exposing stack traces to the client\n            payload = json.dumps({\"error\": \"Generation failed\"})\n            yield f\"data: {payload}\\n\\n\"\n\n    return StreamingResponse(\n        event_stream(),\n        media_type=\"text/event-stream\",\n        headers={\"Cache-Control\": \"no-cache\"}\n    )"
+  },
+  {
+    "id": "ragas",
+    "title": "RAGAS & AI Evaluation",
+    "badge": "GenAI Evaluation Framework & LLM Quality Assessment",
+    "summary": "RAGAS (Retrieval-Augmented Generation Assessment) is a specialized open-source evaluation framework for quantifying the quality of RAG pipelines, LLM agents, and semantic search systems. It evaluates retrieval accuracy, generation fidelity, and context grounding without relying solely on expensive human annotations.",
+    "whatIsRagas": {
+      "title": "1. What is RAGAS?",
+      "desc": "RAGAS (Retrieval-Augmented Generation Assessment) provides automated, reference-free and reference-based metrics to isolate and evaluate the two distinct components of a RAG pipeline: the Retriever and the Generator.",
+      "coreQuestions": [
+        "Did the retriever fetch the right information? (Retrieval Quality)",
+        "Is the generated answer supported by the retrieved context? (Generation Groundedness)",
+        "Does the answer actually address the user's question? (Generation Relevancy)",
+        "Is the answer factually correct according to ground truth? (End-to-End Correctness)"
+      ],
+      "workflowsNote": "RAGAS evaluates retrieval, generation, and agentic multi-turn workflows using a combination of LLM-as-a-Judge, semantic embedding similarity, and claim-level statement extraction."
+    },
+    "fourImportantMetrics": {
+      "title": "2. The Four Pillar RAGAS Metrics",
+      "metrics": [
+        {
+          "name": "Faithfulness",
+          "target": "Generation stage",
+          "desc": "Measures whether claims in the generated response are grounded in the retrieved context."
+        },
+        {
+          "name": "Answer Relevancy",
+          "target": "Generation stage",
+          "desc": "Measures whether the generated response directly answers the user query."
+        },
+        {
+          "name": "Context Precision",
+          "target": "Retrieval stage",
+          "desc": "Measures whether relevant retrieved chunks appear near the top of the ranked list."
+        },
+        {
+          "name": "Context Recall",
+          "target": "Retrieval stage",
+          "desc": "Measures whether the retrieved context contains all facts needed to answer."
+        }
+      ],
+      "faithfulness": {
+        "name": "A. Faithfulness (Groundedness / Hallucination Detection)",
+        "desc": "Measures whether all factual claims in the generated answer can be mathematically inferred from the retrieved context. High faithfulness guarantees the model is not hallucinating external knowledge.",
+        "example": {
+          "context": "Retrieved context: 'The product return window is 30 days for unworn garments.'",
+          "answer": "Generated answer: 'You can return items within 60 days of purchase.'",
+          "explanation": "The answer contradicts the retrieved context. Faithfulness score = 0.0 (Hallucination detected)."
+        },
+        "formula": "Faithfulness = \\frac{\\text{Number of claims supported by retrieved context}}{\\text{Total claims in generated answer}}"
+      },
+      "answerRelevancy": {
+        "name": "B. Answer Relevancy (Question-Answer Alignment)",
+        "desc": "Measures how directly the generated answer addresses the user's specific question. An answer can be completely faithful to context, yet totally irrelevant to the question.",
+        "example": {
+          "question": "User Question: 'What is the return window for silk dresses?'",
+          "answer": "Generated Answer: 'Silk dresses are available in red, navy blue, and emerald green.'",
+          "explanation": "The answer is factually grounded in the catalog, but completely ignores the user's return window question. Answer relevancy is near 0.0."
+        },
+        "distinction": "Faithfulness tests if the answer is supported by context. Answer Relevancy tests if the answer answers the user's question. A hallucinated answer can be relevant, and an irrelevant answer can be faithful!"
+      },
+      "contextPrecision": {
+        "name": "C. Context Precision (Ranking Quality / Signal-to-Noise)",
+        "desc": "Measures whether relevant retrieved chunks appear near the top of the retrieved list. In RAG pipelines, chunks ranked higher carry higher attention weight for LLM generation.",
+        "table": [
+          {
+            "rank": "Rank 1",
+            "chunk": "Garment Return Policy: 30 days for unworn items",
+            "relevance": "Relevant (Top position maximizes LLM attention)"
+          },
+          {
+            "rank": "Rank 2",
+            "chunk": "Shipping Rates & Delivery Times",
+            "relevance": "Irrelevant (Noise)"
+          },
+          {
+            "rank": "Rank 3",
+            "chunk": "Fabric Washing Instructions",
+            "relevance": "Irrelevant (Noise)"
+          },
+          {
+            "rank": "Rank 4",
+            "chunk": "Return Exceptions: Clearance items final sale",
+            "relevance": "Relevant (Lower ranked penalizes context precision)"
+          }
+        ],
+        "note": "Context Precision is critical when evaluating hybrid search, BM25 + dense vector combinations, and Cross-Encoder rerankers."
+      },
+      "contextRecall": {
+        "name": "D. Context Recall (Retrieval Completeness)",
+        "desc": "Measures whether the retriever fetched all reference facts necessary to formulate a complete answer. Evaluated against ground-truth reference facts.",
+        "example": {
+          "reference": [
+            "Warranty period: 2 years",
+            "Coverage: Manufacturing defects",
+            "Exclusions: Water and accidental drops"
+          ],
+          "retrieved": [
+            "The product comes with a 2-year warranty covering manufacturing defects."
+          ],
+          "explanation": "The retriever missed the exclusions policy. Context Recall = 2 / 3 = 0.67."
+        },
+        "formula": "Context Recall = \\frac{\\text{Reference ground-truth facts retrieved}}{\\text{Total ground-truth facts}}"
+      }
+    },
+    "frameworksTable": [
+      {
+        "framework": "RAGAS",
+        "focus": "Reference-free retrieval & generation grounding",
+        "strengths": "Automated Faithfulness, Answer Relevancy, Context Precision/Recall using LLM-as-a-Judge and embeddings without requiring expensive human ground truth."
+      },
+      {
+        "framework": "DeepEval",
+        "focus": "Unit testing & CI/CD regression suites for LLMs",
+        "strengths": "Pytest-like developer experience, 14+ evaluation metrics (G-Eval, Hallucination, Bias, Toxicity), synthetic test data generation."
+      },
+      {
+        "framework": "TruLens",
+        "focus": "RAG Triad observability & guardrail telemetry",
+        "strengths": "Instrumentation of LangChain/LlamaIndex, feedback functions for Context Relevance, Groundedness, and Answer Relevance."
+      },
+      {
+        "framework": "Phoenix (Arize)",
+        "focus": "Production LLM tracing & embedding drift monitoring",
+        "strengths": "OpenTelemetry tracing, visual evaluation dashboards, UMAP embedding space cluster visualization to spot retrieval blind spots."
+      },
+      {
+        "framework": "G-Eval",
+        "focus": "Direct multi-criteria scoring via chain-of-thought LLMs",
+        "strengths": "Task-specific rubrics (coherence, fluency, safety) scoring from 1-5 with high human correlation (>0.82 Pearson coefficient)."
+      }
+    ],
+    "slaMethodologyTable": [
+      {
+        "metric": "Faithfulness",
+        "evaluates": "Generation Stage",
+        "methodology": "LLM statement extraction & context verification",
+        "targetSLA": "> 0.90"
+      },
+      {
+        "metric": "Answer Relevancy",
+        "evaluates": "Generation Stage",
+        "methodology": "Reverse-prompt generation & cosine embedding similarity",
+        "targetSLA": "> 0.85"
+      },
+      {
+        "metric": "Context Precision",
+        "evaluates": "Retrieval Stage",
+        "methodology": "Mean Average Precision (MAP) over retrieved chunks",
+        "targetSLA": "> 0.80"
+      },
+      {
+        "metric": "Context Recall",
+        "evaluates": "Retrieval Stage",
+        "methodology": "Reference fact attribution against retrieved chunks",
+        "targetSLA": "> 0.85"
+      }
+    ],
+    "ragWorkflow": {
+      "title": "3. RAG Diagnostic & Troubleshooting Matrix",
+      "diagnosticMatrix": [
+        {
+          "symptom": "High Context Precision & Low Faithfulness",
+          "cause": "The retriever fetched the right chunks, but the generator hallucinated or ignored context.",
+          "fix": "Lower LLM temperature to 0.0, strengthen system prompt grounding instructions, enforce strict JSON schemas."
+        },
+        {
+          "symptom": "Low Context Recall & Low Answer Quality",
+          "cause": "The retriever failed to find the required information from the vector store.",
+          "fix": "Switch to Hybrid Search (Dense + BM25), tune chunk sizes from 1000 to 400 tokens with 50-token overlap, add a Cross-Encoder reranker."
+        },
+        {
+          "symptom": "High Faithfulness & Low Answer Relevancy",
+          "cause": "The LLM generates accurate summaries of retrieved context, but wanders off from what the user asked.",
+          "fix": "Refine prompt template to emphasize direct query answering, implement Query Rewriting with HyDE."
+        },
+        {
+          "symptom": "High Recall & Low Context Precision",
+          "cause": "Retriever finds relevant documents but dilutes them with irrelevant noise chunks.",
+          "fix": "Introduce an HNSW similarity threshold filter (e.g. cosine distance > 0.75) and a Cohere/BGE reranker."
+        }
+      ],
+      "steps": [
+        {
+          "step": "Step 1: Ingestion & Chunking Evaluation",
+          "desc": "Audit chunk boundaries and metadata tags."
+        },
+        {
+          "step": "Step 2: Retrieval Evaluation (Recall & Precision)",
+          "desc": "Evaluate HNSW and hybrid ranking on test query sets."
+        },
+        {
+          "step": "Step 3: Generation Evaluation (Faithfulness & Relevancy)",
+          "desc": "Audit LLM outputs with automated RAGAS metrics."
+        },
+        {
+          "step": "Step 4: Continuous Regression Testing",
+          "desc": "Run CI/CD test suites over golden evaluation datasets before deployment."
+        }
+      ]
+    },
+    "interviewDistinction": "In an interview, never say 'I evaluated the LLM by looking at answers.' Show senior maturity by stating: 'I decoupled evaluation into Retrieval Evaluation (Recall@K, MRR, Context Precision) and Generation Evaluation (Faithfulness, Answer Relevancy, Schema Compliance) using RAGAS and LLM-as-a-Judge.'",
+    "interviewAnswer": {
+      "question": "How do you evaluate and diagnose failures in a production RAG system?",
+      "answer": "I decouple evaluation into two independent stages: Retrieval Evaluation and Generation Evaluation.\n\nFor retrieval, I evaluate Context Recall and Context Precision using a curated golden dataset of representative queries. If Context Precision is low, I know my retriever is injecting irrelevant noise, so I introduce a Cross-Encoder reranker (such as BGE-reranker) and hybrid search (BM25 + Dense embeddings).\n\nFor generation, I use RAGAS to measure Faithfulness and Answer Relevancy. If Context Precision is high but Faithfulness is low, the retriever succeeded but the LLM hallucinated, so I lower the temperature, provide strict few-shot examples, and instruct the LLM to reply 'I cannot find that in the catalog' when context is insufficient.\n\nThis decoupled diagnostic approach allows me to pinpoint whether an issue is caused by chunking, embeddings, ranking, or prompt compliance."
+    },
+    "takeaway": "RAG evaluation must decouple retrieval from generation. Use Context Precision and Recall to evaluate your search engine; use Faithfulness and Answer Relevancy to evaluate your LLM."
+  },
+  {
+    "id": "reactjs",
+    "title": "ReactJS — Architecture, Hooks, State & Modern Full-Stack Ecosystem",
+    "badge": "Frontend UI Library • Virtual DOM • Fiber Engine • Hooks • Concurrent React",
+    "summary": "React is a declarative, component-based frontend JavaScript library developed by Meta for building dynamic user interfaces. It pioneered the Virtual DOM reconciliation pattern, the Fiber time-slicing engine, unidirectional data flow, composable functional components with hooks, and modern server-client architectures (Server Components & Streaming SSR).",
+    "coreArchitecture": {
+      "title": "1. Core Philosophy & Virtual DOM Reconciliation",
+      "desc": "React replaces direct, imperative DOM manipulation with declarative UI rendering driven by state transitions.",
+      "vdomExplanation": "The browser DOM is represented as a tree of lightweight plain JavaScript objects (the Virtual DOM). When state or props change, React generates a new Virtual DOM tree and runs a diffing algorithm (Reconciliation) against the previous tree to compute the minimal set of real DOM mutations.",
+      "diffingRules": [
+        {
+          "rule": "Different Element Types",
+          "detail": "If the root element changes (e.g., from <div> to <span>, or <Header> to <Nav>), React unmounts the entire old subtree, destroys all state in children, and mounts the new tree from scratch."
+        },
+        {
+          "rule": "Same Element Type, Different Attributes",
+          "detail": "React retains the existing DOM node and mutates only the changed attributes or style properties in-place (e.g., updating className or style.color)."
+        },
+        {
+          "rule": "Keys on Children Lists",
+          "detail": "When rendering arrays of elements, keys provide permanent identity across renders. Without stable unique keys, inserting an item at the beginning causes React to re-render and mutate all subsequent children rather than simply reordering them."
+        }
+      ],
+      "fiberEngine": {
+        "title": "The React Fiber Reconciler (React 16+)",
+        "summary": "Prior to Fiber (the legacy Stack Reconciler), reconciliation was synchronous and recursive. A large update would block the browser main thread (causing frame drops and frozen inputs).",
+        "fiberCapabilities": [
+          "Incremental Rendering: Breaks UI work into microscopic units called 'fiber nodes' that can be paused, resumed, or aborted.",
+          "Time-Slicing & Priority Lanes: High-priority user actions (keystrokes, clicks) interrupt low-priority background renders (data tables, chart rendering).",
+          "Dual-Buffering: Maintains a 'current' tree displayed on screen and a 'workInProgress' tree being computed offscreen. Once workInProgress is complete, React commits changes to the DOM and swaps the pointer instantaneously."
+        ]
+      }
+    },
+    "hooksGuide": {
+      "title": "2. The Complete Hooks System & Execution Semantics",
+      "desc": "Hooks allow functional components to attach state, lifecycle behavior, and side effects without class inheritance.",
+      "hooks": [
+        {
+          "name": "useState",
+          "purpose": "Declares a state variable preserved across renders.",
+          "code": "const [count, setCount] = useState(0);\n// Functional updater prevents stale closures:\nsetCount(prev => prev + 1);",
+          "tip": "In React 18+, state updates inside promises, timeouts, and event handlers are automatically batched together into a single render."
+        },
+        {
+          "name": "useEffect",
+          "purpose": "Executes side effects (API calls, subscriptions, DOM mutations) after browser paint.",
+          "code": "useEffect(() => {\n  const sub = eventEmitter.subscribe(handler);\n  return () => sub.unsubscribe(); // Cleanup on unmount or before next run\n}, [dependency]);",
+          "tip": "Dependency array semantics: omitted = runs on every render; [] = runs once on mount; [a, b] = runs when a or b changes by Object.is comparison."
+        },
+        {
+          "name": "useContext",
+          "purpose": "Subscribes component to a React Context to avoid deep prop drilling.",
+          "code": "const theme = useContext(ThemeContext);",
+          "tip": "All consumer components re-render whenever the Provider value changes unless split or wrapped in memo."
+        },
+        {
+          "name": "useRef",
+          "purpose": "Holds a mutable value in .current that persists across renders without triggering a re-render; also used for direct DOM references.",
+          "code": "const inputRef = useRef(null);\nconst renderCount = useRef(0);\n// Does NOT trigger re-render:\nrenderCount.current += 1;\ninputRef.current?.focus();",
+          "tip": "Do not read or write ref.current during render logic; access it inside effects or event handlers."
+        },
+        {
+          "name": "useMemo & useCallback",
+          "purpose": "Memoization primitives for preventing expensive recalculations and stable reference creation.",
+          "code": "// useMemo caches the RESULT of a computation:\nconst filtered = useMemo(() => computeHeavyFilter(items, query), [items, query]);\n\n// useCallback caches the FUNCTION INSTANCE:\nconst handleClick = useCallback(() => {\n  doAction(id);\n}, [id]);",
+          "tip": "Overusing memoization adds memory overhead. Use them primarily when passing callbacks to React.memo wrapped children or in expensive array transforms."
+        },
+        {
+          "name": "useReducer",
+          "purpose": "Handles complex multi-step state transitions with predictable dispatch actions (Redux pattern for local state).",
+          "code": "const [state, dispatch] = useReducer((state, action) => {\n  switch (action.type) {\n    case 'INCREMENT': return { count: state.count + 1 };\n    case 'RESET': return { count: 0 };\n    default: return state;\n  }\n}, { count: 0 });",
+          "tip": "Ideal when the next state depends on multiple previous sub-values or when business logic needs unit testing outside components."
+        },
+        {
+          "name": "React 18/19 Concurrent Hooks (useTransition, useDeferredValue)",
+          "purpose": "Non-blocking UI rendering and deferred computation for heavy state changes.",
+          "code": "const [isPending, startTransition] = useTransition();\n// Keep user typing responsive while filtering 10,000 items:\nstartTransition(() => {\n  setFilterQuery(input);\n});",
+          "tip": "useTransition marks state updates as non-urgent transitions that yield to user interactions."
+        }
+      ]
+    },
+    "stateManagementMatrix": [
+      {
+        "level": "Local Component State",
+        "tools": "useState, useReducer",
+        "useCase": "Form inputs, modal toggles, dropdown active state, accordion expansion.",
+        "strengths": "Zero dependencies, co-located with usage, unmounts automatically.",
+        "drawbacks": "Requires prop drilling or elevation if needed by sibling components."
+      },
+      {
+        "level": "Shared App State (Low Frequency)",
+        "tools": "React Context API",
+        "useCase": "User authentication session, current theme (dark/light), locale / language.",
+        "strengths": "Built into React, no external bundle cost, clean declarative Provider.",
+        "drawbacks": "All consumer components re-render on value change; poor fit for high-frequency data (like stock tickers or audio visualizers)."
+      },
+      {
+        "level": "Global Client State (Complex/High Frequency)",
+        "tools": "Zustand, Redux Toolkit (RTK)",
+        "useCase": "Shopping cart, multi-step checkout workflow, canvas editor state, global notification queue.",
+        "strengths": "Fine-grained selector subscriptions (only components reading changed keys re-render), devtools time-travel, middleware.",
+        "drawbacks": "External dependency; Zustand is lightweight (1KB) while Redux requires architectural discipline."
+      },
+      {
+        "level": "Server & Async Cache State",
+        "tools": "TanStack Query (React Query), SWR, RTK Query",
+        "useCase": "REST/GraphQL API caching, automatic background revalidation, query deduping, pagination, optimistic mutations.",
+        "strengths": "Eliminates 90% of custom useEffect/useState data fetching code; handles loading, error, stale-while-revalidate, and caching out of the box.",
+        "drawbacks": "Learning curve for cache keys, query invalidation, and mutation lifecycles."
+      }
+    ],
+    "performancePillars": [
+      {
+        "pillar": "1. Preventing Wasted Re-renders",
+        "detail": "Components re-render when their state changes, their parent re-renders, or context updates. Use React.memo for expensive child trees, move state closer to leaf nodes (state colocation), and pass primitives or memoized props."
+      },
+      {
+        "pillar": "2. Code-Splitting & Lazy Loading",
+        "detail": "Break monolithic bundles using React.lazy(() => import('./HeavyChart')) and <Suspense fallback={<Spinner />}>. Ensures initial page load downloads only the necessary JS chunks."
+      },
+      {
+        "pillar": "3. DOM Virtualization (Windowing)",
+        "detail": "Rendering thousands of DOM nodes causes memory bloat and scroll lag. Use libraries like @tanstack/react-virtual or react-window to render only the 15-20 nodes currently visible in the viewport."
+      },
+      {
+        "pillar": "4. Efficient Event Handling & Debouncing",
+        "detail": "Debounce rapid events (search inputs, resize listeners) with custom hooks so expensive API queries or filter calculations trigger only after the user stops typing."
+      }
+    ],
+    "modernAiReact": {
+      "title": "5. React in Modern Generative AI & Full-Stack Applications",
+      "desc": "Modern AI web apps require responsive streaming, progressive chunk decoding, and zero-bundle server computation.",
+      "patterns": [
+        {
+          "title": "Streaming LLM Tokens via Server-Sent Events (SSE)",
+          "desc": "Rather than waiting 15 seconds for a complete GPT-4o output, the React frontend consumes a readable stream (fetch API + TextDecoder) and progressively appends tokens to local state, giving the user sub-second time-to-first-token."
+        },
+        {
+          "title": "Optimistic AI UI Updates",
+          "desc": "When a user submits a prompt, React immediately adds the user's message to the chat array and displays a typing pulse animation before the backend handshake completes, ensuring instantaneous perceived performance."
+        },
+        {
+          "title": "React Server Components (RSC) & Streaming SSR",
+          "desc": "RSCs run exclusively on the server, have direct database and AI SDK access, output zero JavaScript to the client bundle, and stream HTML chunks to the browser before hydration."
+        }
+      ]
+    },
+    "interviewCheatSheet": [
+      {
+        "q": "Why is setState batched and asynchronous?",
+        "a": "If React re-rendered synchronously after every setState call, a handler with 3 state updates would trigger 3 full renders, recalculating styles and painting the DOM 3 times. Batching combines multiple updates into a single re-render pass for optimal rendering performance."
+      },
+      {
+        "q": "What is the difference between useEffect and useLayoutEffect?",
+        "a": "useEffect runs asynchronously AFTER the browser has painted the screen, preventing render blocking. useLayoutEffect runs synchronously AFTER DOM mutations but BEFORE the browser paints. Use useLayoutEffect only when reading layout dimensions (e.g. measuring element height) or synchronizing scroll positions to avoid visual flicker."
+      },
+      {
+        "q": "What causes an infinite loop in React and how do you prevent it?",
+        "a": "Updating state inside the body of a component without a guard, or calling setState inside a useEffect whose dependency array includes the very state being updated (or an unstable object/function recreated every render). Fix by using primitive dependencies, useCallback/useMemo, or functional setState updaters."
+      },
+      {
+        "q": "What are the Rules of Hooks and why do they exist?",
+        "a": "1) Only call hooks at the top level (never inside loops, conditions, or nested functions). 2) Only call hooks from React function components or custom hooks. Reason: React relies on the exact order of hook calls across renders to match state variables with their internal fiber linked-list slots."
+      },
+      {
+        "q": "What is the difference between the Real DOM, Virtual DOM, and Shadow DOM?",
+        "a": "Real DOM is the browser's actual tree of elements (expensive to modify directly). Virtual DOM is React's in-memory JavaScript representation used to compute minimal diffs. Shadow DOM is a browser-native standard used in Web Components for scoping styles and DOM encapsulation (completely separate from React)."
+      }
+    ]
+  },
+  {
+    "id": "hnsw",
+    "title": "HNSW — Hierarchical Navigable Small World (Vector Search Index)",
+    "badge": "Vector DB Index • Approximate Nearest Neighbor (ANN) • O(log N) Retrieval",
+    "summary": "HNSW is the industry-standard algorithm used by vector databases (like ChromaDB, Pinecone, Qdrant, Milvus, and FAISS) to search through millions of high-dimensional embeddings in milliseconds. It organizes vectors into a multi-layered graph where top layers provide high-speed long jumps across the dataset, and bottom layers pinpoint the exact closest matches with over 95%+ recall.",
+    "simpleAnalogy": {
+      "title": "1. The Simple Analogy: Express Flights vs. Local Driving",
+      "concept": "How HNSW makes vector search fast without checking every single item",
+      "explanation": "Imagine you are in London and want to visit a specific cafe in Tokyo. You wouldn't drive street by street across the entire earth (that is Brute Force / Flat search, which checks every single vector one-by-one and takes forever). Instead, you take an international flight to Tokyo airport (Top Layer), catch an express train into the central district (Middle Layer), and then walk the last 200 meters to the cafe door (Bottom Layer 0). HNSW does the exact same thing with mathematical vectors in high-dimensional space!"
+    },
+    "coreHowItWorks": [
+      {
+        "step": "Top Layer (Express Highway)",
+        "desc": "Has very few vectors spaced far apart with long-distance links. When a search query enters, it takes huge leaps across vector space to quickly locate the general cluster in 1 or 2 hops."
+      },
+      {
+        "step": "Middle Layers (Regional Roads)",
+        "desc": "Contains more vectors with medium-length connections. Once the closest node at the top layer is found, the search drops down to this layer and refines the neighborhood."
+      },
+      {
+        "step": "Bottom Layer 0 (Neighborhood Street Level)",
+        "desc": "Contains ALL vectors in your database, densely connected to their closest neighbors. The algorithm conducts a fine-grained local search to return the top-K closest vectors."
+      }
+    ],
+    "keyParameters": [
+      {
+        "name": "M (Connections per Vector)",
+        "meaning": "How many neighbor links each vector keeps (typically 16 to 64).",
+        "ruleOfThumb": "Higher M = Higher search accuracy and better recall, but takes more RAM and slower index build. 16 to 32 is optimal for most RAG systems."
+      },
+      {
+        "name": "efConstruction (Build Quality)",
+        "meaning": "How thoroughly HNSW explores candidates when building the graph during data ingestion (typically 100 to 200).",
+        "ruleOfThumb": "Higher efConstruction = Takes longer to insert data, but creates a cleaner graph with faster search queries."
+      },
+      {
+        "name": "efSearch (Query Search Depth)",
+        "meaning": "How many candidate vectors are checked at search time (typically 50 to 100).",
+        "ruleOfThumb": "Higher efSearch = Higher recall and accuracy at runtime, with a slight increase in search latency (e.g. 2ms vs 5ms)."
+      }
+    ],
+    "comparisonTable": [
+      {
+        "method": "Flat Index (Brute Force)",
+        "timeComplexity": "O(N) - Linear",
+        "recall": "100% (Exact)",
+        "ramUsage": "Lowest (raw vectors only)",
+        "whenToUse": "Tiny datasets (< 10,000 vectors) where exact math is required."
+      },
+      {
+        "method": "IVF (Inverted File Index)",
+        "timeComplexity": "O(sqrt(N))",
+        "recall": "85% - 92%",
+        "ramUsage": "Low to Moderate",
+        "whenToUse": "Large datasets where RAM is very tight and a periodic retraining step is acceptable."
+      },
+      {
+        "method": "HNSW (Hierarchical Graph)",
+        "timeComplexity": "O(log N) - Logarithmic",
+        "recall": "95% - 99%+ (Near Exact)",
+        "ramUsage": "High (stores graph edges in memory)",
+        "whenToUse": "Production GenAI & RAG applications demanding sub-5ms low latency and high accuracy."
+      }
+    ],
+    "interviewAnswers": [
+      {
+        "q": "What does 'Small World' mean in HNSW?",
+        "a": "It comes from the 'Six Degrees of Separation' concept in social networks: even in a massive network, you can reach anyone in very few hops because nodes have both local friends and long-distance shortcuts. HNSW builds a graph with high clustering locally and short average path lengths globally."
+      },
+      {
+        "q": "Why is HNSW preferred over Brute Force search in RAG?",
+        "a": "Brute force has to calculate cosine distance against all 10 million vectors one-by-one (O(N)), taking seconds. HNSW searches like a skip-list in O(log N) time, returning the top matches in under 5 milliseconds."
+      },
+      {
+        "q": "What is the primary drawback of HNSW?",
+        "a": "RAM memory usage. Because HNSW stores bidirectional graph links and neighbor pointers in memory alongside vectors, an HNSW index can take 1.5x to 2x more RAM than raw vector storage."
+      }
+    ]
   }
 ];

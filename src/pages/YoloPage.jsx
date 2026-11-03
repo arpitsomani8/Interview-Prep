@@ -36,19 +36,19 @@ function getYoloKeywordStyle(kw) {
 function HighlightedYoloText({ text }) {
   const lines = text.split('\n\n');
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-3">
       {lines.map((line, lIdx) => {
         if (line.startsWith('### ')) {
           return (
-            <h4 key={lIdx} className="text-sm font-bold font-mono text-cyan-300 pt-3 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+            <h4 key={lIdx} className="text-base sm:text-lg font-bold font-mono text-cyan-300 pt-3 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-cyan-400" />
               <span>{line.replace('### ', '')}</span>
             </h4>
           );
         }
         const parts = line.split(YOLO_KEYWORD_REGEX);
         return (
-          <p key={lIdx} className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans whitespace-pre-line">
+          <p key={lIdx} className="text-sm sm:text-base text-zinc-200 leading-relaxed font-sans whitespace-pre-line">
             {parts.map((part, pIdx) => {
               if (!part) return null;
               if (pIdx % 2 === 1) {
@@ -125,20 +125,20 @@ export default function YoloPage() {
       {/* 90-Second Interview Script Banner */}
       <div className="rounded-2xl bg-[#0a0a0c] border border-indigo-500/40 p-6 sm:p-8 space-y-6 shadow-xl relative">
         <div className="flex items-center justify-between flex-wrap gap-2 border-b border-zinc-800/80 pb-4">
-          <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm uppercase tracking-wider font-mono">
+          <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm sm:text-base uppercase tracking-wider font-mono">
             <MessageSquareQuote className="w-5 h-5 text-indigo-400" />
             <span>Executive 90-Second Interview Defense Script (Edge Computer Vision Pipeline)</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">
+            <span className="text-xs sm:text-sm font-mono px-3 py-1 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">
               Timing: 90s
             </span>
             <button
               onClick={handleCopyScript}
-              className="px-3 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-300 hover:text-white border border-zinc-700 transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+              className="px-3.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs sm:text-sm font-mono text-zinc-300 hover:text-white border border-zinc-700 transition flex items-center gap-1.5 cursor-pointer shadow-sm"
               title="Copy entire interview defense script"
             >
-              {copiedScript ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              {copiedScript ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
               <span>{copiedScript ? 'Copied Script!' : 'Copy Script'}</span>
             </button>
           </div>
@@ -147,20 +147,26 @@ export default function YoloPage() {
         {/* Structured Sections with Colorful Titles and Highlighted Keywords */}
         <div className="space-y-6">
           {yoloData.executiveSections.map((sec) => (
-            <div key={sec.id} className="space-y-3">
+            <div 
+              key={sec.id} 
+              className="p-5 sm:p-6 rounded-xl bg-zinc-950/70 border border-zinc-800/80 hover:border-zinc-700/80 transition space-y-4 shadow-sm"
+            >
               {sec.title && (
-                <div className="flex items-center justify-between flex-wrap gap-2 pt-4 border-t border-zinc-800/80">
-                  <h3 className={`text-base sm:text-lg font-bold font-mono tracking-tight ${sec.accentColor}`}>
-                    {sec.title}
-                  </h3>
+                <div className="flex items-center justify-between flex-wrap gap-2 pb-3.5 border-b border-zinc-800/60">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
+                    <h3 className={`text-lg sm:text-xl font-bold font-mono tracking-tight ${sec.accentColor}`}>
+                      {sec.title}
+                    </h3>
+                  </div>
                   {sec.badge && (
-                    <span className={`text-[10px] sm:text-xs font-mono px-2.5 py-0.5 rounded-full border ${sec.bgBadge}`}>
+                    <span className={`text-xs sm:text-[13px] font-mono px-3 py-1 rounded-full border ${sec.bgBadge}`}>
                       {sec.badge}
                     </span>
                   )}
                 </div>
               )}
-              <div className="space-y-2.5">
+              <div className="space-y-3.5">
                 {sec.paragraphs.map((p, pIdx) => (
                   <HighlightedYoloText key={pIdx} text={p} />
                 ))}
@@ -183,12 +189,12 @@ export default function YoloPage() {
               <span className="text-amber-400 font-mono text-xs sm:text-sm">"{yoloData.userExample.query}"</span>
             </h2>
           </div>
-          <span className="text-xs font-mono text-zinc-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800 self-start sm:self-auto">
+          <span className="text-xs sm:text-sm font-mono text-zinc-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800 self-start sm:self-auto">
             Total Pipeline Reaction Time: &lt; 25ms
           </span>
         </div>
 
-        <p className="text-sm text-zinc-300 leading-relaxed">
+        <p className="text-sm sm:text-base text-zinc-300 leading-relaxed">
           {yoloData.userExample.description}
         </p>
 
@@ -203,14 +209,14 @@ export default function YoloPage() {
                 <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">
                   Step {st.step}
                 </span>
-                <span className="text-sm font-bold text-white tracking-tight">
+                <span className="text-sm sm:text-base font-bold text-white tracking-tight">
                   {st.stage}
                 </span>
               </div>
-              <div className="flex-1 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+              <div className="flex-1 text-sm sm:text-base text-zinc-200 leading-relaxed">
                 {st.text}
               </div>
-              <div className="text-[11px] font-mono text-zinc-400 bg-zinc-900 px-2.5 py-1 rounded border border-zinc-800 shrink-0 self-start">
+              <div className="text-xs font-mono text-zinc-400 bg-zinc-900 px-2.5 py-1 rounded border border-zinc-800 shrink-0 self-start">
                 {st.system}
               </div>
             </div>
@@ -221,22 +227,22 @@ export default function YoloPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2">
           {/* Diverter Action Response */}
           <div className="rounded-xl bg-zinc-950 border border-zinc-800 p-5 space-y-2.5">
-            <div className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+            <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span>Pneumatic Diverter Action & Physical Response</span>
             </div>
-            <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed bg-black/50 p-3.5 rounded-lg border border-zinc-800/80 italic">
+            <p className="text-sm sm:text-base text-zinc-200 leading-relaxed bg-black/50 p-4 rounded-lg border border-zinc-800/80 italic">
               "{yoloData.userExample.sampleOutput.diverterAction}"
             </p>
           </div>
 
           {/* On-Premises PostgreSQL Record */}
           <div className="rounded-xl bg-zinc-950 border border-zinc-800 p-5 space-y-2.5">
-            <div className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+            <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               <span>Recorded in Local PostgreSQL (inspections table)</span>
             </div>
-            <div className="text-xs font-mono bg-black/50 p-3.5 rounded-lg border border-zinc-800/80 space-y-1 text-zinc-300">
+            <div className="text-xs sm:text-sm font-mono bg-black/50 p-4 rounded-lg border border-zinc-800/80 space-y-1.5 text-zinc-300">
               <div><span className="text-zinc-500">Inspection ID:</span> <span className="text-white font-bold">{yoloData.userExample.sampleOutput.inspectionRecord.inspection_id}</span></div>
               <div><span className="text-zinc-500">Conveyor:</span> {yoloData.userExample.sampleOutput.inspectionRecord.conveyor_line}</div>
               <div><span className="text-zinc-500">Defect Detected:</span> <span className="text-amber-400 font-bold">{yoloData.userExample.sampleOutput.inspectionRecord.defect_class}</span></div>
@@ -252,11 +258,11 @@ export default function YoloPage() {
       {/* Bookmarked Technical Concepts & Interview Defense */}
       <div id="bookmarks-bar" className="space-y-6 pt-2">
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-400">
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400">
             <Bookmark className="w-4 h-4 text-cyan-400" />
             <span>Bookmarked Technical Concepts & Interview Defense</span>
           </div>
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm sm:text-base text-zinc-400">
             Click any concept bookmark below to view its technical breakdown and interview defense rationale:
           </p>
 
@@ -277,7 +283,7 @@ export default function YoloPage() {
                 <React.Fragment key={item.id}>
                   <button
                     onClick={() => selectBookmark(item.id)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 border cursor-pointer ${
+                    className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-2 border cursor-pointer ${
                       activeBookmark === item.id
                         ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-md shadow-cyan-500/10'
                         : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:border-cyan-500/50 hover:bg-zinc-800 hover:text-white'
@@ -315,7 +321,7 @@ export default function YoloPage() {
               className="rounded-2xl bg-[#0a0a0c] p-6 sm:p-8 space-y-5 shadow-2xl transition border border-cyan-500 shadow-cyan-500/10"
             >
               <div className="flex items-center justify-between">
-                <span className="text-[11px] uppercase font-mono px-2.5 py-1 rounded-md bg-zinc-900 text-cyan-300 border border-zinc-800 font-semibold">
+                <span className="text-xs font-mono uppercase px-3 py-1 rounded-md bg-zinc-900 text-cyan-300 border border-zinc-800 font-semibold">
                   {currentBookmarkObj.badge}
                 </span>
                 <button
@@ -331,24 +337,24 @@ export default function YoloPage() {
                 <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                   {currentBookmarkObj.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-cyan-400/90 font-medium italic bg-cyan-950/20 border border-cyan-900/40 rounded-lg p-3">
+                <p className="text-sm sm:text-base text-cyan-400/90 font-medium italic bg-cyan-950/20 border border-cyan-900/40 rounded-lg p-3.5">
                   {currentBookmarkObj.summary}
                 </p>
               </div>
 
-              <ul className="space-y-2.5 pt-2 border-t border-zinc-800/80">
+              <ul className="space-y-3 pt-3 border-t border-zinc-800/80">
                 {currentBookmarkObj.details.map((detail, dIdx) => (
-                  <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
-                    <span className="text-cyan-400 font-bold mt-0.5 text-base leading-none">•</span>
+                  <li key={dIdx} className="text-sm sm:text-base text-zinc-200 flex items-start gap-3 leading-relaxed">
+                    <span className="text-cyan-400 font-bold mt-1 text-base leading-none">•</span>
                     <span>{detail}</span>
                   </li>
                 ))}
               </ul>
 
               {currentBookmarkObj.code && (
-                <div className="pt-2 space-y-1.5 border-t border-zinc-800/80">
-                  <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-cyan-400">
-                    <Code2 className="w-3.5 h-3.5" />
+                <div className="pt-2 space-y-2 border-t border-zinc-800/80">
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm font-mono font-bold text-cyan-400">
+                    <Code2 className="w-4 h-4" />
                     <span>Implementation: {currentBookmarkObj.codeFilename || 'main.py'}</span>
                   </div>
                   <CodeHighlight code={currentBookmarkObj.code} filename={currentBookmarkObj.codeFilename || 'main.py'} showHeader={true} />
