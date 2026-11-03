@@ -1073,93 +1073,65 @@ export const definitionBookmarks = [
 ];
 
 export const mostAskedBookmarks = [
-  { id: 'agentic-ai-workflow', label: 'Agentic AI / Workflow' },
-  { id: 'aws-azure', label: 'AWS & Azure in AI/ML (Vision, OpenAI & Security)' },
-  { id: 'bias-weight', label: 'Bias & Weights' },
-  { id: 'bert', label: 'BERT' },
-  { id: 'bm25', label: 'BM25 (Best Matching 25 / Lexical Search Algorithm)' },
-  { id: 'box-cox', label: 'Box-Cox Transformation' },
-  { id: 'chatbot-architecture', label: 'Chatbot Architecture (Enterprise Multi-Agent Banking System)' },
-  { id: 'cicd', label: 'CI/CD' },
-  { id: 'chunking', label: 'Chunking' },
-  { id: 'confidence-score', label: 'Confidence Score' },
-  { id: 'classical-ml', label: 'Classical ML' },
-  { id: 'chroma-db', label: 'ChromaDB (Embedded & Open-Source Vector DB)' },
-  { id: 'class-imbalance', label: 'Class Imbalance' },
-  { id: 'clip', label: 'CLIP' },
-  { id: 'custom-model-fastapi', label: 'Custom Model with FastAPI' },
-  { id: 'connect-gpt-fastapi', label: 'Connect GPT to FastAPI' },
-  { id: 'connect-gpt-flask', label: 'Connect GPT to Flask' },
-  { id: 'crud-api', label: 'CRUD API' },
-  { id: 'docker', label: 'Docker' },
-  { id: 'denoising', label: 'Denoising' },
-  { id: 'data-cleaning', label: 'Data Cleaning & Preprocessing' },
-  { id: 'debugging', label: 'Debugging AI & Search Pipelines' },
-  { id: 'diffusion-model', label: 'Diffusion Model' },
-  { id: 'design-patterns', label: 'Design Patterns' },
-  { id: 'embedding', label: 'Embedding' },
-  { id: 'early-stopping', label: 'Early Stopping' },
-  { id: 'elastic-net', label: 'Elastic Net' },
-  { id: 'fine-tuning', label: 'Fine-Tuning' },
-  { id: 'f1-score', label: 'F1-Score' },
-  { id: 'gradient-descent', label: 'Gradient Descent' },
-  { id: 'gini-impurity', label: 'Gini Impurity' },
-  { id: 'gpt-llama', label: 'GPT / LLaMA' },
-  { id: 'git-github', label: 'Git / GitHub' },
-  { id: 'hallucination', label: 'Hallucination' },
-  { id: 'hyperparameters', label: 'Hyperparameters' },
-  { id: 'hybrid-search', label: 'Hybrid Search (BM25 + Vector Search + Reranking)' },
-  { id: 'hnsw', label: 'HNSW (Vector Search Index)' },
-  { id: 'llm', label: 'LLM' },
-  { id: 'llm-as-a-judge', label: 'LLM-as-a-Judge' },
-  { id: 'lora', label: 'LoRA' },
-  { id: 'langchain-langgraph', label: 'LangChain / LangGraph' },
-  { id: 'lexical-search', label: 'Lexical Search' },
-  { id: 'map-evaluation', label: 'mAP' },
-  { id: 'micro-macro-f1', label: 'Micro F1 vs. Macro F1 & Class Imbalance' },
-  { id: 'normalization-scaling', label: 'Normalization / Scaling' },
-  { id: 'nlp-general-flow', label: 'NLP General Flow' },
-  { id: 'ngram-bigram', label: 'n-gram / Bigram' },
-  { id: 'outlier-detection', label: 'Outlier Detection' },
-  { id: 'overfitting', label: 'Overfitting (High Variance)' },
-  { id: 'optimization', label: 'Optimization & Production Scaling' },
-  { id: 'ocr', label: 'OCR' },
-  { id: 'onnx', label: 'ONNX' },
-  { id: 'openai-vs-azure-ai', label: 'OpenAI vs Azure AI' },
-  { id: 'oop-concepts', label: 'OOP Concepts' },
-  { id: 'onion-architecture', label: 'Onion Architecture' },
-  { id: 'confusion-matrix-precision-recall', label: 'Precision, Recall & Accuracy' },
-  { id: 'pydantic', label: 'Pydantic' },
-  { id: 'pruning', label: 'Pruning' },
-  { id: 'powertransformer', label: 'PowerTransformer' },
-  { id: 'paged-attention', label: 'PagedAttention' },
-  { id: 'qlora', label: 'QLoRA' },
-  { id: 'rag', label: 'RAG' },
-  { id: 'rag-architectures', label: 'RAG Architectures' },
-  { id: 'ranking-and-reranking', label: 'Ranking & Reranking' },
-  { id: 'regression-vs-classification', label: 'Regression vs Classification' },
-  { id: 'reinforcement-learning', label: 'Reinforcement Learning' },
-  { id: 'retrieval-algorithms', label: 'Retrieval Algorithms' },
-  { id: 'roc-auc', label: 'ROC-AUC' },
-  { id: 'self-attention', label: 'Self-Attention' },
-  { id: 'similarity-semantic-search', label: 'Similarity / Semantic Search' },
-  { id: 'sft-peft', label: 'SFT / PEFT' },
-  { id: 'transformer', label: 'Transformer' },
-  { id: 'top-k-top-p', label: 'Top-K / Top-P' },
-  { id: 'tokenization', label: 'Tokenization' },
-  { id: 'tf-idf', label: 'TF-IDF' },
-  { id: 'trimming', label: 'Trimming vs Capping' },
-  { id: 'underfitting', label: 'Underfitting (High Bias)' },
-  { id: 'underfitting-overfitting', label: 'Underfitting & Overfitting' },
-  { id: 'uvicorn', label: 'Uvicorn' },
-  { id: 'update-deployed-model', label: 'Update a Deployed Model' },
-  { id: 'variance', label: 'Variance' },
-  { id: 'vector-database', label: 'Vector Database' },
-  { id: 'xgboost', label: 'XGBoost' },
-  { id: 'yeo-johnson', label: 'Yeo-Johnson Transformation' },
-  { id: 'yolo', label: 'YOLO' },
-  { id: 'z-score', label: 'Z-score' },
-  { id: 'zero-shot-few-shot', label: 'Zero-shot / Few-shot' }
+  { id: 'aws-azure', label: "AWS & Azure in AI/ML (Vision, OpenAI & Security)" },
+  { id: 'bias-weight', label: "Bias & Weights" },
+  { id: 'bm25', label: "BM25 (Best Matching 25 / Lexical Search Algorithm)" },
+  { id: 'chunking', label: "Chunking" },
+  { id: 'custom-model-fastapi', label: "Custom Model with FastAPI" },
+  { id: 'connect-gpt-fastapi', label: "Connect GPT to FastAPI" },
+  { id: 'connect-gpt-flask', label: "Connect GPT to Flask" },
+  { id: 'crud-api', label: "CRUD API" },
+  { id: 'docker', label: "Docker" },
+  { id: 'data-cleaning', label: "Data Cleaning & Preprocessing" },
+  { id: 'debugging', label: "Debugging AI & Search Pipelines" },
+  { id: 'design-patterns', label: "Design Patterns" },
+  { id: 'embedding', label: "Embedding" },
+  { id: 'fine-tuning', label: "Fine-Tuning" },
+  { id: 'gradient-descent', label: "Gradient Descent" },
+  { id: 'gpt-llama', label: "GPT / LLaMA" },
+  { id: 'git-github', label: "Git / GitHub" },
+  { id: 'hallucination', label: "Hallucination" },
+  { id: 'hyperparameters', label: "Hyperparameters" },
+  { id: 'hybrid-search', label: "Hybrid Search (BM25 + Vector Search + Reranking)" },
+  { id: 'hnsw', label: "HNSW (Vector Search Index)" },
+  { id: 'llm', label: "LLM" },
+  { id: 'llm-as-a-judge', label: "LLM-as-a-Judge" },
+  { id: 'lora', label: "LoRA" },
+  { id: 'langchain-langgraph', label: "LangChain / LangGraph" },
+  { id: 'lexical-search', label: "Lexical Search" },
+  { id: 'normalization-scaling', label: "Normalization / Scaling" },
+  { id: 'ngram-bigram', label: "n-gram / Bigram" },
+  { id: 'outlier-detection', label: "Outlier Detection" },
+  { id: 'overfitting', label: "Overfitting (High Variance)" },
+  { id: 'optimization', label: "Optimization & Production Scaling" },
+  { id: 'oop-concepts', label: "OOP Concepts" },
+  { id: 'confusion-matrix-precision-recall', label: "Precision, Recall & Accuracy" },
+  { id: 'pydantic', label: "Pydantic" },
+  { id: 'pruning', label: "Pruning" },
+  { id: 'powertransformer', label: "PowerTransformer" },
+  { id: 'paged-attention', label: "PagedAttention" },
+  { id: 'qlora', label: "QLoRA" },
+  { id: 'rag', label: "RAG" },
+  { id: 'rag-architectures', label: "RAG Architectures" },
+  { id: 'ranking-and-reranking', label: "Ranking & Reranking" },
+  { id: 'regression-vs-classification', label: "Regression vs Classification" },
+  { id: 'reinforcement-learning', label: "Reinforcement Learning" },
+  { id: 'retrieval-algorithms', label: "Retrieval Algorithms" },
+  { id: 'self-attention', label: "Self-Attention" },
+  { id: 'similarity-semantic-search', label: "Similarity / Semantic Search" },
+  { id: 'sft-peft', label: "SFT / PEFT" },
+  { id: 'transformer', label: "Transformer" },
+  { id: 'top-k-top-p', label: "Top-K / Top-P" },
+  { id: 'tokenization', label: "Tokenization" },
+  { id: 'tf-idf', label: "TF-IDF" },
+  { id: 'trimming', label: "Trimming vs Capping" },
+  { id: 'underfitting', label: "Underfitting (High Bias)" },
+  { id: 'underfitting-overfitting', label: "Underfitting & Overfitting" },
+  { id: 'uvicorn', label: "Uvicorn" },
+  { id: 'update-deployed-model', label: "Update a Deployed Model" },
+  { id: 'variance', label: "Variance" },
+  { id: 'vector-database', label: "Vector Database" },
+  { id: 'zero-shot-few-shot', label: "Zero-shot / Few-shot" }
 ];
 
 export const definitionsData = [
@@ -1398,41 +1370,166 @@ export const definitionsData = [
   },
   {
     "id": "gpt-llama",
-    "title": "GPT / LLaMA",
-    "badge": "Large Language Model Families",
-    "summary": "Foundational LLM families: GPT (OpenAI proprietary hosted models) vs LLaMA (Meta open-weights self-hosted models).",
-    "gptOverview": {
-      "name": "GPT (Generative Pre-trained Transformer)",
+    "title": "GPT / LLaMA (Foundational LLM Families)",
+    "badge": "Foundational LLM Families",
+    "summary": "Foundational LLM families: GPT (OpenAI-developed models, commonly accessed through hosted APIs) vs LLaMA (Meta-developed open-weight models that can be self-hosted).",
+    "intro": "GPT and LLaMA are families of Large Language Models (LLMs) used for text generation, question answering, summarization, code generation, and reasoning tasks.",
+    "gpt": {
+      "title": "1. GPT — Generative Pre-trained Transformer",
       "developer": "OpenAI",
-      "desc": "A family of AI language models developed by OpenAI that can understand and generate text, answer questions, summarize documents, write code, and perform complex reasoning tasks.",
+      "definition": "GPT is a family of AI language models designed to understand and generate text, answer questions, summarize documents, write code, and perform reasoning tasks.",
       "architecture": {
         "title": "GPT Architecture",
-        "meaning": "GPT means Generative Pre-trained Transformer.",
-        "traits": [
-          "Uses a decoder-only Transformer.",
-          "Predicts the next token based on previous tokens.",
-          "Repeats that prediction process to generate text.",
-          "May be further instruction-tuned and aligned for conversational use."
+        "description": "GPT stands for Generative Pre-trained Transformer.",
+        "points": [
+          "Uses a decoder-only Transformer architecture in the GPT model family.",
+          "Predicts the next token based on previously processed tokens.",
+          "Repeats the prediction process autoregressively to generate text.",
+          "Can be instruction-tuned and aligned for conversational use."
         ]
       },
-      "points": [
-        "Commonly accessed through hosted cloud APIs (e.g. gpt-4o, gpt-5-mini) or ChatGPT.",
-        "Zero infrastructure maintenance: OpenAI handles GPU orchestration, scaling, and low-level optimizations.",
-        "Model hosting, data privacy boundaries, and API rate limits depend on OpenAI's enterprise terms."
-      ]
+      "deployment": {
+        "title": "Deployment & Execution",
+        "points": [
+          "Commonly accessed through hosted cloud APIs or ChatGPT.",
+          "OpenAI manages model serving, GPU infrastructure, scaling, and inference optimizations for hosted API usage.",
+          "Application developers can integrate GPT into Python applications, FastAPI services, RAG pipelines, and agentic workflows.",
+          "Data handling, retention, rate limits, and privacy boundaries depend on the specific product and service terms."
+        ],
+        "exampleModels": "Example model names include GPT-4o and GPT-5-mini."
+      }
     },
-    "llamaOverview": {
-      "name": "LLaMA (Large Language Model Meta AI)",
+    "llama": {
+      "title": "2. LLaMA — Large Language Model Meta AI",
       "developer": "Meta",
-      "desc": "A family of open-weights foundational large language models developed by Meta designed for research, enterprise deployment, and custom fine-tuning.",
-      "points": [
-        "Model weights can be downloaded directly from HuggingFace and hosted on private infrastructure.",
-        "Complete data sovereignty: Model executes entirely inside your private VPC/on-prem GPUs with zero external API calls.",
-        "Requires local GPU hardware management (e.g. vLLM, Ollama, TensorRT-LLM) and Meta Community License compliance."
-      ]
+      "definition": "LLaMA is a family of open-weight foundational language models developed by Meta for research, enterprise deployment, and customization.",
+      "architecture": {
+        "title": "Architecture",
+        "points": [
+          "Generally uses a decoder-only Transformer architecture.",
+          "Generates text through autoregressive next-token prediction.",
+          "Supports instruction tuning and domain-specific fine-tuning.",
+          "Many releases provide downloadable model weights."
+        ]
+      },
+      "deployment": {
+        "title": "Deployment & Execution",
+        "points": [
+          "Model weights can be obtained through official distribution channels and supported platforms such as Hugging Face.",
+          "Can be deployed on private cloud infrastructure, a private VPC, or on-premises GPUs.",
+          "Can be served using runtimes such as vLLM, Ollama, or TensorRT-LLM, depending on hardware and model support.",
+          "Requires infrastructure management, including GPU memory, model serving, scaling, monitoring, and optimization.",
+          "License requirements depend on the specific model release."
+        ]
+      },
+      "privacyNote": {
+        "title": "Privacy consideration",
+        "content": "Self-hosting can provide greater control over data processing and storage, but does not automatically guarantee complete data sovereignty. Logs, telemetry, external dependencies, and infrastructure configuration must also be managed."
+      }
     },
-    "runtimeContrast": "In the GPT example, the model runs on the provider's infrastructure, not inside FastAPI. In the scikit-learn example, the model is loaded into the Python application itself.",
-    "ragClarification": "GPT and LLaMA are model families (the generative reasoning brains), whereas RAG (Retrieval-Augmented Generation) is a technique for supplying a model with relevant external information from your knowledge base. They are complementary and frequently used together."
+    "comparisonTable": {
+      "title": "3. GPT vs LLaMA — Deployment Comparison",
+      "headers": [
+        "Feature",
+        "GPT",
+        "LLaMA"
+      ],
+      "rows": [
+        {
+          "feature": "Developer",
+          "gpt": "OpenAI",
+          "llama": "Meta"
+        },
+        {
+          "feature": "Model access",
+          "gpt": "Commonly hosted API",
+          "llama": "Many releases provide downloadable weights"
+        },
+        {
+          "feature": "Infrastructure",
+          "gpt": "Managed by provider for hosted APIs",
+          "llama": "Managed by the deploying organization"
+        },
+        {
+          "feature": "GPU management",
+          "gpt": "Provider-managed",
+          "llama": "Required for self-hosting"
+        },
+        {
+          "feature": "Customization",
+          "gpt": "Prompting and supported fine-tuning options",
+          "llama": "Prompting, fine-tuning, and self-hosting"
+        },
+        {
+          "feature": "Data control",
+          "gpt": "Depends on service and deployment terms",
+          "llama": "Greater control with private deployment"
+        },
+        {
+          "feature": "Operational responsibility",
+          "gpt": "Lower for hosted API use",
+          "llama": "Higher for self-hosting"
+        },
+        {
+          "feature": "Best fit",
+          "gpt": "Rapid development and managed inference",
+          "llama": "Customization and deployment control"
+        }
+      ],
+      "footerNote": "The actual performance, cost, latency, and capabilities depend on the specific model, hardware, and deployment configuration."
+    },
+    "runtimeExecution": {
+      "title": "4. Runtime Execution Contrast",
+      "gptHosting": {
+        "title": "GPT with a Hosted API",
+        "intro": "In a GPT API integration, the model runs on the provider's infrastructure—not inside the FastAPI application.",
+        "typicalFlow": [
+          "FastAPI receives the user request.",
+          "FastAPI sends an API request to the model provider.",
+          "The hosted model processes the request.",
+          "The provider returns the generated response.",
+          "FastAPI returns the result to the user."
+        ],
+        "summary": "FastAPI handles application logic and API communication; the provider handles model inference."
+      },
+      "llamaHosting": {
+        "title": "LLaMA with Self-Hosting",
+        "intro": "When a LLaMA model is self-hosted:",
+        "steps": [
+          "Model weights are loaded into GPU or CPU memory by the inference runtime.",
+          "FastAPI sends the request to the local or private model-serving endpoint.",
+          "The inference runtime executes the model.",
+          "The generated output is returned to FastAPI.",
+          "FastAPI returns the response to the user."
+        ],
+        "note": "The model may run on the same machine as FastAPI or on a separate private GPU server."
+      },
+      "importantDistinction": {
+        "title": "Important distinction",
+        "content": "A scikit-learn model can be loaded directly into a Python application, while large LLMs are commonly served through a dedicated inference runtime. Both approaches are possible depending on the model and deployment design."
+      }
+    },
+    "distinctionRag": {
+      "title": "5. Key Architect Distinction: GPT / LLaMA vs RAG",
+      "intro": "GPT and LLaMA are model families—the generative intelligence used to produce responses.\n\nRAG (Retrieval-Augmented Generation) is a technique that supplies a model with relevant external information from a knowledge base.\n\nThey are complementary and frequently used together.",
+      "ragArchitecture": {
+        "title": "RAG Architecture",
+        "steps": [
+          "User submits a question.",
+          "Retriever searches the knowledge base.",
+          "Relevant document chunks are retrieved.",
+          "Retrieved context is added to the prompt.",
+          "GPT or LLaMA generates an answer using the provided context."
+        ],
+        "takeaway": "RAG helps provide external or updated knowledge without requiring the model to be retrained whenever documents change."
+      }
+    },
+    "interviewAnswer": {
+      "title": "6. Interview Answer",
+      "question": "What is the difference between GPT and LLaMA?",
+      "answer": "GPT and LLaMA are both families of autoregressive Transformer-based language models. GPT is developed by OpenAI and is commonly accessed through hosted APIs, while many LLaMA releases provide downloadable weights that support self-hosting and customization. GPT hosted APIs reduce infrastructure management, whereas self-hosted LLaMA provides greater control over deployment and data processing but requires model-serving and GPU infrastructure management. Both can be integrated into RAG applications.",
+      "keyTakeaway": "GPT and LLaMA are model families; RAG is a technique for supplying external knowledge to those models."
+    }
   },
   {
     "id": "agentic-ai-workflow",
@@ -1522,28 +1619,182 @@ export const definitionsData = [
     ]
   },
   {
-    "id": "genai-vs-traditional-ai",
-    "title": "GenAI vs Traditional AI",
-    "badge": "Architectural Comparison",
-    "summary": "Understanding the paradigm shift between discriminative/predictive machine learning models and generative foundation models.",
-    "comparison": [
+  "id": "genai-vs-traditional-ai",
+  "title": "GenAI vs Traditional AI",
+  "badge": "Predictive vs. Generative Paradigms",
+  "summary": "Traditional AI primarily focuses on predicting, classifying, or making decisions from data, while Generative AI focuses on learning patterns in data to generate new content such as text, images, audio, video, and code. Both use machine learning and deep learning, but differ in their objectives, outputs, architectures, and evaluation methods.",
+  "intro": "Traditional AI primarily focuses on predicting, classifying, or making decisions from data, while Generative AI focuses on learning patterns in data to generate new content such as text, images, audio, video, and code.\n\nBoth use machine learning and deep learning, but differ in their objectives, outputs, architectures, and evaluation methods.",
+  "comparisonTable": [
+    {
+      "feature": "Primary objective",
+      "traditional": "Predict, classify, or make decisions",
+      "genai": "Generate new content"
+    },
+    {
+      "feature": "Output",
+      "traditional": "Labels, scores, predictions, actions",
+      "genai": "Text, images, audio, video, code"
+    },
+    {
+      "feature": "Learning approach",
+      "traditional": "Learns relationships between features and targets or patterns",
+      "genai": "Learns data distributions and generative patterns"
+    },
+    {
+      "feature": "Common models",
+      "traditional": "Logistic Regression, Random Forest, XGBoost, SVM",
+      "genai": "GPT, Llama, Diffusion Models, GANs"
+    },
+    {
+      "feature": "Input",
+      "traditional": "Structured or unstructured data",
+      "genai": "Text, images, audio, video, or multimodal inputs"
+    },
+    {
+      "feature": "Output evaluation",
+      "traditional": "Accuracy, Precision, Recall, F1, ROC-AUC, MAE",
+      "genai": "Faithfulness, relevance, quality, semantic similarity, human evaluation"
+    },
+    {
+      "feature": "Typical applications",
+      "traditional": "Fraud detection, forecasting, classification",
+      "genai": "Chatbots, content generation, summarization, image generation"
+    }
+  ],
+  "importantNote": "Traditional AI is not limited to structured data. Traditional ML models can also work with text, images, and other unstructured data.",
+  "traditionalHowItWorks": {
+    "title": "2. Traditional AI — How It Works",
+    "desc": "Traditional AI generally learns a mapping from input features to a target output.",
+    "exampleTitle": "Example: Predicting whether a transaction is fraudulent",
+    "steps": [
+      "1. Collect transaction data.",
+      "2. Extract features such as transaction amount, location, and transaction frequency.",
+      "3. Train a classification model.",
+      "4. Predict the probability of fraud.",
+      "5. Apply a threshold to classify the transaction."
+    ],
+    "code": "from sklearn.ensemble import RandomForestClassifier\n\nmodel = RandomForestClassifier(\n    n_estimators=100,\n    random_state=42\n)\n\nmodel.fit(X_train, y_train)\n\npredictions = model.predict(X_test)",
+    "takeaway": "The model produces a prediction based on learned patterns."
+  },
+  "genaiHowItWorks": {
+    "title": "3. Generative AI — How It Works",
+    "desc": "Generative AI learns patterns from training data and uses those patterns to generate new content.",
+    "exampleTitle": "Example: An LLM answering a user question",
+    "steps": [
+      "1. Receive the user prompt.",
+      "2. Tokenize the input.",
+      "3. Convert tokens into embeddings.",
+      "4. Process the input using a Transformer architecture.",
+      "5. Predict the next token.",
+      "6. Continue generating tokens until the response is complete."
+    ],
+    "code": "from openai import OpenAI\n\nclient = OpenAI()\n\nresponse = client.responses.create(\n    model=\"gpt-5-mini\",\n    input=\"Explain fraud detection using AI.\"\n)\n\nprint(response.output_text)",
+    "takeaway": "The model generates a response rather than selecting a predefined class label."
+  },
+  "discriminativeVsGenerative": {
+    "title": "4. Discriminative vs Generative Models",
+    "subtitle": "This is an important theoretical distinction.",
+    "discriminative": {
+      "title": "Discriminative Models",
+      "desc": "Learn the relationship between input features and target labels.",
+      "formula": "P(y | x)",
+      "example": "Given transaction data, estimate the probability that the transaction is fraudulent.",
+      "models": [
+        "Logistic Regression",
+        "Random Forest",
+        "XGBoost",
+        "Discriminative neural networks"
+      ]
+    },
+    "generative": {
+      "title": "Generative Models",
+      "desc": "Learn the data distribution or a generative process that can produce new samples.",
+      "formula": "P(x)   or   P(x | c)",
+      "conditionNote": "where c represents a condition, such as a prompt or class label.",
+      "models": [
+        "GPT-style language models",
+        "Diffusion models",
+        "GANs",
+        "Variational Autoencoders (VAEs)"
+      ]
+    },
+    "note": "Not every generative model directly learns the same probability distribution. The equations above represent the broad conceptual distinction."
+  },
+  "practicalUseCases": {
+    "title": "5. Practical Use Cases",
+    "table": [
       {
-        "aspect": "Core Function",
-        "traditional": "Predicts, ranks, or classifies existing input data into predefined buckets.",
-        "generative": "Creates completely new original content (text, code, images, audio, video) based on learned distributions."
+        "traditional": "Predict customer churn",
+        "genai": "Generate personalized customer messages"
       },
       {
-        "aspect": "Logistics Example",
-        "traditional": "Binary classification: 'Damaged' vs 'Normal' parcel.",
-        "generative": "Generates a detailed natural-language defect inspection report explaining why a parcel was damaged and recommending packaging remediation."
+        "traditional": "Detect fraudulent transactions",
+        "genai": "Explain why a transaction appears suspicious"
       },
       {
-        "aspect": "Underlying Models",
-        "traditional": "Logistic Regression, XGBoost, Random Forest, SVM, ResNet, YOLO.",
-        "generative": "Transformer LLMs (GPT-4o, LLaMA-3), Diffusion models (Stable Diffusion), multimodal generative transformers."
+        "traditional": "Forecast product demand",
+        "genai": "Generate a demand-planning report"
+      },
+      {
+        "traditional": "Classify support tickets",
+        "genai": "Draft a response to a support ticket"
+      },
+      {
+        "traditional": "Predict equipment failure",
+        "genai": "Summarize maintenance records"
       }
     ]
   },
+  "workingTogether": {
+    "title": "6. Can Traditional AI and GenAI Work Together?",
+    "answer": "Yes. Many production systems combine traditional ML with GenAI.",
+    "exampleTitle": "Example: A fraud detection system",
+    "steps": [
+      "1. Traditional ML model predicts fraud probability.",
+      "2. Business rules apply transaction limits and policy constraints.",
+      "3. GenAI summarizes the evidence for an analyst.",
+      "4. A human reviews high-risk cases."
+    ],
+    "summary": "Traditional ML provides structured predictions, while GenAI can provide natural-language explanations and summaries.",
+    "importantWarning": "Important: A generated explanation is not automatically a faithful explanation of the underlying ML model. Use explainability techniques such as SHAP or model-specific explanations when the explanation must accurately reflect model behavior."
+  },
+  "evaluationDifferences": {
+    "title": "7. Evaluation Differences",
+    "traditional": {
+      "title": "Traditional AI Evaluation",
+      "desc": "Traditional AI is often evaluated using clearly defined target labels or numerical outcomes.",
+      "metrics": [
+        {
+          "type": "Classification",
+          "items": "Precision, Recall, F1-score, ROC-AUC"
+        },
+        {
+          "type": "Regression",
+          "items": "MAE, RMSE, R²"
+        }
+      ]
+    },
+    "genai": {
+      "title": "Generative AI Evaluation",
+      "desc": "GenAI evaluation is more complex because many valid outputs may exist for the same prompt.",
+      "methods": [
+        "LLM-as-a-Judge",
+        "Human evaluation",
+        "Faithfulness and answer relevancy",
+        "Semantic similarity",
+        "Task-specific evaluation",
+        "Safety and hallucination testing"
+      ],
+      "ragNote": "For RAG applications, frameworks such as RAGAS can evaluate retrieval and generation quality."
+    }
+  },
+  "interviewAnswer": {
+    "title": "8. Interview Answer",
+    "question": "What is the difference between Traditional AI and Generative AI?",
+    "answer": "Traditional AI generally focuses on prediction, classification, and decision-making, such as fraud detection or demand forecasting. Generative AI learns patterns in data and generates new content, such as text, images, or code. Traditional AI is often evaluated using metrics like accuracy, F1-score, or RMSE, while GenAI requires evaluating qualities such as relevance, faithfulness, and output quality. In production systems, both can be combined to deliver predictions along with generated explanations or summaries.",
+    "takeaway": "Key takeaway: Traditional AI predicts or decides; Generative AI generates. Both can be integrated into a single AI application."
+  }
+},
   {
     "id": "ai-model",
     "title": "AI Model: Fundamentals, Common Types & Training vs. Inference",

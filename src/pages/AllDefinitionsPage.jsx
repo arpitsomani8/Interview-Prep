@@ -1128,176 +1128,187 @@ export default function AllDefinitionsPage() {
                 {/* Item 4: GPT / LLaMA */}
                 {item.id === 'gpt-llama' && (
                   <div className="space-y-6">
-                    {/* 1. High-Level Comparison Banner */}
-                    <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/50 space-y-4 shadow-xl">
+                    {/* Header banner / Intro */}
+                    <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/50 space-y-3 shadow-xl">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
                           <Bot className="w-3.5 h-3.5 text-cyan-400" />
                           <span>Foundational LLM Families</span>
                         </span>
                         <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                          Architecture & Hosting Paradigms
+                          OpenAI (Hosted) vs Meta (Open Weights)
                         </span>
                       </div>
-
                       <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed">
-                        {item.coreComparison?.intro || "GPT and LLaMA are foundational LLM families used to understand and generate text. The main difference is how they are accessed, hosted, and customized."}
+                        {item.summary}
                       </p>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div className="p-4 rounded-xl bg-black border border-cyan-900/60 space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-1.5">
-                              <Globe className="w-3.5 h-3.5 text-cyan-400" />
-                              <span>GPT (OpenAI)</span>
-                            </span>
-                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                              Cloud Hosted API
-                            </span>
-                          </div>
-                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                            OpenAI models commonly accessed through hosted APIs.
-                          </p>
-                        </div>
-
-                        <div className="p-4 rounded-xl bg-black border border-purple-900/60 space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold font-mono text-purple-400 uppercase flex items-center gap-1.5">
-                              <Server className="w-3.5 h-3.5 text-purple-400" />
-                              <span>LLaMA (Meta)</span>
-                            </span>
-                            <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
-                              Open Weights / Self-Hosted
-                            </span>
-                          </div>
-                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                            Meta models with downloadable weights that can be self-hosted, subject to their license.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 2. GPT Detailed Section */}
-                    <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-4 shadow-lg">
-                      <div className="flex items-center justify-between border-b border-zinc-900 pb-2.5">
-                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                          <Sparkles className="w-4 h-4 text-cyan-400" />
-                          <span>{item.gpt?.title || "1. GPT (Generative Pre-trained Transformer)"}</span>
-                        </h4>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                          Developed by: {item.gpt?.developer || "OpenAI"}
-                        </span>
-                      </div>
-
-                      <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
-                        {item.gpt?.definition}
-                      </p>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                        {/* Architecture Card */}
-                        <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
-                          <span className="text-xs font-bold font-mono text-cyan-300 uppercase tracking-wide block">
-                            {item.gpt?.architecture?.title || "GPT Architecture"}
-                          </span>
-                          <ul className="space-y-1.5">
-                            {item.gpt?.architecture?.points?.map((pt, pIdx) => (
-                              <li key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2 font-sans">
-                                <span className="text-cyan-400 font-mono mt-0.5">›</span>
-                                <span className="leading-relaxed">{pt}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        {/* How GPT is Commonly Used */}
-                        <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
-                          <span className="text-xs font-bold font-mono text-cyan-300 uppercase tracking-wide block">
-                            {item.gpt?.usage?.title || "How GPT is commonly used"}
-                          </span>
-                          <ul className="space-y-1.5">
-                            {item.gpt?.usage?.points?.map((pt, pIdx) => (
-                              <li key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2 font-sans">
-                                <span className="text-cyan-400 font-mono mt-0.5">•</span>
-                                <span className="leading-relaxed">{pt}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 3. LLaMA Detailed Section */}
-                    <div className="p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 space-y-4 shadow-lg">
-                      <div className="flex items-center justify-between border-b border-zinc-900 pb-2.5">
-                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
-                          <Server className="w-4 h-4 text-purple-400" />
-                          <span>{item.llama?.title || "2. LLaMA (Large Language Model Meta AI)"}</span>
-                        </h4>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
-                          Developed by: {item.llama?.developer || "Meta"}
-                        </span>
-                      </div>
-
-                      <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
-                        {item.llama?.definition}
-                      </p>
-
-                      <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
-                        <span className="text-xs font-bold font-mono text-purple-300 uppercase tracking-wide block">
-                          {item.llama?.usage?.title || "How LLaMA is commonly used"}
-                        </span>
-                        <ul className="space-y-1.5">
-                          {item.llama?.usage?.points?.map((pt, pIdx) => (
-                            <li key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2 font-sans">
-                              <span className="text-purple-400 font-mono mt-0.5">•</span>
-                              <span className="leading-relaxed">{pt}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Privacy / License Alert */}
-                      {item.llama?.privacyNote && (
-                        <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/50 text-xs text-amber-200/90 leading-relaxed font-sans flex items-start gap-2.5">
-                          <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                          <div>
-                            <strong className="text-amber-400 font-mono uppercase mr-1">
-                              {item.llama.privacyNote.title}:
-                            </strong>
-                            <span>{item.llama.privacyNote.content}</span>
-                          </div>
-                        </div>
+                      {item.intro && (
+                        <p className="text-xs sm:text-sm text-zinc-400 font-sans leading-relaxed">
+                          {item.intro}
+                        </p>
                       )}
                     </div>
 
-                    {/* 4. Runtime Execution Contrast */}
-                    {item.runtimeExecution && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
-                            <Cpu className="w-4 h-4 text-emerald-400" />
-                            <span>{item.runtimeExecution.title}</span>
+                    {/* Section 1: GPT */}
+                    {item.gpt && (
+                      <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-4 shadow-lg">
+                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2.5">
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-cyan-400" />
+                            <span>{item.gpt.title}</span>
                           </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
-                            Operational Reality
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            Developer: {item.gpt.developer}
                           </span>
                         </div>
 
-                        {/* Table */}
+                        <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
+                          {item.gpt.definition}
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* GPT Architecture Card */}
+                          {item.gpt.architecture && (
+                            <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                              <span className="text-xs font-bold font-mono text-cyan-300 uppercase tracking-wide block">
+                                {item.gpt.architecture.title}
+                              </span>
+                              {item.gpt.architecture.description && (
+                                <p className="text-xs text-zinc-400 italic">
+                                  {item.gpt.architecture.description}
+                                </p>
+                              )}
+                              <ul className="space-y-1.5">
+                                {item.gpt.architecture.points?.map((pt, pIdx) => (
+                                  <li key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2 font-sans">
+                                    <span className="text-cyan-400 font-mono mt-0.5">›</span>
+                                    <span className="leading-relaxed">{pt}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* GPT Deployment & Execution Card */}
+                          {item.gpt.deployment && (
+                            <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                              <span className="text-xs font-bold font-mono text-cyan-300 uppercase tracking-wide block">
+                                {item.gpt.deployment.title}
+                              </span>
+                              <ul className="space-y-1.5">
+                                {item.gpt.deployment.points?.map((pt, pIdx) => (
+                                  <li key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2 font-sans">
+                                    <span className="text-cyan-400 font-mono mt-0.5">•</span>
+                                    <span className="leading-relaxed">{pt}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                              {item.gpt.deployment.exampleModels && (
+                                <div className="pt-2 border-t border-zinc-900 text-xs text-cyan-300/90 font-mono">
+                                  {item.gpt.deployment.exampleModels}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Section 2: LLaMA */}
+                    {item.llama && (
+                      <div className="p-5 rounded-2xl bg-zinc-950 border border-purple-800/40 space-y-4 shadow-lg">
+                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2.5">
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                            <Server className="w-4 h-4 text-purple-400" />
+                            <span>{item.llama.title}</span>
+                          </h4>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                            Developer: {item.llama.developer}
+                          </span>
+                        </div>
+
+                        <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
+                          {item.llama.definition}
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* LLaMA Architecture Card */}
+                          {item.llama.architecture && (
+                            <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                              <span className="text-xs font-bold font-mono text-purple-300 uppercase tracking-wide block">
+                                {item.llama.architecture.title}
+                              </span>
+                              <ul className="space-y-1.5">
+                                {item.llama.architecture.points?.map((pt, pIdx) => (
+                                  <li key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2 font-sans">
+                                    <span className="text-purple-400 font-mono mt-0.5">›</span>
+                                    <span className="leading-relaxed">{pt}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* LLaMA Deployment & Execution Card */}
+                          {item.llama.deployment && (
+                            <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2.5">
+                              <span className="text-xs font-bold font-mono text-purple-300 uppercase tracking-wide block">
+                                {item.llama.deployment.title}
+                              </span>
+                              <ul className="space-y-1.5">
+                                {item.llama.deployment.points?.map((pt, pIdx) => (
+                                  <li key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2 font-sans">
+                                    <span className="text-purple-400 font-mono mt-0.5">•</span>
+                                    <span className="leading-relaxed">{pt}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Privacy consideration */}
+                        {item.llama.privacyNote && (
+                          <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-800/50 text-xs text-amber-200/90 leading-relaxed font-sans flex items-start gap-2.5">
+                            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                            <div>
+                              <strong className="text-amber-400 font-mono uppercase mr-1">
+                                {item.llama.privacyNote.title}:
+                              </strong>
+                              <span>{item.llama.privacyNote.content}</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Section 3: GPT vs LLaMA — Deployment Comparison */}
+                    {item.comparisonTable && (
+                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
+                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                            <Table className="w-4 h-4 text-cyan-400" />
+                            <span>{item.comparisonTable.title}</span>
+                          </h4>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
+                            Feature Comparison
+                          </span>
+                        </div>
+
                         <div className="overflow-x-auto border border-zinc-800 rounded-xl bg-black">
                           <table className="w-full text-left text-xs font-sans">
                             <thead className="bg-zinc-900 border-b border-zinc-800 font-mono text-[11px] text-zinc-400">
                               <tr>
-                                <th className="p-3 w-1/4">Criterion</th>
-                                <th className="p-3 w-3/8 text-cyan-400">GPT (Hosted API)</th>
-                                <th className="p-3 w-3/8 text-purple-400">LLaMA (Self-Hosted)</th>
+                                <th className="p-3 w-1/4">Feature</th>
+                                <th className="p-3 w-3/8 text-cyan-400">GPT</th>
+                                <th className="p-3 w-3/8 text-purple-400">LLaMA</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-900">
-                              {item.runtimeExecution.comparisonTable?.map((row, rIdx) => (
+                              {item.comparisonTable.rows?.map((row, rIdx) => (
                                 <tr key={rIdx} className="hover:bg-zinc-950/60 transition">
-                                  <td className="p-3 font-mono text-zinc-400 font-bold whitespace-nowrap">
-                                    {row.dimension}
+                                  <td className="p-3 font-mono text-zinc-300 font-bold whitespace-nowrap">
+                                    {row.feature}
                                   </td>
                                   <td className="p-3 text-zinc-300 leading-relaxed">
                                     {row.gpt}
@@ -1311,97 +1322,166 @@ export default function AllDefinitionsPage() {
                           </table>
                         </div>
 
-                        {/* FastAPI Example */}
-                        {item.runtimeExecution.fastApiExample && (
-                          <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
-                            <span className="text-xs font-bold font-mono uppercase text-emerald-400 tracking-wider flex items-center gap-1.5">
-                              <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                              <span>{item.runtimeExecution.fastApiExample.title}</span>
-                            </span>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                              <div className="p-3 rounded-lg bg-zinc-950 border border-cyan-900/50 space-y-1">
-                                <span className="text-[10px] font-mono text-cyan-400 uppercase font-bold block">
-                                  FastAPI + GPT:
+                        {item.comparisonTable.footerNote && (
+                          <p className="text-xs text-zinc-400 italic font-sans">
+                            {item.comparisonTable.footerNote}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Section 4: Runtime Execution Contrast */}
+                    {item.runtimeExecution && (
+                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
+                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                            <Cpu className="w-4 h-4 text-emerald-400" />
+                            <span>{item.runtimeExecution.title}</span>
+                          </h4>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                            FastAPI & Inference Flow
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* GPT with Hosted API */}
+                          {item.runtimeExecution.gptHosting && (
+                            <div className="p-4 rounded-xl bg-black border border-cyan-900/50 space-y-3">
+                              <span className="text-xs font-bold font-mono text-cyan-400 uppercase tracking-wide block">
+                                {item.runtimeExecution.gptHosting.title}
+                              </span>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                {item.runtimeExecution.gptHosting.intro}
+                              </p>
+                              <div className="space-y-1.5 pt-1">
+                                <span className="text-[11px] font-mono text-zinc-400 uppercase font-semibold block">
+                                  Typical flow:
                                 </span>
-                                <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                                  {item.runtimeExecution.fastApiExample.gptScenario}
-                                </p>
+                                <ol className="space-y-1 pl-4 list-decimal text-xs text-zinc-300 font-sans">
+                                  {item.runtimeExecution.gptHosting.typicalFlow?.map((step, sIdx) => (
+                                    <li key={sIdx} className="leading-relaxed">
+                                      {step}
+                                    </li>
+                                  ))}
+                                </ol>
                               </div>
-                              <div className="p-3 rounded-lg bg-zinc-950 border border-purple-900/50 space-y-1">
-                                <span className="text-[10px] font-mono text-purple-400 uppercase font-bold block">
-                                  FastAPI + LLaMA:
-                                </span>
-                                <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                                  {item.runtimeExecution.fastApiExample.llamaScenario}
-                                </p>
-                              </div>
+                              <p className="text-xs text-cyan-200/90 bg-cyan-950/30 p-2.5 rounded-lg border border-cyan-900/40 font-sans">
+                                {item.runtimeExecution.gptHosting.summary}
+                              </p>
                             </div>
+                          )}
+
+                          {/* LLaMA with Self-Hosting */}
+                          {item.runtimeExecution.llamaHosting && (
+                            <div className="p-4 rounded-xl bg-black border border-purple-900/50 space-y-3">
+                              <span className="text-xs font-bold font-mono text-purple-400 uppercase tracking-wide block">
+                                {item.runtimeExecution.llamaHosting.title}
+                              </span>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                {item.runtimeExecution.llamaHosting.intro}
+                              </p>
+                              <div className="space-y-1.5 pt-1">
+                                <ol className="space-y-1 pl-4 list-decimal text-xs text-zinc-300 font-sans">
+                                  {item.runtimeExecution.llamaHosting.steps?.map((step, sIdx) => (
+                                    <li key={sIdx} className="leading-relaxed">
+                                      {step}
+                                    </li>
+                                  ))}
+                                </ol>
+                              </div>
+                              <p className="text-xs text-purple-200/90 bg-purple-950/30 p-2.5 rounded-lg border border-purple-900/40 font-sans">
+                                {item.runtimeExecution.llamaHosting.note}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Important distinction */}
+                        {item.runtimeExecution.importantDistinction && (
+                          <div className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-zinc-200 leading-relaxed font-sans">
+                            <strong className="text-amber-400 font-mono uppercase mr-1">
+                              {item.runtimeExecution.importantDistinction.title}:
+                            </strong>
+                            <span>{item.runtimeExecution.importantDistinction.content}</span>
                           </div>
                         )}
                       </div>
                     )}
 
-                    {/* 5. GPT / LLaMA vs. RAG */}
-                    {item.gptLlamaVsRag && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
+                    {/* Section 5: Key Architect Distinction: GPT / LLaMA vs RAG */}
+                    {item.distinctionRag && (
+                      <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-4 shadow-lg">
                         <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
                           <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
                             <Workflow className="w-4 h-4 text-cyan-400" />
-                            <span>{item.gptLlamaVsRag.title}</span>
+                            <span>{item.distinctionRag.title}</span>
                           </h4>
                           <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                            Technique vs. Model
+                            Technique vs. Model Family
                           </span>
                         </div>
 
-                        <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-sans">
-                          <strong className="text-cyan-400 font-mono uppercase mr-1">Core Distinction: </strong>
-                          {item.gptLlamaVsRag.contrast}
+                        <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-sans whitespace-pre-line">
+                          {item.distinctionRag.intro}
                         </div>
 
-                        <ul className="space-y-1.5 pl-1">
-                          {item.gptLlamaVsRag.points?.map((pt, pIdx) => (
-                            <li key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2 font-sans">
-                              <span className="text-cyan-400 font-mono">›</span>
-                              <span className="leading-relaxed">{pt}</span>
-                            </li>
-                          ))}
-                        </ul>
-
-                        {/* Interactive 5-Stage Pipeline */}
-                        <div className="space-y-2 pt-2">
-                          <span className="text-xs font-bold font-mono uppercase text-zinc-400 tracking-wider block">
-                            RAG Pipeline Flow:
-                          </span>
-                          <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
-                            {item.gptLlamaVsRag.pipeline?.map((st, sIdx) => (
-                              <div key={sIdx} className="p-3 rounded-xl bg-black border border-zinc-800 text-center space-y-1">
-                                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-cyan-400 border border-zinc-800 font-bold block mx-auto w-fit">
-                                  Stage {st.step}
-                                </span>
-                                <span className="text-xs font-bold font-mono text-white block">
-                                  {st.label}
-                                </span>
-                                <span className="text-[10px] text-zinc-400 font-sans block leading-snug">
-                                  {st.desc}
-                                </span>
-                              </div>
-                            ))}
+                        {/* RAG Architecture */}
+                        {item.distinctionRag.ragArchitecture && (
+                          <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-3">
+                            <span className="text-xs font-bold font-mono uppercase text-zinc-300 tracking-wider block">
+                              {item.distinctionRag.ragArchitecture.title}
+                            </span>
+                            <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                              {item.distinctionRag.ragArchitecture.steps?.map((stepText, sIdx) => (
+                                <div key={sIdx} className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-center space-y-1">
+                                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-cyan-400 border border-zinc-800 font-bold block mx-auto w-fit">
+                                    Step {sIdx + 1}
+                                  </span>
+                                  <span className="text-[11px] text-zinc-300 font-sans block leading-snug">
+                                    {stepText}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                            <p className="text-xs text-zinc-400 italic pt-1 font-sans">
+                              {item.distinctionRag.ragArchitecture.takeaway}
+                            </p>
                           </div>
-                        </div>
+                        )}
                       </div>
                     )}
 
-                    {/* 6. Key Architecture Takeaway Banner */}
-                    {item.takeaway && (
-                      <div className="p-4 rounded-xl bg-zinc-900/80 border border-emerald-800/50 text-xs sm:text-sm text-zinc-200 flex items-start gap-3 shadow-md">
-                        <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                        <div>
-                          <strong className="text-emerald-400 font-mono block mb-1">
-                            Key Takeaway:
-                          </strong>
-                          <span className="leading-relaxed font-sans">{item.takeaway}</span>
+                    {/* Section 6: Interview Answer & Key Takeaway */}
+                    {item.interviewAnswer && (
+                      <div className="p-5 rounded-2xl bg-zinc-950 border border-emerald-800/50 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                            <HelpCircle className="w-4 h-4 text-emerald-400" />
+                            <span>{item.interviewAnswer.title}</span>
+                          </h4>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold">
+                            Interview Ready
+                          </span>
                         </div>
+
+                        <div className="p-4 rounded-xl bg-black border border-emerald-900/60 space-y-2">
+                          <span className="text-xs font-bold font-mono text-emerald-300 block">
+                            Q: {item.interviewAnswer.question}
+                          </span>
+                          <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
+                            {item.interviewAnswer.answer}
+                          </p>
+                        </div>
+
+                        {item.interviewAnswer.keyTakeaway && (
+                          <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-800/60 text-xs sm:text-sm text-emerald-200/90 leading-relaxed font-sans flex items-start gap-2.5">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                            <div>
+                              <strong className="text-emerald-400 font-mono uppercase mr-1">Key Takeaway:</strong>
+                              <span>{item.interviewAnswer.keyTakeaway}</span>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1518,156 +1598,60 @@ export default function AllDefinitionsPage() {
 
                 {/* Item: GenAI vs Traditional AI */}
                 {item.id === 'genai-vs-traditional-ai' && (
-                  <div className="space-y-6 pt-1">
-                    {/* Core Premise Banner */}
-                    <div className="p-4 rounded-xl bg-gradient-to-r from-amber-950/30 via-zinc-900/60 to-cyan-950/30 border border-zinc-800 text-zinc-200 flex items-start gap-3 shadow-md">
-                      <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shrink-0 mt-0.5">
-                        <Sparkles className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-mono uppercase tracking-wider text-cyan-400 font-bold mb-1">
-                          {item.corePremise?.headline || "Core Distinction at a Glance"}
-                        </h4>
-                        <p className="text-sm font-semibold text-white leading-relaxed">
-                          {item.corePremise?.summary || "Traditional AI usually predicts, classifies, or makes decisions. Generative AI creates new content."}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Two Core Pillars: Traditional AI vs Generative AI */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Pillar 1: Traditional AI */}
-                      {item.traditionalAI && (
-                        <div className="p-5 rounded-2xl bg-zinc-950/90 border border-amber-900/40 hover:border-amber-700/60 transition shadow-sm flex flex-col justify-between space-y-4">
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
-                              <div className="flex items-center gap-2">
-                                <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-                                <h3 className="text-base font-bold text-white font-mono">
-                                  {item.traditionalAI.title}
-                                </h3>
-                              </div>
-                              <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-amber-950/60 text-amber-300 border border-amber-800/60">
-                                Predict & Classify
-                              </span>
-                            </div>
-
-                            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
-                              {item.traditionalAI.definition}
-                            </p>
-
-                            <div className="space-y-1.5 pt-2">
-                              <span className="text-[11px] font-mono uppercase text-amber-400 font-semibold tracking-wider block">
-                                Real-World Examples:
-                              </span>
-                              <ul className="space-y-1.5">
-                                {item.traditionalAI.examples.map((ex, exIdx) => (
-                                  <li key={exIdx} className="flex items-center gap-2 text-xs text-zinc-300">
-                                    <span className="text-amber-400 font-bold">•</span>
-                                    <span>{ex}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-
-                          <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80 space-y-1.5">
-                            <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold tracking-wider block">
-                              Typical Questions It Answers:
-                            </span>
-                            <ul className="space-y-1">
-                              {item.traditionalAI.questionsAnswered.map((q, qIdx) => (
-                                <li key={qIdx} className="text-xs text-amber-200/90 italic flex items-center gap-1.5">
-                                  <span className="text-amber-500 font-mono">→</span>
-                                  <span>"{q}"</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Pillar 2: Generative AI */}
-                      {item.generativeAI && (
-                        <div className="p-5 rounded-2xl bg-zinc-950/90 border border-cyan-900/40 hover:border-cyan-700/60 transition shadow-sm flex flex-col justify-between space-y-4">
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
-                              <div className="flex items-center gap-2">
-                                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
-                                <h3 className="text-base font-bold text-white font-mono">
-                                  {item.generativeAI.title}
-                                </h3>
-                              </div>
-                              <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-cyan-950/60 text-cyan-300 border border-cyan-800/60">
-                                Create New Content
-                              </span>
-                            </div>
-
-                            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
-                              {item.generativeAI.definition}
-                            </p>
-
-                            <div className="space-y-1.5 pt-2">
-                              <span className="text-[11px] font-mono uppercase text-cyan-400 font-semibold tracking-wider block">
-                                Real-World Examples:
-                              </span>
-                              <ul className="space-y-1.5">
-                                {item.generativeAI.examples.map((ex, exIdx) => (
-                                  <li key={exIdx} className="flex items-center gap-2 text-xs text-zinc-300">
-                                    <span className="text-cyan-400 font-bold">•</span>
-                                    <span>{ex}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-
-                          <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80 space-y-1.5">
-                            <span className="text-[11px] font-mono uppercase text-zinc-400 font-semibold tracking-wider block">
-                              Typical Prompts It Answers:
-                            </span>
-                            <ul className="space-y-1">
-                              {item.generativeAI.questionsAnswered.map((q, qIdx) => (
-                                <li key={qIdx} className="text-xs text-cyan-200/90 italic flex items-center gap-1.5">
-                                  <span className="text-cyan-500 font-mono">→</span>
-                                  <span>"{q}"</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Section 3: Comparison Matrix Table */}
-                    {item.comparisonTable && (
-                      <div className="space-y-3">
+                  <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                    {/* Header Overview Banner */}
+                    <div className="p-5 sm:p-6 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2 border-b border-zinc-800/80 pb-3">
                         <div className="flex items-center gap-2">
-                          <Table className="w-4 h-4 text-cyan-400" />
-                          <h4 className="text-xs font-mono uppercase tracking-wider text-white font-bold">
-                            3. Traditional AI vs. GenAI — Comparison Matrix
-                          </h4>
+                          <Sparkles className="w-4 h-4 text-cyan-400" />
+                          <h3 className="text-sm sm:text-base font-bold text-white font-mono uppercase tracking-wide">
+                            {item.title}
+                          </h3>
+                        </div>
+                        <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                          {item.badge || 'Predictive vs. Generative'}
+                        </span>
+                      </div>
+
+                      <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                        {item.summary}
+                      </p>
+                    </div>
+
+                    {/* 1. Traditional AI vs Generative AI - Comparison Table */}
+                    {item.comparisonTable && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Table className="w-4 h-4 text-cyan-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              1. Traditional AI vs Generative AI
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            Core Taxonomy
+                          </span>
                         </div>
 
-                        <div className="overflow-x-auto border border-zinc-800/90 rounded-2xl bg-zinc-950/80 shadow-sm">
-                          <table className="w-full text-left text-xs">
-                            <thead className="bg-zinc-900/90 text-zinc-300 font-mono text-[11px] uppercase border-b border-zinc-800">
+                        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                          <table className="w-full text-left text-xs font-sans">
+                            <thead className="bg-zinc-900 text-zinc-300 font-mono uppercase text-[11px] border-b border-zinc-800">
                               <tr>
-                                <th className="p-3.5 font-bold text-zinc-400">Feature</th>
-                                <th className="p-3.5 text-amber-400 font-bold">Traditional AI</th>
-                                <th className="p-3.5 text-cyan-400 font-bold">Generative AI</th>
+                                <th className="p-3 text-zinc-400 font-bold">Feature</th>
+                                <th className="p-3 text-amber-300 font-bold">Traditional AI</th>
+                                <th className="p-3 text-cyan-400 font-bold">Generative AI</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-zinc-800/70 font-sans">
+                            <tbody className="divide-y divide-zinc-800/70 bg-black/60">
                               {item.comparisonTable.map((row, rIdx) => (
                                 <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
-                                  <td className="p-3.5 font-semibold text-white font-mono text-xs whitespace-nowrap">
+                                  <td className="p-3 font-mono font-semibold text-white whitespace-nowrap">
                                     {row.feature}
                                   </td>
-                                  <td className="p-3.5 text-zinc-300 leading-relaxed">
+                                  <td className="p-3 text-amber-200/90 leading-relaxed">
                                     {row.traditional}
                                   </td>
-                                  <td className="p-3.5 text-cyan-200/90 leading-relaxed">
+                                  <td className="p-3 text-cyan-200/90 leading-relaxed">
                                     {row.genai}
                                   </td>
                                 </tr>
@@ -1676,109 +1660,404 @@ export default function AllDefinitionsPage() {
                           </table>
                         </div>
 
-                        {item.boundaryNote && (
-                          <div className="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800/80 text-zinc-400 text-xs flex items-start gap-2.5">
+                        {item.importantNote && (
+                          <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 flex items-start gap-2.5 font-sans">
                             <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                            <span className="leading-relaxed font-sans">
-                              <strong className="text-zinc-200 font-mono">Important Nuance: </strong>
-                              {item.boundaryNote}
+                            <span>
+                              <strong className="text-amber-400 font-mono uppercase">Important: </strong>
+                              {item.importantNote}
                             </span>
                           </div>
                         )}
                       </div>
                     )}
 
-                    {/* Section 4: How GenAI Works — Simple Flow */}
-                    {item.howGenAIWorks && (
-                      <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800/90 shadow-sm">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <Workflow className="w-4 h-4 text-cyan-400" />
-                              <h4 className="text-sm font-bold text-white font-mono">
-                                {item.howGenAIWorks.title}
-                              </h4>
+                    {/* 2 & 3. How It Works (Side-by-Side: Traditional AI vs GenAI) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* 2. Traditional AI — How It Works */}
+                      {item.traditionalHowItWorks && (
+                        <div className="p-5 rounded-2xl bg-zinc-950/90 border border-amber-900/40 space-y-4 shadow-xl flex flex-col justify-between">
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                              <span className="text-xs font-bold font-mono text-amber-400 uppercase tracking-wide">
+                                {item.traditionalHowItWorks.title}
+                              </span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                                Feature Mapping
+                              </span>
                             </div>
-                            <p className="text-xs text-zinc-400 mt-1">
-                              {item.howGenAIWorks.intro}
+
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {item.traditionalHowItWorks.desc}
+                            </p>
+
+                            <div className="space-y-2 pt-1">
+                              <span className="text-[11px] font-mono text-amber-300 font-semibold block">
+                                {item.traditionalHowItWorks.exampleTitle}:
+                              </span>
+                              <div className="space-y-1.5">
+                                {item.traditionalHowItWorks.steps.map((st, sIdx) => (
+                                  <div key={sIdx} className="p-2 rounded-lg bg-black border border-zinc-800 flex items-start gap-2 text-xs text-zinc-200 font-sans">
+                                    <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-400 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                      {sIdx + 1}
+                                    </span>
+                                    <span>{typeof st === 'string' ? st.replace(/^[0-9]+\.\s*/, '') : st}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {item.traditionalHowItWorks.code && (
+                              <div className="space-y-1 pt-1">
+                                <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                                  <span>Python (RandomForestClassifier)</span>
+                                  <button
+                                    onClick={() => handleCopyCode('trad-code', item.traditionalHowItWorks.code)}
+                                    className="hover:text-white transition p-1"
+                                  >
+                                    {copiedId === 'trad-code' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                                  </button>
+                                </div>
+                                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                                  <CodeHighlight code={item.traditionalHowItWorks.code} />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {item.traditionalHowItWorks.takeaway && (
+                            <p className="text-[11px] text-zinc-400 italic bg-black p-2.5 rounded-lg border border-zinc-800/80">
+                              💡 {item.traditionalHowItWorks.takeaway}
+                            </p>
+                          )}
+                        </div>
+                      )}
+
+                      {/* 3. Generative AI — How It Works */}
+                      {item.genaiHowItWorks && (
+                        <div className="p-5 rounded-2xl bg-zinc-950/90 border border-cyan-900/40 space-y-4 shadow-xl flex flex-col justify-between">
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                              <span className="text-xs font-bold font-mono text-cyan-400 uppercase tracking-wide">
+                                {item.genaiHowItWorks.title}
+                              </span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                                Token Generation
+                              </span>
+                            </div>
+
+                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                              {item.genaiHowItWorks.desc}
+                            </p>
+
+                            <div className="space-y-2 pt-1">
+                              <span className="text-[11px] font-mono text-cyan-300 font-semibold block">
+                                {item.genaiHowItWorks.exampleTitle}:
+                              </span>
+                              <div className="space-y-1.5">
+                                {item.genaiHowItWorks.steps.map((st, sIdx) => (
+                                  <div key={sIdx} className="p-2 rounded-lg bg-black border border-zinc-800 flex items-start gap-2 text-xs text-zinc-200 font-sans">
+                                    <span className="w-4 h-4 rounded-full bg-cyan-500/20 text-cyan-400 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                      {sIdx + 1}
+                                    </span>
+                                    <span>{typeof st === 'string' ? st.replace(/^[0-9]+\.\s*/, '') : st}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {item.genaiHowItWorks.code && (
+                              <div className="space-y-1 pt-1">
+                                <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                                  <span>Python (OpenAI Responses API)</span>
+                                  <button
+                                    onClick={() => handleCopyCode('genai-code', item.genaiHowItWorks.code)}
+                                    className="hover:text-white transition p-1"
+                                  >
+                                    {copiedId === 'genai-code' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                                  </button>
+                                </div>
+                                <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                                  <CodeHighlight code={item.genaiHowItWorks.code} />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {item.genaiHowItWorks.takeaway && (
+                            <p className="text-[11px] text-zinc-400 italic bg-black p-2.5 rounded-lg border border-zinc-800/80">
+                              💡 {item.genaiHowItWorks.takeaway}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 4. Discriminative vs Generative Models */}
+                    {item.discriminativeVsGenerative && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div>
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.discriminativeVsGenerative.title}
+                            </h4>
+                            <p className="text-xs text-zinc-400 mt-0.5">
+                              {item.discriminativeVsGenerative.subtitle}
                             </p>
                           </div>
-                          <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono uppercase bg-purple-950/60 text-purple-300 border border-purple-800/50 self-start sm:self-auto">
-                            Autoregressive Pipeline
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-blue-950 text-blue-300 border border-blue-800">
+                            Mathematical Formulations
                           </span>
                         </div>
 
-                        {/* Step Cards Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-1">
-                          {item.howGenAIWorks.steps.map((st) => (
-                            <div
-                              key={st.num}
-                              className="p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800/80 hover:border-cyan-700/50 transition flex flex-col justify-between space-y-2.5 shadow-sm"
-                            >
-                              <div className="space-y-1.5">
-                                <div className="flex items-center justify-between">
-                                  <span className="w-6 h-6 rounded-full bg-zinc-800 text-white font-mono text-xs font-bold flex items-center justify-center">
-                                    {st.num}
-                                  </span>
-                                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-950 border border-zinc-800 ${st.accent}`}>
-                                    {st.badge}
-                                  </span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Discriminative */}
+                          {item.discriminativeVsGenerative.discriminative && (
+                            <div className="p-4 rounded-xl bg-black border border-amber-900/50 space-y-3 flex flex-col justify-between">
+                              <div className="space-y-2">
+                                <span className="text-xs font-bold text-amber-300 font-mono uppercase block">
+                                  {item.discriminativeVsGenerative.discriminative.title}
+                                </span>
+                                <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                  {item.discriminativeVsGenerative.discriminative.desc}
+                                </p>
+                                <div className="p-3 rounded-lg bg-zinc-950 border border-amber-800/40 text-center font-mono text-sm text-amber-300 font-bold">
+                                  {item.discriminativeVsGenerative.discriminative.formula}
                                 </div>
-                                <h5 className="text-xs font-bold text-white font-mono">
-                                  {st.name}
-                                </h5>
+                                <p className="text-xs text-zinc-400 font-sans italic">
+                                  Example: {item.discriminativeVsGenerative.discriminative.example}
+                                </p>
                               </div>
-                              <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
-                                {st.desc}
-                              </p>
+                              <div className="pt-2 border-t border-zinc-900">
+                                <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Common Models:</span>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {item.discriminativeVsGenerative.discriminative.models.map((m, mIdx) => (
+                                    <span key={mIdx} className="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 font-mono text-[11px] border border-zinc-800">
+                                      {m}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
-                          ))}
+                          )}
+
+                          {/* Generative */}
+                          {item.discriminativeVsGenerative.generative && (
+                            <div className="p-4 rounded-xl bg-black border border-cyan-900/50 space-y-3 flex flex-col justify-between">
+                              <div className="space-y-2">
+                                <span className="text-xs font-bold text-cyan-300 font-mono uppercase block">
+                                  {item.discriminativeVsGenerative.generative.title}
+                                </span>
+                                <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                  {item.discriminativeVsGenerative.generative.desc}
+                                </p>
+                                <div className="p-3 rounded-lg bg-zinc-950 border border-cyan-800/40 text-center font-mono text-sm text-cyan-300 font-bold">
+                                  {item.discriminativeVsGenerative.generative.formula}
+                                </div>
+                                <p className="text-xs text-zinc-400 font-sans italic">
+                                  {item.discriminativeVsGenerative.generative.conditionNote}
+                                </p>
+                              </div>
+                              <div className="pt-2 border-t border-zinc-900">
+                                <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Common Models:</span>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {item.discriminativeVsGenerative.generative.models.map((m, mIdx) => (
+                                    <span key={mIdx} className="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 font-mono text-[11px] border border-zinc-800">
+                                      {m}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
 
-                        {/* Live Generation Token Flow Example */}
-                        {item.howGenAIWorks.example && (
-                          <div className="p-4 rounded-xl bg-gradient-to-r from-zinc-900/90 via-zinc-950 to-zinc-900/90 border border-cyan-800/50 space-y-2.5">
-                            <div className="flex items-center justify-between flex-wrap gap-2">
-                              <span className="text-[11px] font-mono uppercase text-cyan-400 font-bold tracking-wider">
-                                Interactive Generation Trace:
-                              </span>
-                              <span className="text-[10px] font-mono text-zinc-400">
-                                Token-by-Token Autoregression
-                              </span>
-                            </div>
+                        {item.discriminativeVsGenerative.note && (
+                          <p className="text-[11px] text-zinc-400 italic bg-black p-2.5 rounded-lg border border-zinc-800/80 font-sans">
+                            💡 {item.discriminativeVsGenerative.note}
+                          </p>
+                        )}
+                      </div>
+                    )}
 
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-xs font-mono">
-                              <div className="p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300">
-                                <span className="text-zinc-500 mr-2 select-none">Prompt:</span>
-                                <span className="text-amber-300 font-semibold">"{item.howGenAIWorks.example.prompt}"</span>
-                              </div>
-                              <span className="text-cyan-400 font-bold text-center sm:text-left">→</span>
-                              <div className="p-2.5 rounded-lg bg-cyan-950/40 border border-cyan-700/60 text-cyan-300 flex items-center gap-2">
-                                <span className="text-zinc-400 mr-1 select-none">Predicted Tokens:</span>
-                                <span className="px-2 py-0.5 rounded bg-cyan-900/60 text-cyan-200 border border-cyan-600 font-bold">New</span>
-                                <span className="px-2 py-0.5 rounded bg-cyan-900/60 text-cyan-200 border border-cyan-600 font-bold">Delhi</span>
-                              </div>
-                            </div>
+                    {/* 5. Practical Use Cases */}
+                    {item.practicalUseCases && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Layers className="w-4 h-4 text-emerald-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.practicalUseCases.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+                            Side-by-Side Applications
+                          </span>
+                        </div>
 
-                            <p className="text-xs text-zinc-300 italic flex items-center gap-2 pt-1">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                              <span>{item.howGenAIWorks.example.keyInsight}</span>
-                            </p>
+                        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                          <table className="w-full text-left text-xs font-sans">
+                            <thead className="bg-zinc-900 text-zinc-300 font-mono uppercase text-[11px] border-b border-zinc-800">
+                              <tr>
+                                <th className="p-3 text-amber-300 font-bold">Traditional AI Use Case</th>
+                                <th className="p-3 text-cyan-400 font-bold">Generative AI Complement</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800/70 bg-black/60">
+                              {item.practicalUseCases.table.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                  <td className="p-3 text-amber-200/90 font-medium">
+                                    {row.traditional}
+                                  </td>
+                                  <td className="p-3 text-cyan-200/90 font-medium">
+                                    {row.genai}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 6. Can Traditional AI and GenAI Work Together? */}
+                    {item.workingTogether && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Workflow className="w-4 h-4 text-purple-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.workingTogether.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800">
+                            Hybrid Architecture
+                          </span>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs sm:text-sm text-purple-200 font-semibold font-sans">
+                          {item.workingTogether.answer}
+                        </div>
+
+                        <div className="space-y-2 pt-1">
+                          <span className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block">
+                            {item.workingTogether.exampleTitle}:
+                          </span>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                            {item.workingTogether.steps.map((st, sIdx) => (
+                              <div key={sIdx} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1 font-sans text-xs">
+                                <span className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-400 font-mono text-[10px] font-bold flex items-center justify-center">
+                                  {sIdx + 1}
+                                </span>
+                                <p className="text-zinc-200 pt-0.5 leading-relaxed">
+                                  {typeof st === 'string' ? st.replace(/^[0-9]+\.\s*/, '') : st}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {item.workingTogether.summary && (
+                          <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
+                            {item.workingTogether.summary}
+                          </p>
+                        )}
+
+                        {item.workingTogether.importantWarning && (
+                          <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 flex items-start gap-2.5 font-sans leading-relaxed">
+                            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                            <span>{item.workingTogether.importantWarning}</span>
                           </div>
                         )}
                       </div>
                     )}
 
-                    {/* Key Interview Takeaway Banner */}
-                    {item.takeaway && (
-                      <div className="p-4 rounded-xl bg-zinc-900/80 border border-cyan-800/50 text-xs sm:text-sm text-zinc-200 flex items-start gap-3 shadow-md">
-                        <CheckCircle2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-                        <div>
-                          <strong className="text-cyan-300 font-mono block mb-1">
-                            Interview Takeaway:
-                          </strong>
-                          <span className="leading-relaxed font-sans">{item.takeaway}</span>
+                    {/* 7. Evaluation Differences */}
+                    {item.evaluationDifferences && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Activity className="w-4 h-4 text-cyan-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.evaluationDifferences.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            Metrics & Validation
+                          </span>
                         </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Traditional AI Evaluation */}
+                          {item.evaluationDifferences.traditional && (
+                            <div className="p-4 rounded-xl bg-black border border-amber-900/50 space-y-3">
+                              <span className="text-xs font-bold text-amber-400 font-mono uppercase block">
+                                {item.evaluationDifferences.traditional.title}
+                              </span>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                {item.evaluationDifferences.traditional.desc}
+                              </p>
+                              <div className="space-y-2 pt-1">
+                                {item.evaluationDifferences.traditional.metrics.map((met, mIdx) => (
+                                  <div key={mIdx} className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-between font-sans text-xs">
+                                    <span className="font-mono text-zinc-400 font-semibold">{met.type}:</span>
+                                    <span className="font-mono text-amber-300 font-bold">{met.items}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Generative AI Evaluation */}
+                          {item.evaluationDifferences.genai && (
+                            <div className="p-4 rounded-xl bg-black border border-cyan-900/50 space-y-3">
+                              <span className="text-xs font-bold text-cyan-400 font-mono uppercase block">
+                                {item.evaluationDifferences.genai.title}
+                              </span>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                {item.evaluationDifferences.genai.desc}
+                              </p>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                                {item.evaluationDifferences.genai.methods.map((method, meIdx) => (
+                                  <div key={meIdx} className="p-2 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center gap-2 text-xs text-zinc-200 font-sans">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+                                    <span>{method}</span>
+                                  </div>
+                                ))}
+                              </div>
+                              {item.evaluationDifferences.genai.ragNote && (
+                                <p className="text-[11px] text-zinc-400 italic pt-1">
+                                  💡 {item.evaluationDifferences.genai.ragNote}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 8. Interview Answer */}
+                    {item.interviewAnswer && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-cyan-500/40 space-y-3 shadow-xl">
+                        <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                          <Terminal className="w-4 h-4 text-cyan-400" />
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                            {item.interviewAnswer.title || '8. Interview Answer'}
+                          </h4>
+                        </div>
+                        <p className="text-xs font-bold text-white font-mono">
+                          Q: {item.interviewAnswer.question}
+                        </p>
+                        <blockquote className="p-3.5 rounded-xl bg-black border-l-2 border-cyan-400 text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans italic">
+                          "{item.interviewAnswer.answer}"
+                        </blockquote>
+
+                        {item.interviewAnswer.takeaway && (
+                          <div className="p-3 rounded-lg bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300 leading-relaxed flex items-center gap-2">
+                            <strong className="text-cyan-400 font-mono uppercase shrink-0">Takeaway:</strong>
+                            <span>{item.interviewAnswer.takeaway}</span>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -15308,214 +15587,103 @@ export default function AllDefinitionsPage() {
                 {/* Item 74: GPU / CUDA & cuDNN */}
                 {item.id === 'gpu-cuda' && (
                   <div className="space-y-6">
-                    {/* Intro Banner */}
-                    <div className="p-5 rounded-2xl bg-zinc-950 border border-emerald-800/50 space-y-4 shadow-xl">
+                    {/* Core Concept Banner & Parallel Matrix Principle */}
+                    <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold font-mono text-emerald-400 uppercase flex items-center gap-2">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
                           <Cpu className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>Accelerated Computing for Deep Learning</span>
-                        </span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold">
-                          Hardware & Software Ecosystem
+                          <span>Parallel Computing Platform</span>
+                        </h4>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800">
+                          Hardware Acceleration
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                        <div className="p-3.5 rounded-xl bg-black border border-emerald-900/60 space-y-1.5">
-                          <span className="text-[10px] font-mono text-emerald-400 uppercase font-bold tracking-wider block">
-                            GPU (Graphics Processing Unit)
-                          </span>
+                      <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950/80 border border-emerald-800/40 shadow-xl space-y-3">
+                        <p className="text-xs sm:text-sm text-emerald-200 font-sans leading-relaxed font-semibold">
+                          {item.coreDefinition}
+                        </p>
+                        <div className="p-3.5 rounded-xl bg-black border border-emerald-900/50 flex items-start gap-3">
+                          <span className="text-emerald-400 font-bold text-base leading-none mt-0.5">⚡</span>
                           <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                            {item.intro?.gpu || "A GPU (Graphics Processing Unit) performs many calculations in parallel. This makes it useful for deep learning, which involves large numbers of matrix and tensor operations."}
-                          </p>
-                        </div>
-
-                        <div className="p-3.5 rounded-xl bg-black border border-cyan-900/60 space-y-1.5">
-                          <span className="text-[10px] font-mono text-cyan-400 uppercase font-bold tracking-wider block">
-                            CUDA (Compute Unified Device Architecture)
-                          </span>
-                          <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                            {item.intro?.cuda || "CUDA is NVIDIA’s computing platform that allows software to use NVIDIA GPUs for general-purpose computation."}
+                            {item.gpuParallelPrinciple}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    {/* 1. Parallel Computing */}
-                    <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                      <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
-                          <Zap className="w-4 h-4 text-emerald-400" />
-                          <span>{item.parallelComputing?.title || "1. Parallel Computing"}</span>
-                        </h4>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
-                          {item.parallelComputing?.badge || "Hardware Acceleration"}
-                        </span>
-                      </div>
+                    {/* Where CUDA is Useful */}
+                    {item.usefulAreas && (
+                      <div className="space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>{item.usefulAreasIntro}</span>
+                          </h4>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            Workload Applications
+                          </span>
+                        </div>
 
-                      <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed font-medium">
-                        {item.parallelComputing?.concept}
-                      </p>
-
-                      <div className="space-y-2 pt-1">
-                        <span className="text-xs font-bold font-mono uppercase text-cyan-400 tracking-wider flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>{item.parallelComputing?.whereUsefulTitle || "Where CUDA is useful:"}</span>
-                        </span>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                          {item.parallelComputing?.whereUseful?.map((area, aIdx) => (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {item.usefulAreas.map((area, aIdx) => (
                             <div
                               key={aIdx}
-                              className="p-3 rounded-xl bg-black border border-zinc-800/80 hover:border-cyan-800/50 transition flex items-start gap-2.5"
+                              className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition flex items-start gap-2.5"
                             >
-                              <span className="w-5 h-5 rounded bg-cyan-950 border border-cyan-800 text-cyan-300 font-mono text-[10px] flex items-center justify-center shrink-0 font-bold mt-0.5">
+                              <span className="w-5 h-5 rounded bg-cyan-950 border border-cyan-800 text-cyan-300 font-mono text-[11px] flex items-center justify-center shrink-0 font-bold mt-0.5">
                                 0{aIdx + 1}
                               </span>
-                              <span className="text-xs text-zinc-200 font-sans leading-relaxed">
+                              <span className="text-xs text-zinc-200 font-medium font-sans leading-relaxed">
                                 {area}
                               </span>
                             </div>
                           ))}
                         </div>
                       </div>
-                    </div>
+                    )}
 
-                    {/* 2. GPU vs. CUDA vs. cuDNN */}
-                    {item.stackComparison && (
+                    {/* The Triad: GPU vs CUDA vs cuDNN */}
+                    {item.triadHierarchy && (
                       <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
-                            <Layers className="w-4 h-4 text-purple-400" />
-                            <span>{item.stackComparison.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
-                            Hardware to Primitives
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-zinc-400 font-sans">
-                          {item.stackComparison.subtitle}
-                        </p>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
+                          <Layers className="w-3.5 h-3.5 text-purple-400" />
+                          <span>The Hardware-to-Software Stack (GPU vs. CUDA vs. cuDNN)</span>
+                        </h4>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          {item.stackComparison.components?.map((comp, cIdx) => (
+                          {item.triadHierarchy.map((layer, lIdx) => (
                             <div
-                              key={cIdx}
-                              className={`p-4 rounded-xl bg-black border ${comp.border} hover:border-zinc-700 transition space-y-3 flex flex-col justify-between`}
+                              key={lIdx}
+                              className="p-4 rounded-xl bg-black border border-zinc-800 hover:border-zinc-700 transition space-y-2.5 flex flex-col justify-between"
                             >
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between gap-1">
-                                  <span className={`text-base font-bold font-mono ${comp.accent}`}>
-                                    {comp.name}
+                                  <span className={`text-base font-bold font-mono ${layer.accent}`}>
+                                    {layer.entity}
                                   </span>
                                   <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
-                                    {comp.badge}
+                                    {layer.badge}
                                   </span>
                                 </div>
-
                                 <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-200 font-sans">
-                                  {comp.headline}
+                                  {layer.definition}
                                 </div>
-
-                                <ul className="space-y-1.5 pt-1">
-                                  {comp.points?.map((pt, pIdx) => (
-                                    <li key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2 font-sans">
-                                      <span className={`${comp.accent} font-mono mt-0.5`}>›</span>
-                                      <span className="leading-relaxed">{pt}</span>
-                                    </li>
-                                  ))}
-                                </ul>
+                                <p className="text-xs text-zinc-400 leading-relaxed font-sans pt-1">
+                                  {layer.desc}
+                                </p>
                               </div>
-
-                              {comp.primitives && (
-                                <div className="pt-2 border-t border-zinc-900">
-                                  <span className="text-[10px] font-mono uppercase text-purple-400 block mb-1.5 font-bold">
-                                    Key Primitives:
-                                  </span>
-                                  <div className="flex flex-wrap gap-1.5">
-                                    {comp.primitives.map((prim, prIdx) => (
-                                      <span
-                                        key={prIdx}
-                                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950/60 text-purple-300 border border-purple-800/60"
-                                      >
-                                        {prim}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
                             </div>
                           ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 3. How They Work Together */}
-                    {item.howTheyWorkTogether && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                            <Workflow className="w-4 h-4 text-cyan-400" />
-                            <span>{item.howTheyWorkTogether.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                            End-to-End Execution Flow
-                          </span>
-                        </div>
-
-                        {/* Flow Diagram */}
-                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
-                          {item.howTheyWorkTogether.pipeline?.map((stage, sIdx) => (
-                            <div
-                              key={sIdx}
-                              className="p-3.5 rounded-xl bg-black border border-zinc-800 text-center space-y-1.5 relative group hover:border-zinc-700 transition"
-                            >
-                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-400 border border-zinc-800 font-bold block mx-auto w-fit">
-                                Step {stage.step}
-                              </span>
-                              <span className="text-xs font-bold font-mono text-white block">
-                                {stage.entity}
-                              </span>
-                              <span className="text-[10px] font-mono text-emerald-400 block font-semibold">
-                                {stage.example}
-                              </span>
-                              <span className="text-[11px] text-zinc-400 font-sans block leading-relaxed pt-0.5">
-                                {stage.desc}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Responsibilities */}
-                        <div className="p-4 rounded-xl bg-black border border-zinc-800/80 space-y-2">
-                          <span className="text-xs font-bold font-mono uppercase text-zinc-300 tracking-wider block">
-                            Core Roles in the System:
-                          </span>
-                          <ul className="space-y-1.5">
-                            {item.howTheyWorkTogether.responsibilities?.map((resp, rIdx) => (
-                              <li key={rIdx} className="text-xs text-zinc-300 flex items-start gap-2 font-sans">
-                                <span className="text-emerald-400 font-mono">✔</span>
-                                <span className="leading-relaxed">{resp}</span>
-                              </li>
-                            ))}
-                          </ul>
                         </div>
                       </div>
                     )}
 
                     {/* Takeaway Banner */}
-                    {item.takeaway && (
-                      <div className="p-4 rounded-xl bg-zinc-900/80 border border-emerald-800/50 text-xs sm:text-sm text-zinc-200 flex items-start gap-3 shadow-md">
-                        <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                        <div>
-                          <strong className="text-emerald-400 font-mono block mb-1">
-                            Architecture Takeaway:
-                          </strong>
-                          <span className="leading-relaxed font-sans">{item.takeaway}</span>
-                        </div>
-                      </div>
-                    )}
+                    <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                      <strong className="text-emerald-400 uppercase">Architecture Takeaway: </strong>
+                      {item.takeaway}
+                    </div>
                   </div>
                 )}
 
@@ -27886,352 +28054,213 @@ export default function AllDefinitionsPage() {
 
                 {/* Item 120: Gini Impurity */}
                 {item.id === 'gini-impurity' && (
-                  <div className="space-y-6 pt-1">
-                    {/* 1. What is Gini Impurity? */}
-                    <div className="p-5 rounded-2xl bg-zinc-950/90 border border-cyan-800/50 space-y-3 shadow-md">
-                      <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2.5">
+                  <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                    {/* Header Overview Card */}
+                    <div className="p-5 sm:p-6 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2 border-b border-zinc-800/80 pb-3">
                         <div className="flex items-center gap-2">
-                          <Sparkles className="w-4 h-4 text-cyan-400" />
-                          <h3 className="text-sm sm:text-base font-bold text-white font-mono">
-                            1. What is Gini Impurity?
+                          <Sparkles className="w-4 h-4 text-emerald-400" />
+                          <h3 className="text-sm sm:text-base font-bold text-white font-mono uppercase tracking-wide">
+                            {item.title || "Gini Impurity (CART Tree Splits & Class Mixture Metric)"}
                           </h3>
                         </div>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/70 font-semibold uppercase">
-                          CART Split Criterion
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+                            Decision Tree Split Criteria
+                          </span>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800">
+                            CART Algorithm
+                          </span>
+                        </div>
+                      </div>
+
+                      <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                        {item.summary || item.coreDefinition || "Gini impurity measures how mixed the classes are in a group. For binary classes, Gini is 0 when all examples belong to one class and reaches 0.5 when the classes are equally balanced."}
+                      </p>
+                    </div>
+
+                    {/* Binary Class Boundaries (0 to 0.5) */}
+                    <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                        <div className="flex items-center gap-2">
+                          <Layers className="w-4 h-4 text-cyan-400" />
+                          <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                            {item.binaryBoundariesHeading || "Binary Class Boundaries (0 to 0.5):"}
+                          </h4>
+                        </div>
+                        <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800 font-bold">
+                          Bounded [0.0, 0.5]
                         </span>
                       </div>
 
-                      <p className="text-sm font-semibold text-white leading-relaxed font-sans">
-                        {item.coreDefinition || "Gini impurity measures how mixed the classes are in a group or decision-tree node."}
+                      <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                        {item.binaryBoundariesText || "For binary classes, Gini is 0 when all examples belong to one class and reaches 0.5 when the classes are equally balanced."}
                       </p>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                        {(item.keyPrinciples || [
-                          "If all examples belong to one class, Gini impurity is 0.",
-                          "If the classes are equally balanced, Gini impurity is at its maximum.",
-                          "A lower Gini value means the node is more pure.",
-                          "For binary classification, Gini impurity ranges from 0 to 0.5."
-                        ]).map((principle, pIdx) => (
-                          <div key={pIdx} className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800/80 flex items-start gap-2">
-                            <span className="text-cyan-400 font-mono font-bold text-xs mt-0.5">•</span>
-                            <span className="text-xs text-zinc-300 font-sans leading-relaxed">{principle}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* 2. Gini Impurity Formula & Boundaries */}
-                    {item.formulaSection && (
-                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800/90 space-y-4 shadow-md">
-                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2.5">
-                          <div className="flex items-center gap-2">
-                            <Layers className="w-4 h-4 text-cyan-400" />
-                            <h4 className="text-sm font-bold text-white font-mono">
-                              {item.formulaSection.title || "2. Gini Impurity Formula"}
-                            </h4>
-                          </div>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950/60 text-purple-300 border border-purple-800/50">
-                            Quadratic Metric
-                          </span>
-                        </div>
-
-                        {/* Formula Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          <div className="p-3.5 rounded-xl bg-zinc-900/90 border border-cyan-800/50 space-y-1.5">
-                            <span className="text-[10px] font-mono uppercase text-zinc-400 font-semibold block">
-                              General Multiclass Formula
-                            </span>
-                            <code className="text-sm font-mono text-cyan-300 font-bold block">
-                              {item.formulaSection.generalFormula}
-                            </code>
-                          </div>
-
-                          <div className="p-3.5 rounded-xl bg-zinc-900/90 border border-amber-800/50 space-y-1.5">
-                            <span className="text-[10px] font-mono uppercase text-zinc-400 font-semibold block">
-                              Two-Class (Binary) Form
-                            </span>
-                            <code className="text-sm font-mono text-amber-300 font-bold block">
-                              {item.formulaSection.twoClassFormula}
-                            </code>
-                          </div>
-
-                          <div className="p-3.5 rounded-xl bg-zinc-900/90 border border-purple-800/50 space-y-1.5">
-                            <span className="text-[10px] font-mono uppercase text-zinc-400 font-semibold block">
-                              Equivalent Form
-                            </span>
-                            <code className="text-sm font-mono text-purple-300 font-bold block">
-                              {item.formulaSection.equivalentFormula}
-                            </code>
-                          </div>
-                        </div>
-
-                        {/* Variables Definition */}
-                        <div className="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex flex-wrap gap-4 text-xs font-mono text-zinc-300">
-                          {item.formulaSection.variables?.map((v, vIdx) => (
-                            <div key={vIdx} className="flex items-center gap-1.5">
-                              <span className="font-bold text-cyan-400">{v.symbol}:</span>
-                              <span className="text-zinc-400 font-sans">{v.desc}</span>
+                      {/* Boundary Scenarios (Completely Pure vs. Equally Balanced) */}
+                      {item.boundaryScenarios && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                          {item.boundaryScenarios.map((sc, sIdx) => (
+                            <div
+                              key={sIdx}
+                              className={`p-4 rounded-xl bg-black border ${sc.border || 'border-zinc-800'} space-y-2 flex flex-col justify-between shadow-sm`}
+                            >
+                              <div className="space-y-1.5">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs font-bold font-mono text-white">
+                                    {sc.scenario}
+                                  </span>
+                                  <span className={`text-xs font-mono font-bold ${sc.accent || 'text-cyan-300'}`}>
+                                    {sc.giniValue}
+                                  </span>
+                                </div>
+                                <div className="text-[11px] font-mono text-zinc-400 bg-zinc-950 px-2 py-1 rounded border border-zinc-900">
+                                  Distribution: {sc.distribution}
+                                </div>
+                              </div>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1 border-t border-zinc-900">
+                                {sc.explanation}
+                              </p>
                             </div>
                           ))}
-                          <span className="text-zinc-500 italic font-sans ml-auto">
-                            ({item.formulaSection.note || "Both formulas give the same result."})
-                          </span>
                         </div>
+                      )}
+                    </div>
 
-                        {/* Understanding the Values Sub-section */}
-                        <div className="space-y-2.5 pt-2">
-                          <h5 className="text-xs font-mono uppercase text-amber-400 font-bold tracking-wider">
-                            Understanding the Values (Binary Classification Scenarios)
-                          </h5>
-
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            {item.understandingValues?.map((uv, uvIdx) => (
-                              <div
-                                key={uvIdx}
-                                className={`p-4 rounded-xl bg-zinc-900/80 border ${uv.border} space-y-2.5 flex flex-col justify-between shadow-sm`}
-                              >
-                                <div className="space-y-1.5">
-                                  <div className="flex items-center justify-between">
-                                    <span className={`text-xs font-bold font-mono ${uv.accent}`}>
-                                      {uv.type}
-                                    </span>
-                                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-950 border border-zinc-800 text-zinc-300">
-                                      {uv.badge}
-                                    </span>
-                                  </div>
-                                  <span className="text-[11px] font-mono text-zinc-400 block">
-                                    Distribution: {uv.distribution}
-                                  </span>
-                                  <div className="p-2 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-xs font-bold text-white">
-                                    {uv.calc}
-                                  </div>
-                                </div>
-                                <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-2 border-t border-zinc-800/60">
-                                  {uv.explanation}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 3. Why Does CART Use Gini Impurity? */}
-                    {item.cartSection && (
-                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800/90 space-y-4 shadow-md">
-                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2.5">
+                    {/* Mathematical Formulation & Meaning */}
+                    {item.formulaSection && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
                           <div className="flex items-center gap-2">
-                            <Terminal className="w-4 h-4 text-amber-400" />
-                            <h4 className="text-sm font-bold text-white font-mono">
-                              {item.cartSection.title || "3. Why Does CART Use Gini Impurity?"}
+                            <Activity className="w-4 h-4 text-purple-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              Mathematical Formulation &amp; Meaning
                             </h4>
                           </div>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/60 text-amber-300 border border-amber-800/50">
-                            CART Split Engine
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800">
+                            Quadratic Impurity
                           </span>
                         </div>
 
-                        <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed">
-                          {item.cartSection.intro}
-                        </p>
-
-                        <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800/90 space-y-3">
-                          <div className="flex items-center justify-between flex-wrap gap-2">
-                            <span className="text-xs font-mono font-bold text-amber-300 uppercase">
-                              {item.cartSection.splitHeading || "How a Split Is Evaluated"}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                          {/* Standard Gini Formula */}
+                          <div className="p-4 rounded-xl bg-black border border-purple-900/60 space-y-1.5">
+                            <span className="text-[10px] font-mono uppercase text-zinc-400 font-semibold block">
+                              Standard Gini Formula
                             </span>
-                            <code className="text-xs sm:text-sm font-mono text-cyan-300 font-bold px-2 py-1 rounded bg-black border border-cyan-800/60">
-                              {item.cartSection.splitFormula}
+                            <code className="text-sm font-mono text-purple-300 font-bold block bg-zinc-950 p-2.5 rounded border border-zinc-900">
+                              {item.formulaSection.formula || "Gini(S) = 1 - Σ p_i²"}
                             </code>
                           </div>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono pt-1">
-                            {item.cartSection.variables?.map((v, vIdx) => (
-                              <div key={vIdx} className="p-2 rounded-lg bg-zinc-950/80 border border-zinc-800">
-                                <span className="text-cyan-400 font-bold block">{v.symbol}</span>
-                                <span className="text-zinc-400 font-sans text-[11px]">{v.desc}</span>
-                              </div>
-                            ))}
+                          {/* Alternate Form */}
+                          <div className="p-4 rounded-xl bg-black border border-cyan-900/60 space-y-1.5">
+                            <span className="text-[10px] font-mono uppercase text-zinc-400 font-semibold block">
+                              Alternate Form (Misclassification Probability)
+                            </span>
+                            <code className="text-sm font-mono text-cyan-300 font-bold block bg-zinc-950 p-2.5 rounded border border-zinc-900">
+                              {item.formulaSection.alternateFormula || "Gini(S) = Σ p_i · (1 - p_i)"}
+                            </code>
                           </div>
-
-                          <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-1">
-                            <strong className="text-white font-mono">Split Selection Rule: </strong>
-                            {item.cartSection.evaluationRule}
-                          </p>
                         </div>
 
-                        {/* Gini Gain Callout */}
-                        {item.cartSection.giniGain && (
-                          <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-950/30 via-zinc-900 to-zinc-900 border border-emerald-800/60 space-y-2">
-                            <div className="flex items-center justify-between flex-wrap gap-2">
-                              <span className="text-xs font-mono font-bold text-emerald-400 uppercase flex items-center gap-1.5">
-                                <Zap className="w-3.5 h-3.5 text-emerald-400" />
-                                <span>{item.cartSection.giniGain.title || "Gini Gain"}</span>
-                              </span>
-                              <code className="text-xs sm:text-sm font-mono text-emerald-300 font-bold px-2 py-0.5 rounded bg-black border border-emerald-700/60">
-                                {item.cartSection.giniGain.formula}
-                              </code>
-                            </div>
-
-                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                              {item.cartSection.giniGain.explanation}
-                            </p>
-
-                            <div className="p-2.5 rounded-lg bg-black/60 border border-zinc-800 text-[11px] font-sans text-emerald-200/90 leading-relaxed flex items-start gap-2">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                              <span>
-                                <strong className="text-white font-mono">Remember: </strong>
-                                {item.cartSection.giniGain.remember}
-                              </span>
-                            </div>
+                        {item.formulaSection.probabilisticMeaning && (
+                          <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
+                            💡 {item.formulaSection.probabilisticMeaning}
                           </div>
                         )}
                       </div>
                     )}
 
-                    {/* 4. Gini Impurity vs. Entropy */}
-                    {item.vsEntropy && (
-                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800/90 space-y-4 shadow-md">
-                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2.5">
+                    {/* Why CART (Scikit-Learn) Uses Gini as the Default Split Criterion */}
+                    {item.cartOptimization && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
                           <div className="flex items-center gap-2">
-                            <Table className="w-4 h-4 text-cyan-400" />
-                            <h4 className="text-sm font-bold text-white font-mono">
-                              {item.vsEntropy.title || "4. Gini Impurity vs. Entropy"}
+                            <Workflow className="w-4 h-4 text-amber-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.cartOptimization.headline || "Why CART (Scikit-Learn) Uses Gini as the Default Split Criterion"}
                             </h4>
                           </div>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/50">
-                            Comparative Metrics
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
+                            CART Efficiency
                           </span>
                         </div>
 
-                        <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed">
-                          {item.vsEntropy.intro}
-                        </p>
-
-                        <div className="overflow-x-auto border border-zinc-800/90 rounded-xl bg-zinc-900/60">
-                          <table className="w-full text-left text-xs">
-                            <thead className="bg-zinc-900 text-zinc-300 font-mono text-[11px] uppercase border-b border-zinc-800">
-                              <tr>
-                                <th className="p-3 font-bold text-zinc-400">Feature</th>
-                                <th className="p-3 font-bold text-amber-400">Gini Impurity</th>
-                                <th className="p-3 font-bold text-cyan-400">Entropy</th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-zinc-800/70 font-sans">
-                              {item.vsEntropy.table?.map((row, rIdx) => (
-                                <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
-                                  <td className="p-3 font-semibold text-white font-mono text-xs whitespace-nowrap">
-                                    {row.feature}
-                                  </td>
-                                  <td className="p-3 text-amber-300 font-mono text-xs">
-                                    {row.gini}
-                                  </td>
-                                  <td className="p-3 text-cyan-300 font-mono text-xs">
-                                    {row.entropy}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                        <div className="space-y-2.5">
+                          {item.cartOptimization.points.map((pt, pIdx) => {
+                            const [label, ...rest] = pt.split(': ');
+                            return (
+                              <div key={pIdx} className="p-3 rounded-xl bg-black border border-zinc-800/90 flex items-start gap-2.5 text-xs text-zinc-200 font-sans">
+                                <span className="text-amber-400 font-bold text-sm leading-none mt-0.5">•</span>
+                                <div className="leading-relaxed">
+                                  {rest.length > 0 ? (
+                                    <>
+                                      <strong className="text-amber-300 font-mono font-bold mr-1">{label}:</strong>
+                                      <span>{rest.join(': ')}</span>
+                                    </>
+                                  ) : (
+                                    <span>{pt}</span>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-
-                        {item.vsEntropy.note && (
-                          <p className="text-xs text-zinc-400 font-sans leading-relaxed italic border-t border-zinc-900 pt-2">
-                            {item.vsEntropy.note}
-                          </p>
-                        )}
                       </div>
                     )}
 
-                    {/* 5. Gini Impurity Calculation in Python */}
-                    {item.pythonCode && (
-                      <div className="space-y-4 p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800/90 shadow-md">
-                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2.5">
+                    {/* Gini Impurity Calculation in Python */}
+                    {(item.codeExample || item.code) && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-3 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
                           <div className="flex items-center gap-2">
                             <Code2 className="w-4 h-4 text-cyan-400" />
-                            <h4 className="text-sm font-bold text-white font-mono">
-                              {item.pythonCode.title || "5. Gini Impurity Calculation in Python"}
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.codeExample?.title || "Gini Impurity Calculation in Python"}
                             </h4>
                           </div>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
-                            Python & Scikit-Learn
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            Python 3
                           </span>
                         </div>
 
-                        {/* Scratch Python Code */}
-                        {item.pythonCode.scratch && (
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between flex-wrap gap-2">
-                              <span className="text-xs font-mono font-bold text-cyan-400">
-                                {item.pythonCode.scratch.title}
-                              </span>
-                              <button
-                                onClick={() => handleCopyCode('code-gini-scratch', item.pythonCode.scratch.code)}
-                                className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                              >
-                                {copiedId === 'code-gini-scratch' ? (
-                                  <>
-                                    <Check className="w-3 h-3 text-emerald-400" />
-                                    <span>Copied!</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Copy className="w-3 h-3" />
-                                    <span>Copy Code</span>
-                                  </>
-                                )}
-                              </button>
-                            </div>
-                            <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                              <CodeHighlight code={item.pythonCode.scratch.code} />
-                            </div>
+                        <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                          <div className="flex items-center justify-between px-3.5 py-1.5 bg-zinc-950 border-b border-zinc-800">
+                            <span className="text-[11px] font-mono text-zinc-400">gini_impurity.py</span>
+                            <button
+                              onClick={() => handleCopyCode('gini-code', item.codeExample?.code || item.code)}
+                              className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                            >
+                              {copiedId === 'gini-code' ? (
+                                <>
+                                  <Check className="w-3 h-3 text-emerald-400" />
+                                  <span>Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3 h-3" />
+                                  <span>Copy Code</span>
+                                </>
+                              )}
+                            </button>
                           </div>
-                        )}
-
-                        {/* Scikit-Learn Code */}
-                        {item.pythonCode.sklearn && (
-                          <div className="space-y-2 pt-2 border-t border-zinc-900">
-                            <div className="flex items-center justify-between flex-wrap gap-2">
-                              <span className="text-xs font-mono font-bold text-amber-400">
-                                {item.pythonCode.sklearn.title}
-                              </span>
-                              <button
-                                onClick={() => handleCopyCode('code-gini-sklearn', item.pythonCode.sklearn.code)}
-                                className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                              >
-                                {copiedId === 'code-gini-sklearn' ? (
-                                  <>
-                                    <Check className="w-3 h-3 text-emerald-400" />
-                                    <span>Copied!</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Copy className="w-3 h-3" />
-                                    <span>Copy Code</span>
-                                  </>
-                                )}
-                              </button>
-                            </div>
-                            <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                              <CodeHighlight code={item.pythonCode.sklearn.code} />
-                            </div>
-                            <p className="text-xs text-zinc-400 font-mono italic">
-                              → {item.pythonCode.sklearn.explanation}
-                            </p>
-                          </div>
-                        )}
+                          <CodeHighlight code={item.codeExample?.code || item.code} />
+                        </div>
                       </div>
                     )}
 
-                    {/* 6. Architecture Takeaway Banner */}
+                    {/* Architecture Takeaway Banner */}
                     {item.takeaway && (
                       <div className="p-4 rounded-xl bg-zinc-900/80 border border-emerald-800/50 text-xs sm:text-sm text-zinc-200 flex items-start gap-3 shadow-md">
                         <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                        <div>
-                          <strong className="text-emerald-400 font-mono block mb-1">
+                        <div className="space-y-1">
+                          <strong className="text-emerald-400 font-mono block">
                             Architecture Takeaway:
                           </strong>
-                          <span className="leading-relaxed font-sans">{item.takeaway}</span>
+                          <p className="leading-relaxed font-sans text-zinc-300">
+                            {item.takeaway}
+                          </p>
                         </div>
                       </div>
                     )}
@@ -28240,671 +28269,292 @@ export default function AllDefinitionsPage() {
 
                 {/* Git / GitHub */}
                 {item.id === 'git-github' && (
-                  <div className="space-y-6">
-                    {/* 1. What are Git and GitHub? & Key Concepts */}
-                    <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/50 space-y-4 shadow-xl">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
-                          <GitBranch className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>Distributed Version Control & Collaboration</span>
-                        </span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                          Engineering Fundamentals
-                        </span>
-                      </div>
-
-                      <h3 className="text-sm sm:text-base font-bold text-white font-mono">
-                        1. What are Git and GitHub?
-                      </h3>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div className="p-4 rounded-xl bg-black border border-cyan-900/60 space-y-1.5">
-                          <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs font-bold">
-                            <Terminal className="w-4 h-4 text-cyan-400" />
-                            <span>Git (Local Engine)</span>
-                          </div>
-                          <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
-                            {item.coreDefinition?.git}
-                          </p>
+                  <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                    {/* Header Overview Card */}
+                    <div className="p-5 sm:p-6 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                      <div className="flex items-center justify-between flex-wrap gap-2 border-b border-zinc-800/80 pb-3">
+                        <div className="flex items-center gap-2">
+                          <GitBranch className="w-4 h-4 text-cyan-400" />
+                          <h3 className="text-sm sm:text-base font-bold text-white font-mono uppercase tracking-wide">
+                            {item.title}
+                          </h3>
                         </div>
-
-                        <div className="p-4 rounded-xl bg-black border border-purple-900/60 space-y-1.5">
-                          <div className="flex items-center gap-2 text-purple-400 font-mono text-xs font-bold">
-                            <Globe className="w-4 h-4 text-purple-400" />
-                            <span>GitHub (Cloud Platform)</span>
-                          </div>
-                          <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed font-sans">
-                            {item.coreDefinition?.github}
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            {item.badge || item.category || 'Version Control'}
+                          </span>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800">
+                            {item.domain || 'Engineering Fundamentals'}
+                          </span>
                         </div>
                       </div>
 
-                      {/* Key Concepts Grid */}
-                      <div className="pt-2 border-t border-zinc-900 space-y-2.5">
-                        <span className="text-xs font-bold font-mono uppercase text-zinc-400 tracking-wider flex items-center gap-1.5">
-                          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Key Concepts</span>
-                        </span>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                          {item.keyConcepts?.map((concept, cIdx) => (
-                            <div key={cIdx} className="p-3 rounded-xl bg-black/60 border border-zinc-800/80 space-y-1">
-                              <span className={`text-xs font-bold font-mono ${concept.accent} block`}>
-                                {concept.term}
-                              </span>
-                              <span className="text-[11px] text-zinc-300 leading-relaxed font-sans block">
-                                {concept.meaning}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                      <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                        {item.summary}
+                      </p>
                     </div>
 
-                    {/* 2. Git Setup & Repository Initialization */}
-                    {item.setup && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
-                            <Terminal className="w-4 h-4 text-emerald-400" />
-                            <span>{item.setup.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
-                            Initial Setup
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                          {item.setup.description}
-                        </p>
-
-                        <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                          <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                            <span className="text-xs font-mono text-zinc-400 flex items-center gap-1.5">
-                              <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                              <span>bash</span>
-                            </span>
-                            <button
-                              onClick={() => handleCopyCode('git-setup', item.setup.code)}
-                              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                            >
-                              {copiedId === 'git-setup' ? (
-                                <>
-                                  <Check className="w-3 h-3 text-emerald-400" />
-                                  <span>Copied!</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-3 h-3" />
-                                  <span>Copy Commands</span>
-                                </>
-                              )}
-                            </button>
+                    {/* 1. What are Git and GitHub? */}
+                    {item.whatIsGitAndGithub && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Terminal className="w-4 h-4 text-cyan-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.whatIsGitAndGithub.title}
+                            </h4>
                           </div>
-                          <CodeHighlight code={item.setup.code} />
-                        </div>
-
-                        <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90 leading-relaxed font-sans flex items-start gap-2">
-                          <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                          <span>
-                            <strong className="text-amber-400 font-mono uppercase">Remember: </strong>
-                            {item.setup.remember}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 3. Daily Workflow: Inspect, Stage & Commit */}
-                    {item.dailyWorkflow && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                            <Layers className="w-4 h-4 text-cyan-400" />
-                            <span>{item.dailyWorkflow.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                            Core Daily Loop
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            Engine vs. Platform
                           </span>
                         </div>
 
-                        {/* Three Areas Diagram */}
-                        <div className="space-y-2">
-                          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 block font-semibold">
-                            The Three Main Areas of Git:
-                          </span>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            {item.dailyWorkflow.threeAreas.map((area, aIdx) => (
-                              <div key={aIdx} className={`p-3.5 rounded-xl bg-black border ${area.border} space-y-1.5`}>
-                                <div className="flex items-center justify-between">
-                                  <span className={`text-xs font-bold font-mono ${area.accent}`}>
-                                    {area.name}
-                                  </span>
-                                  <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
-                                    {area.badge}
-                                  </span>
-                                </div>
-                                <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
-                                  {area.desc}
-                                </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Git Local Engine */}
+                          {item.whatIsGitAndGithub.git && (
+                            <div className="p-4 rounded-xl bg-black border border-cyan-900/60 space-y-3">
+                              <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs font-bold border-b border-zinc-900 pb-2">
+                                <Terminal className="w-4 h-4 text-cyan-400" />
+                                <span>{item.whatIsGitAndGithub.git.title}</span>
                               </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Daily Code */}
-                        <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                          <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                            <span className="text-xs font-mono text-zinc-400 flex items-center gap-1.5">
-                              <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                              <span>daily_workflow.sh</span>
-                            </span>
-                            <button
-                              onClick={() => handleCopyCode('git-daily', item.dailyWorkflow.code)}
-                              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                            >
-                              {copiedId === 'git-daily' ? (
-                                <>
-                                  <Check className="w-3 h-3 text-emerald-400" />
-                                  <span>Copied!</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-3 h-3" />
-                                  <span>Copy Commands</span>
-                                </>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                {item.whatIsGitAndGithub.git.desc}
+                              </p>
+                              {item.whatIsGitAndGithub.git.points && (
+                                <ul className="space-y-1.5 pt-1">
+                                  {item.whatIsGitAndGithub.git.points.map((pt, pIdx) => (
+                                    <li key={pIdx} className="flex items-start gap-2 text-xs text-zinc-300 font-sans">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 mt-1.5" />
+                                      <span>{pt}</span>
+                                    </li>
+                                  ))}
+                                </ul>
                               )}
-                            </button>
-                          </div>
-                          <CodeHighlight code={item.dailyWorkflow.code} />
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                          <div className="p-3 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed">
-                            <strong className="text-white font-mono block mb-0.5">Commit Snapshot:</strong>
-                            {item.dailyWorkflow.commitNote}
-                          </div>
-                          <div className="p-3 rounded-xl bg-black border border-emerald-900/40 text-xs text-emerald-200/90 font-sans leading-relaxed">
-                            <strong className="text-emerald-400 font-mono block mb-0.5">Best Practice:</strong>
-                            {item.dailyWorkflow.bestPractice}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 4. Branching & Switching */}
-                    {item.branching && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                            <GitBranch className="w-4 h-4 text-amber-400" />
-                            <span>{item.branching.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
-                            Feature Isolation
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                          {item.branching.intro}
-                        </p>
-
-                        <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                          <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                            <span className="text-xs font-mono text-zinc-400 flex items-center gap-1.5">
-                              <Terminal className="w-3.5 h-3.5 text-amber-400" />
-                              <span>branching.sh</span>
-                            </span>
-                            <button
-                              onClick={() => handleCopyCode('git-branch', item.branching.code)}
-                              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                            >
-                              {copiedId === 'git-branch' ? (
-                                <>
-                                  <Check className="w-3 h-3 text-emerald-400" />
-                                  <span>Copied!</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-3 h-3" />
-                                  <span>Copy Commands</span>
-                                </>
-                              )}
-                            </button>
-                          </div>
-                          <CodeHighlight code={item.branching.code} />
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1">
-                            <span className="text-[10px] font-mono uppercase text-zinc-400 font-bold block">
-                              Older Checkout Equivalent:
-                            </span>
-                            <code className="text-xs font-mono text-amber-300 block bg-zinc-900 px-2 py-1 rounded border border-zinc-800">
-                              {item.branching.olderEquivalent}
-                            </code>
-                          </div>
-
-                          <div className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1">
-                            <span className="text-[10px] font-mono uppercase text-zinc-400 font-bold block">
-                              Standard Branch Name Examples:
-                            </span>
-                            <div className="flex flex-wrap gap-1.5">
-                              {item.branching.examples.map((ex, eIdx) => (
-                                <span key={eIdx} className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
-                                  {ex}
-                                </span>
-                              ))}
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                          )}
 
-                    {/* 5. Remote Synchronization: Fetch, Pull & Push */}
-                    {item.remoteSync && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
-                            <Globe className="w-4 h-4 text-purple-400" />
-                            <span>{item.remoteSync.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
-                            Cloud Sync
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                          {item.remoteSync.intro}
-                        </p>
-
-                        <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                          <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                            <span className="text-xs font-mono text-zinc-400 flex items-center gap-1.5">
-                              <Terminal className="w-3.5 h-3.5 text-purple-400" />
-                              <span>remote_sync.sh</span>
-                            </span>
-                            <button
-                              onClick={() => handleCopyCode('git-remote', item.remoteSync.code)}
-                              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                            >
-                              {copiedId === 'git-remote' ? (
-                                <>
-                                  <Check className="w-3 h-3 text-emerald-400" />
-                                  <span>Copied!</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-3 h-3" />
-                                  <span>Copy Commands</span>
-                                </>
-                              )}
-                            </button>
-                          </div>
-                          <CodeHighlight code={item.remoteSync.code} />
-                        </div>
-
-                        {/* Fetch vs Pull vs Push Table */}
-                        <div className="space-y-2">
-                          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 block font-semibold">
-                            Fetch vs. Pull vs. Push:
-                          </span>
-                          <div className="overflow-x-auto border border-zinc-800 rounded-xl bg-black">
-                            <table className="w-full text-left text-xs font-sans">
-                              <thead className="bg-zinc-900 border-b border-zinc-800 font-mono text-[11px] text-zinc-400">
-                                <tr>
-                                  <th className="p-3">Command</th>
-                                  <th className="p-3">Meaning / Action</th>
-                                </tr>
-                              </thead>
-                              <tbody className="divide-y divide-zinc-900">
-                                {item.remoteSync.table.map((row, rIdx) => (
-                                  <tr key={rIdx} className="hover:bg-zinc-950/60 transition">
-                                    <td className="p-3 font-mono text-cyan-300 font-bold whitespace-nowrap">
-                                      {row.command}
-                                    </td>
-                                    <td className="p-3 text-zinc-300 leading-relaxed">
-                                      {row.meaning}
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 6. Merging vs. Rebasing & Resolving Conflicts */}
-                    {item.mergingVsRebasing && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                            <Workflow className="w-4 h-4 text-cyan-400" />
-                            <span>{item.mergingVsRebasing.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                            Integration Strategies
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                          {item.mergingVsRebasing.intro}
-                        </p>
-
-                        {/* Merge vs Rebase Side-by-Side */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {/* Merge Box */}
-                          <div className="p-4 rounded-xl bg-black border border-cyan-900/60 space-y-2.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold font-mono text-cyan-400 uppercase">
-                                {item.mergingVsRebasing.merge.title}
-                              </span>
-                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                                Preserves Topology
-                              </span>
-                            </div>
-                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                              {item.mergingVsRebasing.merge.description}
-                            </p>
-                            <code className="text-xs font-mono text-cyan-300 block bg-zinc-950 p-2.5 rounded border border-zinc-800 whitespace-pre">
-                              {item.mergingVsRebasing.merge.commands}
-                            </code>
-                            <ul className="space-y-1 text-xs text-zinc-400 font-sans">
-                              {item.mergingVsRebasing.merge.points.map((pt, pIdx) => (
-                                <li key={pIdx} className="flex items-start gap-1.5">
-                                  <span className="text-cyan-400">•</span>
-                                  <span>{pt}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-
-                          {/* Rebase Box */}
-                          <div className="p-4 rounded-xl bg-black border border-purple-900/60 space-y-2.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold font-mono text-purple-400 uppercase">
-                                {item.mergingVsRebasing.rebase.title}
-                              </span>
-                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
-                                Linear History
-                              </span>
-                            </div>
-                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                              {item.mergingVsRebasing.rebase.description}
-                            </p>
-                            <code className="text-xs font-mono text-purple-300 block bg-zinc-950 p-2.5 rounded border border-zinc-800 whitespace-pre">
-                              {item.mergingVsRebasing.rebase.commands}
-                            </code>
-                            <ul className="space-y-1 text-xs text-zinc-400 font-sans">
-                              {item.mergingVsRebasing.rebase.points.map((pt, pIdx) => (
-                                <li key={pIdx} className="flex items-start gap-1.5">
-                                  <span className="text-purple-400">•</span>
-                                  <span>{pt}</span>
-                                </li>
-                              ))}
-                            </ul>
-                            <div className="p-2 rounded bg-amber-950/20 border border-amber-800/40 text-[11px] text-amber-200/90 font-sans">
-                              <strong className="text-amber-400 font-mono">Important: </strong>
-                              {item.mergingVsRebasing.rebase.important}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Conflict Resolution Section */}
-                        {item.mergingVsRebasing.conflictResolution && (
-                          <div className="p-4 rounded-xl bg-black border border-amber-800/50 space-y-3">
-                            <div className="flex items-center gap-2 border-b border-zinc-900 pb-2">
-                              <AlertTriangle className="w-4 h-4 text-amber-400" />
-                              <h5 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">
-                                {item.mergingVsRebasing.conflictResolution.title}
-                              </h5>
-                            </div>
-                            <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                              {item.mergingVsRebasing.conflictResolution.description}
-                            </p>
-                            <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-xs text-rose-300/90 whitespace-pre">
-                              {item.mergingVsRebasing.conflictResolution.markers}
-                            </div>
-                            <p className="text-xs text-zinc-300 font-sans font-medium">
-                              {item.mergingVsRebasing.conflictResolution.steps}
-                            </p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                              <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
-                                <span className="text-[10px] font-mono text-cyan-400 uppercase font-bold block">
-                                  For a Merge:
-                                </span>
-                                <pre className="text-xs font-mono text-zinc-300 whitespace-pre">
-                                  {item.mergingVsRebasing.conflictResolution.mergeCommands}
-                                </pre>
+                          {/* GitHub Cloud Platform */}
+                          {item.whatIsGitAndGithub.github && (
+                            <div className="p-4 rounded-xl bg-black border border-purple-900/60 space-y-3">
+                              <div className="flex items-center gap-2 text-purple-400 font-mono text-xs font-bold border-b border-zinc-900 pb-2">
+                                <Globe className="w-4 h-4 text-purple-400" />
+                                <span>{item.whatIsGitAndGithub.github.title}</span>
                               </div>
-                              <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1">
-                                <span className="text-[10px] font-mono text-purple-400 uppercase font-bold block">
-                                  For a Rebase:
-                                </span>
-                                <pre className="text-xs font-mono text-zinc-300 whitespace-pre">
-                                  {item.mergingVsRebasing.conflictResolution.rebaseCommands}
-                                </pre>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* 7. Stashing — Temporarily Save Work */}
-                    {item.stashing && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-blue-400 font-mono flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-blue-400" />
-                            <span>{item.stashing.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
-                            Context Switching
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                          {item.stashing.intro}
-                        </p>
-
-                        <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                          <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                            <span className="text-xs font-mono text-zinc-400 flex items-center gap-1.5">
-                              <Terminal className="w-3.5 h-3.5 text-blue-400" />
-                              <span>stashing.sh</span>
-                            </span>
-                            <button
-                              onClick={() => handleCopyCode('git-stash', item.stashing.code)}
-                              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                            >
-                              {copiedId === 'git-stash' ? (
-                                <>
-                                  <Check className="w-3 h-3 text-emerald-400" />
-                                  <span>Copied!</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-3 h-3" />
-                                  <span>Copy Commands</span>
-                                </>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                {item.whatIsGitAndGithub.github.desc}
+                              </p>
+                              {item.whatIsGitAndGithub.github.points && (
+                                <ul className="space-y-1.5 pt-1">
+                                  {item.whatIsGitAndGithub.github.points.map((pt, pIdx) => (
+                                    <li key={pIdx} className="flex items-start gap-2 text-xs text-zinc-300 font-sans">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0 mt-1.5" />
+                                      <span>{pt}</span>
+                                    </li>
+                                  ))}
+                                </ul>
                               )}
-                            </button>
-                          </div>
-                          <CodeHighlight code={item.stashing.code} />
-                        </div>
-
-                        <div className="p-3 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 font-sans leading-relaxed flex items-center gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
-                          <span>{item.stashing.whenToUse}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
 
-                    {/* 8. Undoing & Fixing Mistakes */}
-                    {item.undoing && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-rose-400 font-mono flex items-center gap-2">
-                            <ShieldCheck className="w-4 h-4 text-rose-400" />
-                            <span>{item.undoing.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">
-                            Error Recovery
+                    {/* 2. Key Concepts */}
+                    {item.keyConcepts && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Layers className="w-4 h-4 text-emerald-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              2. Key Concepts
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+                            Core Terminology
                           </span>
                         </div>
 
-                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                          {item.undoing.intro}
-                        </p>
-
-                        {/* Commands Table */}
-                        <div className="overflow-x-auto border border-zinc-800 rounded-xl bg-black">
+                        <div className="overflow-x-auto rounded-xl border border-zinc-800">
                           <table className="w-full text-left text-xs font-sans">
-                            <thead className="bg-zinc-900 border-b border-zinc-800 font-mono text-[11px] text-zinc-400">
+                            <thead className="bg-zinc-900 text-zinc-300 font-mono uppercase text-[11px] border-b border-zinc-800">
                               <tr>
-                                <th className="p-3">Command</th>
-                                <th className="p-3">What it does</th>
+                                <th className="p-3 text-cyan-400 font-bold">Concept</th>
+                                <th className="p-3">Meaning / Role</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-zinc-900">
-                              {item.undoing.table.map((row, rIdx) => (
-                                <tr key={rIdx} className="hover:bg-zinc-950/60 transition">
-                                  <td className="p-3 font-mono text-rose-300 font-bold whitespace-nowrap">
-                                    {row.command}
+                            <tbody className="divide-y divide-zinc-800/70 bg-black/60">
+                              {item.keyConcepts.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
+                                  <td className="p-3 font-mono font-semibold text-emerald-300 whitespace-nowrap">
+                                    {row.concept}
                                   </td>
-                                  <td className="p-3 text-zinc-300 leading-relaxed">
-                                    {row.action}
+                                  <td className="p-3 text-zinc-200 leading-relaxed">
+                                    {row.meaning}
                                   </td>
                                 </tr>
                               ))}
                             </tbody>
                           </table>
                         </div>
+                      </div>
+                    )}
 
-                        {/* Which One Should You Use? Decision Matrix */}
-                        <div className="space-y-2 pt-1">
-                          <span className="text-xs font-bold font-mono uppercase text-zinc-300 tracking-wider block">
-                            Which One Should You Use?
+                    {/* 3. Essential Git Workflows */}
+                    {item.essentialWorkflows && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Workflow className="w-4 h-4 text-amber-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              3. Essential Git Workflows
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
+                            7 Lifecycle Stages
                           </span>
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                            {item.undoing.decisionGuide.map((dg, dIdx) => (
-                              <div key={dIdx} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1.5">
-                                <span className="text-[11px] text-zinc-300 font-sans block leading-snug">
-                                  {dg.goal}
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                          {item.essentialWorkflows.map((wf, wIdx) => (
+                            <div key={wIdx} className="p-4 rounded-xl bg-black border border-zinc-800/90 space-y-2">
+                              <div className="flex items-center justify-between gap-2 border-b border-zinc-900 pb-2">
+                                <span className="font-mono text-xs font-bold text-amber-300">
+                                  {wf.step}
                                 </span>
-                                <code className="text-xs font-mono text-cyan-300 block bg-zinc-950 px-2 py-1 rounded border border-zinc-900">
-                                  {dg.command}
-                                </code>
                               </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Warning Callout */}
-                        <div className="p-3 rounded-xl bg-rose-950/20 border border-rose-800/50 text-xs text-rose-200/90 leading-relaxed font-sans flex items-start gap-2">
-                          <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                          <span>
-                            <strong className="text-rose-400 font-mono uppercase">Warning: </strong>
-                            {item.undoing.warning}
-                          </span>
+                              <div className="font-mono text-[11px] text-cyan-400 bg-zinc-950 px-2 py-1 rounded border border-zinc-800">
+                                {wf.commands}
+                              </div>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed pt-0.5">
+                                {wf.desc}
+                              </p>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
 
-                    {/* 9. Typical Team Workflow */}
-                    {item.teamWorkflow && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
-                            <GitPullRequest className="w-4 h-4 text-emerald-400" />
-                            <span>{item.teamWorkflow.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
-                            Collaboration Standard
+                    {/* 4. Essential Git Commands Cheat Sheet */}
+                    {item.cheatsheet && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-5 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Terminal className="w-4 h-4 text-cyan-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.cheatsheet.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            Quick Reference
                           </span>
                         </div>
 
-                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                          {item.teamWorkflow.intro}
-                        </p>
+                        <div className="space-y-4">
+                          {item.cheatsheet.sections.map((sec, sIdx) => (
+                            <div key={sIdx} className="p-4 rounded-xl bg-black border border-zinc-800/90 space-y-2.5">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold font-mono text-cyan-300 uppercase tracking-wide">
+                                  {sec.title}
+                                </span>
+                              </div>
 
-                        {/* 9 Steps Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                          {item.teamWorkflow.steps.map((st, sIdx) => (
-                            <div key={sIdx} className="p-2.5 rounded-lg bg-black border border-zinc-800/80 text-xs text-zinc-300 font-sans flex items-center gap-2">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                              <span>{st}</span>
-                            </div>
-                          ))}
-                        </div>
+                              <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                                <div className="flex items-center justify-between px-3.5 py-1.5 bg-zinc-950 border-b border-zinc-800">
+                                  <span className="text-[11px] font-mono text-zinc-400">bash</span>
+                                  <button
+                                    onClick={() => handleCopyCode(`git-cs-${sIdx}`, sec.code)}
+                                    className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                                  >
+                                    {copiedId === `git-cs-${sIdx}` ? (
+                                      <>
+                                        <Check className="w-3 h-3 text-emerald-400" />
+                                        <span>Copied!</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Copy className="w-3 h-3" />
+                                        <span>Copy Code</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+                                <CodeHighlight code={sec.code} />
+                              </div>
 
-                        {/* Code Box */}
-                        <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                          <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                            <span className="text-xs font-mono text-zinc-400 flex items-center gap-1.5">
-                              <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                              <span>team_workflow.sh</span>
-                            </span>
-                            <button
-                              onClick={() => handleCopyCode('git-team-flow', item.teamWorkflow.code)}
-                              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
-                            >
-                              {copiedId === 'git-team-flow' ? (
-                                <>
-                                  <Check className="w-3 h-3 text-emerald-400" />
-                                  <span>Copied!</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-3 h-3" />
-                                  <span>Copy Script</span>
-                                </>
+                              {sec.conflictMarker && (
+                                <div className="space-y-2 pt-1">
+                                  <p className="text-xs text-zinc-300 font-sans">{sec.conflictNote}</p>
+                                  <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-xs text-rose-300/90 whitespace-pre">
+                                    {sec.conflictMarker}
+                                  </div>
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                                    <div className="p-2.5 rounded bg-zinc-950 border border-zinc-800 font-mono text-xs text-cyan-300 whitespace-pre">
+                                      {sec.conflictMergeCode}
+                                    </div>
+                                    <div className="p-2.5 rounded bg-zinc-950 border border-zinc-800 font-mono text-xs text-purple-300 whitespace-pre">
+                                      {sec.conflictRebaseCode}
+                                    </div>
+                                  </div>
+                                </div>
                               )}
-                            </button>
-                          </div>
-                          <CodeHighlight code={item.teamWorkflow.code} />
+
+                              {sec.note && (
+                                <p className="text-[11px] text-zinc-400 italic bg-zinc-950 p-2.5 rounded border border-zinc-800">
+                                  💡 {sec.note}
+                                </p>
+                              )}
+
+                              {sec.warning && (
+                                <div className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-800/50 text-[11px] text-rose-200/90 font-sans flex items-start gap-2">
+                                  <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                                  <span>{sec.warning}</span>
+                                </div>
+                              )}
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
 
-                    {/* 10. Git Best Practices for AI/ML Projects */}
-                    {item.aimlBestPractices && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-amber-400" />
-                            <span>{item.aimlBestPractices.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
-                            Production Standards
+                    {/* 5. Typical GitHub Pull Request Workflow */}
+                    {item.pullRequestWorkflow && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <GitPullRequest className="w-4 h-4 text-emerald-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.pullRequestWorkflow.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+                            Team Collaboration
                           </span>
                         </div>
 
+                        {/* 10 Steps Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                          {item.aimlBestPractices.practices.map((bp, bIdx) => (
-                            <div key={bIdx} className="p-3 rounded-xl bg-black border border-zinc-800 text-xs text-zinc-300 font-sans flex items-start gap-2.5">
-                              <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                              <span className="leading-relaxed">{bp}</span>
+                          {item.pullRequestWorkflow.steps.map((st, sIdx) => (
+                            <div key={sIdx} className="p-2.5 rounded-xl bg-black border border-zinc-800 flex items-center gap-2.5 text-xs text-zinc-200 font-sans">
+                              <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono text-[11px] font-bold flex items-center justify-center shrink-0">
+                                {sIdx + 1}
+                              </span>
+                              <span>{typeof st === 'string' ? st.replace(/^[0-9]+\.\s*/, '') : st}</span>
                             </div>
                           ))}
                         </div>
 
-                        {/* Example .gitignore Box */}
-                        <div className="space-y-2 pt-1">
-                          <span className="text-xs font-bold font-mono uppercase text-zinc-400 tracking-wider block">
-                            Example .gitignore for AI/ML Repositories:
-                          </span>
-                          <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
-                            <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
-                              <span className="text-xs font-mono text-zinc-400 flex items-center gap-1.5">
-                                <FileCode className="w-3.5 h-3.5 text-amber-400" />
-                                <span>.gitignore</span>
+                        {/* Example bash code */}
+                        {item.pullRequestWorkflow.exampleCode && (
+                          <div className="space-y-1.5 pt-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-mono text-zinc-400 uppercase font-semibold">
+                                Practical Terminal Example:
                               </span>
                               <button
-                                onClick={() => handleCopyCode('git-gitignore', item.aimlBestPractices.gitignoreCode)}
-                                className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                                onClick={() => handleCopyCode('git-pr-code', item.pullRequestWorkflow.exampleCode)}
+                                className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] text-zinc-300 border border-zinc-700 transition cursor-pointer"
                               >
-                                {copiedId === 'git-gitignore' ? (
+                                {copiedId === 'git-pr-code' ? (
                                   <>
                                     <Check className="w-3 h-3 text-emerald-400" />
                                     <span>Copied!</span>
@@ -28912,35 +28562,197 @@ export default function AllDefinitionsPage() {
                                 ) : (
                                   <>
                                     <Copy className="w-3 h-3" />
-                                    <span>Copy .gitignore</span>
+                                    <span>Copy Commands</span>
                                   </>
                                 )}
                               </button>
                             </div>
-                            <CodeHighlight code={item.aimlBestPractices.gitignoreCode} />
+                            <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                              <CodeHighlight code={item.pullRequestWorkflow.exampleCode} />
+                            </div>
+                            {item.pullRequestWorkflow.note && (
+                              <p className="text-[11px] text-zinc-400 italic">
+                                💡 {item.pullRequestWorkflow.note}
+                              </p>
+                            )}
                           </div>
-                          <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
-                            {item.aimlBestPractices.note}
+                        )}
+                      </div>
+                    )}
+
+                    {/* 6. GitHub Actions & CI/CD */}
+                    {item.githubActions && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Workflow className="w-4 h-4 text-purple-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.githubActions.title}
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800">
+                            {item.githubActions.path}
+                          </span>
+                        </div>
+
+                        {item.githubActions.intro && (
+                          <p className="text-xs sm:text-sm text-zinc-200 font-sans">
+                            {item.githubActions.intro}
                           </p>
+                        )}
+
+                        {item.githubActions.capabilities && (
+                          <div className="space-y-1.5">
+                            <span className="text-[11px] font-mono text-zinc-400 uppercase font-semibold">
+                              A Typical CI/CD Workflow Can:
+                            </span>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                              {item.githubActions.capabilities.map((cap, cIdx) => (
+                                <div key={cIdx} className="p-2.5 rounded-lg bg-black border border-zinc-800 flex items-center gap-2">
+                                  <Check className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                                  <span className="text-xs text-zinc-200 font-sans">{cap}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {item.githubActions.workflowCode && (
+                          <div className="space-y-1.5 pt-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-mono text-zinc-400 uppercase font-semibold">
+                                Example Workflow Configuration (Python CI):
+                              </span>
+                              <button
+                                onClick={() => handleCopyCode('git-action-code', item.githubActions.workflowCode)}
+                                className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                              >
+                                {copiedId === 'git-action-code' ? (
+                                  <>
+                                    <Check className="w-3 h-3 text-emerald-400" />
+                                    <span>Copied!</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy className="w-3 h-3" />
+                                    <span>Copy YAML</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                            <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                              <CodeHighlight code={item.githubActions.workflowCode} />
+                            </div>
+                            {item.githubActions.note && (
+                              <p className="text-[11px] text-zinc-400 italic">
+                                💡 {item.githubActions.note}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 7. Best Practices */}
+                    {item.bestPractices && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-amber-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              7. Best Practices
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
+                            Engineering Rules
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          {item.bestPractices.map((bp, bIdx) => (
+                            <div key={bIdx} className="p-3 rounded-xl bg-black border border-zinc-800/90 flex items-start gap-2.5 text-xs text-zinc-200 font-sans">
+                              <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                              <span className="leading-relaxed">{bp}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
 
-                    {/* 11. Architecture Takeaway Banner */}
-                    {item.takeaway && (
-                      <div className="p-4 rounded-xl bg-zinc-900/80 border border-emerald-800/50 text-xs sm:text-sm text-zinc-200 flex items-start gap-3 shadow-md">
-                        <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                        <div className="space-y-2">
-                          <strong className="text-emerald-400 font-mono block">
-                            Architecture Takeaway:
-                          </strong>
-                          <div className="p-3 rounded-lg bg-black border border-zinc-800 font-mono text-xs text-cyan-300 text-center tracking-wider">
-                            Edit → Stage → Commit → Push → Pull Request → Review → Merge
+                    {/* 8. Git in AI/ML Projects */}
+                    {item.aimlGit && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Cpu className="w-4 h-4 text-cyan-400" />
+                            <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
+                              {item.aimlGit.title}
+                            </h4>
                           </div>
-                          <p className="leading-relaxed font-sans text-zinc-300 whitespace-pre-line">
-                            {item.takeaway}
-                          </p>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            MLOps Integration
+                          </span>
                         </div>
+
+                        {item.aimlGit.versioningTargets && (
+                          <div className="space-y-2">
+                            <span className="text-[11px] font-mono text-zinc-400 uppercase font-semibold">
+                              {item.aimlGit.intro || 'Git is useful for versioning:'}
+                            </span>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                              {item.aimlGit.versioningTargets.map((vt, vIdx) => (
+                                <div key={vIdx} className="p-2.5 rounded-lg bg-black border border-zinc-800 flex items-center gap-2 text-xs text-zinc-300 font-sans">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+                                  <span>{vt}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {item.aimlGit.ecosystem && (
+                          <div className="space-y-2 pt-2 border-t border-zinc-900">
+                            <span className="text-[11px] font-mono text-zinc-400 uppercase font-semibold">
+                              {item.aimlGit.reproducibleIntro || 'For reproducible ML workflows, Git can be combined with:'}
+                            </span>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                              {item.aimlGit.ecosystem.map((eco, eIdx) => (
+                                <div key={eIdx} className="p-3 rounded-xl bg-black border border-zinc-800 space-y-1">
+                                  <div className="text-xs font-mono font-bold text-emerald-400">
+                                    {eco.tool}
+                                  </div>
+                                  <p className="text-[11px] text-zinc-300 font-sans leading-relaxed">
+                                    {eco.role}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {item.aimlGit.takeaway && (
+                          <p className="text-xs text-amber-200/90 bg-amber-950/20 p-3 rounded-xl border border-amber-800/40 font-sans leading-relaxed">
+                            💡 {item.aimlGit.takeaway}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 9. Interview Answer */}
+                    {item.interviewAnswer && (
+                      <div className="p-5 rounded-2xl bg-zinc-950/90 border border-cyan-500/40 space-y-3 shadow-xl">
+                        <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                          <Terminal className="w-4 h-4 text-cyan-400" />
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                            9. Interview Answer
+                          </h4>
+                        </div>
+                        <p className="text-xs font-bold text-white font-mono">
+                          Q: {item.interviewAnswer.question}
+                        </p>
+                        <blockquote className="p-3.5 rounded-xl bg-black border-l-2 border-cyan-400 text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans italic">
+                          "{item.interviewAnswer.answer}"
+                        </blockquote>
                       </div>
                     )}
                   </div>
@@ -37142,213 +36954,65 @@ export default function AllDefinitionsPage() {
                 {/* Item 158: Gaussian Distribution */}
                 {item.id === 'gaussian-distribution' && (
                   <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                    {/* Intro & Parameter Triad */}
-                    <div className="p-5 rounded-2xl bg-zinc-950 border border-emerald-800/40 space-y-4 shadow-xl">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold font-mono text-emerald-400 uppercase flex items-center gap-2">
-                          <Activity className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>Continuous Probability Distribution</span>
-                        </span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold">
-                          Bell Curve
-                        </span>
-                      </div>
-
-                      <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed font-medium">
-                        {item.coreDefinition}
-                      </p>
-
-                      {/* 2 Core Parameters + Standard Deviation */}
-                      {item.parameters && (
-                        <div className="space-y-2 pt-2 border-t border-zinc-900">
-                          <span className="text-[11px] font-mono uppercase text-zinc-400 tracking-wider font-semibold block">
-                            Completely Described by Two Parameters:
-                          </span>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            {item.parameters.map((param, pIdx) => (
-                              <div
-                                key={pIdx}
-                                className="p-3.5 rounded-xl bg-black border border-zinc-800/90 space-y-1 hover:border-zinc-700 transition"
-                              >
-                                <div className="flex items-center justify-between">
-                                  <span className={`text-base font-bold font-mono ${param.accent}`}>
-                                    {param.symbol}
-                                  </span>
-                                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
-                                    {param.name}
-                                  </span>
-                                </div>
-                                <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                                  {param.role}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                    <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-800/40 text-xs sm:text-sm text-emerald-200/90 leading-relaxed font-mono">
+                      <strong className="text-emerald-400 uppercase font-sans font-bold">What is the Gaussian Distribution? </strong>
+                      {item.coreDefinition}
                     </div>
 
-                    {/* 1. Probability Density Function (PDF) */}
-                    {item.pdfSection && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
-                            <Terminal className="w-4 h-4 text-emerald-400" />
-                            <span>{item.pdfSection.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
-                            Continuous PDF
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                          {item.pdfSection.desc}
-                        </p>
-
-                        {/* Formula Box */}
-                        <div className="p-4 rounded-xl bg-black border border-emerald-900/60 text-center space-y-2 shadow-inner">
-                          <span className="text-[10px] font-mono uppercase text-zinc-400 tracking-wider block">
-                            Mathematical Formula:
-                          </span>
-                          <div className="font-mono text-sm sm:text-base font-bold text-emerald-300 tracking-wide">
-                            {item.pdfSection.formula}
-                          </div>
-                        </div>
-
-                        {/* Where terms */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-                          {item.pdfSection.terms.map((t, tIdx) => (
-                            <div key={tIdx} className="p-2.5 rounded-lg bg-black border border-zinc-850 flex items-center gap-2">
-                              <span className="text-xs font-mono font-bold text-emerald-400">
-                                ({t.term})
-                              </span>
-                              <span className="text-[11px] text-zinc-400 font-sans">
-                                = {t.desc}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="p-3 rounded-xl bg-emerald-950/20 border border-emerald-900/40 text-xs text-emerald-300 font-sans flex items-center gap-2">
-                          <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
-                          <span>The curve is symmetric around the mean, and its highest point occurs at the mean.</span>
-                        </div>
+                    {item.formulaBlock && (
+                      <div className="p-4 rounded-xl bg-black border border-emerald-900/50 space-y-2">
+                        <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold">Probability Density Function (PDF):</span>
+                        <p className="text-xs sm:text-sm font-mono text-emerald-300">{item.formulaBlock.formula}</p>
+                        <p className="text-xs text-zinc-400 font-mono">{item.formulaBlock.params}</p>
                       </div>
                     )}
 
-                    {/* 2. Empirical 68–95–99.7 Rule (3-Sigma Rule) */}
                     {item.empiricalRule && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-lg">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-cyan-400" />
-                            <span>{item.empiricalRule.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                            3-Sigma Rule
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-zinc-300 font-sans leading-relaxed">
-                          {item.empiricalRule.desc}
-                        </p>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                          {item.empiricalRule.bands?.map((band, bIdx) => (
-                            <div
-                              key={bIdx}
-                              className={`p-4 rounded-xl bg-black border ${band.border} hover:border-zinc-700 transition space-y-2`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <span className={`text-sm font-mono font-bold ${band.accent}`}>
-                                  {band.range}
-                                </span>
-                                <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-zinc-900 text-white border border-zinc-800">
-                                  {band.percentage}
-                                </span>
-                              </div>
-                              <div className="p-2 rounded bg-zinc-950 border border-zinc-850 text-xs text-zinc-200 font-sans">
-                                {band.example}
-                              </div>
-                              <p className="text-[11px] text-zinc-400 font-sans leading-relaxed">
-                                {band.desc}
+                      <div className="space-y-3">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2">
+                          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Empirical 68-95-99.7 Rule (3-Sigma Rule)</span>
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          {item.empiricalRule.map((rule, rIdx) => (
+                            <div key={rIdx} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5 hover:border-emerald-500/40 transition">
+                              <span className={`text-xs font-mono font-bold uppercase ${rule.accent}`}>
+                                {rule.band}
+                              </span>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                {rule.desc}
                               </p>
                             </div>
                           ))}
                         </div>
-
-                        {/* Outlier Note */}
-                        <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-900/40 text-xs text-amber-200/90 font-sans flex items-start gap-2.5">
-                          <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                          <span>{item.empiricalRule.outlierNote}</span>
-                        </div>
                       </div>
                     )}
 
-                    {/* 3. Role of Gaussian Distribution in Machine Learning */}
                     {item.roleInMachineLearning && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
-                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-400 font-mono flex items-center gap-2">
-                            <Layers className="w-4 h-4 text-purple-400" />
-                            <span>{item.roleInMachineLearning.title}</span>
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
-                            Core ML Applications
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {item.roleInMachineLearning.applications?.map((app, aIdx) => (
-                            <div
-                              key={aIdx}
-                              className="p-4 rounded-xl bg-black border border-zinc-800/90 hover:border-zinc-700 transition space-y-2.5 flex flex-col justify-between"
-                            >
-                              <div className="space-y-2">
-                                <div className="flex items-center justify-between gap-1">
-                                  <span className={`text-xs sm:text-sm font-bold font-mono ${app.accent}`}>
-                                    {app.name}
-                                  </span>
-                                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
-                                    {app.badge}
-                                  </span>
-                                </div>
-
-                                <ul className="space-y-1.5 pt-1">
-                                  {app.points.map((pt, pIdx) => (
-                                    <li key={pIdx} className="text-xs text-zinc-300 flex items-start gap-2 font-sans">
-                                      <span className={`${app.accent} font-mono mt-0.5`}>›</span>
-                                      <span className="leading-relaxed">{pt}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
+                      <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-xl">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono flex items-center gap-2 border-b border-zinc-800 pb-2">
+                          <Terminal className="w-4 h-4 text-emerald-400" />
+                          <span>Foundational Role of Gaussian Distribution in ML</span>
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                          {item.roleInMachineLearning.map((app, aIdx) => (
+                            <div key={aIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1">
+                              <span className="text-xs font-bold font-mono text-white block">
+                                {app.application}
+                              </span>
+                              <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                                {app.detail}
+                              </p>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {/* 4. Key Takeaway */}
-                    {item.keyTakeaway && (
-                      <div className="p-5 rounded-2xl bg-zinc-950 border border-emerald-800/50 space-y-3 shadow-xl">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">
-                            4. Key ML Takeaway
-                          </h4>
-                        </div>
-
-                        <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
-                          {item.keyTakeaway.summary}
-                        </p>
-
-                        <div className="p-3.5 rounded-xl bg-black border border-emerald-900/60 font-mono text-xs text-emerald-300 flex items-center gap-2">
-                          <span className="text-emerald-400 font-bold">💡</span>
-                          <span>{item.keyTakeaway.memoryRule}</span>
-                        </div>
-                      </div>
-                    )}
+                    <div className="p-4 rounded-xl bg-black border border-emerald-800/40 text-xs text-emerald-200/90 leading-relaxed font-mono">
+                      <strong className="text-emerald-400 uppercase">Statistical ML Principle: </strong>
+                      {item.takeaway}
+                    </div>
                   </div>
                 )}
 
@@ -38676,339 +38340,178 @@ export default function AllDefinitionsPage() {
 
                 {/* Dedicated Hyperparameters View (Item 109) */}
                 {item.id === 'hyperparameters' && (
-                      <div className="space-y-6 text-xs sm:text-sm text-zinc-300 mb-6">
-                        {/* 1. Header Banner & Core Definition */}
-                        <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-4 shadow-xl">
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
-                            <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
-                              <Sparkles className="w-4 h-4 text-cyan-400" />
-                              <span>Machine Learning Optimization & Convergence Dynamics</span>
-                            </span>
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold w-fit">
-                              Hyperparameters Triad
-                            </span>
-                          </div>
+                  <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                    {/* Header Banner */}
+                    <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-3 shadow-xl">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+                        <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-cyan-400" />
+                          <span>{item.title}</span>
+                        </span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold w-fit">
+                          {item.badge}
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                        {item.summary}
+                      </p>
+                    </div>
 
-                          <div className="space-y-2">
-                            <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-medium">
-                              {item.coreDefinition || item.summary}
-                            </p>
-                            <p className="text-xs text-zinc-400 leading-relaxed">
-                              Unlike model parameters (weights <span className="font-mono text-amber-300">W</span> and biases <span className="font-mono text-amber-300">b</span>), which are learned directly from data via backpropagation, hyperparameters configure the training process, gradient step dynamics, memory throughput, and generalization boundaries.
-                            </p>
+                    {/* 1. Core Hyperparameters Triad (Learning Rate, Batch Size, Epochs) */}
+                    {item.hyperparametersTriad && (
+                      <div className="space-y-5 p-5 sm:p-6 rounded-2xl bg-[#09090d] border border-cyan-500/40 shadow-2xl">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                          <div className="flex items-center gap-2 text-cyan-400 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider">
+                            <Sliders className="w-4 h-4 text-cyan-400 shrink-0" />
+                            <span>{item.hyperparametersTriad.title}</span>
                           </div>
-
-                          {/* The Three Core Hyperparameters Grid */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
-                            {item.coreTriad && item.coreTriad.map((pillar, pIdx) => (
-                              <div
-                                key={pIdx}
-                                className={`p-3.5 rounded-xl bg-zinc-900/80 border ${pillar.border} space-y-1.5`}
-                              >
-                                <div className="flex items-center justify-between gap-1">
-                                  <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded ${pillar.bgBadge} border`}>
-                                    {pillar.name}
-                                  </span>
-                                  <span className="text-[10px] font-mono text-zinc-400">
-                                    {pillar.role}
-                                  </span>
-                                </div>
-                                <p className="text-xs text-zinc-300 leading-relaxed pt-1">
-                                  {pillar.desc}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 font-semibold">
+                            Training Dynamics Triad
+                          </span>
                         </div>
 
-                        {/* 2. Section 1: Learning Rate (η) */}
-                        {item.learningRateSection && (
-                          <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-900/50 space-y-4">
-                            <div className="flex items-center gap-2">
-                              <Sliders className="w-4 h-4 text-cyan-400" />
-                              <h4 className="text-sm font-bold text-cyan-400 font-mono uppercase tracking-wide">
-                                {item.learningRateSection.title}
-                              </h4>
-                            </div>
-
-                            {/* Math Formula Card */}
-                            <div className="p-4 rounded-xl bg-black border border-cyan-800/40 space-y-3">
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-900 pb-2">
-                                <span className="text-xs font-mono text-zinc-400 uppercase font-semibold">Weight Update Equation</span>
-                                <span className="text-[11px] font-mono text-cyan-400">Gradient Descent Step Formulation</span>
-                              </div>
-                              <div className="text-center py-2 text-base sm:text-lg font-mono font-bold text-cyan-300 bg-cyan-950/20 rounded-lg border border-cyan-900/40">
-                                W_new = W_old - η · ∇L(W)
-                              </div>
-                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] font-mono text-zinc-400 pt-1">
-                                {item.learningRateSection.variables.map((v, vIdx) => (
-                                  <div key={vIdx} className="p-2 rounded bg-zinc-900/60 border border-zinc-800/60">
-                                    <span className="text-amber-400 font-bold">{v.sym}:</span> {v.desc}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* Effects & Starting Ranges Grid */}
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                              {/* What happens when learning rate changes */}
-                              <div className="space-y-2">
-                                <span className="text-xs font-mono uppercase font-semibold text-zinc-300 block">
-                                  What Happens When Learning Rate Changes?
-                                </span>
-                                <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
-                                  <table className="w-full text-left text-xs font-sans">
-                                    <thead className="bg-zinc-900/80 border-b border-zinc-800 font-mono text-[11px]">
-                                      <tr>
-                                        <th className="py-2 px-3 text-cyan-400 w-1/3">Learning Rate</th>
-                                        <th className="py-2 px-3 text-zinc-300 w-2/3">Observed Effect</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-zinc-800/50">
-                                      {item.learningRateSection.effectsTable.map((row, rIdx) => (
-                                        <tr key={rIdx} className="hover:bg-zinc-900/40">
-                                          <td className={`py-2 px-3 font-mono font-bold ${row.accent}`}>
-                                            {row.rate}
-                                          </td>
-                                          <td className="py-2 px-3 text-zinc-300 text-xs leading-relaxed">
-                                            {row.effect}
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </div>
-
-                              {/* Common Starting Points */}
-                              <div className="space-y-2">
-                                <span className="text-xs font-mono uppercase font-semibold text-zinc-300 block">
-                                  Common Starting Points (Heuristic Ranges)
-                                </span>
-                                <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
-                                  <table className="w-full text-left text-xs font-sans">
-                                    <thead className="bg-zinc-900/80 border-b border-zinc-800 font-mono text-[11px]">
-                                      <tr>
-                                        <th className="py-2 px-3 text-amber-300 w-3/5">Training Type</th>
-                                        <th className="py-2 px-3 text-emerald-400 w-2/5">Typical Starting Range</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-zinc-800/50">
-                                      {item.learningRateSection.startingRanges.map((row, rIdx) => (
-                                        <tr key={rIdx} className="hover:bg-zinc-900/40">
-                                          <td className="py-2 px-3 text-zinc-300 font-medium">
-                                            {row.type}
-                                          </td>
-                                          <td className="py-2 px-3 font-mono font-semibold text-emerald-300">
-                                            {row.range}
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
-                                <p className="text-[11px] text-zinc-400 italic pt-1">
-                                  * {item.learningRateSection.note}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* 3. Section 2: Batch Size (B) */}
-                        {item.batchSizeSection && (
-                          <div className="p-5 rounded-2xl bg-zinc-950 border border-amber-900/50 space-y-4">
-                            <div className="flex items-center gap-2">
-                              <Cpu className="w-4 h-4 text-amber-400" />
-                              <h4 className="text-sm font-bold text-amber-400 font-mono uppercase tracking-wide">
-                                {item.batchSizeSection.title}
-                              </h4>
-                            </div>
-
-                            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                              {item.batchSizeSection.desc}
-                            </p>
-
-                            {/* Small vs Large Batch Comparison Table */}
-                            <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
-                              <table className="w-full text-left text-xs font-sans">
-                                <thead className="bg-zinc-900/80 border-b border-zinc-800 font-mono text-[11px]">
-                                  <tr>
-                                    <th className="py-2.5 px-3.5 text-zinc-400 w-1/4">Aspect</th>
-                                    <th className="py-2.5 px-3.5 text-cyan-400 w-3/8">Small Batch (e.g. 16–32)</th>
-                                    <th className="py-2.5 px-3.5 text-amber-400 w-3/8">Large Batch (e.g. 256–2048)</th>
-                                  </tr>
-                                </thead>
-                                <tbody className="divide-y divide-zinc-800/50 text-zinc-300">
-                                  {item.batchSizeSection.comparison.map((row, cIdx) => (
-                                    <tr key={cIdx} className="hover:bg-zinc-900/40">
-                                      <td className="py-2.5 px-3.5 font-mono font-medium text-zinc-400">
-                                        {row.aspect}
-                                      </td>
-                                      <td className="py-2.5 px-3.5 text-cyan-300/90 leading-relaxed">
-                                        {row.small}
-                                      </td>
-                                      <td className="py-2.5 px-3.5 text-amber-300/90 leading-relaxed">
-                                        {row.large}
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-
-                            <div className="p-3 rounded-lg bg-amber-950/20 border border-amber-800/40 text-xs text-amber-200/90">
-                              <strong>Key Nuance:</strong> {item.batchSizeSection.nuance}
-                            </div>
-
-                            {/* Steps per Epoch & Linear Scaling Rule */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-xs font-mono font-bold text-cyan-400 uppercase">Steps per Epoch</span>
-                                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">Formula</span>
-                                </div>
-                                <div className="text-center py-2 text-sm font-mono font-bold text-cyan-300 bg-cyan-950/30 rounded border border-cyan-800/40">
-                                  {item.batchSizeSection.stepsPerEpoch.formula}
-                                </div>
-                                <p className="text-[11px] text-zinc-400 leading-relaxed">
-                                  {item.batchSizeSection.stepsPerEpoch.explanation}
-                                </p>
-                                <p className="text-xs text-zinc-300 leading-relaxed bg-zinc-900/60 p-2 rounded border border-zinc-800">
-                                  {item.batchSizeSection.stepsPerEpoch.example}
-                                </p>
-                              </div>
-
-                              <div className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-xs font-mono font-bold text-amber-400 uppercase">{item.batchSizeSection.linearScalingRule.title}</span>
-                                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">Heuristic</span>
-                                </div>
-                                <div className="text-center py-2 text-sm font-mono font-bold text-amber-300 bg-amber-950/30 rounded border border-amber-800/40">
-                                  {item.batchSizeSection.linearScalingRule.formula}
-                                </div>
-                                <p className="text-[11px] text-zinc-300 leading-relaxed">
-                                  {item.batchSizeSection.linearScalingRule.desc}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* 4. Section 3: Epochs (E) */}
-                        {item.epochsSection && (
-                          <div className="p-5 rounded-2xl bg-zinc-950 border border-emerald-900/50 space-y-4">
-                            <div className="flex items-center gap-2">
-                              <Clock className="w-4 h-4 text-emerald-400" />
-                              <h4 className="text-sm font-bold text-emerald-400 font-mono uppercase tracking-wide">
-                                {item.epochsSection.title}
-                              </h4>
-                            </div>
-
-                            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                              {item.epochsSection.desc}
-                            </p>
-
-                            {/* Too Few vs Too Many Epochs */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                              {item.epochsSection.comparison.map((tier, tIdx) => (
-                                <div key={tIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800 space-y-1.5">
-                                  <span className={`text-xs font-mono font-bold uppercase block ${tier.accent}`}>
-                                    {tier.duration}
+                        {/* 3 Pillars */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-1">
+                          {item.hyperparametersTriad.pillars?.map((pil) => (
+                            <div
+                              key={pil.id || pil.step}
+                              className={`p-4 rounded-xl bg-zinc-950/90 border ${pil.border || 'border-zinc-800'} space-y-3 flex flex-col justify-between hover:border-cyan-500/40 transition`}
+                            >
+                              <div className="space-y-2.5">
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${pil.bgBadge || 'bg-cyan-950 text-cyan-300'} border`}>
+                                    STEP {pil.step}: {pil.name}
                                   </span>
-                                  <p className="text-xs text-zinc-300 leading-relaxed">
-                                    {tier.result}
-                                  </p>
+                                  <span className="text-[9px] font-mono text-zinc-400 bg-black/80 px-2 py-0.5 rounded border border-zinc-800 truncate">
+                                    {pil.badge}
+                                  </span>
                                 </div>
-                              ))}
-                            </div>
 
-                            {/* Early Stopping Protocol Box */}
-                            <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-800/40 flex items-start gap-3">
-                              <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                              <div className="space-y-1">
-                                <h5 className="text-xs font-bold font-mono text-emerald-300 uppercase">
-                                  {item.epochsSection.earlyStopping.title}
-                                </h5>
-                                <p className="text-xs text-zinc-300 leading-relaxed">
-                                  {item.epochsSection.earlyStopping.desc}
+                                <p className="text-xs text-zinc-200 font-sans leading-relaxed">
+                                  {pil.definition}
                                 </p>
+
+                                {/* Dynamics / Behavior */}
+                                {pil.behavior && (
+                                  <div className="space-y-1.5 p-2.5 rounded-lg bg-black/80 border border-zinc-900 text-[11px] font-sans">
+                                    <span className="text-[10px] font-mono uppercase text-zinc-400 font-bold block mb-1">
+                                      Optimization Dynamics:
+                                    </span>
+                                    {pil.behavior.tooHigh && (
+                                      <div className="text-rose-300/90 leading-relaxed">
+                                        <strong className="text-rose-400 font-mono text-[10px] uppercase">Too High: </strong>
+                                        {pil.behavior.tooHigh}
+                                      </div>
+                                    )}
+                                    {pil.behavior.tooLow && (
+                                      <div className="text-amber-300/90 leading-relaxed">
+                                        <strong className="text-amber-400 font-mono text-[10px] uppercase">Too Low: </strong>
+                                        {pil.behavior.tooLow}
+                                      </div>
+                                    )}
+                                    {pil.behavior.smallBatch && (
+                                      <div className="text-cyan-300/90 leading-relaxed">
+                                        <strong className="text-cyan-400 font-mono text-[10px] uppercase">Small Batch (16-32): </strong>
+                                        {pil.behavior.smallBatch}
+                                      </div>
+                                    )}
+                                    {pil.behavior.largeBatch && (
+                                      <div className="text-amber-300/90 leading-relaxed">
+                                        <strong className="text-amber-400 font-mono text-[10px] uppercase">Large Batch (256+): </strong>
+                                        {pil.behavior.largeBatch}
+                                      </div>
+                                    )}
+                                    {pil.behavior.tooFew && (
+                                      <div className="text-rose-300/90 leading-relaxed">
+                                        <strong className="text-rose-400 font-mono text-[10px] uppercase">Too Few (Underfit): </strong>
+                                        {pil.behavior.tooFew}
+                                      </div>
+                                    )}
+                                    {pil.behavior.tooMany && (
+                                      <div className="text-amber-300/90 leading-relaxed">
+                                        <strong className="text-amber-400 font-mono text-[10px] uppercase">Too Many (Overfit): </strong>
+                                        {pil.behavior.tooMany}
+                                      </div>
+                                    )}
+                                    {pil.behavior.optimal && (
+                                      <div className="text-emerald-300/90 leading-relaxed">
+                                        <strong className="text-emerald-400 font-mono text-[10px] uppercase">Sweet Spot: </strong>
+                                        {pil.behavior.optimal}
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Footer Guidelines */}
+                              <div className="p-2.5 rounded-lg bg-black/90 border border-zinc-800/80 space-y-1 mt-2 text-[10px] font-mono">
+                                {pil.typicalValues && (
+                                  <div className="text-zinc-300 leading-relaxed">
+                                    <span className="text-cyan-400 font-bold uppercase">Defaults: </span>
+                                    <span>{pil.typicalValues}</span>
+                                  </div>
+                                )}
+                                {pil.schedules && (
+                                  <div className="text-zinc-300 leading-relaxed">
+                                    <span className="text-purple-400 font-bold uppercase">Schedule: </span>
+                                    <span>{pil.schedules}</span>
+                                  </div>
+                                )}
+                                {pil.linearScalingRule && (
+                                  <div className="text-zinc-300 leading-relaxed">
+                                    <span className="text-amber-400 font-bold uppercase">Linear Scaling: </span>
+                                    <span>{pil.linearScalingRule}</span>
+                                  </div>
+                                )}
+                                {pil.gradientAccumulation && (
+                                  <div className="text-zinc-300 leading-relaxed">
+                                    <span className="text-cyan-300 font-bold uppercase">Grad Accum: </span>
+                                    <span>{pil.gradientAccumulation}</span>
+                                  </div>
+                                )}
+                                {pil.productionNorms && (
+                                  <div className="text-zinc-300 leading-relaxed">
+                                    <span className="text-emerald-400 font-bold uppercase">Norms: </span>
+                                    <span>{pil.productionNorms}</span>
+                                  </div>
+                                )}
+                                {pil.earlyStopping && (
+                                  <div className="text-zinc-300 leading-relaxed">
+                                    <span className="text-rose-400 font-bold uppercase">Early Stop: </span>
+                                    <span>{pil.earlyStopping}</span>
+                                  </div>
+                                )}
                               </div>
                             </div>
-                          </div>
-                        )}
+                          ))}
+                        </div>
 
-                        {/* 5. Section 4: Training Steps, Epochs & Batch Size */}
-                        {item.stepsEpochsBatch && (
-                          <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4">
-                            <div className="flex items-center gap-2">
-                              <Layers className="w-4 h-4 text-purple-400" />
-                              <h4 className="text-sm font-bold text-purple-400 font-mono uppercase tracking-wide">
-                                {item.stepsEpochsBatch.title}
-                              </h4>
-                            </div>
-
-                            <p className="text-xs text-zinc-400">
-                              {item.stepsEpochsBatch.subtitle}
-                            </p>
-
-                            <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
-                              <table className="w-full text-left text-xs font-sans">
-                                <thead className="bg-zinc-900/80 border-b border-zinc-800 font-mono text-[11px]">
-                                  <tr>
-                                    <th className="py-2.5 px-3.5 text-purple-400 w-1/4">Term</th>
-                                    <th className="py-2.5 px-3.5 text-zinc-300 w-3/4">Operational Meaning</th>
-                                  </tr>
-                                </thead>
-                                <tbody className="divide-y divide-zinc-800/50">
-                                  {item.stepsEpochsBatch.terms.map((t, idx) => (
-                                    <tr key={idx} className="hover:bg-zinc-900/40">
-                                      <td className="py-2.5 px-3.5 font-mono font-bold text-cyan-300">
-                                        {t.term}
-                                      </td>
-                                      <td className="py-2.5 px-3.5 text-zinc-300 leading-relaxed">
-                                        {t.meaning}
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-
-                            <div className="p-3.5 rounded-xl bg-purple-950/20 border border-purple-800/40 text-xs text-zinc-300 leading-relaxed font-mono">
-                              <strong className="text-purple-300 uppercase">Worked Example: </strong>
-                              {item.stepsEpochsBatch.example}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* 6. Section 5: Training Failure Modes & Fixes */}
-                        {item.failureModes && (
-                          <div className="p-5 rounded-2xl bg-zinc-950 border border-rose-900/40 space-y-4">
+                        {/* Diagnostic & Troubleshooting Matrix */}
+                        {item.hyperparametersTriad.diagnosticTable && (
+                          <div className="space-y-2 pt-2 border-t border-zinc-800/80">
                             <div className="flex items-center gap-2">
                               <Bug className="w-4 h-4 text-rose-400" />
-                              <h4 className="text-sm font-bold text-rose-400 font-mono uppercase tracking-wide">
-                                5. Training Failure Modes & Hyperparameter Fixes
-                              </h4>
+                              <span className="text-xs font-mono font-bold uppercase tracking-wider text-rose-400">
+                                Training Failure Modes & Hyperparameter Fixes
+                              </span>
                             </div>
-
                             <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
                               <table className="w-full text-left text-xs font-sans">
                                 <thead className="bg-zinc-900/90 border-b border-zinc-800 font-mono text-[11px]">
                                   <tr>
                                     <th className="py-2.5 px-3.5 text-rose-400 w-1/4">Observed Training Symptom</th>
-                                    <th className="py-2.5 px-3.5 text-amber-300 w-1/3">Likely Root Cause</th>
+                                    <th className="py-2.5 px-3.5 text-amber-300 w-1/3">Root Cause</th>
                                     <th className="py-2.5 px-3.5 text-emerald-400 w-5/12">Hyperparameter Resolution</th>
                                   </tr>
                                 </thead>
-                                <tbody className="divide-y divide-zinc-800/50 text-zinc-300">
-                                  {item.failureModes.map((row, rIdx) => (
-                                    <tr key={rIdx} className="hover:bg-zinc-900/40">
+                                <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+                                  {item.hyperparametersTriad.diagnosticTable.map((row, rIdx) => (
+                                    <tr key={rIdx} className="hover:bg-zinc-900/40 transition">
                                       <td className="py-2.5 px-3.5 font-mono font-semibold text-rose-300">
                                         {row.symptom}
                                       </td>
                                       <td className="py-2.5 px-3.5 text-[11px] text-zinc-300 leading-relaxed">
-                                        {row.cause}
+                                        {row.likelyCause}
                                       </td>
                                       <td className="py-2.5 px-3.5 text-[11px] text-emerald-200/90 font-medium leading-relaxed">
                                         {row.fix}
@@ -39020,174 +38523,76 @@ export default function AllDefinitionsPage() {
                             </div>
                           </div>
                         )}
+                      </div>
+                    )}
 
-                        {/* 7. Section 6: Important Training Techniques */}
-                        {item.importantTechniques && (
-                          <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4">
-                            <div className="flex items-center gap-2">
-                              <Zap className="w-4 h-4 text-amber-400" />
-                              <h4 className="text-sm font-bold text-amber-400 font-mono uppercase tracking-wide">
-                                6. Important Training Techniques
-                              </h4>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              {item.importantTechniques.map((tech, tIdx) => (
-                                <div key={tIdx} className="p-4 rounded-xl bg-black border border-zinc-800 space-y-2 hover:border-zinc-700 transition">
-                                  <div className="flex items-center justify-between">
-                                    <span className={`text-xs font-mono font-bold uppercase ${tech.accent}`}>
-                                      {tech.name}
-                                    </span>
-                                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800">
-                                      {tech.badge}
-                                    </span>
-                                  </div>
-                                  <p className="text-xs text-zinc-300 leading-relaxed">
-                                    {tech.desc}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* 8. Section 7: Parameters vs. Hyperparameters */}
-                        {item.paramsVsHyperparams && (
-                          <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4">
-                            <div className="flex items-center gap-2">
-                              <Sliders className="w-4 h-4 text-cyan-400" />
-                              <h4 className="text-sm font-bold text-cyan-400 font-mono uppercase tracking-wide">
-                                {item.paramsVsHyperparams.title}
-                              </h4>
-                            </div>
-
-                            <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black">
-                              <table className="w-full text-left text-xs font-sans">
-                                <thead className="bg-zinc-900/80 border-b border-zinc-800 font-mono text-[11px]">
-                                  <tr>
-                                    <th className="py-2.5 px-3.5 text-zinc-400 w-1/4">Comparison Dimension</th>
-                                    <th className="py-2.5 px-3.5 text-cyan-400 w-3/8">Model Parameters</th>
-                                    <th className="py-2.5 px-3.5 text-amber-400 w-3/8">Hyperparameters</th>
-                                  </tr>
-                                </thead>
-                                <tbody className="divide-y divide-zinc-800/50">
-                                  {item.paramsVsHyperparams.rows.map((row, rIdx) => (
-                                    <tr key={rIdx} className="hover:bg-zinc-900/40">
-                                      <td className="py-2.5 px-3.5 font-mono font-medium text-zinc-400">
-                                        {row.aspect}
-                                      </td>
-                                      <td className="py-2.5 px-3.5 text-cyan-200/90 leading-relaxed font-sans">
-                                        {row.params}
-                                      </td>
-                                      <td className="py-2.5 px-3.5 text-amber-200/90 leading-relaxed font-sans">
-                                        {row.hyperparams}
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* 9. Section 8: Interview Questions */}
-                        {item.interviewQA && (
-                          <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4">
-                            <div className="flex items-center gap-2">
-                              <Sparkles className="w-4 h-4 text-emerald-400" />
-                              <h4 className="text-sm font-bold text-emerald-400 font-mono uppercase tracking-wide">
-                                8. Interview Questions & Model Answers
-                              </h4>
-                            </div>
-
-                            <div className="space-y-3">
-                              {item.interviewQA.map((qa, qIdx) => (
-                                <div key={qIdx} className="p-4 rounded-xl bg-black border border-zinc-800/90 space-y-2">
-                                  <span className="text-xs font-mono font-bold text-emerald-300 block">
-                                    {qa.question}
-                                  </span>
-                                  <p className="text-xs text-zinc-300 leading-relaxed font-sans">
-                                    {qa.answer}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* 10. Section 9: PyTorch Code Implementation */}
-                        {item.codeExample && (
-                          <div className="p-5 rounded-2xl bg-zinc-950 border border-cyan-800/40 space-y-3 shadow-xl">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                <Terminal className="w-4 h-4 text-cyan-400" />
-                                <h4 className="text-xs font-bold text-cyan-400 uppercase font-mono tracking-wide">
-                                  9. Complete PyTorch Training Loop with Hyperparameter Controls
-                                </h4>
-                              </div>
-                              <button
-                                onClick={() => handleCopyCode(`code-${item.id}`, item.codeExample.code)}
-                                className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white hover:border-cyan-500 transition cursor-pointer"
-                              >
-                                {copiedId === `code-${item.id}` ? (
-                                  <>
-                                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                                    <span className="text-emerald-400">Copied!</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Copy className="w-3.5 h-3.5" />
-                                    <span>Copy Code</span>
-                                  </>
-                                )}
-                              </button>
-                            </div>
-
-                            <div className="rounded-xl overflow-hidden border border-zinc-800">
-                              <CodeHighlight code={item.codeExample.code} language="python" />
-                            </div>
-
-                            <p className="text-[11px] font-mono text-zinc-400 italic">
-                              Note: {item.codeExample.note}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* 11. Section 10: Interview Summary & Architecture Takeaway */}
-                        {item.interviewSummary && (
-                          <div className="p-5 rounded-2xl bg-[#09090d] border border-cyan-500/40 space-y-4 shadow-2xl">
-                            <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                              <span className="text-xs font-mono font-bold text-cyan-400 uppercase flex items-center gap-2">
-                                <Sparkles className="w-4 h-4 text-cyan-400" />
-                                <span>{item.interviewSummary.title}</span>
+                    {/* 2. Core Engineering Details & Deep Dives */}
+                    {item.details && item.details.length > 0 && (
+                      <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4 shadow-xl">
+                        <div className="flex items-center gap-2 border-b border-zinc-800 pb-2.5">
+                          <Layers className="w-4 h-4 text-cyan-400" />
+                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
+                            Core Engineering Principles & Dynamics
+                          </h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                          {item.details.map((detailText, dIdx) => (
+                            <div key={dIdx} className="p-3.5 rounded-xl bg-black border border-zinc-800/80 space-y-1.5 hover:border-zinc-700 transition">
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-cyan-300 border border-zinc-800 font-bold block w-fit">
+                                Principle {dIdx + 1}
                               </span>
-                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                                Final Architectural Synthesis
-                              </span>
+                              <p className="text-xs text-zinc-300 font-sans leading-relaxed">
+                                {detailText}
+                              </p>
                             </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
-                            <div className="space-y-1.5 text-xs text-zinc-300 font-sans">
-                              {item.interviewSummary.triadRoles.map((role, rIdx) => (
-                                <div key={rIdx} className="flex items-start gap-2">
-                                  <span className="text-cyan-400 font-mono font-bold">•</span>
-                                  <span>{role}</span>
-                                </div>
-                              ))}
-                            </div>
-
-                            <div className="p-3.5 rounded-xl bg-black border border-cyan-800/50 text-xs sm:text-sm text-cyan-200 leading-relaxed font-sans">
-                              <strong className="text-cyan-400 font-mono text-xs uppercase block mb-1">Interview Closing Pitch:</strong>
-                              "{item.interviewSummary.closingPitch}"
-                            </div>
-
-                            {item.takeaway && (
-                              <div className="p-3 rounded-lg bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-400 leading-relaxed">
-                                <strong className="text-zinc-200 font-mono uppercase">Key Takeaway: </strong>
-                                {item.takeaway}
-                              </div>
-                            )}
+                    {/* 3. Interview Answers */}
+                    {item.interviewAnswers && item.interviewAnswers.length > 0 && (
+                      <div className="p-5 rounded-2xl bg-zinc-950 border border-emerald-800/40 space-y-4 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-zinc-900 pb-2.5">
+                          <div className="flex items-center gap-2">
+                            <HelpCircle className="w-4 h-4 text-emerald-400" />
+                            <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                              Senior ML Engineer Interview Q&A
+                            </h4>
                           </div>
-                        )}
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold">
+                            Interview Ready
+                          </span>
+                        </div>
+                        <div className="space-y-3">
+                          {item.interviewAnswers.map((qa, qIdx) => (
+                            <div key={qIdx} className="p-4 rounded-xl bg-black border border-emerald-900/40 space-y-2">
+                              <span className="text-xs font-bold font-mono text-emerald-300 block">
+                                Q{qIdx + 1}: {qa.question}
+                              </span>
+                              <p className="text-xs sm:text-sm text-zinc-200 font-sans leading-relaxed">
+                                {qa.answer}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 4. Production Python / PyTorch Implementation */}
+                    {item.code && (
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Terminal className="w-4 h-4 text-emerald-400" />
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                            PyTorch Hyperparameter Training Loop (Learning Rate Schedule, Gradient Accumulation & Early Stopping)
+                          </h4>
+                        </div>
+                        <div className="rounded-xl overflow-hidden border border-zinc-800">
+                          <CodeHighlight code={item.code} language="python" />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
