@@ -1,10 +1,90 @@
 import React, { useState } from 'react';
 import { hybridData } from '../data/hybridData';
 import CodeHighlight from '../components/CodeHighlight';
-import { Bookmark, ArrowUp, MessageSquareQuote, Sparkles, CheckCircle2, Code2 } from 'lucide-react';
+import { 
+  Bookmark, 
+  ArrowUp, 
+  MessageSquareQuote, 
+  Sparkles, 
+  CheckCircle2, 
+  Code2, 
+  Check, 
+  Copy 
+} from 'lucide-react';
+
+const HYBRID_KEYWORD_REGEX = /(\bPostgreSQL\b|\bFastAPI\b|\bPydantic v2\b|\bPydantic\b|\bcreate_model\b|\bPinecone Serverless\b|\bPinecone\b|\bLightGBM\b|\bOptuna\b|\bBayesian optimization\b|\bTree-structured Parzen Estimator\b|\bCold-Start RAG Route\b|\bCold-Start RAG\b|\bCold-start\b|\bClassical Machine Learning Route\b|\bUnstructured Natural Language Route\b|\bZ-score\b|\bDocker\b|\bREST APIs\b|\btenant identifier\b|\btenant identifiers\b|\btenant namespace\b|\btenant’s namespace\b|\bTenant heterogeneity\b|\bcold-start problem\b)/gi;
+
+function getHybridKeywordStyle(kw) {
+  const lower = kw.toLowerCase();
+  if (lower === 'postgresql') return 'text-sky-300 font-semibold';
+  if (lower === 'fastapi' || lower.includes('pydantic')) return 'text-cyan-300 font-semibold';
+  if (lower === 'create_model') return 'text-emerald-300 bg-emerald-950/70 border border-emerald-800/60 font-mono px-1.5 py-0.5 rounded text-[11px] inline-block';
+  if (lower.includes('pinecone') || lower.includes('namespace')) return 'text-purple-300 font-semibold';
+  if (lower === 'lightgbm') return 'text-emerald-300 font-semibold';
+  if (lower.includes('optuna') || lower.includes('bayesian') || lower.includes('parzen')) return 'text-amber-300 font-semibold';
+  if (lower.includes('cold-start rag') || lower.includes('classical machine learning') || lower.includes('unstructured natural language')) return 'text-indigo-300 font-semibold';
+  if (lower.includes('z-score')) return 'text-amber-400 font-mono font-semibold';
+  if (lower === 'docker' || lower === 'rest apis') return 'text-teal-300 font-semibold';
+  if (lower.includes('tenant') || lower.includes('cold-start')) return 'text-cyan-300 font-semibold';
+  return 'text-cyan-300 font-semibold';
+}
+
+function HighlightedHybridText({ text }) {
+  const lines = text.split('\n\n');
+  return (
+    <div className="space-y-2.5">
+      {lines.map((line, lIdx) => {
+        if (line.startsWith('### ')) {
+          return (
+            <h4 key={lIdx} className="text-sm font-bold font-mono text-cyan-300 pt-3 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+              <span>{line.replace('### ', '')}</span>
+            </h4>
+          );
+        }
+        const parts = line.split(HYBRID_KEYWORD_REGEX);
+        return (
+          <p key={lIdx} className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans whitespace-pre-line">
+            {parts.map((part, pIdx) => {
+              if (!part) return null;
+              if (pIdx % 2 === 1) {
+                const style = getHybridKeywordStyle(part);
+                if (part.toLowerCase() === 'create_model') {
+                  return <code key={pIdx} className={style}>{part}</code>;
+                }
+                return <span key={pIdx} className={style}>{part}</span>;
+              }
+              if (part.includes('**')) {
+                const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
+                return (
+                  <span key={pIdx}>
+                    {boldParts.map((bp, bIdx) => {
+                      if (bp.startsWith('**') && bp.endsWith('**')) {
+                        return <strong key={bIdx} className="text-white font-bold">{bp.slice(2, -2)}</strong>;
+                      }
+                      return bp;
+                    })}
+                  </span>
+                );
+              }
+              return <span key={pIdx}>{part}</span>;
+            })}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function HybridPage() {
   const [activeBookmark, setActiveBookmark] = useState(null);
+  const [copiedScript, setCopiedScript] = useState(false);
+
+  const handleCopyScript = () => {
+    navigator.clipboard.writeText(hybridData.executiveScript);
+    setCopiedScript(true);
+    setTimeout(() => setCopiedScript(false), 2000);
+  };
 
   const selectBookmark = (id) => {
     if (activeBookmark === id) {
@@ -42,19 +122,51 @@ export default function HybridPage() {
     <div className="w-full px-4 sm:px-8 lg:px-12 py-8 space-y-10">
 
       {/* 90-Second Interview Script Banner */}
-      <div className="rounded-2xl bg-[#0a0a0c] border border-indigo-500/30 p-6 sm:p-8 space-y-4 shadow-xl">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm uppercase tracking-wider">
-            <MessageSquareQuote className="w-5 h-5" />
+      <div className="rounded-2xl bg-[#0a0a0c] border border-indigo-500/40 p-6 sm:p-8 space-y-6 shadow-xl relative">
+        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-zinc-800/80 pb-4">
+          <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm uppercase tracking-wider font-mono">
+            <MessageSquareQuote className="w-5 h-5 text-indigo-400" />
             <span>Executive 90-Second Interview Defense Script (Multi-Tenant Architecture Flow)</span>
           </div>
-          <span className="text-xs px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-            Timing: 90s
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">
+              Timing: 90s
+            </span>
+            <button
+              onClick={handleCopyScript}
+              className="px-3 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-300 hover:text-white border border-zinc-700 transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+              title="Copy entire interview defense script"
+            >
+              {copiedScript ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copiedScript ? 'Copied Script!' : 'Copy Script'}</span>
+            </button>
+          </div>
         </div>
-        <blockquote className="text-sm sm:text-base text-zinc-200 leading-relaxed italic border-l-4 border-indigo-500 pl-4 py-1 whitespace-pre-line">
-          {hybridData.executiveScript}
-        </blockquote>
+
+        {/* Structured Sections with Colorful Titles and Highlighted Keywords */}
+        <div className="space-y-6">
+          {hybridData.executiveSections.map((sec) => (
+            <div key={sec.id} className="space-y-3">
+              {sec.title && (
+                <div className="flex items-center justify-between flex-wrap gap-2 pt-4 border-t border-zinc-800/80">
+                  <h3 className={`text-base sm:text-lg font-bold font-mono tracking-tight ${sec.accentColor}`}>
+                    {sec.title}
+                  </h3>
+                  {sec.badge && (
+                    <span className={`text-[10px] sm:text-xs font-mono px-2.5 py-0.5 rounded-full border ${sec.bgBadge}`}>
+                      {sec.badge}
+                    </span>
+                  )}
+                </div>
+              )}
+              <div className="space-y-2.5">
+                {sec.paragraphs.map((p, pIdx) => (
+                  <HighlightedHybridText key={pIdx} text={p} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Real-World User Example & High-Level Execution Flow */}
@@ -188,110 +300,59 @@ export default function HybridPage() {
         <div id="active-content-section" className="space-y-4 scroll-mt-24 pt-2">
           {!activeBookmark && (
             <div className="rounded-2xl border border-dashed border-zinc-800 bg-zinc-950/40 p-8 text-center space-y-2">
-              <Bookmark className="w-8 h-8 text-cyan-500/60 mx-auto" />
-              <h4 className="text-sm font-semibold text-zinc-300">Select a Technical Bookmark Above</h4>
-              <p className="text-xs text-zinc-500 max-w-md mx-auto">
-                Click any of the {hybridData.bookmarkedConcepts.length} bookmarked architecture concepts above to reveal its detailed technical defense and implementation rationale.
+              <p className="text-zinc-400 text-sm font-medium">No concept selected.</p>
+              <p className="text-zinc-600 text-xs">
+                Select any bookmarked concept above to inspect its architecture, code snippet, and interview defense answer.
               </p>
             </div>
           )}
 
           {currentBookmarkObj && (
-            <>
-              {/* Active Topic Sticky Navigation Bar */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-zinc-950/90 border border-cyan-800/40 backdrop-blur-md shadow-lg">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
-                    Concept {currentIndex + 1} of {hybridData.bookmarkedConcepts.length}
-                  </span>
-                  <span className="text-xs font-bold text-white font-mono truncate max-w-xs sm:max-w-md">
-                    {currentBookmarkObj.title}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {prevBookmark && (
-                    <button
-                      onClick={() => selectBookmark(prevBookmark.id)}
-                      className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-300 hover:text-white border border-zinc-800 transition flex items-center gap-1 cursor-pointer"
-                      title={`Previous: ${prevBookmark.title}`}
-                    >
-                      <span>← Prev</span>
-                    </button>
-                  )}
-                  {nextBookmark && (
-                    <button
-                      onClick={() => selectBookmark(nextBookmark.id)}
-                      className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-300 hover:text-white border border-zinc-800 transition flex items-center gap-1 cursor-pointer"
-                      title={`Next: ${nextBookmark.title}`}
-                    >
-                      <span>Next →</span>
-                    </button>
-                  )}
-                  <button
-                    onClick={scrollToBookmarks}
-                    className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-mono text-zinc-400 hover:text-cyan-400 border border-zinc-800 transition flex items-center gap-1 cursor-pointer"
-                    title="Jump to Bookmarks"
-                  >
-                    <span>Bookmarks ↑</span>
-                  </button>
-                  <button
-                    onClick={() => setActiveBookmark(null)}
-                    className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-rose-950/50 text-xs font-mono text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-900 transition flex items-center gap-1 cursor-pointer"
-                    title="Close Section"
-                  >
-                    <span>✕ Close</span>
-                  </button>
-                </div>
+            <div
+              id={currentBookmarkObj.id}
+              className="rounded-2xl bg-[#0a0a0c] p-6 sm:p-8 space-y-5 shadow-2xl transition border border-cyan-500 shadow-cyan-500/10"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] uppercase font-mono px-2.5 py-1 rounded-md bg-zinc-900 text-cyan-300 border border-zinc-800 font-semibold">
+                  {currentBookmarkObj.badge}
+                </span>
+                <button
+                  onClick={scrollToBookmarks}
+                  className="text-xs font-mono text-zinc-500 hover:text-cyan-400 transition flex items-center gap-1 cursor-pointer"
+                  title="Back to Bookmarks"
+                >
+                  <span>Top</span>
+                  <ArrowUp className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                  {currentBookmarkObj.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-cyan-400/90 font-medium italic bg-cyan-950/20 border border-cyan-900/40 rounded-lg p-3">
+                  {currentBookmarkObj.summary}
+                </p>
               </div>
 
-              {/* ONLY Render Active Bookmark Card */}
-              <div
-                id={currentBookmarkObj.id}
-                className="scroll-mt-24 rounded-2xl bg-[#0a0a0c] p-6 sm:p-8 space-y-5 shadow-2xl transition border border-cyan-500 shadow-cyan-500/10"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] uppercase font-mono px-2.5 py-1 rounded-md bg-zinc-900 text-cyan-300 border border-zinc-800 font-semibold">
-                    {currentBookmarkObj.badge}
-                  </span>
-                  <button
-                    onClick={scrollToBookmarks}
-                    className="text-xs font-mono text-zinc-500 hover:text-cyan-400 transition flex items-center gap-1 cursor-pointer"
-                    title="Back to Bookmarks"
-                  >
-                    <span>Top</span>
-                    <ArrowUp className="w-3 h-3" />
-                  </button>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                    {currentBookmarkObj.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-cyan-400/90 font-medium italic bg-cyan-950/20 border border-cyan-900/40 rounded-lg p-3">
-                    {currentBookmarkObj.summary}
-                  </p>
-                </div>
+              <ul className="space-y-2.5 pt-2 border-t border-zinc-800/80">
+                {currentBookmarkObj.details.map((detail, dIdx) => (
+                  <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
+                    <span className="text-cyan-400 font-bold mt-0.5 text-base leading-none">•</span>
+                    <span>{detail}</span>
+                  </li>
+                ))}
+              </ul>
 
-                <ul className="space-y-3 pt-3 border-t border-zinc-800/80">
-                  {currentBookmarkObj.details.map((detail, dIdx) => (
-                    <li key={dIdx} className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
-                      <span className="text-cyan-400 font-bold mt-0.5 text-base leading-none">•</span>
-                      <span>{detail}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {currentBookmarkObj.code && (
-                  <div className="pt-2 space-y-1.5 border-t border-zinc-800/80">
-                    <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-cyan-400">
-                      <Code2 className="w-3.5 h-3.5" />
-                      <span>Implementation: {currentBookmarkObj.codeFilename || 'main.py'}</span>
-                    </div>
-                    <CodeHighlight code={currentBookmarkObj.code} filename={currentBookmarkObj.codeFilename || 'main.py'} showHeader={true} />
+              {currentBookmarkObj.code && (
+                <div className="pt-2 space-y-1.5 border-t border-zinc-800/80">
+                  <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-cyan-400">
+                    <Code2 className="w-3.5 h-3.5" />
+                    <span>Implementation: {currentBookmarkObj.codeFilename || 'main.py'}</span>
                   </div>
-                )}
-              </div>
-            </>
+                  <CodeHighlight code={currentBookmarkObj.code} filename={currentBookmarkObj.codeFilename || 'main.py'} showHeader={true} />
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

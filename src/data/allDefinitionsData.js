@@ -452,10 +452,6 @@ export const definitionBookmarks = [
     "label": "Mitigation Strategies"
   },
   {
-    "id": "multivariate",
-    "label": "Multivariate Analysis"
-  },
-  {
     "id": "data-visualization",
     "label": "Matplotlib & Seaborn"
   },
@@ -765,7 +761,7 @@ export const definitionBookmarks = [
   },
   {
     "id": "univariate",
-    "label": "Univariate/Bivariate Analysis"
+    "label": "Univariate / Bivariate / Multivariate Analysis"
   },
   {
     "id": "uvicorn",
@@ -4943,37 +4939,109 @@ export const definitionsData = [
   },
   {
     "id": "normalization-scaling",
-    "title": "Normalization & Feature Scaling",
-    "badge": "Data Preprocessing & Vector Geometry",
-    "summary": "The word normalization has multiple meanings in AI/ML. Two fundamental ones are feature normalization/scaling (transforming numerical columns into comparable ranges) and embedding-vector normalization (scaling an individual vector to unit length 1.0).",
-    "coreDistinction": "Feature scaling changes the scale of dataset columns; L2 normalization changes the length of an individual vector. They solve different problems.",
-    "featureScaling": {
-      "title": "Feature Scaling / Normalization",
-      "desc": "Feature scaling transforms numerical columns into more comparable ranges so distance-based algorithms are not dominated by large magnitudes.",
-      "methods": [
+    "title": "Normalization / Scaling",
+    "badge": "Feature Scaling vs. Embedding Normalization",
+    "summary": "The word normalization has different meanings in AI/ML: Feature scaling transforms numerical columns in a dataset into comparable ranges (Min-Max, Standardization), whereas Embedding-vector normalization changes the length of an individual vector (often to length 1 via L2 norm) so cosine similarity reduces to a fast dot product.",
+    "coreDistinction": {
+      "title": "1. Two Meanings of Normalization in AI/ML",
+      "types": [
         {
-          "name": "Min-Max Scaling",
-          "formula": "x' = (x - x_min) / (x_max - x_min)",
-          "desc": "Maps values to a chosen range, commonly 0 to 1."
+          "name": "Feature Scaling",
+          "scope": "Column-Wise Across Dataset",
+          "desc": "Changes the scale of numerical columns in a dataset so features with large values do not dominate distance-based or gradient models.",
+          "badge": "Dataset Columns",
+          "accent": "text-cyan-400"
         },
         {
-          "name": "Standardization (Z-Score Scaling)",
-          "formula": "z = (x - μ) / σ",
-          "desc": "Centers values around a mean of zero and scales by the standard deviation. A value equal to the mean becomes zero. Values above the mean are positive, and values below it are negative.",
-          "standardScalerDefinition": "StandardScaler transforms numerical features to have approximately zero mean and unit variance, based on the training data."
+          "name": "Embedding-Vector Normalization",
+          "scope": "Row/Vector-Wise Across Dimensions",
+          "desc": "Changes the length of an individual vector, often to make its Euclidean norm equal to 1, while keeping its direction unchanged.",
+          "badge": "Individual Vectors",
+          "accent": "text-purple-400"
         }
       ],
-      "code": "from sklearn.preprocessing import MinMaxScaler, StandardScaler\n\nweights = [[2], [5], [20]]\n\nminmax = MinMaxScaler()\nprint(minmax.fit_transform(weights))\n\nstandard = StandardScaler()\nprint(standard.fit_transform(weights))",
-      "whenToScale": "Scaling is often useful for Logistic Regression, SVMs, KNN, and neural networks. Decision trees and tree-based boosting algorithms generally do not require feature scaling.",
-      "dataLeakageRule": "Fit the scaler only on training data and reuse the same fitted scaler during inference. If you fit it using the entire dataset before splitting, information from the test set can leak into training."
+      "rule": "Core distinction: Feature scaling changes the scale of dataset columns. L2 normalization changes the length of an individual vector. They solve different problems."
+    },
+    "featureScaling": {
+      "title": "2. Feature Scaling / Normalization",
+      "desc": "Feature scaling transforms numerical features into comparable ranges.",
+      "motivatingExample": {
+        "title": "Why Feature Scaling Matters:",
+        "features": [
+          { "name": "Age", "range": "18–60" },
+          { "name": "Salary", "range": "₹20,000–₹2,00,000" },
+          { "name": "Experience", "range": "0–20 years" }
+        ],
+        "insight": "Salary has much larger numerical values. Distance-based algorithms may give it more influence simply because of its scale. Feature scaling helps reduce this problem."
+      },
+      "methods": [
+        {
+          "name": "A. Min-Max Scaling",
+          "formula": "x' = (x - x_min) / (x_max - x_min)",
+          "desc": "Min-Max scaling maps values to a chosen range, commonly 0 to 1.",
+          "calculationExample": "If the minimum is 2, the maximum is 20, and the value is 5: x' = (5 - 2) / (20 - 2) = 3 / 18 ≈ 0.167.",
+          "limitation": "Limitation: Min-Max scaling is sensitive to outliers because extreme values can stretch the range."
+        },
+        {
+          "name": "B. Standardization (Z-Score Scaling)",
+          "formula": "z = (x - μ) / σ",
+          "desc": "Standardization centers values around a mean of zero and scales them using the standard deviation.",
+          "breakdown": [
+            "x: Original value",
+            "μ: Mean",
+            "σ: Standard deviation"
+          ],
+          "behavior": "A value equal to the mean becomes zero. Values above the mean become positive, and values below the mean become negative.",
+          "standardScalerRule": "StandardScaler rule: StandardScaler transforms numerical features to have approximately zero mean and unit variance, based on the training data."
+        }
+      ],
+      "codeComparison": {
+        "title": "MinMaxScaler vs. StandardScaler — Python",
+        "filename": "minmax_vs_standard_scaler.py",
+        "code": "from sklearn.preprocessing import MinMaxScaler, StandardScaler\n\nweights = [[2], [5], [20]]\n\nminmax = MinMaxScaler()\nprint(minmax.fit_transform(weights))\n\nstandard = StandardScaler()\nprint(standard.fit_transform(weights))",
+        "summary": "MinMaxScaler() scales values to a range, usually 0–1. StandardScaler() centers and scales values using the mean and standard deviation."
+      }
+    },
+    "algorithmTable": {
+      "title": "3. Which Algorithms Need Feature Scaling?",
+      "rows": [
+        { "algorithm": "Logistic Regression", "needed": "Usually", "reason": "Regularization (L1/L2) penalizes weights unfairly if features have differing scales", "accent": "text-cyan-400" },
+        { "algorithm": "SVM", "needed": "Yes", "reason": "Relies on distance calculations between support vectors and decision boundary", "accent": "text-emerald-400" },
+        { "algorithm": "KNN", "needed": "Yes", "reason": "Euclidean distance calculations are easily dominated by large-scale features", "accent": "text-emerald-400" },
+        { "algorithm": "K-Means", "needed": "Yes", "reason": "Cluster centroid distance assignments are sensitive to numerical variance", "accent": "text-emerald-400" },
+        { "algorithm": "Neural Networks", "needed": "Often", "reason": "Speeds up gradient descent convergence and avoids exploding/vanishing activations", "accent": "text-cyan-400" },
+        { "algorithm": "PCA", "needed": "Yes", "reason": "Variance maximization projects onto largest numerical spread; unscaled features dominate components", "accent": "text-emerald-400" },
+        { "algorithm": "Decision Trees", "needed": "Usually not", "reason": "Split rules evaluate single feature monotonic thresholds (X >= threshold)", "accent": "text-zinc-400" },
+        { "algorithm": "Random Forest", "needed": "Usually not", "reason": "Ensemble of unscaled, scale-invariant decision trees", "accent": "text-zinc-400" },
+        { "algorithm": "Tree-based boosting", "needed": "Generally not", "reason": "Gradient boosted trees (XGBoost, LightGBM) split on rank orders/histograms", "accent": "text-zinc-400" }
+      ],
+      "rule": "Scaling is especially useful for algorithms that depend on distances, gradients, or feature magnitudes. Tree-based algorithms generally do not require scaling because their splits depend on feature thresholds rather than distances."
+    },
+    "dataLeakage": {
+      "title": "4. Data Leakage Warning",
+      "warning": "Fit the scaler only on training data. If the scaler is fitted using the entire dataset before splitting, information from the test set can leak into the training process.",
+      "filename": "prevent_data_leakage.py",
+      "code": "from sklearn.preprocessing import StandardScaler\n\nscaler = StandardScaler()\n\nX_train_scaled = scaler.fit_transform(X_train)\n\n# Reuse the fitted scaler.\nX_test_scaled = scaler.transform(X_test)\n\n# During inference:\n# X_new_scaled = scaler.transform(X_new)",
+      "explanation": "fit_transform() learns the scaling parameters and transforms the training data. transform() reuses the learned parameters on test or new data."
     },
     "vectorNormalization": {
-      "title": "Normalizing an Embedding Vector",
-      "desc": "Embedding normalization is different. Here, we often scale a vector so that its length becomes 1.",
+      "title": "5. Normalizing an Embedding Vector",
+      "desc": "Embedding normalization is different from feature scaling. An embedding is a numerical vector representing information such as text, an image, or a document. Sometimes we scale the vector so that its length becomes 1. This is called L2 normalization or unit-vector normalization.",
       "formula": "v' = v / ||v||₂",
+      "filename": "embedding_l2_norm.py",
       "code": "import numpy as np\n\nvector = np.array([3.0, 4.0])\n\nnormalized = vector / np.linalg.norm(vector)\n\nprint(normalized)  # [0.6 0.8]\nprint(np.linalg.norm(normalized))  # 1.0",
-      "takeaway": "When vectors are L2-normalized to unit length, cosine similarity simplifies directly to the dot product."
-    }
+      "insight": "The original vector has length 5. After normalization, its length becomes 1. The direction stays the same; only the magnitude changes."
+    },
+    "whyEmbeddingNormUseful": {
+      "title": "6. Why Is Embedding Normalization Useful?",
+      "desc": "Embedding normalization is often useful in semantic search and vector databases. When two vectors are L2-normalized, cosine similarity simplifies to their dot product.",
+      "formulaGeneral": "cos(θ) = (A · B) / (||A||₂ ||B||₂)",
+      "formulaUnit": "For unit-length vectors: cos(θ) = A · B",
+      "efficiency": "This makes similarity comparison simpler and can be computationally efficient.",
+      "caveat": "Important: Normalization is not always required for embeddings. It depends on the embedding model and the similarity metric used by the application."
+    },
+    "interviewAnswer": "“Normalization has different meanings in AI/ML. Feature scaling transforms numerical columns into comparable ranges using techniques such as Min-Max scaling or Standardization. It is useful for algorithms such as KNN, SVM, and Logistic Regression. Embedding normalization is different: it scales an individual vector to unit length using L2 normalization. This is useful in semantic search because cosine similarity between unit vectors simplifies to their dot product. I also ensure that feature scalers are fitted only on training data to prevent leakage.”",
+    "takeaway": "Feature scaling standardizes numerical columns across rows to prevent large-magnitude features from skewing distance-based algorithms and gradient descent; L2 embedding normalization operates row-wise on vectors to scale length to 1.0 so cosine similarity simplifies to an efficient dot product. Always fit scalers strictly on training data to avoid data leakage."
   },
   {
     "id": "boosting",
@@ -5128,126 +5196,191 @@ export const definitionsData = [
   },
   {
     "id": "nlp-general-flow",
-    "title": "NLP General Flow & Architecture Selection",
-    "badge": "Text Processing & Architectural Decision Matrix",
-    "summary": "NLP (Natural Language Processing) is the area of AI concerned with processing and understanding human language. NLP is the overall problem area; TF-IDF, machine-learning classifiers, and Transformers are different ways to represent or process the text.",
-    "fourStages": [
-      {
-        "stage": "1. Raw text",
-        "desc": "“I've been charged twice for my order!”"
-      },
-      {
-        "stage": "2. Text preprocessing",
-        "desc": "Normalize whitespace and handle text consistently. Preserve meaningful words, negation, and punctuation where useful."
-      },
-      {
-        "stage": "3. Text representation",
-        "desc": "Convert text into numbers using TF-IDF, learned embeddings, or contextual Transformer representations."
-      },
-      {
-        "stage": "4. Prediction",
-        "desc": "Billing issue, with a confidence score or a decision to escalate for review."
-      }
-    ],
-    "fourOptions": [
-      {
-        "option": "Option A — TF-IDF + Logistic Regression",
-        "role": "My baseline choice",
-        "why": "We have labelled historical tickets and a stable set of categories. This approach is inexpensive, fast, explainable, and a strong starting point for text classification.",
-        "whyNot": "It has limited contextual understanding. Similar words in different contexts may be treated similarly, and it may struggle with complex language."
-      },
-      {
-        "option": "Option B — Transformer classifier",
-        "role": "Fine-tuning BERT or a similar pretrained encoder",
-        "why": "It can capture context and relationships between words better than a basic TF-IDF model. I'd evaluate it if the baseline misses important cases or accuracy requirements are higher.",
-        "whyNot": "It generally needs more compute and operational complexity, and may require more careful training and deployment."
-      },
-      {
-        "option": "Option C — RAG",
-        "role": "Dynamic evidence retrieval",
-        "why": "If the system must answer questions using changing company policies, refund rules, delivery procedures, or knowledge articles, retrieval can supply the relevant evidence.",
-        "whyNot": "RAG is not inherently a classification algorithm. If all we need is a ticket category, retrieving documents and generating an answer may add unnecessary cost and latency."
-      },
-      {
-        "option": "Option D — LLM directly",
-        "role": "Zero/Few-shot generative inference",
-        "why": "Useful when categories are new, instructions change frequently, or the task requires nuanced interpretation and structured extraction with little labelled data.",
-        "whyNot": "It can be more expensive and slower, can produce inconsistent outputs, and needs strict validation. A language model's confidence-like output is not automatically a calibrated probability."
-      }
-    ],
-    "decisionRules": [
-      {
-        "condition": "Predict a fixed label",
-        "recommendation": "Start with supervised ML."
-      },
-      {
-        "condition": "Need stronger contextual classification",
-        "recommendation": "Evaluate a Transformer classifier."
-      },
-      {
-        "condition": "Answer from company documents",
-        "recommendation": "Use RAG with an LLM."
-      },
-      {
-        "condition": "Need multi-step tool use or actions",
-        "recommendation": "Consider an agentic workflow."
-      },
-      {
-        "condition": "Need several of these capabilities",
-        "recommendation": "Combine them only where evaluation shows a benefit."
-      }
-    ],
-    "pipelineBreakdown": [
-      "1. TfidfVectorizer converts text into numerical features based on word and phrase importance.",
-      "2. LogisticRegression learns how those features relate to the categories.",
-      "3. fit() trains the pipeline.",
-      "4. The test set checks how the trained model performs on examples it did not train on.",
-      "5. joblib.dump() saves the fitted pipeline for later inference."
-    ],
-    "ragExtension": {
-      "title": "What if the business also wants AI-generated answers?",
-      "steps": [
-        "1. Retrieve the relevant, current refund and delivery policies.",
-        "2. Supply the ticket and retrieved passages to an LLM.",
-        "3. Ask it to answer using only the provided policy evidence.",
-        "4. Return the answer with citations or references to the relevant policy.",
-        "5. Escalate if the policy is missing, ambiguous, or the case requires human approval."
+    "title": "NLP General Flow",
+    "badge": "End-to-End NLP Lifecycle & Architecture Selection",
+    "summary": "Natural Language Processing (NLP) is the area of AI concerned with processing and understanding human language. NLP is the overall problem area; TF-IDF, machine-learning classifiers, Transformers, and LLMs are different ways to represent or process text depending on task requirements, speed, and contextual depth.",
+    "whatIsNlp": {
+      "title": "1. What Is NLP?",
+      "desc": "Natural Language Processing (NLP) is the area of AI concerned with processing and understanding human language. NLP is the overall problem area. TF-IDF, machine-learning classifiers, Transformers, and LLMs are different ways to represent or process text.",
+      "tasks": [
+        "Text classification",
+        "Sentiment analysis",
+        "Named Entity Recognition (NER)",
+        "Machine translation",
+        "Question answering",
+        "Text summarization"
       ]
     },
-    "contextNegationExample": {
-      "title": "What would make me choose a Transformer instead?",
-      "scenario": "Suppose the TF-IDF classifier frequently confuses these two tickets:",
+    "fourStages": {
+      "title": "2. The 4-Stage NLP General Flow",
+      "exampleDomain": "Classifying a customer support ticket",
+      "stages": [
+        {
+          "step": "1",
+          "name": "Raw Text",
+          "desc": "“I've been charged twice for my order!”",
+          "detail": "Unprocessed textual input from the customer or channel.",
+          "accent": "text-blue-400",
+          "border": "border-blue-800/40"
+        },
+        {
+          "step": "2",
+          "name": "Text Preprocessing",
+          "desc": "Normalize whitespace and handle text consistently. Preserve meaningful words, negation, and punctuation where useful.",
+          "detail": "Lowercasing, cleaning, and retaining negation tokens like 'not'.",
+          "accent": "text-cyan-400",
+          "border": "border-cyan-800/40"
+        },
+        {
+          "step": "3",
+          "name": "Text Representation",
+          "desc": "Convert text into numbers using TF-IDF, learned embeddings, or contextual Transformer representations.",
+          "detail": "Sparse n-gram matrices or dense contextual token vectors.",
+          "accent": "text-purple-400",
+          "border": "border-purple-800/40"
+        },
+        {
+          "step": "4",
+          "name": "Prediction",
+          "desc": "Billing issue, with a confidence score or a decision to escalate for review.",
+          "detail": "Categorical routing, probability distribution, or human fallback.",
+          "accent": "text-emerald-400",
+          "border": "border-emerald-800/40"
+        }
+      ],
+      "note": "The exact preprocessing and representation steps depend on the model. Transformer models generally use their own tokenizer and learned representations."
+    },
+    "fourOptions": {
+      "title": "3. Which NLP Architecture Should I Choose?",
+      "options": [
+        {
+          "id": "A",
+          "title": "Option A — TF-IDF + Logistic Regression",
+          "tagline": "My baseline choice",
+          "whyChoose": [
+            "We have labelled historical tickets.",
+            "The categories are relatively stable.",
+            "We need a fast, inexpensive, explainable classifier.",
+            "We want a simple starting point for text classification."
+          ],
+          "limitations": [
+            "TF-IDF represents words and phrases using numerical features. It does not inherently understand the full context of a sentence.",
+            "It may struggle with complex language, negation, and context-dependent meanings."
+          ],
+          "accent": "text-cyan-400",
+          "border": "border-cyan-800/40"
+        },
+        {
+          "id": "B",
+          "title": "Option B — Transformer Classifier",
+          "tagline": "Fine-tuning BERT or a similar pretrained encoder",
+          "whyChoose": [
+            "It can capture context and relationships between words.",
+            "It may improve classification when a simpler baseline struggles.",
+            "It is useful when the task requires stronger contextual understanding."
+          ],
+          "limitations": [
+            "Generally requires more compute.",
+            "Can increase deployment complexity.",
+            "May need careful fine-tuning and evaluation."
+          ],
+          "accent": "text-purple-400",
+          "border": "border-purple-800/40"
+        },
+        {
+          "id": "C",
+          "title": "Option C — RAG",
+          "tagline": "Combines retrieval with LLM generation",
+          "whyChoose": [
+            "When the system needs to answer questions using changing company information, such as refund policies, delivery procedures, and knowledge articles.",
+            "Retrieval supplies relevant evidence to the LLM."
+          ],
+          "limitations": [
+            "RAG is not inherently a classification algorithm.",
+            "If the task is only to assign a ticket category, retrieval and generation may add unnecessary cost and latency."
+          ],
+          "accent": "text-emerald-400",
+          "border": "border-emerald-800/40"
+        },
+        {
+          "id": "D",
+          "title": "Option D — Direct LLM",
+          "tagline": "Zero-shot or few-shot prompting with an LLM",
+          "whyChoose": [
+            "Categories change frequently.",
+            "There is limited labelled training data.",
+            "The task requires nuanced interpretation.",
+            "The system needs structured extraction or flexible instructions."
+          ],
+          "limitations": [
+            "May be more expensive and slower.",
+            "Outputs can be inconsistent.",
+            "Requires validation and evaluation.",
+            "A confidence-like score from an LLM is not automatically a calibrated probability."
+          ],
+          "accent": "text-amber-400",
+          "border": "border-amber-800/40"
+        }
+      ]
+    },
+    "decisionRules": {
+      "title": "4. Architecture Decision Rules",
+      "rules": [
+        { "requirement": "Predict a fixed label", "approach": "Supervised ML (TF-IDF + Logistic Regression baseline)" },
+        { "requirement": "Need stronger contextual classification", "approach": "Evaluate a Transformer classifier (e.g. BERT)" },
+        { "requirement": "Answer from company documents", "approach": "RAG with an LLM" },
+        { "requirement": "Need multi-step tool use or actions", "approach": "Consider an agentic workflow" },
+        { "requirement": "Need multiple capabilities", "approach": "Combine approaches only when evaluation shows a benefit" }
+      ],
+      "principle": "Engineering principle: Use the simplest architecture that meets the requirements."
+    },
+    "baselinePipeline": {
+      "title": "5. What Happens in the TF-IDF + Logistic Regression Baseline?",
+      "steps": [
+        "TfidfVectorizer converts text into numerical features based on word and phrase importance.",
+        "LogisticRegression learns how those features relate to the categories.",
+        "fit() trains the pipeline.",
+        "The test set measures performance on examples the model did not train on.",
+        "joblib.dump() saves the fitted pipeline for later inference."
+      ],
+      "filename": "nlp_ticket_classifier.py",
+      "code": "from sklearn.pipeline import Pipeline\nfrom sklearn.feature_extraction.text import TfidfVectorizer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import classification_report\nimport joblib\n\ntexts = [\n    \"I was charged twice\",\n    \"My package is delayed\",\n    \"I want to return my order\",\n    \"I was billed incorrectly\"\n]\n\nlabels = [\n    \"billing\",\n    \"delivery\",\n    \"refund\",\n    \"billing\"\n]\n\nX_train, X_test, y_train, y_test = train_test_split(\n    texts,\n    labels,\n    test_size=0.25,\n    random_state=42,\n    stratify=labels\n)\n\npipeline = Pipeline([\n    (\"tfidf\", TfidfVectorizer(ngram_range=(1, 2))),\n    (\"classifier\", LogisticRegression(max_iter=1000))\n])\n\npipeline.fit(X_train, y_train)\n\ny_pred = pipeline.predict(X_test)\n\nprint(classification_report(y_test, y_pred))\n\njoblib.dump(pipeline, \"nlp_classifier.joblib\")",
+      "note": "This is a small illustrative example. A real model needs enough labelled examples per category for meaningful training and evaluation."
+    },
+    "ragExtension": {
+      "title": "6. What If the Business Also Wants AI-Generated Answers?",
+      "intro": "If the business needs both ticket classification and policy-based answers, the architecture can combine a classifier with RAG:",
+      "steps": [
+        "Retrieve relevant and current policies.",
+        "Supply the ticket and retrieved passages to the LLM.",
+        "Ask it to answer using the supplied evidence.",
+        "Return citations or references to relevant policy sources.",
+        "Escalate when the policy is missing, ambiguous, or requires human approval."
+      ]
+    },
+    "transformerContext": {
+      "title": "7. Why Might a Transformer Perform Better?",
+      "intro": "Consider two tickets:",
       "ticketA": "“I do not want a refund.”",
       "ticketB": "“I want a refund.”",
-      "explanation": "The distinction depends on context and negation. TF-IDF can represent the word “not,” but it doesn't inherently understand its meaning in context."
+      "insight": "The distinction depends on context and negation. TF-IDF can represent the word “not,” but it does not inherently understand its meaning in context. A Transformer may better capture this relationship.",
+      "caveat": "However, a Transformer is not guaranteed to classify these examples correctly. The improvement must be verified through evaluation."
     },
-    "evaluationMatrix": [
-      {
-        "area": "Precision per category",
-        "why": "How many tickets assigned to a category actually belong there?"
-      },
-      {
-        "area": "Recall per category",
-        "why": "How many actual tickets in that category did the model find?"
-      },
-      {
-        "area": "Macro F1",
-        "why": "How well does it perform across categories, including less frequent ones?"
-      },
-      {
-        "area": "Latency",
-        "why": "Can it meet real-time routing requirements?"
-      },
-      {
-        "area": "Cost",
-        "why": "Does the improvement justify additional compute?"
-      },
-      {
-        "area": "Calibration",
-        "why": "Are predicted probabilities reliable enough for threshold-based routing?"
-      }
-    ],
-    "engineeringWisdom": "I wouldn't claim a Transformer is better without testing. If TF-IDF meets the requirements, keeping it may be the better engineering decision."
+    "evaluationMatrix": {
+      "title": "8. Systematic Evaluation Matrix",
+      "intro": "Evaluate different approaches on the same held-out test set.",
+      "rows": [
+        { "area": "Precision per category", "why": "How many tickets assigned to a category actually belong there?" },
+        { "area": "Recall per category", "why": "How many actual tickets in that category did the model find?" },
+        { "area": "Macro F1", "why": "How well does it perform across categories, including rare ones?" },
+        { "area": "Latency", "why": "Can it meet real-time routing requirements?" },
+        { "area": "Cost", "why": "Does the improvement justify additional compute?" },
+        { "area": "Calibration", "why": "Are predicted probabilities reliable enough for threshold-based routing?" }
+      ],
+      "imbalanceNote": "For imbalanced ticket categories, Macro F1 and per-class recall are particularly useful."
+    },
+    "interviewAnswer": "\"I would start with a TF-IDF and Logistic Regression baseline if we have labelled tickets and stable categories. It is fast, inexpensive, and easy to evaluate. If it struggles with context or negation, I would compare it with a Transformer classifier. If the application needs answers from changing company policies, I would use RAG with an LLM. I would compare the approaches using per-class precision and recall, Macro F1, latency, cost, and calibration. I would choose the simplest approach that meets the business requirements rather than assuming a more complex model is automatically better.\"",
+    "takeaway": "Always begin with a fast, explainable baseline (TF-IDF + Logistic Regression). Evaluate a fine-tuned Transformer when negation/complex context limits baseline accuracy, deploy RAG when policy documentation changes dynamically, and use direct LLMs for zero-shot unlabelled tasks. Let empirical evaluation on Macro F1, latency, and calibration dictate architecture."
   },
   {
     "id": "aws-azure",
@@ -10989,49 +11122,88 @@ export const definitionsData = [
   },
   {
     "id": "ngram-bigram",
-    "title": "n-gram & Bigram (Sequence Feature Extraction & Local Context Modeling)",
-    "badge": "NLP Feature Engineering, Bag-of-Words & scikit-learn",
-    "summary": "An n-gram is a sequence of n consecutive items, usually words or characters, from text. Bigrams capture some local word combinations, while trigrams capture slightly longer phrases.",
-    "coreDefinition": "An n-gram is a sequence of n consecutive items, usually words or characters, from text. Bigrams capture some local word combinations, while trigrams capture slightly longer phrases.",
+    "title": "n-gram / Bigram",
+    "badge": "NLP Sequence Modeling & Feature Extraction",
+    "summary": "An n-gram is a sequence of n consecutive items, usually words or characters, extracted from text. Unigrams capture individual words, bigrams capture pairs of consecutive words, and trigrams capture groups of three, preserving local word order and phrase combinations.",
+    "whatIsNgram": {
+      "title": "1. What Is an n-gram?",
+      "desc": "An n-gram is a sequence of n consecutive items, usually words or characters, extracted from text. It helps NLP models capture local word combinations and some sequential context.",
+      "points": [
+        "Unigrams capture individual words.",
+        "Bigrams capture pairs of consecutive words.",
+        "Trigrams capture groups of three consecutive words.",
+        "Unlike individual-word features, n-grams preserve some information about word order."
+      ]
+    },
     "ngramTaxonomy": [
       {
-        "order": "Unigram (n = 1)",
-        "definition": "Single words evaluated independently without sequential context.",
-        "example": "'machine', 'learning', 'deep'",
-        "pros": "Compact vocabulary, low memory footprint, simple frequency counts.",
+        "order": "A. Unigram (n = 1)",
+        "badge": "n = 1",
+        "desc": "Considers individual words independently.",
+        "exampleSentence": "“machine learning is powerful”",
+        "extractedFeatures": ["machine", "learning", "is", "powerful"],
+        "advantages": [
+          "Simple representation.",
+          "Smaller feature space compared with higher-order n-grams.",
+          "Useful for basic frequency analysis and text classification."
+        ],
+        "limitation": "Does not directly capture relationships between adjacent words.",
         "accent": "text-blue-400",
-        "badge": "n = 1"
+        "border": "border-blue-800/40"
       },
       {
-        "order": "Bigram (n = 2)",
-        "definition": "Pairs of two consecutive words that capture local word combinations and negation.",
-        "example": "'machine learning', 'deep learning', 'not good'",
-        "pros": "Preserves key multi-word phrases and prevents losing negation (e.g. 'not happy').",
+        "order": "B. Bigram (n = 2)",
+        "badge": "n = 2",
+        "desc": "Considers two consecutive words.",
+        "exampleSentence": "“machine learning is powerful”",
+        "extractedFeatures": ["machine learning", "learning is", "is powerful"],
+        "otherExamples": ["not good", "not happy", "very useful"],
+        "advantages": [
+          "Captures common two-word phrases.",
+          "Preserves local word order.",
+          "Can help distinguish expressions such as “not good” from “good”."
+        ],
+        "limitation": "Captures only adjacent word pairs, not the full sentence meaning.",
         "accent": "text-emerald-400",
-        "badge": "n = 2"
+        "border": "border-emerald-800/40"
       },
       {
-        "order": "Trigram (n = 3)",
-        "definition": "Triplets of three consecutive words that capture slightly longer phrases.",
-        "example": "'I love machine', 'love machine learning'",
-        "pros": "Captures idiomatic expressions and extended syntactic chunks.",
+        "order": "C. Trigram (n = 3)",
+        "badge": "n = 3",
+        "desc": "Considers three consecutive words.",
+        "exampleSentence": "“I love machine learning”",
+        "extractedFeatures": ["I love machine", "love machine learning"],
+        "advantages": [
+          "Captures longer phrases.",
+          "Can represent more specific expressions and terminology."
+        ],
+        "limitation": "Produces more features and may encounter more unseen word combinations.",
         "accent": "text-purple-400",
-        "badge": "n = 3"
+        "border": "border-purple-800/40"
       },
       {
-        "order": "Character n-gram",
-        "definition": "Subword character windows extracted across words (e.g., 'm-a-c-h', 'l-e-a-r-n').",
-        "example": "Used in FastText, subword tokenizers, and spelling correction.",
-        "pros": "Resilient to misspellings, typos, and out-of-vocabulary (OOV) tokens.",
+        "order": "D. Character n-grams",
+        "badge": "Subword",
+        "desc": "Instead of extracting complete words, character n-grams extract consecutive character sequences.",
+        "exampleSentence": "“learn” (Character 3-grams)",
+        "extractedFeatures": ["lea", "ear", "arn"],
+        "advantages": [
+          "Spelling correction.",
+          "Handling misspellings and typos.",
+          "Language identification.",
+          "Subword representations (e.g. FastText uses character-level subwords to represent unseen words)."
+        ],
+        "limitation": "Produces massive subword vocabularies without explicit word boundary semantics.",
         "accent": "text-amber-400",
-        "badge": "Char-level"
+        "border": "border-amber-800/40"
       }
     ],
-    "codeExample": {
-      "title": "n-gram Feature Extraction with scikit-learn CountVectorizer",
-      "language": "python",
-      "code": "from sklearn.feature_extraction.text import CountVectorizer\n\nsentences = [\n    \"I love machine learning\",\n    \"I love deep learning\"\n]\n\nvectorizer = CountVectorizer(ngram_range=(1, 2))\nX = vectorizer.fit_transform(sentences)\n\nprint(vectorizer.get_feature_names_out())\nprint(X.toarray())",
-      "outputFeatures": [
+    "countVectorizerSection": {
+      "title": "3. n-gram Feature Extraction with scikit-learn CountVectorizer",
+      "desc": "CountVectorizer converts text into a numerical document-term matrix using word counts.",
+      "filename": "ngram_count_vectorizer.py",
+      "code": "from sklearn.feature_extraction.text import CountVectorizer\n\nsentences = [\n    \"I love machine learning\",\n    \"I love deep learning\"\n]\n\nvectorizer = CountVectorizer(ngram_range=(1, 2))\n\nX = vectorizer.fit_transform(sentences)\n\nprint(vectorizer.get_feature_names_out())\nprint(X.toarray())",
+      "features": [
         "deep",
         "deep learning",
         "learning",
@@ -11041,31 +11213,77 @@ export const definitionsData = [
         "machine",
         "machine learning"
       ],
-      "outputMatrix": [
+      "matrix": [
+        { "sentence": "I love machine learning", "row": "[0, 0, 1, 1, 0, 1, 1, 1]" },
+        { "sentence": "I love deep learning", "row": "[1, 1, 1, 1, 1, 0, 0, 0]" }
+      ],
+      "matrixExplanation": "Each row represents a sentence, and each column represents an extracted feature. For example, 'deep learning' and 'machine learning' get separate features. A value of 1 indicates that the feature appears once in that sentence.",
+      "tokenPatternNote": "Important: By default, CountVectorizer ignores one-character tokens such as 'I' because of its default token pattern (token_pattern=r'(?u)\\b\\w\\w+\\b').",
+      "ngramRangeSettings": [
+        { "setting": "(1, 1)", "features": "Unigrams only" },
+        { "setting": "(1, 2)", "features": "Unigrams and bigrams" },
+        { "setting": "(1, 3)", "features": "Unigrams, bigrams, and trigrams" },
+        { "setting": "(2, 2)", "features": "Bigrams only" },
+        { "setting": "(2, 3)", "features": "Bigrams and trigrams" }
+      ]
+    },
+    "countVsTfidf": {
+      "title": "4. CountVectorizer vs TF-IDF Vectorizer",
+      "desc": "Both can extract n-gram features, but they represent them differently.",
+      "table": [
+        { "feature": "Representation", "count": "Raw word counts", "tfidf": "Weighted word importance" },
+        { "feature": "Frequency", "count": "Counts occurrences", "tfidf": "Uses term frequency and inverse document frequency" },
+        { "feature": "Common words", "count": "May receive high counts", "tfidf": "Usually receive lower weights if common across documents" },
+        { "feature": "Typical use", "count": "Count-based text features", "tfidf": "Text classification and information retrieval" }
+      ],
+      "code": "from sklearn.feature_extraction.text import TfidfVectorizer\n\nvectorizer = TfidfVectorizer(ngram_range=(1, 2))\nX = vectorizer.fit_transform(sentences)",
+      "note": "Both vectorizers support the exact same ngram_range parameter."
+    },
+    "tradeoffs": {
+      "title": "5. n-gram Architectural Trade-offs",
+      "aspects": [
         {
-          "sentence": "I love machine learning",
-          "vector": "[0, 0, 1, 1, 0, 1, 1, 1]"
+          "name": "A. Word Order & Local Context",
+          "advantages": [
+            "Captures consecutive word combinations.",
+            "Preserves local phrasing.",
+            "Can distinguish phrases such as “not guilty” and “guilty”."
+          ],
+          "limitations": [
+            "Cannot understand relationships between words that are far apart.",
+            "Does not capture the complete meaning of a sentence.",
+            "Cannot model long-distance dependencies like Transformers can."
+          ]
         },
         {
-          "sentence": "I love deep learning",
-          "vector": "[1, 1, 1, 1, 1, 0, 0, 0]"
+          "name": "B. Dimensionality & Sparsity",
+          "advantages": [
+            "Simple numerical representation.",
+            "Works well with Logistic Regression, SVM, and Naive Bayes.",
+            "Compatible with traditional machine-learning pipelines."
+          ],
+          "limitations": [
+            "The number of possible word combinations grows rapidly as n increases.",
+            "Produces high-dimensional feature spaces.",
+            "Most documents contain only a small fraction of all possible features, resulting in sparse matrices.",
+            "Can increase memory usage and computation."
+          ]
         }
-      ],
-      "explanation": "With ngram_range=(1, 2), CountVectorizer extracts both single words (unigrams) and adjacent word pairs (bigrams). Notice how 'deep learning' and 'machine learning' are each encoded as distinct, individual features, allowing downstream linear classifiers to distinguish the specific subfields."
+      ]
     },
-    "tradeoffs": [
-      {
-        "aspect": "Word Order & Context",
-        "advantage": "Captures local phrasing and negation ('not guilty' vs 'guilty') that unigrams lose entirely.",
-        "tradeoff": "Still lacks global attention across distant clauses (unlike Transformers)."
-      },
-      {
-        "aspect": "Dimensionality & Sparsity",
-        "advantage": "Straightforward linear representation compatible with logistic regression, SVMs, and Naive Bayes.",
-        "tradeoff": "Vocabulary explodes exponentially (V^n), leading to high-dimensional sparse matrices and potential memory bottlenecks."
-      }
-    ],
-    "takeaway": "An n-gram captures consecutive sequences of n tokens, enabling classical bag-of-words pipelines to incorporate local context, multi-word terminology, and negation without the heavy computational overhead of deep neural architectures."
+    "ngramVsTransformers": {
+      "title": "6. n-grams vs Transformers",
+      "table": [
+        { "dimension": "Context", "ngram": "Local word sequences", "transformer": "Contextual relationships across the input" },
+        { "dimension": "Word order", "ngram": "Captures consecutive sequences", "transformer": "Uses positional information and attention" },
+        { "dimension": "Representation", "ngram": "Usually sparse numerical features", "transformer": "Learned contextual representations" },
+        { "dimension": "Long-distance relationships", "ngram": "Limited", "transformer": "Better suited to capturing them" },
+        { "dimension": "Computation", "ngram": "Generally lightweight", "transformer": "Generally more computationally expensive" },
+        { "dimension": "Common use", "ngram": "TF-IDF, traditional NLP", "transformer": "Modern NLP and LLMs" }
+      ]
+    },
+    "interviewAnswer": "“An n-gram is a sequence of n consecutive words or characters extracted from text. Unigrams represent individual words, bigrams represent two consecutive words, and trigrams represent three. They help traditional NLP models capture local context and multi-word expressions. I commonly use n-grams with CountVectorizer or TF-IDF for text classification. The main trade-off is that higher n-gram values increase dimensionality and sparsity, while still being limited in their ability to capture long-distance context compared with Transformers.”",
+    "takeaway": "An n-gram captures consecutive sequences of n tokens, allowing traditional NLP models to incorporate local context, multi-word terminology, and useful word combinations. Bigrams and trigrams improve upon unigram features by preserving some word order, but they cannot capture the full contextual meaning of a sentence. They are particularly useful in classical NLP pipelines with CountVectorizer, TF-IDF, Logistic Regression, SVM, and Naive Bayes."
   },
   {
     "id": "react-pattern",
@@ -13768,84 +13986,146 @@ export const definitionsData = [
   },
   {
     "id": "outlier-detection",
-    "title": "Outlier Detection in LLM Applications & ML Pipelines",
-    "badge": "Data Validation, System Telemetry & Anomaly Detection",
-    "summary": "Outlier detection can be used in systems involving LLMs as a data-analysis and machine-learning technique. An outlier is a data point that differs significantly from the normal pattern. In LLM applications, it detects unusual input data, unusual model behavior, and unusual RAG retrieval results.",
-    "coreQuestion": "Is outlier detection used in LLMs?",
-    "coreAnswer": "Yes. Outlier detection can be used in systems involving LLMs, but it is not a core LLM architecture component by itself. It is a general data-analysis and machine-learning technique that can support an LLM application.",
-    "coreDefinition": "An outlier is a data point that differs significantly from the normal pattern.",
-    "concreteExample": {
-      "domain": "Logistics parcel weights",
-      "text": "For example, suppose a logistics company records parcel weights: 2.1, 2.4, 2.2, 2.5, 2.3, 95.0 kg",
-      "normalCluster": "2.1, 2.4, 2.2, 2.5, 2.3 kg",
-      "outlierValue": "95.0 kg (differing by >40x from normal cluster)"
+    "title": "Outlier Detection",
+    "badge": "Data Quality, Telemetry & Anomaly Guardrails",
+    "summary": "Outlier detection identifies observations that differ significantly from normal patterns. In modern AI and LLM workflows, it acts as an essential supporting technique for data validation, operational telemetry monitoring (token spikes, latency), and RAG retrieval quality assurance.",
+    "whatIsOutlierDetection": {
+      "title": "1. What Is Outlier Detection?",
+      "desc": "Outlier detection is the process of identifying data points or observations that differ significantly from the normal pattern. It is a general statistical and machine-learning technique that can support traditional ML pipelines as well as LLM applications.",
+      "llmUses": [
+        "Unusual input data.",
+        "Unexpected model behavior.",
+        "Abnormal token usage or latency.",
+        "Unusual embedding distributions.",
+        "Poor or unexpected RAG retrieval results."
+      ],
+      "note": "Important: Outlier detection is not a core LLM architecture component. It is a supporting technique used for data validation, monitoring, and anomaly detection."
     },
-    "llmApplicationUses": [
-      {
-        "num": "1",
-        "title": "Detect unusual input data",
-        "description": "Identify suspicious weights, prices, quantities, or sensor readings before sending them to an LLM.",
-        "accent": "text-amber-400",
-        "border": "border-amber-800/50"
-      },
-      {
-        "num": "2",
-        "title": "Detect unusual model behavior",
-        "description": "Monitor unexpected response lengths, latency, token usage, error rates, or unusual embedding distributions.",
-        "accent": "text-cyan-400",
-        "border": "border-cyan-800/50"
-      },
-      {
-        "num": "3",
-        "title": "Detect unusual retrieval results",
-        "description": "In a RAG system, flag queries whose retrieved documents have unusually low relevance scores, using thresholds calibrated on evaluation data.",
-        "accent": "text-rose-400",
-        "border": "border-rose-800/50"
-      }
-    ],
+    "usedInLlmApps": {
+      "title": "2. Is Outlier Detection Used in LLM Applications?",
+      "answer": "Yes. It can be used around an LLM to monitor input quality, system behavior, and retrieval performance.",
+      "exampleDomain": "Logistics Parcel Weights",
+      "recordedWeights": "2.1, 2.4, 2.2, 2.5, 2.3, 95.0 kg",
+      "normalCluster": "2.1, 2.4, 2.2, 2.5, 2.3 kg",
+      "outlierValue": "95.0 kg",
+      "explanation": "The value is significantly different from the other observations. Before sending this information to an LLM, the application can flag the unusual weight for validation or human review.",
+      "caveat": "However, 95 kg is not automatically invalid. It could be a legitimate heavy parcel."
+    },
+    "threePillars": {
+      "title": "3. How Can Outlier Detection Be Used in an LLM Application?",
+      "pillars": [
+        {
+          "num": "1",
+          "title": "Pillar 1 — Detect Unusual Input Data",
+          "desc": "Identify suspicious or unexpected input values before processing them.",
+          "examples": [
+            "Unusually high parcel weights.",
+            "Abnormal transaction amounts.",
+            "Invalid quantities or prices.",
+            "Unexpected sensor readings."
+          ],
+          "purpose": "Purpose: Prevent incorrect or suspicious data from silently entering downstream processing.",
+          "accent": "text-amber-400",
+          "border": "border-amber-800/40"
+        },
+        {
+          "num": "2",
+          "title": "Pillar 2 — Detect Unusual Model Behavior",
+          "desc": "Monitor model and application telemetry to identify unexpected behavior.",
+          "examples": [
+            "Unusually long LLM responses.",
+            "Sudden increases in token consumption.",
+            "Unexpected latency spikes.",
+            "Increasing API error rates.",
+            "Unusual embedding distributions."
+          ],
+          "purpose": "Purpose: Detect performance degradation, unexpected usage patterns, and possible operational issues.",
+          "accent": "text-cyan-400",
+          "border": "border-cyan-800/40"
+        },
+        {
+          "num": "3",
+          "title": "Pillar 3 — Detect Unusual RAG Retrieval Results",
+          "desc": "In a RAG application, monitor retrieval results to identify potentially poor retrieval quality.",
+          "examples": [
+            "Retrieved documents have unusually low similarity scores.",
+            "Relevant documents are missing.",
+            "Retrieval results differ significantly from normal patterns.",
+            "Embedding distributions shift after a model or data update."
+          ],
+          "purpose": "Purpose: Identify possible retrieval problems before they affect generated answers.",
+          "accent": "text-rose-400",
+          "border": "border-rose-800/40"
+        }
+      ],
+      "calibrationNote": "Important: Similarity thresholds should be calibrated using evaluation data. A low similarity score is a warning signal, not definitive proof that retrieval has failed."
+    },
     "commonMethods": [
       {
-        "method": "Z-score",
-        "howItWorks": "Measures distance from the mean in standard deviations",
-        "typicalUse": "Numerical data that is approximately normally distributed",
+        "name": "A. Z-score",
+        "howItWorks": "Measures how many standard deviations a value is away from the mean.",
+        "formula": "|z| > 3",
+        "typicalUse": "Numerical data; approximately normally distributed datasets.",
         "accent": "text-blue-400",
-        "border": "border-blue-800/50"
+        "border": "border-blue-800/40"
       },
       {
-        "method": "IQR",
-        "howItWorks": "Uses the middle 50% of the data to define an expected range",
-        "typicalUse": "Skewed numerical data; less sensitive to extreme values",
+        "name": "B. IQR (Interquartile Range)",
+        "howItWorks": "Uses the middle 50% of the data to identify unusually low or high values (IQR = Q3 - Q1).",
+        "formula": "[Q1 - 1.5*IQR, Q3 + 1.5*IQR]",
+        "typicalUse": "Skewed numerical data; data containing extreme values; general statistical outlier detection.",
         "accent": "text-emerald-400",
-        "border": "border-emerald-800/50"
+        "border": "border-emerald-800/40"
       },
       {
-        "method": "Isolation Forest",
-        "howItWorks": "Isolates unusual points using random partitions",
-        "typicalUse": "Multivariate tabular data",
+        "name": "C. Isolation Forest",
+        "howItWorks": "Uses random partitions to isolate unusual observations. Anomalies tend to require fewer splits to become isolated.",
+        "formula": "Path length tree partition",
+        "typicalUse": "Multivariate tabular data, fraud detection, unusual transaction patterns, operational anomaly detection.",
         "accent": "text-purple-400",
-        "border": "border-purple-800/50"
+        "border": "border-purple-800/40"
       },
       {
-        "method": "Local Outlier Factor (LOF)",
-        "howItWorks": "Compares a point's local density with its neighbors",
-        "typicalUse": "Detecting locally unusual clusters",
+        "name": "D. Local Outlier Factor (LOF)",
+        "howItWorks": "Compares the local density of a data point with the density of its neighbouring points. A point with significantly lower local density may be considered an anomaly.",
+        "formula": "Local density ratio",
+        "typicalUse": "Local anomaly detection, datasets with different density regions, unusual customer or transaction behavior.",
         "accent": "text-amber-400",
-        "border": "border-amber-800/50"
+        "border": "border-amber-800/40"
       },
       {
-        "method": "Autoencoder",
-        "howItWorks": "Learns to reconstruct normal data; unusual reconstruction errors can indicate anomalies",
-        "typicalUse": "Complex data, including learned representations",
+        "name": "E. Autoencoder",
+        "howItWorks": "An autoencoder learns to reconstruct normal input data. If an input produces a significantly higher reconstruction error than expected, it may indicate an anomaly.",
+        "formula": "Reconstruction error ||x - x̂||²",
+        "typicalUse": "Complex numerical data, high-dimensional representations, image and embedding anomaly detection.",
         "accent": "text-cyan-400",
-        "border": "border-cyan-800/50"
+        "border": "border-cyan-800/40"
       }
     ],
-    "codeExample": {
-      "title": "Outlier Detection in Python (IQR & Z-Score for LLM Input Guardrails)",
-      "language": "python",
-      "code": "import numpy as np\n\n# Logistics company parcel weights example\nparcel_weights = np.array([2.1, 2.4, 2.2, 2.5, 2.3, 95.0])\n\n# 1. IQR Method (Robust to extreme skews)\nq25, q75 = np.percentile(parcel_weights, [25, 75])\niqr = q75 - q25\nlower_bound = q25 - 1.5 * iqr\nupper_bound = q75 + 1.5 * iqr\n\niqr_outliers = parcel_weights[(parcel_weights < lower_bound) | (parcel_weights > upper_bound)]\n\nprint(f\"IQR Expected Range: [{lower_bound:.2f}, {upper_bound:.2f}] kg\")\nprint(f\"Detected Outliers via IQR: {iqr_outliers} kg\")\n\n# 2. LLM Guardrail Function\ndef validate_parcel_prompt(weight_kg):\n    if weight_kg > upper_bound or weight_kg < lower_bound:\n        return f\"[GUARDRAIL BLOCKED]: Weight {weight_kg}kg flagged as outlier. Routing to human review.\"\n    return f\"[INPUT APPROVED]: Proceeding to LLM dispatch with weight {weight_kg}kg.\"\n\nprint(validate_parcel_prompt(2.3))\nprint(validate_parcel_prompt(95.0))"
+    "pythonGuardrail": {
+      "title": "5. Outlier Detection in Python (IQR & LLM Input Guardrail)",
+      "desc": "Example: Detecting unusual parcel weights before allowing them into an LLM workflow.",
+      "filename": "outlier_llm_guardrail.py",
+      "code": "import numpy as np\n\n# Logistics parcel weights\nparcel_weights = np.array([\n    2.1, 2.4, 2.2, 2.5, 2.3, 95.0\n])\n\n# 1. IQR-based detection\nq25, q75 = np.percentile(\n    parcel_weights, [25, 75]\n)\n\niqr = q75 - q25\n\nlower_bound = q25 - 1.5 * iqr\nupper_bound = q75 + 1.5 * iqr\n\niqr_outliers = parcel_weights[\n    (parcel_weights < lower_bound) |\n    (parcel_weights > upper_bound)\n]\n\nprint(\n    f\"IQR Expected Range: \"\n    f\"[{lower_bound:.2f}, {upper_bound:.2f}] kg\"\n)\n\nprint(\"Detected Outliers:\", iqr_outliers)\n\n\n# 2. Input validation before LLM processing\ndef validate_parcel_prompt(weight_kg):\n\n    if weight_kg < lower_bound or weight_kg > upper_bound:\n        return (\n            f\"[REVIEW REQUIRED]: \"\n            f\"Weight {weight_kg} kg flagged as unusual.\"\n        )\n\n    return (\n        f\"[INPUT APPROVED]: \"\n        f\"Proceeding with weight {weight_kg} kg.\"\n    )\n\n\nprint(validate_parcel_prompt(2.3))\nprint(validate_parcel_prompt(95.0))",
+      "expectedBehavior": [
+        "2.3 kg: Passes the statistical check.",
+        "95.0 kg: Gets flagged for review."
+      ],
+      "note": "This is an illustrative statistical guardrail. In production, use domain-specific validation rules as well. The IQR boundaries should be learned from an appropriate historical dataset, not assumed to represent every valid parcel."
     },
-    "takeaway": "Outlier detection acts as a vital observability and safety guardrail around generative AI systems. By filtering nonsensical inputs (e.g. 95.0kg parcel data), tracking semantic embedding drift, and catching silent RAG retrieval degradations, anomaly detection ensures downstream LLMs generate factually reliable outputs without burning excessive tokens on garbage data."
+    "outlierVsValidation": {
+      "title": "6. Outlier Detection vs Traditional Input Validation",
+      "table": [
+        { "feature": "Main purpose", "inputValidation": "Check predefined rules", "outlierDetection": "Identify unusual patterns" },
+        { "feature": "Approach", "inputValidation": "Rule-based", "outlierDetection": "Statistical or ML-based" },
+        { "feature": "Example", "inputValidation": "Weight cannot be negative", "outlierDetection": "Weight is unusually high compared with historical data" },
+        { "feature": "Requirements", "inputValidation": "Defined constraints", "outlierDetection": "Historical data or a learned normal pattern" },
+        { "feature": "Output", "inputValidation": "Valid or invalid", "outlierDetection": "Normal or potential anomaly" }
+      ],
+      "note": "Both techniques can work together in an LLM application."
+    },
+    "interviewAnswer": "\"Outlier detection is a statistical and machine-learning technique used to identify observations that differ significantly from normal patterns. In LLM applications, I can use it to validate unusual inputs, monitor abnormal token usage or latency, track embedding distribution changes, and identify potentially poor RAG retrieval results. Common methods include Z-score, IQR, Isolation Forest, LOF, and Autoencoders. I would use detected anomalies as signals for validation, alerts, or human review rather than automatically treating every unusual observation as invalid.\"",
+    "takeaway": "Outlier detection acts as a supporting data-quality and observability technique around generative AI systems. It catches extreme input values, monitors telemetry anomalies (token spikes, latency), and spots RAG retrieval degradation. Use detected anomalies as actionable signals for validation and human oversight rather than discarding them blindly."
   },
   {
     "id": "imputation",
@@ -17206,82 +17486,242 @@ export const definitionsData = [
   },
   {
     "id": "numpy",
-    "title": "NumPy (Numerical Python) & Vectorized Multidimensional Arrays",
-    "badge": "Array Computing, SIMD Vectorization & C-Contiguous Memory",
-    "summary": "The foundational library for scientific and numerical computing in Python, providing high-performance N-dimensional array objects (ndarray), vectorization, broadcasting, and low-level C memory buffers powering PyTorch, Pandas, and Scikit-Learn.",
-    "coreDefinition": "NumPy is the fundamental numerical computing package for Python that replaces slow interpreted Python loops with vectorized C-level operations on homogeneous, contiguous multidimensional arrays (ndarrays).",
-    "corePillars": [
-      {
-        "pillar": "ndarray (N-Dimensional Array)",
-        "desc": "Fixed-size homogeneous data buffer stored in contiguous memory with a defined data type (dtype). Eliminates Python pointer overhead.",
-        "accent": "text-cyan-400"
-      },
-      {
-        "pillar": "SIMD Vectorization",
-        "desc": "Executes mathematical operations across entire arrays simultaneously using CPU vector registers (AVX/SSE) at compiled C/Fortran speeds without Python loops.",
-        "accent": "text-emerald-400"
-      },
-      {
-        "pillar": "Broadcasting Rules",
-        "desc": "Performs arithmetic between arrays of different dimensions without copying data, expanding trailing singleton dimensions automatically.",
-        "accent": "text-amber-400"
-      },
-      {
-        "pillar": "Strided Memory Views",
-        "desc": "Array reshaping, slicing, and transpositions return memory views sharing the same underlying buffer, avoiding expensive memory copies.",
-        "accent": "text-purple-400"
-      }
-    ],
-    "codeExample": {
-      "title": "Vectorized Operations vs Slow Python Loops",
-      "language": "python",
-      "code": "import numpy as np\n\n# 1. Vectorized Euclidean Norm (100x faster than pure Python loop)\nembeddings = np.random.randn(10000, 768).astype(np.float32)\nnorms = np.linalg.norm(embeddings, axis=1, keepdims=True)\nnormalized_embeddings = embeddings / norms  # Broadcasting in action!\n\n# 2. Dot product similarity matrix\nquery = np.random.randn(1, 768).astype(np.float32)\nquery_norm = query / np.linalg.norm(query)\nsimilarities = np.dot(normalized_embeddings, query_norm.T)  # Shape: (10000, 1)"
+    "title": "NumPy",
+    "badge": "Numerical Python, Vectorization & ndarray",
+    "summary": "NumPy (Numerical Python) is a foundational Python library for scientific and numerical computing. It provides high-performance N-dimensional arrays (ndarray), vectorized operations, broadcasting, mathematical functions, and linear algebra, powering Pandas, Scikit-Learn, and PyTorch.",
+    "whatIsNumpy": {
+      "title": "1. What Is NumPy?",
+      "desc": "NumPy (Numerical Python) is a foundational Python library for scientific and numerical computing. It provides high-performance N-dimensional arrays (ndarray), vectorized operations, broadcasting, mathematical functions, and linear algebra.",
+      "ecosystem": "NumPy is widely used in the Python ML ecosystem, including Pandas, Scikit-Learn, and interoperability with PyTorch.",
+      "advantage": "Its main advantage is performing numerical operations efficiently without writing explicit Python loops for every element."
     },
-    "takeaway": "NumPy is the backbone of the Python scientific stack. Whether manipulating tabular data in Pandas, calculating loss matrices in Scikit-Learn, or moving tensors in PyTorch, all modern ML architectures rely on NumPy's C-contiguous memory design and vectorized broadcasting."
+    "coreConcepts": {
+      "title": "2. Core NumPy Concepts",
+      "concepts": [
+        {
+          "id": "ndarray",
+          "name": "A. ndarray (N-Dimensional Array)",
+          "tagline": "NumPy's primary data structure",
+          "points": [
+            "Stores elements using a defined data type (dtype).",
+            "Supports one-dimensional and multidimensional arrays.",
+            "Uses a fixed-size data buffer.",
+            "Typically stores homogeneous numerical data efficiently.",
+            "Supports different memory layouts and strides.",
+            "Unlike Python lists, NumPy arrays avoid much of the per-element Python object and pointer overhead."
+          ],
+          "filename": "numpy_ndarray.py",
+          "code": "import numpy as np\n\narr = np.array([\n    [1, 2, 3],\n    [4, 5, 6]\n], dtype=np.float32)\n\nprint(arr.shape)  # (2, 3)\nprint(arr.ndim)   # 2\nprint(arr.dtype)  # float32\nprint(arr.size)   # 6",
+          "accent": "text-cyan-400",
+          "border": "border-cyan-800/40"
+        },
+        {
+          "id": "vectorization",
+          "name": "B. Vectorization",
+          "tagline": "Applying operations across entire arrays without Python loops",
+          "points": [
+            "Vectorization means applying an operation to an entire array rather than manually iterating through individual elements using Python loops.",
+            "NumPy performs many numerical operations through optimized compiled C or Fortran implementations.",
+            "Some operations can also benefit from CPU SIMD instructions, which process multiple numerical values in parallel."
+          ],
+          "filename": "numpy_vectorization.py",
+          "code": "import numpy as np\n\na = np.array([1, 2, 3, 4])\nb = np.array([10, 20, 30, 40])\n\nresult = a + b\n\nprint(result)\n# [11 22 33 44]",
+          "accent": "text-emerald-400",
+          "border": "border-emerald-800/40"
+        },
+        {
+          "id": "broadcasting",
+          "name": "C. Broadcasting",
+          "tagline": "Arithmetic between compatible shapes without copying data",
+          "points": [
+            "Broadcasting allows NumPy to perform arithmetic between arrays with compatible shapes without explicitly creating repeated copies of the smaller array.",
+            "Rules: Compare array dimensions from right to left. Two dimensions are compatible when: (1) They are equal, or (2) One of them is 1.",
+            "Missing dimensions are treated as having size 1.",
+            "If dimensions are incompatible, NumPy raises a broadcasting error."
+          ],
+          "filename": "numpy_broadcasting.py",
+          "code": "import numpy as np\n\n# Scalar broadcasting\narr = np.array([10, 20, 30])\nprint(arr + 5)  # [15 25 35]\n\n# 2D x 1D broadcasting\na = np.array([[1], [2], [3]])  # Shape (3, 1)\nb = np.array([10, 20, 30])      # Shape (3,)\nprint(a + b)\n# [[11 21 31]\n#  [12 22 32]\n#  [13 23 33]]",
+          "accent": "text-amber-400",
+          "border": "border-amber-800/40"
+        },
+        {
+          "id": "strided_views",
+          "name": "D. Strided Memory Views",
+          "tagline": "Zero-copy memory views vs. independent data copies",
+          "points": [
+            "NumPy arrays use strides to determine how elements are accessed in memory.",
+            "Operations such as slicing and transposing can return views that share the original array's underlying data buffer instead of copying all the elements.",
+            "Important: Not every NumPy operation returns a view. Some operations create copies, so memory behavior depends on the operation."
+          ],
+          "filename": "numpy_strided_views.py",
+          "code": "import numpy as np\n\narr = np.array([10, 20, 30, 40])\n\n# Slice returns a view sharing memory\nview = arr[1:3]\nview[0] = 99\nprint(arr)  # [10 99 30 40]\n\n# To create an independent copy:\ncopy_arr = arr[1:3].copy()",
+          "accent": "text-purple-400",
+          "border": "border-purple-800/40"
+        }
+      ]
+    },
+    "vectorizedOperationsSection": {
+      "title": "3. Vectorized Operations vs Python Loops",
+      "desc": "NumPy is especially useful when working with large numerical datasets, embeddings, and matrices.",
+      "filename": "embedding_vectorization_benchmark.py",
+      "code": "import numpy as np\n\n# Generate 10,000 embeddings, each with 768 dimensions\nembeddings = np.random.randn(10000, 768).astype(np.float32)\n\n# Calculate the L2 norm of each embedding\nnorms = np.linalg.norm(\n    embeddings,\n    axis=1,\n    keepdims=True\n)\n\n# Normalize each embedding\nnormalized_embeddings = embeddings / norms\n\n# Generate a query embedding\nquery = np.random.randn(1, 768).astype(np.float32)\n\n# Normalize the query\nquery_norm = query / np.linalg.norm(query)\n\n# Calculate cosine similarity with all embeddings\nsimilarities = np.dot(\n    normalized_embeddings,\n    query_norm.T\n)\n\nprint(similarities.shape)\n# (10000, 1)",
+      "breakdown": [
+        "np.random.randn() generates numerical embedding vectors.",
+        "np.linalg.norm() calculates the L2 norm of each embedding.",
+        "keepdims=True retains the dimensions needed for broadcasting.",
+        "Division by the norm converts each embedding into a unit vector.",
+        "The query embedding is normalized in the same way.",
+        "np.dot() calculates the similarity between the query and all stored embeddings.",
+        "Because both sides are L2-normalized, their dot product equals cosine similarity."
+      ],
+      "practicalApplication": "Practical application: This approach is useful in semantic search and vector retrieval systems."
+    },
+    "importantFunctions": {
+      "title": "4. Important NumPy Functions",
+      "functions": [
+        { "func": "np.array()", "purpose": "Creates an array" },
+        { "func": "np.zeros()", "purpose": "Creates an array of zeros" },
+        { "func": "np.ones()", "purpose": "Creates an array of ones" },
+        { "func": "np.arange()", "purpose": "Generates values using a step size" },
+        { "func": "np.linspace()", "purpose": "Generates equally spaced values" },
+        { "func": "np.reshape()", "purpose": "Changes array shape" },
+        { "func": "np.transpose()", "purpose": "Changes dimension order" },
+        { "func": "np.sum()", "purpose": "Calculates the sum" },
+        { "func": "np.mean()", "purpose": "Calculates the mean" },
+        { "func": "np.std()", "purpose": "Calculates standard deviation" },
+        { "func": "np.dot()", "purpose": "Performs dot product or matrix multiplication for compatible inputs" },
+        { "func": "np.linalg.norm()", "purpose": "Calculates vector or matrix norms" },
+        { "func": "np.concatenate()", "purpose": "Joins arrays" }
+      ]
+    },
+    "whyImportantInMl": {
+      "title": "5. Why NumPy Is Important in Machine Learning",
+      "desc": "NumPy supports many numerical operations used throughout ML workflows:",
+      "points": [
+        { "area": "Data preparation", "desc": "Convert data into numerical arrays." },
+        { "area": "Feature engineering", "desc": "Perform mathematical transformations." },
+        { "area": "Normalization", "desc": "Scale numerical features." },
+        { "area": "Linear algebra", "desc": "Perform matrix and vector operations." },
+        { "area": "Statistics", "desc": "Calculate mean, variance, and standard deviation." },
+        { "area": "Embeddings", "desc": "Normalize and compare vector representations." },
+        { "area": "Model computations", "desc": "Perform numerical operations on arrays." }
+      ]
+    },
+    "numpyVsLists": {
+      "title": "6. NumPy vs Python Lists",
+      "table": [
+        { "feature": "Data types", "pythonList": "Can contain mixed types", "numpy": "Usually homogeneous" },
+        { "feature": "Mathematical operations", "pythonList": "Often require loops", "numpy": "Supports vectorized operations" },
+        { "feature": "Performance", "pythonList": "More overhead for numerical workloads", "numpy": "Generally faster for numerical workloads" },
+        { "feature": "Multidimensional data", "pythonList": "Nested lists", "numpy": "Native multidimensional arrays" },
+        { "feature": "Memory", "pythonList": "Generally more per-element overhead", "numpy": "More efficient numerical storage" }
+      ]
+    },
+    "numpyVsPandasVsPytorch": {
+      "title": "7. NumPy vs Pandas vs PyTorch",
+      "table": [
+        { "feature": "Main structure", "numpy": "ndarray", "pandas": "Series and DataFrame", "pytorch": "Tensor" },
+        { "feature": "Main purpose", "numpy": "Numerical computing", "pandas": "Data analysis", "pytorch": "Deep learning" },
+        { "feature": "GPU support", "numpy": "Primarily CPU-based", "pandas": "Primarily CPU-based", "pytorch": "Supports GPU acceleration" },
+        { "feature": "Automatic differentiation", "numpy": "No", "pandas": "No", "pytorch": "Yes" },
+        { "feature": "Typical use", "numpy": "Array and matrix operations", "pandas": "Tabular data processing", "pytorch": "Neural networks and tensor computations" }
+      ]
+    },
+    "interviewAnswer": "\"NumPy is a foundational Python library for numerical computing. Its main data structure is the N-dimensional ndarray, which supports efficient vectorized operations, broadcasting, and matrix computations. Many operations are implemented using optimized compiled code, reducing Python-level loop overhead. I use NumPy for numerical data preparation, feature transformations, statistical calculations, and embedding normalization. It also integrates with libraries such as Pandas, Scikit-Learn, and PyTorch.\"",
+    "takeaway": "NumPy is the backbone of Python's scientific and ML ecosystem. Its ndarray, vectorization, broadcasting, and memory-efficient strided views eliminate slow Python interpreter loops, powering everything from tabular preprocessing to high-speed embedding similarity in vector retrieval."
   },
   {
     "id": "data-visualization",
-    "title": "Matplotlib & Seaborn (Python Data Visualization Stack)",
-    "badge": "Exploratory Data Analysis (EDA), Statistical Graphics & Plotting",
-    "summary": "The primary plotting ecosystem in Python: Matplotlib provides granular, publication-grade figure-and-axes control; Seaborn builds on Matplotlib to provide high-level, statistically grounded visualizations like heatmaps, pairplots, and distribution curves.",
-    "coreDefinition": "Matplotlib is a low-level, object-oriented plotting library offering granular control over every visual element; Seaborn is a high-level statistical data visualization library built directly on Matplotlib and integrated with Pandas data structures.",
-    "comparisonTable": [
-      {
-        "feature": "API Level & Paradigm",
-        "matplotlib": "Low-level imperative (Object-Oriented: fig, ax = plt.subplots())",
-        "seaborn": "High-level declarative (Function-oriented: sns.histplot(data=df, x='col'))"
-      },
-      {
-        "feature": "Data Structure Integration",
-        "matplotlib": "Accepts raw Python lists, NumPy arrays, or Pandas Series",
-        "seaborn": "Directly designed for Pandas DataFrames with automatic categorical column grouping"
-      },
-      {
-        "feature": "Statistical Capabilities",
-        "matplotlib": "Plots raw data points; statistical aggregations must be precomputed",
-        "seaborn": "Built-in statistical estimation: automatic regression lines, error bars, and KDE distributions"
-      },
-      {
-        "feature": "Best Used For",
-        "matplotlib": "Custom publication layouts, fine-grained multi-axis subplots, domain annotations",
-        "seaborn": "Fast Exploratory Data Analysis (EDA), correlation heatmaps, violin plots, pairplots"
-      }
-    ],
-    "essentialEdaPlots": [
-      {
-        "plot": "Correlation Heatmap (`sns.heatmap`)",
-        "purpose": "Visualizes feature correlations to instantly diagnose multicollinearity before regression modeling."
-      },
-      {
-        "plot": "Box Plot / Violin Plot (`sns.boxplot`, `sns.violinplot`)",
-        "purpose": "Identifies outliers, quartiles, and distribution skewness across categorical cohorts."
-      },
-      {
-        "plot": "Pairplot (`sns.pairplot`)",
-        "purpose": "Renders a matrix of bivariate scatter plots and univariate distributions across all numerical features."
-      }
-    ],
-    "takeaway": "In modern Data Science workflows, use Seaborn for fast statistical exploration and correlation analysis during EDA, and use Matplotlib's Object-Oriented interface when you need precise pixel-level control over multi-panel figures and publication reports."
+    "title": "Matplotlib & Seaborn",
+    "badge": "Python Data Visualization Stack",
+    "summary": "Matplotlib and Seaborn are Python libraries used for data visualization that help understand data through charts and graphs. Matplotlib provides detailed low-level control over charts and appearance, while Seaborn is built on top of Matplotlib to provide simpler, attractive statistical visualizations.",
+    "whatAreMatplotlibAndSeaborn": {
+      "title": "1. What Are Matplotlib and Seaborn?",
+      "desc": "Matplotlib and Seaborn are Python libraries used for data visualization. They help us understand data through charts and graphs.",
+      "libraries": [
+        {
+          "name": "Matplotlib",
+          "desc": "Provides detailed control over charts and their appearance.",
+          "badge": "Low-Level & Granular Control",
+          "accent": "text-blue-400",
+          "bg": "bg-blue-950/20",
+          "border": "border-blue-800/40"
+        },
+        {
+          "name": "Seaborn",
+          "desc": "Built on top of Matplotlib and provides simpler, attractive statistical visualizations.",
+          "badge": "High-Level Statistical Visuals",
+          "accent": "text-purple-400",
+          "bg": "bg-purple-950/20",
+          "border": "border-purple-800/40"
+        }
+      ]
+    },
+    "keyDifferences": {
+      "title": "2. Key Differences",
+      "note": "Remember: Seaborn uses Matplotlib underneath, so both libraries can work together.",
+      "table": [
+        { "feature": "Main purpose", "matplotlib": "General-purpose plotting", "seaborn": "Statistical data visualization" },
+        { "feature": "Built on", "matplotlib": "Python plotting framework", "seaborn": "Matplotlib" },
+        { "feature": "Customization", "matplotlib": "Extensive, low-level control", "seaborn": "High-level, simpler interface" },
+        { "feature": "Default appearance", "matplotlib": "Basic", "seaborn": "More polished" },
+        { "feature": "Data handling", "matplotlib": "Often works with arrays and lists", "seaborn": "Works well with Pandas DataFrames" },
+        { "feature": "Best use", "matplotlib": "Custom charts and detailed control", "seaborn": "Statistical plots and quick EDA" }
+      ]
+    },
+    "commonCharts": {
+      "title": "3. Common Charts and Their Uses",
+      "charts": [
+        { "chart": "Line plot", "purpose": "Show trends over time", "badge": "Trends" },
+        { "chart": "Bar plot", "purpose": "Compare categories", "badge": "Categories" },
+        { "chart": "Histogram", "purpose": "Understand data distribution", "badge": "Distributions" },
+        { "chart": "Scatter plot", "purpose": "Examine relationships between two variables", "badge": "Relationships" },
+        { "chart": "Box plot", "purpose": "Identify spread and potential outliers", "badge": "Spread & Outliers" },
+        { "chart": "Heatmap", "purpose": "Show relationships or values using colors", "badge": "Correlation Matrix" }
+      ]
+    },
+    "matplotlibExample": {
+      "title": "4. Matplotlib Example",
+      "task": "Create a simple line chart.",
+      "filename": "matplotlib_line_plot.py",
+      "language": "python",
+      "code": "import matplotlib.pyplot as plt\n\nmonths = [\"Jan\", \"Feb\", \"Mar\", \"Apr\"]\nsales = [100, 150, 130, 200]\n\nplt.plot(months, sales, marker=\"o\")\n\nplt.title(\"Monthly Sales\")\nplt.xlabel(\"Month\")\nplt.ylabel(\"Sales\")\n\nplt.show()",
+      "explanation": "This chart shows how sales change over time."
+    },
+    "seabornExample": {
+      "title": "5. Seaborn Example",
+      "task": "Create a scatter plot to examine the relationship between two features.",
+      "filename": "seaborn_scatter_plot.py",
+      "language": "python",
+      "code": "import seaborn as sns\nimport matplotlib.pyplot as plt\n\ntips = sns.load_dataset(\"tips\")\n\nsns.scatterplot(\n    data=tips,\n    x=\"total_bill\",\n    y=\"tip\",\n    hue=\"sex\"\n)\n\nplt.title(\"Bill Amount vs Tip\")\nplt.show()",
+      "explanation": "The hue parameter uses color to distinguish groups."
+    },
+    "commonSeabornFunctions": {
+      "title": "6. Common Seaborn Functions",
+      "functions": [
+        { "func": "sns.histplot()", "purpose": "Distribution of a variable" },
+        { "func": "sns.scatterplot()", "purpose": "Relationship between two variables" },
+        { "func": "sns.boxplot()", "purpose": "Spread and potential outliers" },
+        { "func": "sns.heatmap()", "purpose": "Visualize a matrix" },
+        { "func": "sns.countplot()", "purpose": "Count observations in categories" },
+        { "func": "sns.pairplot()", "purpose": "Explore relationships among multiple variables" }
+      ]
+    },
+    "howTheyAreUsedInML": {
+      "title": "7. How They Are Used in ML",
+      "intro": "During Exploratory Data Analysis (EDA), visualization helps:",
+      "points": [
+        "Understand feature distributions.",
+        "Identify outliers.",
+        "Detect relationships between features.",
+        "Find class imbalance.",
+        "Identify potential multicollinearity.",
+        "Communicate model results."
+      ],
+      "example": "For example, a box plot can reveal unusual values, while a correlation heatmap can help identify highly correlated features."
+    },
+    "interviewAnswer": "“Matplotlib is a general-purpose Python visualization library that provides detailed control over charts. Seaborn is built on top of Matplotlib and simplifies statistical visualization with a higher-level interface. I commonly use Matplotlib for customized charts and Seaborn for EDA, including distributions, relationships, box plots, and correlation heatmaps.”",
+    "takeaway": "Matplotlib provides low-level control over figures, axes, and bespoke plotting layouts, while Seaborn delivers concise, high-level APIs for statistical graphics (distributions, heatmaps, pairplots). Because Seaborn runs directly on top of Matplotlib, they are designed to be used together in production ML workflows."
   },
   {
     "id": "log-transform",
@@ -18636,29 +19076,83 @@ export const definitionsData = [
     "code": "import numpy as np\nmedian = df['revenue'].median()\nmad = np.median(np.abs(df['revenue'] - median))\nmodified_z = 0.6745 * (df['revenue'] - median) / (mad + 1e-8)\noutliers = df[np.abs(modified_z) > 3.5]"
   },
   {
-    "id": "multivariate",
-    "title": "Multivariate Analysis",
-    "badge": "Complex Patterns & Confounders",
-    "summary": "Analyzing relationships across 3 or more variables simultaneously to detect confounders, interactions, and multicollinearity.",
-    "details": [
-      "Techniques: Pairplots, Scatter plots with Hue/Size/Style encodings, and full correlation heatmaps.",
-      "VIF (Variance Inflation Factor): Diagnoses multicollinearity between independent predictors. VIF > 5-10 indicates severe redundancy.",
-      "Dimensionality Reduction: Unsupervised techniques like PCA (Principal Component Analysis) and t-SNE / UMAP for visualizing high-dimensional manifolds.",
-      "Simpson's Paradox: A statistical phenomenon where a trend observed in combined data completely reverses when data is segmented into subgroups."
-    ],
-    "code": "from statsmodels.stats.outliers_influence import variance_inflation_factor\n# Calculate VIF for multicollinearity\nvif_data = pd.DataFrame()\nvif_data['Feature'] = X.columns\nvif_data['VIF'] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]"
-  },
-  {
     "id": "overfitting",
-    "title": "Overfitting (High Variance / Low Bias)",
-    "badge": "Generalization Failure",
-    "summary": "When a model memorizes training noise and random fluctuations instead of the true underlying population distribution.",
-    "details": [
-      "Symptom: Near-zero training error accompanied by high test/validation loss; extreme divergence between train and validation learning curves.",
-      "Root Causes: High model capacity (excessive tree depth, too many neural weights, high polynomial degrees) relative to small dataset size; presence of noisy unhandled outliers.",
-      "Remedies: L1/L2 regularization, early stopping, tree pruning (max_depth, min_samples_split), dropout, k-fold cross-validation, and feature selection to reduce noise dimensions."
-    ],
-    "code": "# Diagnose overfitting via cross-validation scores\nfrom sklearn.model_selection import validation_curve\ntrain_scores, val_scores = validation_curve(model, X, y, param_name='max_depth', param_range=range(1, 15), cv=5)\n# If train_score keeps rising to 1.0 while val_score degrades, overfitting is occurring."
+    "title": "Overfitting",
+    "badge": "Generalization Failure & High Variance",
+    "summary": "Overfitting occurs when a model learns the training data too closely, including noise and random fluctuations, instead of capturing the underlying patterns that generalize to unseen data.",
+    "whatIsOverfitting": {
+      "title": "1. What is Overfitting?",
+      "desc": "Overfitting occurs when a model learns the training data too closely, including noise and random fluctuations, instead of capturing the underlying patterns that generalize to unseen data.",
+      "characteristics": [
+        {
+          "name": "High Variance",
+          "desc": "The model is overly sensitive to changes in training data.",
+          "accent": "text-rose-400",
+          "badge": "Sensitive to Training Set"
+        },
+        {
+          "name": "Low Bias",
+          "desc": "The model can fit the training data very closely.",
+          "accent": "text-cyan-400",
+          "badge": "Fits Training Data Closely"
+        }
+      ]
+    },
+    "symptoms": {
+      "title": "2. Symptoms",
+      "items": [
+        "Very low training error but significantly higher validation/test error.",
+        "A large gap between training and validation performance.",
+        "Training loss continues decreasing while validation loss starts increasing."
+      ]
+    },
+    "rootCauses": {
+      "title": "3. Root Causes",
+      "causes": [
+        {
+          "title": "High model complexity",
+          "desc": "Excessive tree depth, too many neural network parameters, or high polynomial degrees."
+        },
+        {
+          "title": "Insufficient training data",
+          "desc": "The model cannot learn patterns that generalize reliably."
+        },
+        {
+          "title": "Noisy data",
+          "desc": "The model learns random fluctuations or outliers as meaningful patterns."
+        },
+        {
+          "title": "Too many irrelevant features",
+          "desc": "Unnecessary dimensions increase the risk of fitting noise."
+        }
+      ]
+    },
+    "remedies": {
+      "title": "4. Remedies",
+      "table": [
+        { "technique": "L1/L2 Regularization", "howItHelps": "Penalizes model complexity or large coefficients" },
+        { "technique": "Early Stopping", "howItHelps": "Stops training when validation performance starts degrading" },
+        { "technique": "Tree Pruning", "howItHelps": "Limits tree complexity using max_depth and min_samples_split" },
+        { "technique": "Dropout", "howItHelps": "Randomly disables neurons during neural network training" },
+        { "technique": "K-Fold Cross-Validation", "howItHelps": "Evaluates model stability across different data splits" },
+        { "technique": "Feature Selection", "howItHelps": "Removes irrelevant or noisy features" },
+        { "technique": "Data Augmentation", "howItHelps": "Increases training-data diversity" }
+      ]
+    },
+    "pythonImplementation": {
+      "title": "5. Python Implementation: Detect Overfitting",
+      "subtitle": "Use validation_curve() to understand how a model's training and validation performance changes with a hyperparameter.",
+      "filename": "detect_overfitting_validation_curve.py",
+      "code": "from sklearn.model_selection import validation_curve\nimport numpy as np\n\ntrain_scores, val_scores = validation_curve(\n    model,\n    X,\n    y,\n    param_name=\"max_depth\",\n    param_range=range(1, 15),\n    cv=5,\n    scoring=\"accuracy\"\n)\n\ntrain_mean = np.mean(train_scores, axis=1)\nval_mean = np.mean(val_scores, axis=1)\n\nfor depth, train, val in zip(range(1, 15), train_mean, val_mean):\n    print(\n        f\"Depth: {depth}, \"\n        f\"Train: {train:.3f}, \"\n        f\"Validation: {val:.3f}\"\n    )",
+      "interpretation": [
+        "Training score increases as tree depth increases.",
+        "Validation score initially improves.",
+        "If training score continues rising while validation score starts declining, the model is likely overfitting."
+      ],
+      "note": "Note: max_depth is a decision-tree hyperparameter. Use a compatible estimator such as DecisionTreeClassifier or DecisionTreeRegressor."
+    },
+    "interviewAnswer": "Overfitting occurs when a model memorizes training data, including noise, rather than learning generalizable patterns. It is associated with high variance and typically produces high training performance but poor validation or test performance. I address it using regularization, cross-validation, early stopping, dropout, feature selection, and by reducing model complexity.",
+    "takeaway": "The goal is not to achieve perfect training accuracy; it is to achieve reliable performance on unseen data."
   },
   {
     "id": "underfitting",
@@ -18699,9 +19193,9 @@ export const definitionsData = [
   },
   {
     "id": "univariate",
-    "title": "Univariate/Bivariate Analysis",
-    "badge": "EDA: Single & Pairwise Feature Analysis",
-    "summary": "Comprehensive Exploratory Data Analysis (EDA) evaluating individual feature distributions (Univariate) and relationships between pairs of features (Bivariate).",
+    "title": "Univariate / Bivariate / Multivariate Analysis",
+    "badge": "EDA: Single, Pairwise & Multi-Feature Analysis",
+    "summary": "Comprehensive Exploratory Data Analysis (EDA) evaluating individual feature distributions (Univariate), relationships between pairs of features (Bivariate), and high-dimensional interactions, multicollinearity, and confounders across 3 or more variables (Multivariate).",
     "details": [
       "1. UNIVARIATE ANALYSIS (Single Variable at a Time): Examines central tendency, dispersion, distribution shape, and anomalies to build a clean baseline profile for every column.",
       "• Numerical Features (Univariate): Measures of central tendency (Mean, Median, Mode), dispersion (Variance, Standard Deviation, IQR, Range), and distribution shape (Skewness, Kurtosis). Visualized with Histograms, KDE plots, and Boxplots.",
@@ -18709,10 +19203,15 @@ export const definitionsData = [
       "2. BIVARIATE ANALYSIS (Two Variables at a Time): Examines the empirical relationship, correlation, or dependency between two features (or a feature vs. target).",
       "• Numerical vs Numerical (Bivariate): Examined via Scatter plots and Line plots. Quantified using Pearson correlation (r) for linear relations and Spearman rank correlation (rho) for monotonic non-linear relations.",
       "• Categorical vs Numerical (Bivariate): Examined using Grouped Boxplots and Violin plots. Statistically tested using Two-Sample t-test (for 2 categories) or One-Way ANOVA / Kruskal-Wallis (for > 2 categories).",
-      "• Categorical vs Categorical (Bivariate): Examined via Cross-tabulation (contingency tables) and Stacked Bar charts. Statistically tested using Chi-Square test (chi^2) and Cramer's V for association strength."
+      "• Categorical vs Categorical (Bivariate): Examined via Cross-tabulation (contingency tables) and Stacked Bar charts. Statistically tested using Chi-Square test (chi^2) and Cramer's V for association strength.",
+      "3. MULTIVARIATE ANALYSIS (Three or More Variables at a Time): Analyzes complex interactions, confounders, and multicollinearity across multiple features simultaneously.",
+      "• Multi-Feature Visualizations: Examined using Pairplots, 3D scatter plots, Scatter plots with Hue/Size/Style encodings, and full correlation heatmaps.",
+      "• VIF (Variance Inflation Factor): Diagnoses multicollinearity between independent predictors. A VIF > 5-10 indicates severe redundancy where one feature can be linearly predicted from the others.",
+      "• Dimensionality Reduction: Unsupervised techniques like PCA (Principal Component Analysis), t-SNE, and UMAP for projecting high-dimensional manifolds into 2D/3D representations.",
+      "• Simpson's Paradox & Confounders: A critical statistical phenomenon where a trend observed in aggregate data reverses or disappears when data is partitioned across confounding subgroups."
     ],
-    "code": "import pandas as pd\nimport numpy as np\n\n# ==========================================================\n# 1. UNIVARIATE ANALYSIS (Single Feature Baseline)\n# ==========================================================\n# Numerical summary: central tendency & spread\nprint('Mean Age:', df['age'].mean(), '| Median Age:', df['age'].median())\nprint('IQR Age:', df['age'].quantile(0.75) - df['age'].quantile(0.25))\nprint('Age Skewness:', df['age'].skew())\n\n# Categorical summary: frequency & proportions\nprint('\\nDepartment Value Counts (Normalized):')\nprint(df['department'].value_counts(normalize=True))\n\n# ==========================================================\n# 2. BIVARIATE ANALYSIS (Two Feature Relationships)\n# ==========================================================\n# Numerical vs Numerical: Spearman rank correlation\ncorr_matrix = df[['income', 'credit_score']].corr(method='spearman')\nprint('\\nNumerical vs Numerical Correlation:\\n', corr_matrix)\n\n# Categorical vs Numerical: Groupby aggregations\ncat_num_summary = df.groupby('department')['salary'].agg(['mean', 'median', 'std'])\nprint('\\nCategorical vs Numerical Summary:\\n', cat_num_summary)\n\n# Categorical vs Categorical: Normalized cross-tabulation\ncat_cat_crosstab = pd.crosstab(df['gender'], df['churn'], normalize='index')\nprint('\\nCategorical vs Categorical Cross-tab:\\n', cat_cat_crosstab)",
-    "takeaway": "Univariate analysis establishes an individual column baseline (spread, skewness, outliers, and class balance). Bivariate analysis uncovers relationships and signals between feature pairs and targets using correlation metrics, ANOVA/t-tests, and Chi-Square tests."
+    "code": "import pandas as pd\nimport numpy as np\nfrom statsmodels.stats.outliers_influence import variance_inflation_factor\n\n# ==========================================================\n# 1. UNIVARIATE ANALYSIS (Single Feature Baseline)\n# ==========================================================\n# Numerical summary: central tendency & spread\nprint('Mean Age:', df['age'].mean(), '| Median Age:', df['age'].median())\nprint('IQR Age:', df['age'].quantile(0.75) - df['age'].quantile(0.25))\nprint('Age Skewness:', df['age'].skew())\n\n# Categorical summary: frequency & proportions\nprint('\\nDepartment Value Counts (Normalized):')\nprint(df['department'].value_counts(normalize=True))\n\n# ==========================================================\n# 2. BIVARIATE ANALYSIS (Two Feature Relationships)\n# ==========================================================\n# Numerical vs Numerical: Spearman rank correlation\ncorr_matrix = df[['income', 'credit_score']].corr(method='spearman')\nprint('\\nNumerical vs Numerical Correlation:\\n', corr_matrix)\n\n# Categorical vs Numerical: Groupby aggregations\ncat_num_summary = df.groupby('department')['salary'].agg(['mean', 'median', 'std'])\nprint('\\nCategorical vs Numerical Summary:\\n', cat_num_summary)\n\n# Categorical vs Categorical: Normalized cross-tabulation\ncat_cat_crosstab = pd.crosstab(df['gender'], df['churn'], normalize='index')\nprint('\\nCategorical vs Categorical Cross-tab:\\n', cat_cat_crosstab)\n\n# ==========================================================\n# 3. MULTIVARIATE ANALYSIS (3+ Features, VIF & Confounders)\n# ==========================================================\n# Calculate Variance Inflation Factor (VIF) to detect multicollinearity\nX_num = df[['age', 'income', 'credit_score', 'debt_ratio']].dropna()\nvif_df = pd.DataFrame()\nvif_df['Feature'] = X_num.columns\nvif_df['VIF'] = [variance_inflation_factor(X_num.values, i) for i in range(X_num.shape[1])]\nprint('\\nMultivariate VIF Diagnostics (Redundancy check):\\n', vif_df)\n\n# Multivariate interaction / grouping (checking for Simpson's Paradox)\nmultivariate_agg = df.groupby(['department', 'gender'])['salary'].mean().unstack()\nprint('\\nMultivariate Group Aggregation (Department x Gender):\\n', multivariate_agg)",
+    "takeaway": "Univariate analysis establishes an individual column baseline (spread, skewness, outliers, and class balance). Bivariate analysis uncovers relationships and signals between feature pairs and targets (correlation, ANOVA, Chi-Square). Multivariate analysis identifies high-dimensional interactions, diagnoses multicollinearity via VIF, and protects against confounders like Simpson's Paradox."
   },
   {
     "id": "yeo-johnson",
