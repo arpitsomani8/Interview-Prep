@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -7,7 +7,7 @@ import FashionPage from './pages/FashionPage';
 import HybridPage from './pages/HybridPage';
 import YoloPage from './pages/YoloPage';
 import ResumePage from './pages/ResumePage';
-import AllDefinitionsPage from './pages/AllDefinitionsPage';
+const AllDefinitionsPage = lazy(() => import('./pages/AllDefinitionsPage'));
 import ProgramsPage from './pages/ProgramsPage';
 
 const VALID_TABS = ['intro', 'fashion', 'hybrid', 'yolo', 'resume-platform', 'all-definitions', 'programs'];
@@ -88,7 +88,11 @@ export default function App() {
           {activeTab === 'hybrid' && <HybridPage />}
           {activeTab === 'yolo' && <YoloPage />}
           {activeTab === 'resume-platform' && <ResumePage />}
-          {activeTab === 'all-definitions' && <AllDefinitionsPage />}
+          {activeTab === 'all-definitions' && (
+            <Suspense fallback={<div className="px-4 sm:px-8 lg:px-12 py-10 text-sm font-mono text-zinc-400">Loading definitions…</div>}>
+              <AllDefinitionsPage />
+            </Suspense>
+          )}
           {activeTab === 'programs' && <ProgramsPage />}
         </ErrorBoundary>
       </main>

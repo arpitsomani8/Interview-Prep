@@ -13,7 +13,6 @@ A production-grade, responsive React web application built with React 19, Vite, 
 npm install
 npm run dev
 
-## GitHub Pages Deployment
-git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/<YOUR_REPO_NAME>.git
-git push -u origin main
-npm run deploy
+## Deployment
+Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds the app and publishes `dist/` to GitHub Pages.
+In the repo settings, Pages → Source must be set to **GitHub Actions**.

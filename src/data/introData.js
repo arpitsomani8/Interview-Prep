@@ -15,9 +15,7 @@ Currently, I’m working at Pratham Software, where I’m involved in AI-driven 
 
 One of the key projects I’m working on is Fashion AI Copilot, a multimodal AI platform designed to help fashion teams search for designs using text and images, analyze fashion trends, and explore AI-powered garment design and editing. The solution involves technologies such as Azure AI Vision, Azure OpenAI, embeddings, vector search, and generative AI models.
 
-Apart from that, I have worked on a Hybrid AI Engine, which combines traditional machine learning with RAG-based approaches to support different business use cases, as well as a computer vision pipeline for anomaly detection using YOLO and DeepSparse.
-
-I started my career working on Python and Flask-based web applications, which helped me build a strong foundation in backend development, API design, and application architecture. Over time, I expanded my expertise into machine learning and generative AI.
+Apart from that, I have worked on a Hybrid AI Engine, which combines traditional machine learning with RAG-based approaches to support different business use cases.
 
 Now, I’m looking for an opportunity where I can apply my software engineering experience and AI/ML knowledge to solve real-world business problems and continue growing as an AI/ML engineer.
 

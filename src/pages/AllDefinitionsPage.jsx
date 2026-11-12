@@ -9631,6 +9631,78 @@ export default function AllDefinitionsPage() {
                   </div>
                 )}
 
+                {/* Denoising in Generative AI & Diffusion */}
+                {item.id === 'denoising-diffusion' && (
+                  <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
+                    <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-black to-zinc-950 border border-cyan-800/50 space-y-2.5 shadow-xl">
+                      <span className="text-xs font-bold font-mono text-cyan-400 uppercase flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-cyan-400" />
+                        <span>Core Concept</span>
+                      </span>
+                      <p className="text-sm text-zinc-200 leading-relaxed">{item.coreConcept}</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {item.forwardVsReverse.map((stage, sIdx) => (
+                        <div key={sIdx} className="p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 space-y-3 shadow-xl">
+                          <span className="text-xs font-bold font-mono text-cyan-300 uppercase tracking-wide">{stage.stage}</span>
+                          <p className="text-xs text-zinc-300 leading-relaxed">{stage.desc}</p>
+                          <div className="p-2.5 rounded-lg bg-black border border-zinc-800 text-[11px] text-amber-200/90 font-mono break-words">{stage.math}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {item.useCases.map((uc, uIdx) => (
+                        <div key={uIdx} className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-2">
+                          <span className="text-xs font-bold text-white font-mono">{uc.title}</span>
+                          <p className="text-xs text-zinc-400 leading-relaxed">{uc.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="space-y-3 p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800 shadow-xl">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{item.pytorchExample.title}</span>
+                      </h4>
+                      <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black">
+                        <div className="flex items-center justify-between px-4 py-2 bg-zinc-950 border-b border-zinc-800">
+                          <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+                            <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>{item.pytorchExample.filename}</span>
+                          </div>
+                          <button
+                            onClick={() => handleCopyCode('code-denoising-diffusion', item.pytorchExample.code)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 transition cursor-pointer"
+                          >
+                            {copiedId === 'code-denoising-diffusion' ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-400" />
+                                <span>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                <span>Copy Code</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <CodeHighlight code={item.pytorchExample.code} />
+                      </div>
+                      <div className="p-3 rounded-lg bg-black/60 border border-zinc-800/80 text-[11px] text-zinc-300 font-mono leading-relaxed">
+                        {item.pytorchExample.explanation}
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                      <strong className="text-cyan-400 uppercase">Takeaway: </strong>
+                      {item.takeaway}
+                    </div>
+                  </div>
+                )}
+
                 {/* Item 45: Denoising */}
                 {item.id === 'denoising' && (
                   <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
@@ -28270,30 +28342,6 @@ export default function AllDefinitionsPage() {
                 {/* Git / GitHub */}
                 {item.id === 'git-github' && (
                   <div className="space-y-6 text-xs sm:text-sm text-zinc-300">
-                    {/* Header Overview Card */}
-                    <div className="p-5 sm:p-6 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
-                      <div className="flex items-center justify-between flex-wrap gap-2 border-b border-zinc-800/80 pb-3">
-                        <div className="flex items-center gap-2">
-                          <GitBranch className="w-4 h-4 text-cyan-400" />
-                          <h3 className="text-sm sm:text-base font-bold text-white font-mono uppercase tracking-wide">
-                            {item.title}
-                          </h3>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
-                            {item.badge || item.category || 'Version Control'}
-                          </span>
-                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800">
-                            {item.domain || 'Engineering Fundamentals'}
-                          </span>
-                        </div>
-                      </div>
-
-                      <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
-                        {item.summary}
-                      </p>
-                    </div>
-
                     {/* 1. What are Git and GitHub? */}
                     {item.whatIsGitAndGithub && (
                       <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
@@ -28359,14 +28407,14 @@ export default function AllDefinitionsPage() {
                       </div>
                     )}
 
-                    {/* 2. Key Concepts */}
+                    {/* Key Concepts */}
                     {item.keyConcepts && (
                       <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
                         <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
                           <div className="flex items-center gap-2">
                             <Layers className="w-4 h-4 text-emerald-400" />
                             <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
-                              2. Key Concepts
+                              Key Concepts
                             </h4>
                           </div>
                           <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
@@ -28399,18 +28447,18 @@ export default function AllDefinitionsPage() {
                       </div>
                     )}
 
-                    {/* 3. Essential Git Workflows */}
+                    {/* Essential Git Workflows */}
                     {item.essentialWorkflows && (
                       <div className="p-5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-4 shadow-xl">
                         <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
                           <div className="flex items-center gap-2">
                             <Workflow className="w-4 h-4 text-amber-400" />
                             <h4 className="text-sm font-bold text-white font-mono uppercase tracking-wide">
-                              3. Essential Git Workflows
+                              Essential Git Workflows
                             </h4>
                           </div>
                           <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
-                            7 Lifecycle Stages
+                            Daily Lifecycle
                           </span>
                         </div>
 
@@ -28738,13 +28786,13 @@ export default function AllDefinitionsPage() {
                       </div>
                     )}
 
-                    {/* 9. Interview Answer */}
+                    {/* Interview Answer */}
                     {item.interviewAnswer && (
                       <div className="p-5 rounded-2xl bg-zinc-950/90 border border-cyan-500/40 space-y-3 shadow-xl">
                         <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
                           <Terminal className="w-4 h-4 text-cyan-400" />
                           <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">
-                            9. Interview Answer
+                            Interview Answer
                           </h4>
                         </div>
                         <p className="text-xs font-bold text-white font-mono">
@@ -34803,7 +34851,7 @@ export default function AllDefinitionsPage() {
                 )}
 
                 {/* Item 146: Expectation */}
-                {item.id === 'expectation' && (
+                {item.id === 'expectation-linearity' && (
                   <div className="space-y-6">
                     {/* 1. Core Header Banner */}
                     <div className="p-4 rounded-xl bg-black border border-cyan-800/50 space-y-3">

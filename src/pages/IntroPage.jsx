@@ -26,11 +26,7 @@ export default function IntroPage() {
         </p>
 
         <p>
-          Apart from that, I have worked on a <a href="#/hybrid" className="text-cyan-400 font-semibold cursor-pointer hover:underline">Hybrid AI Engine</a>, which combines traditional machine learning with RAG-based approaches to support different business use cases, as well as a computer vision pipeline for anomaly detection using <a href="#/yolo" className="text-cyan-400 font-semibold cursor-pointer hover:underline">YOLO and DeepSparse</a>.
-        </p>
-
-        <p>
-          I started my career working on Python and Flask-based web applications, which helped me build a strong foundation in backend development, API design, and application architecture. Over time, I expanded my expertise into machine learning and generative AI.
+          Apart from that, I have worked on a <a href="#/hybrid" className="text-cyan-400 font-semibold cursor-pointer hover:underline">Hybrid AI Engine</a>, which combines traditional machine learning with RAG-based approaches to support different business use cases.
         </p>
 
         <p>

@@ -1,6 +1,6 @@
 // src/pages/ProgramsPage.jsx
 // Python Programs & Coding Challenges Page with VS Code Dark Modern Interface
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Terminal,
   Code2,
@@ -11,13 +11,13 @@ import {
   Search,
   CheckCircle2,
   AlertTriangle,
-  ArrowRight,
   Clock,
   HardDrive,
   FileCode,
   BookOpen,
   Zap,
   ShieldCheck,
+  ArrowUp,
 } from 'lucide-react';
 import { programsData } from '../data/programsData';
 import VsCodeEditor from '../components/VsCodeEditor';
@@ -30,6 +30,23 @@ export default function ProgramsPage() {
     'first-non-repeating-char': 0,
   });
   const [searchQuery, setSearchQuery] = useState('');
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 250);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const selectProgram = (id) => {
+    setSelectedProgramId(id);
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const el = document.getElementById('program-workspace');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    });
+  };
 
   // Current active program
   const activeProgram = programsData.find((p) => p.id === selectedProgramId) || programsData[0];
@@ -109,70 +126,32 @@ export default function ProgramsPage() {
           <span className="text-[11px] text-zinc-500">Click a problem to explore</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
           {filteredPrograms.map((prog, index) => {
             const isSelected = prog.id === activeProgram.id;
             return (
-              <div
+              <button
                 key={prog.id}
-                onClick={() => setSelectedProgramId(prog.id)}
-                className={`group p-4 sm:p-5 rounded-2xl border transition-all duration-200 cursor-pointer ${
+                onClick={() => selectProgram(prog.id)}
+                title={prog.title}
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-left transition cursor-pointer ${
                   isSelected
-                    ? 'bg-zinc-900 border-cyan-500 shadow-lg shadow-cyan-950/40 ring-1 ring-cyan-500/50'
-                    : 'bg-zinc-950/70 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/50'
+                    ? 'bg-zinc-900 border-cyan-500 text-white ring-1 ring-cyan-500/50'
+                    : 'bg-zinc-950/70 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900/60 hover:text-cyan-300'
                 }`}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">
-                        Problem #{index + 1}
-                      </span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-                        {prog.category}
-                      </span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
-                        {prog.difficulty}
-                      </span>
-                    </div>
-
-                    <h3
-                      className={`text-sm sm:text-base font-bold transition ${
-                        isSelected ? 'text-white' : 'text-zinc-200 group-hover:text-cyan-300'
-                      }`}
-                    >
-                      {prog.title}
-                    </h3>
-
-                    <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
-                      {prog.summary}
-                    </p>
-                  </div>
-
-                  <div
-                    className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition ${
-                      isSelected
-                        ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/30'
-                        : 'bg-zinc-800 text-zinc-400 group-hover:bg-zinc-700 group-hover:text-white'
-                    }`}
-                  >
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                </div>
-
-                {/* Approaches pills count */}
-                <div className="mt-3 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-500 font-mono">
-                  <span>{prog.approaches.length} Approaches available</span>
-                  <span className="text-cyan-400/90">{prog.approaches[0].complexity.time}</span>
-                </div>
-              </div>
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700 flex-shrink-0">
+                  #{index + 1}
+                </span>
+                <span className="text-xs sm:text-sm font-semibold truncate">{prog.title}</span>
+              </button>
             );
           })}
         </div>
       </section>
 
       {/* 3. Detailed Program Workspace */}
-      <section className="space-y-6">
+      <section id="program-workspace" className="space-y-6 scroll-mt-32">
         {/* Problem Title & Quescol Source Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-zinc-900/80 border border-zinc-800 shadow-xl">
           <div className="space-y-1">
@@ -187,15 +166,18 @@ export default function ProgramsPage() {
             <p className="text-xs sm:text-sm text-zinc-300">{activeProgram.keyTakeaway}</p>
           </div>
 
+          {activeProgram.sourceUrl && (
           <a
             href={activeProgram.sourceUrl}
+            title={activeProgram.sourceLabel}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-750 text-cyan-300 hover:text-white text-xs font-semibold border border-zinc-700 hover:border-cyan-500/50 transition cursor-pointer self-start sm:self-center shadow-sm"
           >
-            <span>Quescol Source</span>
+            <span>Source</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
+          )}
         </div>
 
         {/* Approach Selector Buttons */}
@@ -333,6 +315,17 @@ export default function ProgramsPage() {
           </div>
         </div>
       </section>
+      {/* Floating Scroll to Top Arrow Button (Bottom-Left, Compact) */}
+      {showScrollTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Scroll to top"
+          title="Back to Top"
+          className="fixed bottom-6 left-6 z-50 p-2.5 rounded-full bg-black/90 hover:bg-cyan-950/80 text-cyan-400 border border-cyan-500/40 hover:border-cyan-400 shadow-xl shadow-black/80 hover:shadow-cyan-500/20 backdrop-blur-md transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center group"
+        >
+          <ArrowUp className="w-4 h-4 text-cyan-400 group-hover:-translate-y-0.5 transition-transform" />
+        </button>
+      )}
     </div>
   );
 }

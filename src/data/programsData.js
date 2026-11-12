@@ -610,5 +610,1212 @@ if __name__ == "__main__":
       },
     ],
   },
-];
+  {
+    id: "reverse-string",
+    title: "Reverse a String",
+    category: "String / Slicing / Two Pointers",
+    difficulty: "Easy / Foundational",
+    sourceUrl: "https://leetcode.com/problems/reverse-string/",
+    sourceLabel: "LeetCode 344: Reverse String",
+    summary: "Given a string, return it with its characters in reverse order. The most common Python warm-up question; interviewers usually ask for a \"without slicing\" version as follow-up.",
+    keyTakeaway: "Slicing s[::-1] is the Pythonic one-liner; the two-pointer swap shows you understand the algorithm behind it.",
+    approaches: [
+      {
+        id: "slicing",
+        name: "Approach 1: Slicing s[::-1] (Pythonic)",
+        filename: "reverse_string_slice.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(n)",
+          timeExplanation: "Slicing visits every character once.",
+          spaceExplanation: "Creates a new string of length n (strings are immutable).",
+        },
+        description: "Uses extended slice syntax with step -1 to walk the string backwards.",
+        code: `def reverse_string(s):
+    return s[::-1]
 
+if __name__ == "__main__":
+    for s in ["hello", "Python", "a", ""]:
+        print(f"{s!r} -> {reverse_string(s)!r}")`,
+        terminal: {
+          command: "python reverse_string_slice.py",
+          inputs: [],
+          output: [
+            "'hello' -> 'olleh'",
+            "'Python' -> 'nohtyP'",
+            "'a' -> 'a'",
+            "'' -> ''",
+          ],
+        },
+      },
+      {
+        id: "loop",
+        name: "Approach 2: Loop Without Slicing",
+        filename: "reverse_string_loop.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(n)",
+          timeExplanation: "One pass over the characters.",
+          spaceExplanation: "List of n characters, joined once at the end.",
+        },
+        description: "Builds the reversed string by prepending characters into a list; avoids repeated string concatenation.",
+        code: `def reverse_string(s):
+    chars = []
+    for i in range(len(s) - 1, -1, -1):
+        chars.append(s[i])
+    return "".join(chars)
+
+if __name__ == "__main__":
+    for s in ["hello", "Python", "a", ""]:
+        print(f"{s!r} -> {reverse_string(s)!r}")`,
+        terminal: {
+          command: "python reverse_string_loop.py",
+          inputs: [],
+          output: [
+            "'hello' -> 'olleh'",
+            "'Python' -> 'nohtyP'",
+            "'a' -> 'a'",
+            "'' -> ''",
+          ],
+        },
+      },
+      {
+        id: "two-pointer",
+        name: "Approach 3: Two-Pointer Swap (In-Place on a List)",
+        filename: "reverse_string_two_pointer.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(1) extra",
+          timeExplanation: "n/2 swaps.",
+          spaceExplanation: "Swaps in place on the list (LeetCode 344 style input).",
+        },
+        description: "Classic interview algorithm: swap the left and right characters and move both pointers inward.",
+        code: `def reverse_in_place(chars):
+    left, right = 0, len(chars) - 1
+    while left < right:
+        chars[left], chars[right] = chars[right], chars[left]
+        left += 1
+        right -= 1
+    return chars
+
+if __name__ == "__main__":
+    print(reverse_in_place(list("hello")))
+    print(reverse_in_place(list("ab")))`,
+        terminal: {
+          command: "python reverse_string_two_pointer.py",
+          inputs: [],
+          output: [
+            "['o', 'l', 'l', 'e', 'h']",
+            "['b', 'a']",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "Empty String",
+        example: "\"\"",
+        handling: "Returns \"\" — slicing and the loop both handle it with no special case.",
+      },
+      {
+        scenario: "Single Character",
+        example: "\"a\"",
+        handling: "Returned unchanged; two-pointer loop never runs because left == right.",
+      },
+      {
+        scenario: "Unicode / Emoji",
+        example: "\"héllo👋\"",
+        handling: "Python strings are Unicode code points, so reversal works per character (combined emoji sequences may split).",
+      },
+    ],
+  },
+  {
+    id: "palindrome-check",
+    title: "Check if a String is a Palindrome",
+    category: "String / Two Pointers",
+    difficulty: "Easy / Foundational",
+    sourceUrl: "https://leetcode.com/problems/valid-palindrome/",
+    sourceLabel: "LeetCode 125: Valid Palindrome",
+    summary: "A palindrome reads the same forwards and backwards (e.g. \"madam\", \"racecar\"). Common follow-up: ignore case, spaces and punctuation (\"A man, a plan, a canal: Panama\").",
+    keyTakeaway: "Compare s with s[::-1] for the simple case; use two pointers with isalnum() to ignore non-letters in O(1) extra space.",
+    approaches: [
+      {
+        id: "reverse-compare",
+        name: "Approach 1: Compare With Reversed String",
+        filename: "palindrome_reverse.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(n)",
+          timeExplanation: "Reversal and comparison are each one pass.",
+          spaceExplanation: "Stores the reversed copy.",
+        },
+        description: "Normalises to lowercase and compares the string with its reverse.",
+        code: `def is_palindrome(s):
+    s = s.lower()
+    return s == s[::-1]
+
+if __name__ == "__main__":
+    for word in ["madam", "Racecar", "python", "a"]:
+        print(f"{word}: {is_palindrome(word)}")`,
+        terminal: {
+          command: "python palindrome_reverse.py",
+          inputs: [],
+          output: [
+            "madam: True",
+            "Racecar: True",
+            "python: False",
+            "a: True",
+          ],
+        },
+      },
+      {
+        id: "two-pointer",
+        name: "Approach 2: Two Pointers, Ignore Non-Alphanumeric",
+        filename: "palindrome_two_pointer.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(1)",
+          timeExplanation: "Each pointer moves at most n steps.",
+          spaceExplanation: "Only two index variables.",
+        },
+        description: "Skips spaces/punctuation and compares characters case-insensitively from both ends.",
+        code: `def is_palindrome(s):
+    left, right = 0, len(s) - 1
+    while left < right:
+        if not s[left].isalnum():
+            left += 1
+        elif not s[right].isalnum():
+            right -= 1
+        elif s[left].lower() != s[right].lower():
+            return False
+        else:
+            left += 1
+            right -= 1
+    return True
+
+if __name__ == "__main__":
+    tests = ["A man, a plan, a canal: Panama", "race a car", "No 'x' in Nixon", ""]
+    for t in tests:
+        print(f"{t!r}: {is_palindrome(t)}")`,
+        terminal: {
+          command: "python palindrome_two_pointer.py",
+          inputs: [],
+          output: [
+            "'A man, a plan, a canal: Panama': True",
+            "'race a car': False",
+            "\"No 'x' in Nixon\": True",
+            "'': True",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "Empty String",
+        example: "\"\"",
+        handling: "Treated as a palindrome (True) — confirm with the interviewer.",
+      },
+      {
+        scenario: "Mixed Case",
+        example: "\"Racecar\"",
+        handling: "Lowercase both sides before comparing, otherwise \"R\" != \"r\".",
+      },
+      {
+        scenario: "Punctuation & Spaces",
+        example: "\"A man, a plan...\"",
+        handling: "Approach 2 skips non-alphanumeric characters with isalnum().",
+      },
+    ],
+  },
+  {
+    id: "factorial",
+    title: "Factorial of a Number",
+    category: "Math / Recursion / Loops",
+    difficulty: "Easy / Foundational",
+    summary: "Compute n! = n × (n-1) × ... × 1, with 0! = 1. Used to check that you know both iteration and recursion, and the base case.",
+    keyTakeaway: "The iterative loop is safest; recursion is elegant but hits Python's recursion limit (~1000) for large n.",
+    approaches: [
+      {
+        id: "iterative",
+        name: "Approach 1: Iterative Loop",
+        filename: "factorial_loop.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(1)",
+          timeExplanation: "n multiplications.",
+          spaceExplanation: "Single accumulator variable.",
+        },
+        description: "Multiplies an accumulator from 2 up to n.",
+        code: `def factorial(n):
+    if n < 0:
+        raise ValueError("Factorial is not defined for negative numbers")
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+
+if __name__ == "__main__":
+    for n in [0, 1, 5, 10]:
+        print(f"{n}! = {factorial(n)}")`,
+        terminal: {
+          command: "python factorial_loop.py",
+          inputs: [],
+          output: [
+            "0! = 1",
+            "1! = 1",
+            "5! = 120",
+            "10! = 3628800",
+          ],
+        },
+      },
+      {
+        id: "recursive",
+        name: "Approach 2: Recursion",
+        filename: "factorial_recursive.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(n)",
+          timeExplanation: "n recursive calls.",
+          spaceExplanation: "Call stack grows to depth n.",
+        },
+        description: "n! = n × (n-1)!, with base case 0! = 1! = 1.",
+        code: `def factorial(n):
+    if n < 0:
+        raise ValueError("Factorial is not defined for negative numbers")
+    if n <= 1:          # base case
+        return 1
+    return n * factorial(n - 1)
+
+if __name__ == "__main__":
+    for n in [0, 1, 5, 10]:
+        print(f"{n}! = {factorial(n)}")`,
+        terminal: {
+          command: "python factorial_recursive.py",
+          inputs: [],
+          output: [
+            "0! = 1",
+            "1! = 1",
+            "5! = 120",
+            "10! = 3628800",
+          ],
+        },
+      },
+      {
+        id: "math-lib",
+        name: "Approach 3: Built-in math.factorial",
+        filename: "factorial_math.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(1)",
+          timeExplanation: "Implemented in C, much faster for large n.",
+          spaceExplanation: "No Python-level stack.",
+        },
+        description: "What you would use in production code — mention it after showing the manual version.",
+        code: `import math
+
+if __name__ == "__main__":
+    print(math.factorial(5))
+    print(math.factorial(20))`,
+        terminal: {
+          command: "python factorial_math.py",
+          inputs: [],
+          output: [
+            "120",
+            "2432902008176640000",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "Zero",
+        example: "0",
+        handling: "0! = 1 by definition; the loop never runs and returns 1.",
+      },
+      {
+        scenario: "Negative Input",
+        example: "-3",
+        handling: "Raise ValueError — factorial is undefined for negatives.",
+      },
+      {
+        scenario: "Large n",
+        example: "5000",
+        handling: "Python ints have no overflow, but recursion exceeds the default limit; use the loop or math.factorial.",
+      },
+    ],
+  },
+  {
+    id: "fibonacci",
+    title: "Print Fibonacci Series",
+    category: "Math / Loops / Recursion / DP",
+    difficulty: "Easy / Foundational",
+    sourceUrl: "https://leetcode.com/problems/fibonacci-number/",
+    sourceLabel: "LeetCode 509: Fibonacci Number",
+    summary: "Print the first n Fibonacci numbers (0, 1, 1, 2, 3, 5, 8, ...) where each number is the sum of the previous two.",
+    keyTakeaway: "Naive recursion is O(2^n); the loop with two variables is O(n) time and O(1) space — always mention why.",
+    approaches: [
+      {
+        id: "iterative",
+        name: "Approach 1: Loop With Two Variables",
+        filename: "fibonacci_loop.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(1)",
+          timeExplanation: "One addition per term.",
+          spaceExplanation: "Only a and b are kept (plus the output list).",
+        },
+        description: "Keeps the last two numbers and shifts them forward each step.",
+        code: `def fibonacci_series(n):
+    series = []
+    a, b = 0, 1
+    for _ in range(n):
+        series.append(a)
+        a, b = b, a + b
+    return series
+
+if __name__ == "__main__":
+    print(fibonacci_series(10))
+    print(fibonacci_series(1))
+    print(fibonacci_series(0))`,
+        terminal: {
+          command: "python fibonacci_loop.py",
+          inputs: [],
+          output: [
+            "[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]",
+            "[0]",
+            "[]",
+          ],
+        },
+      },
+      {
+        id: "recursive",
+        name: "Approach 2: Recursion With Memoization",
+        filename: "fibonacci_memo.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(n)",
+          timeExplanation: "Each fib(k) is computed once thanks to the cache.",
+          spaceExplanation: "Cache + recursion stack of depth n.",
+        },
+        description: "Plain recursion recomputes the same values exponentially; lru_cache fixes that.",
+        code: `from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+if __name__ == "__main__":
+    print([fib(i) for i in range(10)])
+    print("fib(50) =", fib(50))`,
+        terminal: {
+          command: "python fibonacci_memo.py",
+          inputs: [],
+          output: [
+            "[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]",
+            "fib(50) = 12586269025",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "n = 0",
+        example: "0",
+        handling: "Return an empty list.",
+      },
+      {
+        scenario: "n = 1",
+        example: "1",
+        handling: "Return [0].",
+      },
+      {
+        scenario: "Plain recursion for n = 40",
+        example: "fib(40)",
+        handling: "Without memoization it makes ~300 million calls; use the loop or lru_cache.",
+      },
+    ],
+  },
+  {
+    id: "prime-check",
+    title: "Check if a Number is Prime",
+    category: "Math / Loops",
+    difficulty: "Easy / Foundational",
+    sourceUrl: "https://leetcode.com/problems/count-primes/",
+    sourceLabel: "LeetCode 204: Count Primes (Sieve follow-up)",
+    summary: "A prime is a number greater than 1 that is divisible only by 1 and itself. Follow-up: print all primes up to n.",
+    keyTakeaway: "Only check divisors up to √n; for many numbers use the Sieve of Eratosthenes.",
+    approaches: [
+      {
+        id: "sqrt",
+        name: "Approach 1: Trial Division up to √n",
+        filename: "prime_check.py",
+        complexity: {
+          time: "O(√n)",
+          space: "O(1)",
+          timeExplanation: "Any factor larger than √n pairs with one smaller than √n.",
+          spaceExplanation: "Constant extra memory.",
+        },
+        description: "Rejects n < 2, then tests divisors from 2 to √n.",
+        code: `import math
+
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, math.isqrt(n) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+if __name__ == "__main__":
+    for n in [0, 1, 2, 17, 21, 97]:
+        print(f"{n}: {is_prime(n)}")`,
+        terminal: {
+          command: "python prime_check.py",
+          inputs: [],
+          output: [
+            "0: False",
+            "1: False",
+            "2: True",
+            "17: True",
+            "21: False",
+            "97: True",
+          ],
+        },
+      },
+      {
+        id: "sieve",
+        name: "Approach 2: Sieve of Eratosthenes (All Primes ≤ n)",
+        filename: "prime_sieve.py",
+        complexity: {
+          time: "O(n log log n)",
+          space: "O(n)",
+          timeExplanation: "Each composite is crossed out by its prime factors.",
+          spaceExplanation: "Boolean list of size n + 1.",
+        },
+        description: "Marks multiples of each prime as non-prime; what remains are primes.",
+        code: `def primes_up_to(n):
+    if n < 2:
+        return []
+    is_prime = [True] * (n + 1)
+    is_prime[0] = is_prime[1] = False
+    for i in range(2, int(n ** 0.5) + 1):
+        if is_prime[i]:
+            for multiple in range(i * i, n + 1, i):
+                is_prime[multiple] = False
+    return [i for i, prime in enumerate(is_prime) if prime]
+
+if __name__ == "__main__":
+    print(primes_up_to(50))`,
+        terminal: {
+          command: "python prime_sieve.py",
+          inputs: [],
+          output: [
+            "[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "0 and 1",
+        example: "0, 1",
+        handling: "Not prime — must be handled before the loop.",
+      },
+      {
+        scenario: "2",
+        example: "2",
+        handling: "The only even prime; the loop range is empty so it returns True.",
+      },
+      {
+        scenario: "Negative Numbers",
+        example: "-7",
+        handling: "Not prime by definition (n < 2 check).",
+      },
+    ],
+  },
+  {
+    id: "fizzbuzz",
+    title: "FizzBuzz",
+    category: "Loops / Conditionals",
+    difficulty: "Easy / Foundational",
+    sourceUrl: "https://leetcode.com/problems/fizz-buzz/",
+    sourceLabel: "LeetCode 412: Fizz Buzz",
+    summary: "Print numbers 1 to n; for multiples of 3 print \"Fizz\", for multiples of 5 print \"Buzz\", for multiples of both print \"FizzBuzz\".",
+    keyTakeaway: "Check the combined case (divisible by 15) first, or build the string so the order of checks does not matter.",
+    approaches: [
+      {
+        id: "if-else",
+        name: "Approach 1: if / elif Chain",
+        filename: "fizzbuzz.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(1)",
+          timeExplanation: "One check per number.",
+          spaceExplanation: "Nothing stored besides the loop variable.",
+        },
+        description: "The divisible-by-15 check must come first, otherwise it never runs.",
+        code: `def fizzbuzz(n):
+    for i in range(1, n + 1):
+        if i % 15 == 0:
+            print("FizzBuzz")
+        elif i % 3 == 0:
+            print("Fizz")
+        elif i % 5 == 0:
+            print("Buzz")
+        else:
+            print(i)
+
+if __name__ == "__main__":
+    fizzbuzz(15)`,
+        terminal: {
+          command: "python fizzbuzz.py",
+          inputs: [],
+          output: [
+            "1",
+            "2",
+            "Fizz",
+            "4",
+            "Buzz",
+            "Fizz",
+            "7",
+            "8",
+            "Fizz",
+            "Buzz",
+            "11",
+            "Fizz",
+            "13",
+            "14",
+            "FizzBuzz",
+          ],
+        },
+      },
+      {
+        id: "string-build",
+        name: "Approach 2: String Concatenation (Easy to Extend)",
+        filename: "fizzbuzz_extensible.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(1)",
+          timeExplanation: "One pass.",
+          spaceExplanation: "Small temporary string per number.",
+        },
+        description: "Adding a new rule (e.g. 7 -> \"Bazz\") is one dictionary entry.",
+        code: `def fizzbuzz(n, rules={3: "Fizz", 5: "Buzz"}):
+    result = []
+    for i in range(1, n + 1):
+        word = "".join(text for div, text in rules.items() if i % div == 0)
+        result.append(word or str(i))
+    return result
+
+if __name__ == "__main__":
+    print(fizzbuzz(15))`,
+        terminal: {
+          command: "python fizzbuzz_extensible.py",
+          inputs: [],
+          output: [
+            "['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', '7', '8', 'Fizz', 'Buzz', '11', 'Fizz', '13', '14', 'FizzBuzz']",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "Wrong Check Order",
+        example: "i = 15",
+        handling: "If i % 3 is checked first, 15 prints \"Fizz\" — check 15 first.",
+      },
+      {
+        scenario: "n = 0",
+        example: "0",
+        handling: "Loop does not run; prints nothing.",
+      },
+    ],
+  },
+  {
+    id: "count-vowels",
+    title: "Count Vowels in a String",
+    category: "String / Counting",
+    difficulty: "Easy / Foundational",
+    summary: "Count how many vowels (a, e, i, o, u) a string contains, ignoring case.",
+    keyTakeaway: "Use a set for O(1) membership checks and lowercase the string once.",
+    approaches: [
+      {
+        id: "loop-set",
+        name: "Approach 1: Loop With a Vowel Set",
+        filename: "count_vowels.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(1)",
+          timeExplanation: "One membership check per character.",
+          spaceExplanation: "The vowel set has a fixed size of 5.",
+        },
+        description: "Lowercases the string and counts characters found in the set.",
+        code: `def count_vowels(s):
+    vowels = {"a", "e", "i", "o", "u"}
+    count = 0
+    for ch in s.lower():
+        if ch in vowels:
+            count += 1
+    return count
+
+if __name__ == "__main__":
+    for s in ["Hello World", "PYTHON", "rhythm", ""]:
+        print(f"{s!r}: {count_vowels(s)}")`,
+        terminal: {
+          command: "python count_vowels.py",
+          inputs: [],
+          output: [
+            "'Hello World': 3",
+            "'PYTHON': 1",
+            "'rhythm': 0",
+            "'': 0",
+          ],
+        },
+      },
+      {
+        id: "sum-generator",
+        name: "Approach 2: One-Liner With sum() + Per-Vowel Counts",
+        filename: "count_vowels_counter.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(1)",
+          timeExplanation: "Single pass.",
+          spaceExplanation: "Counter holds at most 5 keys.",
+        },
+        description: "Pythonic version, plus Counter to show how many times each vowel appears.",
+        code: `from collections import Counter
+
+def count_vowels(s):
+    return sum(1 for ch in s.lower() if ch in "aeiou")
+
+if __name__ == "__main__":
+    text = "Interview Preparation"
+    print("Total vowels:", count_vowels(text))
+    print("Per vowel:", dict(Counter(ch for ch in text.lower() if ch in "aeiou")))`,
+        terminal: {
+          command: "python count_vowels_counter.py",
+          inputs: [],
+          output: [
+            "Total vowels: 9",
+            "Per vowel: {'i': 3, 'e': 3, 'a': 2, 'o': 1}",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "Uppercase Letters",
+        example: "\"PYTHON\"",
+        handling: "Lowercase first so \"O\" is counted.",
+      },
+      {
+        scenario: "No Vowels",
+        example: "\"rhythm\"",
+        handling: "Returns 0.",
+      },
+      {
+        scenario: "Empty String",
+        example: "\"\"",
+        handling: "Returns 0.",
+      },
+    ],
+  },
+  {
+    id: "anagram-check",
+    title: "Check if Two Strings are Anagrams",
+    category: "String / Hashing / Sorting",
+    difficulty: "Easy / Foundational",
+    sourceUrl: "https://leetcode.com/problems/valid-anagram/",
+    sourceLabel: "LeetCode 242: Valid Anagram",
+    summary: "Two strings are anagrams if they contain the same characters with the same counts, e.g. \"listen\" and \"silent\".",
+    keyTakeaway: "Sorting is the simplest (O(n log n)); counting characters with Counter or a dict is O(n).",
+    approaches: [
+      {
+        id: "sorting",
+        name: "Approach 1: Sort and Compare",
+        filename: "anagram_sort.py",
+        complexity: {
+          time: "O(n log n)",
+          space: "O(n)",
+          timeExplanation: "Sorting dominates.",
+          spaceExplanation: "Sorted copies of both strings.",
+        },
+        description: "If the sorted characters match, the strings are anagrams.",
+        code: `def is_anagram(a, b):
+    return sorted(a) == sorted(b)
+
+if __name__ == "__main__":
+    pairs = [("listen", "silent"), ("triangle", "integral"), ("apple", "papel"), ("rat", "car")]
+    for a, b in pairs:
+        print(f"{a}, {b}: {is_anagram(a, b)}")`,
+        terminal: {
+          command: "python anagram_sort.py",
+          inputs: [],
+          output: [
+            "listen, silent: True",
+            "triangle, integral: True",
+            "apple, papel: True",
+            "rat, car: False",
+          ],
+        },
+      },
+      {
+        id: "counting",
+        name: "Approach 2: Character Count (Counter / dict)",
+        filename: "anagram_counter.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(k)",
+          timeExplanation: "One pass over each string.",
+          spaceExplanation: "k = number of distinct characters.",
+        },
+        description: "Checks lengths first, then counts characters with a dictionary.",
+        code: `from collections import Counter
+
+def is_anagram(a, b):
+    if len(a) != len(b):
+        return False
+    counts = {}
+    for ch in a:
+        counts[ch] = counts.get(ch, 0) + 1
+    for ch in b:
+        if counts.get(ch, 0) == 0:
+            return False
+        counts[ch] -= 1
+    return True
+
+if __name__ == "__main__":
+    print(is_anagram("listen", "silent"))
+    print(is_anagram("rat", "car"))
+    print(Counter("anagram") == Counter("nagaram"))  # one-liner version`,
+        terminal: {
+          command: "python anagram_counter.py",
+          inputs: [],
+          output: [
+            "True",
+            "False",
+            "True",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "Different Lengths",
+        example: "\"abc\", \"abcd\"",
+        handling: "Return False immediately.",
+      },
+      {
+        scenario: "Case & Spaces",
+        example: "\"Dormitory\", \"Dirty room\"",
+        handling: "Normalise with .lower().replace(\" \", \"\") if the interviewer allows it.",
+      },
+    ],
+  },
+  {
+    id: "swap-numbers",
+    title: "Swap Two Numbers Without a Temp Variable",
+    category: "Basics / Arithmetic / Bitwise",
+    difficulty: "Easy / Foundational",
+    summary: "Swap the values of two variables. Interviewers often ask for the version that does not use a third variable.",
+    keyTakeaway: "In Python the answer is a, b = b, a (tuple unpacking); know the arithmetic and XOR tricks too.",
+    approaches: [
+      {
+        id: "tuple",
+        name: "Approach 1: Tuple Unpacking (Pythonic)",
+        filename: "swap_tuple.py",
+        complexity: {
+          time: "O(1)",
+          space: "O(1)",
+          timeExplanation: "Constant work.",
+          spaceExplanation: "A temporary tuple is created internally.",
+        },
+        description: "The right side is evaluated first, then unpacked into the variables.",
+        code: `a, b = 10, 20
+print(f"Before: a={a}, b={b}")
+a, b = b, a
+print(f"After:  a={a}, b={b}")`,
+        terminal: {
+          command: "python swap_tuple.py",
+          inputs: [],
+          output: [
+            "Before: a=10, b=20",
+            "After:  a=20, b=10",
+          ],
+        },
+      },
+      {
+        id: "arithmetic",
+        name: "Approach 2: Arithmetic and XOR",
+        filename: "swap_math.py",
+        complexity: {
+          time: "O(1)",
+          space: "O(1)",
+          timeExplanation: "Three operations.",
+          spaceExplanation: "No extra variable.",
+        },
+        description: "Classic language-agnostic tricks; XOR works only for integers.",
+        code: `a, b = 10, 20
+a = a + b   # 30
+b = a - b   # 10
+a = a - b   # 20
+print(f"Arithmetic swap: a={a}, b={b}")
+
+x, y = 5, 9
+x = x ^ y
+y = x ^ y
+x = x ^ y
+print(f"XOR swap: x={x}, y={y}")`,
+        terminal: {
+          command: "python swap_math.py",
+          inputs: [],
+          output: [
+            "Arithmetic swap: a=20, b=10",
+            "XOR swap: x=9, y=5",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "Equal Values",
+        example: "a = b = 7",
+        handling: "All approaches still work.",
+      },
+      {
+        scenario: "Floats With XOR",
+        example: "1.5, 2.5",
+        handling: "XOR is not defined for floats — use tuple unpacking.",
+      },
+    ],
+  },
+  {
+    id: "missing-number",
+    title: "Find the Missing Number in 1 to n",
+    category: "Array / Math",
+    difficulty: "Easy / Foundational",
+    sourceUrl: "https://leetcode.com/problems/missing-number/",
+    sourceLabel: "LeetCode 268: Missing Number (0..n variant)",
+    summary: "An array contains n-1 distinct numbers from 1 to n with exactly one missing. Find the missing number.",
+    keyTakeaway: "Expected sum n(n+1)/2 minus the actual sum gives the answer in O(n) time and O(1) space.",
+    approaches: [
+      {
+        id: "sum-formula",
+        name: "Approach 1: Sum Formula",
+        filename: "missing_number_sum.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(1)",
+          timeExplanation: "One pass to sum the array.",
+          spaceExplanation: "Only a few integers.",
+        },
+        description: "Subtract the actual sum from the expected sum of 1..n.",
+        code: `def find_missing(arr, n):
+    expected = n * (n + 1) // 2
+    return expected - sum(arr)
+
+if __name__ == "__main__":
+    print(find_missing([1, 2, 4, 5, 6], 6))
+    print(find_missing([2, 3, 1, 5], 5))
+    print(find_missing([1], 2))`,
+        terminal: {
+          command: "python missing_number_sum.py",
+          inputs: [],
+          output: [
+            "3",
+            "4",
+            "2",
+          ],
+        },
+      },
+      {
+        id: "set-diff",
+        name: "Approach 2: Set Difference",
+        filename: "missing_number_set.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(n)",
+          timeExplanation: "Building the sets is linear.",
+          spaceExplanation: "Set of n numbers.",
+        },
+        description: "Easy to read, and generalises to finding several missing numbers.",
+        code: `def find_missing(arr, n):
+    return sorted(set(range(1, n + 1)) - set(arr))
+
+if __name__ == "__main__":
+    print(find_missing([1, 2, 4, 5, 6], 6))
+    print(find_missing([1, 3, 6], 6))   # multiple missing`,
+        terminal: {
+          command: "python missing_number_set.py",
+          inputs: [],
+          output: [
+            "[3]",
+            "[2, 4, 5]",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "Missing Last Number",
+        example: "[1, 2, 3], n=4",
+        handling: "Formula gives 10 - 6 = 4.",
+      },
+      {
+        scenario: "Missing First Number",
+        example: "[2, 3, 4], n=4",
+        handling: "Formula gives 10 - 9 = 1.",
+      },
+    ],
+  },
+  {
+    id: "remove-duplicates",
+    title: "Remove Duplicates From a List (Keep Order)",
+    category: "List / Set / Hashing",
+    difficulty: "Easy / Foundational",
+    summary: "Remove repeated elements from a list. Follow-up: keep the original order of first appearance.",
+    keyTakeaway: "set(lst) removes duplicates but loses order; dict.fromkeys(lst) keeps order in Python 3.7+.",
+    approaches: [
+      {
+        id: "seen-set",
+        name: "Approach 1: Loop With a \"seen\" Set",
+        filename: "remove_duplicates_loop.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(n)",
+          timeExplanation: "One set lookup per element.",
+          spaceExplanation: "The seen set and result list.",
+        },
+        description: "Adds an element to the result only the first time it appears.",
+        code: `def remove_duplicates(items):
+    seen = set()
+    result = []
+    for item in items:
+        if item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
+
+if __name__ == "__main__":
+    print(remove_duplicates([3, 1, 3, 2, 1, 5]))
+    print(remove_duplicates(["a", "b", "a", "c"]))`,
+        terminal: {
+          command: "python remove_duplicates_loop.py",
+          inputs: [],
+          output: [
+            "[3, 1, 2, 5]",
+            "['a', 'b', 'c']",
+          ],
+        },
+      },
+      {
+        id: "dict-fromkeys",
+        name: "Approach 2: dict.fromkeys / set()",
+        filename: "remove_duplicates_builtin.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(n)",
+          timeExplanation: "Single pass.",
+          spaceExplanation: "New dict or set.",
+        },
+        description: "dict.fromkeys keeps insertion order; set() does not guarantee any order.",
+        code: `items = [3, 1, 3, 2, 1, 5]
+print("Order kept:", list(dict.fromkeys(items)))
+print("Using set :", sorted(set(items)), "(order not guaranteed, sorted here)")`,
+        terminal: {
+          command: "python remove_duplicates_builtin.py",
+          inputs: [],
+          output: [
+            "Order kept: [3, 1, 2, 5]",
+            "Using set : [1, 2, 3, 5] (order not guaranteed, sorted here)",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "Unhashable Items",
+        example: "[[1], [1]]",
+        handling: "Lists cannot go in a set; convert to tuples first or compare with ==.",
+      },
+      {
+        scenario: "Empty List",
+        example: "[]",
+        handling: "Returns [].",
+      },
+    ],
+  },
+  {
+    id: "char-frequency",
+    title: "Count Frequency of Each Character / Word",
+    category: "String / Dictionary / Counter",
+    difficulty: "Easy / Foundational",
+    summary: "Count how many times each character (or word) appears in a string — one of the most common Python dictionary questions.",
+    keyTakeaway: "Use dict.get(key, 0) + 1 to show you understand dictionaries; mention collections.Counter as the built-in.",
+    approaches: [
+      {
+        id: "dict",
+        name: "Approach 1: Dictionary With get()",
+        filename: "char_frequency.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(k)",
+          timeExplanation: "One dictionary update per character.",
+          spaceExplanation: "k = distinct characters.",
+        },
+        description: "Skips spaces and increments a count for each character.",
+        code: `def char_frequency(s):
+    freq = {}
+    for ch in s:
+        if ch == " ":
+            continue
+        freq[ch] = freq.get(ch, 0) + 1
+    return freq
+
+if __name__ == "__main__":
+    print(char_frequency("hello world"))`,
+        terminal: {
+          command: "python char_frequency.py",
+          inputs: [],
+          output: [
+            "{'h': 1, 'e': 1, 'l': 3, 'o': 2, 'w': 1, 'r': 1, 'd': 1}",
+          ],
+        },
+      },
+      {
+        id: "counter",
+        name: "Approach 2: collections.Counter (Words Too)",
+        filename: "word_frequency_counter.py",
+        complexity: {
+          time: "O(n)",
+          space: "O(k)",
+          timeExplanation: "Counter does the same counting in C.",
+          spaceExplanation: "One entry per distinct key.",
+        },
+        description: "most_common() returns the top items sorted by count.",
+        code: `from collections import Counter
+
+text = "the cat and the hat and the bat"
+words = Counter(text.split())
+print(words)
+print("Top 2:", words.most_common(2))
+print("Letters:", Counter("banana"))`,
+        terminal: {
+          command: "python word_frequency_counter.py",
+          inputs: [],
+          output: [
+            "Counter({'the': 3, 'and': 2, 'cat': 1, 'hat': 1, 'bat': 1})",
+            "Top 2: [('the', 3), ('and', 2)]",
+            "Letters: Counter({'a': 3, 'n': 2, 'b': 1})",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "Case Sensitivity",
+        example: "\"Aa\"",
+        handling: "\"A\" and \"a\" are counted separately unless you lowercase first.",
+      },
+      {
+        scenario: "Empty String",
+        example: "\"\"",
+        handling: "Returns {}.",
+      },
+    ],
+  },
+  {
+    id: "armstrong-number",
+    title: "Sum of Digits & Armstrong Number",
+    category: "Math / Loops",
+    difficulty: "Easy / Foundational",
+    summary: "Sum the digits of a number (123 -> 6). Then check for an Armstrong number: the sum of its digits each raised to the number of digits equals the number itself (153 = 1³ + 5³ + 3³).",
+    keyTakeaway: "Extract digits with % 10 and // 10, or convert to a string — both are accepted.",
+    approaches: [
+      {
+        id: "modulo",
+        name: "Approach 1: Digit Extraction With % and //",
+        filename: "armstrong_modulo.py",
+        complexity: {
+          time: "O(d)",
+          space: "O(1)",
+          timeExplanation: "d = number of digits.",
+          spaceExplanation: "A few integers.",
+        },
+        description: "Takes the last digit with % 10 and drops it with // 10.",
+        code: `def sum_of_digits(n):
+    n = abs(n)
+    total = 0
+    while n > 0:
+        total += n % 10
+        n //= 10
+    return total
+
+def is_armstrong(n):
+    power = len(str(n))
+    total, temp = 0, n
+    while temp > 0:
+        total += (temp % 10) ** power
+        temp //= 10
+    return total == n
+
+if __name__ == "__main__":
+    print("Sum of digits of 12345:", sum_of_digits(12345))
+    for n in [153, 370, 9474, 123]:
+        print(f"{n} Armstrong? {is_armstrong(n)}")`,
+        terminal: {
+          command: "python armstrong_modulo.py",
+          inputs: [],
+          output: [
+            "Sum of digits of 12345: 15",
+            "153 Armstrong? True",
+            "370 Armstrong? True",
+            "9474 Armstrong? True",
+            "123 Armstrong? False",
+          ],
+        },
+      },
+      {
+        id: "string",
+        name: "Approach 2: Convert to String",
+        filename: "armstrong_string.py",
+        complexity: {
+          time: "O(d)",
+          space: "O(d)",
+          timeExplanation: "One pass over the digits.",
+          spaceExplanation: "String of d characters.",
+        },
+        description: "Short and readable; good to mention after the modulo version.",
+        code: `def is_armstrong(n):
+    digits = str(n)
+    return n == sum(int(d) ** len(digits) for d in digits)
+
+if __name__ == "__main__":
+    print("Sum of digits of 12345:", sum(int(d) for d in "12345"))
+    print("Armstrong numbers below 1000:", [n for n in range(1, 1000) if is_armstrong(n)])`,
+        terminal: {
+          command: "python armstrong_string.py",
+          inputs: [],
+          output: [
+            "Sum of digits of 12345: 15",
+            "Armstrong numbers below 1000: [1, 2, 3, 4, 5, 6, 7, 8, 9, 153, 370, 371, 407]",
+          ],
+        },
+      },
+    ],
+    edgeCases: [
+      {
+        scenario: "Zero",
+        example: "0",
+        handling: "Sum of digits is 0; while n > 0 never runs.",
+      },
+      {
+        scenario: "Negative Numbers",
+        example: "-123",
+        handling: "Use abs(n) before extracting digits.",
+      },
+    ],
+  },
+];

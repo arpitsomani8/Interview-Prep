@@ -28,6 +28,14 @@ export const definitionBookmarks = [
     "label": "AI Evaluation, Fairness & Acceptance Criteria"
   },
   {
+    "id": "acceptance-criteria",
+    "label": "Acceptance Criteria (ML Release Gates)"
+  },
+  {
+    "id": "ai-fairness-auditing",
+    "label": "AI Fairness & Auditing"
+  },
+  {
     "id": "activation-functions",
     "label": "Activation Functions"
   },
@@ -184,6 +192,10 @@ export const definitionBookmarks = [
     "label": "Denoising"
   },
   {
+    "id": "denoising-diffusion",
+    "label": "Denoising in Generative AI & Diffusion"
+  },
+  {
     "id": "data-cleaning",
     "label": "Data Cleaning & Preprocessing"
   },
@@ -242,6 +254,10 @@ export const definitionBookmarks = [
   {
     "id": "expectation",
     "label": "Expectation"
+  },
+  {
+    "id": "expectation-linearity",
+    "label": "Expectation (Long-Run Averages & Linearity)"
   },
   {
     "id": "edge-cases",
@@ -570,6 +586,10 @@ export const definitionBookmarks = [
   {
     "id": "production-handling",
     "label": "Production Handling"
+  },
+  {
+    "id": "fashion-ai-edge-cases",
+    "label": "Production Edge Cases & Resilient System Design"
   },
   {
     "id": "permission-aware-rag",
@@ -913,6 +933,34 @@ export const definitionBookmarks = [
   {
     "id": "rest-api-vs-fastapi",
     "label": "REST API vs FastAPI"
+  },
+  {
+    "id": "r2-score",
+    "label": "R² Score (Coefficient of Determination)"
+  },
+  {
+    "id": "random-forest",
+    "label": "Random Forest"
+  },
+  {
+    "id": "random-variable",
+    "label": "Random Variable"
+  },
+  {
+    "id": "ranking-reranking",
+    "label": "Ranking & Re-ranking (Multi-Stage Retrieval)"
+  },
+  {
+    "id": "ranking-and-reranking",
+    "label": "Ranking vs Reranking (IR & RAG)"
+  },
+  {
+    "id": "react-pattern",
+    "label": "ReAct Pattern (Reasoning + Acting)"
+  },
+  {
+    "id": "regularization",
+    "label": "Regularization (L1, L2 & Dropout)"
   },
   {
     "id": "self-attention",
@@ -6486,7 +6534,7 @@ export const definitionsData = [
     "takeaway": "Multimodal search pipelines allow separate text and visual embedding generation, flexible cross-modal reranking, and sub-second retrieval for rich enterprise catalogs."
   },
   {
-    "id": "denoising",
+    "id": "denoising-diffusion",
     "title": "Denoising in Generative AI & Diffusion",
     "badge": "Diffusion Models & Reverse Sampling",
     "summary": "Denoising is the reverse process in generative diffusion models where a trained neural network iteratively predicts and removes noise from a noisy latent representation to generate or edit high-fidelity images.",
@@ -17288,7 +17336,7 @@ export const definitionsData = [
     "takeaway": "In statistical modeling and machine learning, recognizing whether your feature or target is a discrete or continuous random variable determines your choice of probability distribution (e.g., Bernoulli/Poisson vs. Gaussian), evaluation metrics, and objective loss function (Cross-Entropy vs. MSE)."
   },
   {
-    "id": "expectation",
+    "id": "expectation-linearity",
     "title": "Expectation (Expected Value, Long-Run Averages & Linearity of Expectation)",
     "badge": "Probability Theory & Mathematical Foundations",
     "summary": "Expectation (expected value) is the long-run average value we expect from a random variable. It is an average, so it can be a value that never occurs in an individual observation.",
@@ -20540,16 +20588,137 @@ export const definitionsData = [
     "title": "Git / GitHub (Version Control, Basic Commands & Workflows)",
     "badge": "Version Control & CI/CD Collaboration",
     "summary": "Distributed version control system (Git) paired with cloud hosting, pull requests, automated review workflows, and GitHub Actions CI/CD to ensure atomic code tracking, branch isolation, and production release safety.",
-    "details": [
-      "1. Setup & Configuration (`git config`, `git init`, `git clone`): Establish global user credentials, initialize new local repos, or clone remote repositories from GitHub down to your local workspace.",
-      "2. Inspecting, Staging & Committing (`git status`, `git diff`, `git add`, `git commit`, `git log`): Inspect file modifications across working tree and index, stage specific files, create atomic descriptive commit snapshots, and review log history.",
-      "3. Branching & Switching (`git branch`, `git switch -c` / `git checkout -b`): Work in isolated feature branches without polluting main, switch between branches cleanly, and delete merged branches.",
-      "4. Remote Synchronization (`git remote -v`, `git fetch`, `git pull`, `git push -u`): Inspect remote URLs, safely fetch remote commits without mutating local files, pull upstream changes, and push feature branches with tracking.",
-      "5. Merging vs. Rebasing (`git merge`, `git rebase`, resolving conflicts): Combine feature branches via merge commits (preserving chronological topology) or rebase onto main for a clean linear commit graph. Resolve `<<<<<<<` conflict markers manually.",
-      "6. Stashing Temporary Work (`git stash`, `git stash pop`, `git stash list`): Shelve uncommitted WIP edits safely to switch branches urgently, and pop changes back when ready.",
-      "7. Undoing & Fixing Mistakes (`git restore`, `git reset --soft`, `git revert`): Safely discard unstaged edits (`git restore`), unstage files (`git restore --staged`), undo a commit while keeping code staged (`git reset --soft HEAD~1`), or publish an inverted revert commit for production safety."
+    "whatIsGitAndGithub": {
+      "title": "Git vs GitHub",
+      "git": {
+        "title": "Git — Local Version Control Engine",
+        "desc": "A distributed version control system that runs on your machine and records every change to your code as commits.",
+        "points": [
+          "Works fully offline",
+          "Tracks history, branches and merges",
+          "Every clone holds the complete history"
+        ]
+      },
+      "github": {
+        "title": "GitHub — Cloud Collaboration Platform",
+        "desc": "A hosting service for Git repositories that adds team collaboration on top of Git.",
+        "points": [
+          "Remote repositories (origin)",
+          "Pull requests and code review",
+          "GitHub Actions for CI/CD"
+        ]
+      }
+    },
+    "keyConcepts": [
+      {
+        "concept": "Repository",
+        "meaning": "The project folder plus its full .git history."
+      },
+      {
+        "concept": "Working Tree",
+        "meaning": "The files you are currently editing."
+      },
+      {
+        "concept": "Staging Area (Index)",
+        "meaning": "Changes selected with git add for the next commit."
+      },
+      {
+        "concept": "Commit",
+        "meaning": "A saved snapshot of the staged changes with a message."
+      },
+      {
+        "concept": "Branch",
+        "meaning": "An isolated line of work, e.g. feature/parcels-api."
+      },
+      {
+        "concept": "Remote (origin)",
+        "meaning": "The copy of the repository hosted on GitHub."
+      },
+      {
+        "concept": "HEAD",
+        "meaning": "A pointer to the commit you currently have checked out."
+      }
     ],
-    "code": "# ==============================================================\n# BASIC & ESSENTIAL GIT COMMANDS CHEATSHEET\n# ==============================================================\n\n# --- 1. CONFIGURATION & REPO INITIALIZATION ---\ngit config --global user.name \"Your Name\"        # Set commit author name\ngit config --global user.email \"you@example.com\" # Set commit author email\ngit init                                        # Initialize new local Git repository\ngit clone https://github.com/org/repo.git       # Clone remote repo into current folder\n\n# --- 2. DAILY WORKFLOW: STATUS, DIFF, STAGING & COMMITTING ---\ngit status                                      # View changed, untracked, and staged files\ngit diff                                        # View unstaged line-by-line code changes\ngit diff --staged                               # View changes staged for the next commit\ngit add <filename>                              # Stage specific file for commit\ngit add .                                       # Stage all modified and new files in directory\ngit commit -m \"feat(yolo): add 11ms CPU model\"  # Commit staged snapshot with concise message\ngit log --oneline --graph --decorate -n 10      # Clean, graphical 1-line history of last 10 commits\n\n# --- 3. BRANCHING & SWITCHING ---\ngit branch                                      # List local branches (* shows active branch)\ngit branch -a                                   # List local and remote-tracking branches\ngit switch -c feature/parcels-api               # Create and switch to new branch (modern syntax)\n# (or legacy equivalent: git checkout -b feature/parcels-api)\ngit switch main                                 # Switch back to main branch\ngit branch -d feature/parcels-api               # Safely delete merged local branch\n\n# --- 4. REMOTE SYNC: FETCH, PULL & PUSH ---\ngit remote -v                                   # List remote aliases and URLs (e.g., origin)\ngit fetch origin                                # Download remote commits/branches without merging\ngit pull origin main                            # Fetch and merge latest remote main into current branch\ngit push -u origin feature/parcels-api          # Push local branch to GitHub & set upstream tracking\ngit push                                        # Push commits to already-tracked upstream branch\n\n# --- 5. MERGING, REBASING & CONFLICTS ---\ngit merge feature/parcels-api                   # Merge feature branch into active branch\ngit rebase origin/main                          # Re-apply current commits on top of latest main\n# If conflicts occur: edit conflicting files, resolve <<<<<<< markers, then:\ngit add <resolved-file>\ngit rebase --continue                           # Continue rebase after resolving conflict\ngit rebase --abort                              # Abort rebase and restore original branch state\n\n# --- 6. STASHING (TEMPORARILY SHELVING WORK) ---\ngit stash                                       # Shelve uncommitted dirty changes\ngit stash list                                  # List all saved stashes\ngit stash pop                                   # Restore most recent shelved changes and drop from stash\ngit stash drop                                  # Discard most recent stash\n\n# --- 7. UNDOING & FIXING MISTAKES SAFELY ---\ngit restore <file>                              # Discard local uncommitted changes in working tree\ngit restore --staged <file>                     # Unstage a file from index (keeps file edits safe)\ngit reset --soft HEAD~1                         # Undo last commit; keeps all changes staged in index\ngit reset --hard HEAD~1                         # DANGEROUS: Obliterates last commit and working changes\ngit revert <commit-hash>                        # Create a safe new commit that inverts a past commit"
+    "essentialWorkflows": [
+      {
+        "step": "1. Setup & Configuration",
+        "commands": "git config, git init, git clone",
+        "desc": "Establish global user credentials, initialize new local repos, or clone remote repositories from GitHub down to your local workspace."
+      },
+      {
+        "step": "2. Inspecting, Staging & Committing",
+        "commands": "git status, git diff, git add, git commit, git log",
+        "desc": "Inspect file modifications across working tree and index, stage specific files, create atomic descriptive commit snapshots, and review log history."
+      },
+      {
+        "step": "3. Branching & Switching",
+        "commands": "git branch, git switch -c / git checkout -b",
+        "desc": "Work in isolated feature branches without polluting main, switch between branches cleanly, and delete merged branches."
+      },
+      {
+        "step": "4. Remote Synchronization",
+        "commands": "git remote -v, git fetch, git pull, git push -u",
+        "desc": "Inspect remote URLs, safely fetch remote commits without mutating local files, pull upstream changes, and push feature branches with tracking."
+      },
+      {
+        "step": "5. Merging vs. Rebasing",
+        "commands": "git merge, git rebase, resolving conflicts",
+        "desc": "Combine feature branches via merge commits (preserving chronological topology) or rebase onto main for a clean linear commit graph. Resolve <<<<<<< conflict markers manually."
+      },
+      {
+        "step": "6. Stashing Temporary Work",
+        "commands": "git stash, git stash pop, git stash list",
+        "desc": "Shelve uncommitted WIP edits safely to switch branches urgently, and pop changes back when ready."
+      },
+      {
+        "step": "7. Undoing & Fixing Mistakes",
+        "commands": "git restore, git reset --soft, git revert",
+        "desc": "Safely discard unstaged edits (git restore), unstage files (git restore --staged), undo a commit while keeping code staged (git reset --soft HEAD~1), or publish an inverted revert commit for production safety."
+      }
+    ],
+    "cheatsheet": {
+      "title": "Essential Git Commands Cheat Sheet",
+      "sections": [
+        {
+          "title": "1. Configuration & Repo Setup",
+          "code": "git config --global user.name \"Your Name\"        # Set commit author name\ngit config --global user.email \"you@example.com\" # Set commit author email\ngit init                                        # Initialize new local Git repository\ngit clone https://github.com/org/repo.git       # Clone remote repo into current folder"
+        },
+        {
+          "title": "2. Daily Workflow: Status, Diff, Stage & Commit",
+          "code": "git status                                      # View changed, untracked, and staged files\ngit diff                                        # View unstaged line-by-line code changes\ngit diff --staged                               # View changes staged for the next commit\ngit add <filename>                              # Stage specific file for commit\ngit add .                                       # Stage all modified and new files in directory\ngit commit -m \"feat(yolo): add 11ms CPU model\"  # Commit staged snapshot with concise message\ngit log --oneline --graph --decorate -n 10      # Clean, graphical 1-line history of last 10 commits"
+        },
+        {
+          "title": "3. Branching & Switching",
+          "code": "git branch                                      # List local branches (* shows active branch)\ngit branch -a                                   # List local and remote-tracking branches\ngit switch -c feature/parcels-api               # Create and switch to new branch (modern syntax)\n# (or legacy equivalent: git checkout -b feature/parcels-api)\ngit switch main                                 # Switch back to main branch\ngit branch -d feature/parcels-api               # Safely delete merged local branch"
+        },
+        {
+          "title": "4. Remote Sync: Fetch, Pull & Push",
+          "code": "git remote -v                                   # List remote aliases and URLs (e.g., origin)\ngit fetch origin                                # Download remote commits/branches without merging\ngit pull origin main                            # Fetch and merge latest remote main into current branch\ngit push -u origin feature/parcels-api          # Push local branch to GitHub & set upstream tracking\ngit push                                        # Push commits to already-tracked upstream branch",
+          "note": "git fetch only downloads remote changes; git pull = fetch + merge into your current branch."
+        },
+        {
+          "title": "5. Merging, Rebasing & Conflicts",
+          "code": "git merge feature/parcels-api                   # Merge feature branch into active branch\ngit rebase origin/main                          # Re-apply current commits on top of latest main",
+          "conflictNote": "If a merge or rebase hits a conflict, Git marks the clashing lines in the file. Keep the correct code, delete the markers, then continue:",
+          "conflictMarker": "<<<<<<< HEAD\nyour version of the line\n=======\nincoming version of the line\n>>>>>>> feature/parcels-api",
+          "conflictMergeCode": "# during a merge\ngit add <resolved-file>\ngit commit",
+          "conflictRebaseCode": "# during a rebase\ngit add <resolved-file>\ngit rebase --continue   # or: git rebase --abort"
+        },
+        {
+          "title": "6. Stashing Work in Progress",
+          "code": "git stash                                       # Shelve uncommitted dirty changes\ngit stash list                                  # List all saved stashes\ngit stash pop                                   # Restore most recent shelved changes and drop from stash\ngit stash drop                                  # Discard most recent stash"
+        },
+        {
+          "title": "7. Undoing & Fixing Mistakes",
+          "code": "git restore <file>                              # Discard local uncommitted changes in working tree\ngit restore --staged <file>                     # Unstage a file from index (keeps file edits safe)\ngit reset --soft HEAD~1                         # Undo last commit; keeps all changes staged in index\ngit reset --hard HEAD~1                         # DANGEROUS: Obliterates last commit and working changes\ngit revert <commit-hash>                        # Create a safe new commit that inverts a past commit",
+          "warning": "git reset --hard permanently deletes uncommitted work. On shared branches use git revert instead of rewriting history."
+        }
+      ]
+    },
+    "interviewAnswer": {
+      "question": "What is the difference between git merge and git rebase?",
+      "answer": "Merge combines two branches with a merge commit and keeps the original history. Rebase re-applies my commits on top of the latest main, giving a clean linear history. I rebase my own feature branch before opening a pull request, and never rebase a shared branch that others have already pulled."
+    }
   },
   {
     "id": "roc-auc",
