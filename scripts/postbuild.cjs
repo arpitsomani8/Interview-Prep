@@ -36,3 +36,4 @@ fs.writeFileSync('.nojekyll', '');
 fs.writeFileSync('docs/.nojekyll', '');
 
 console.log('Post-build synchronization complete: docs/, assets/, 404.html, .nojekyll');
+
